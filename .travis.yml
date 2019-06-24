@@ -25,9 +25,11 @@ install:
   - git clone https://github.com/Funz/funz-core
   - cd funz-core
   - ant dist
+  - cd ..
   - git clone https://github.com/Funz/funz-calculator
   - cd funz-calculator
   - ant dist
+  - cd ..
   - cd $WD
   - ant dist
 
