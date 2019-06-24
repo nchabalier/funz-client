@@ -1,0 +1,59 @@
+language: java
+#matrix:
+#  include:
+#    - name: "Linux"
+#      os: linux
+#      dist: xenial
+#    - name: "MacOS"
+#      os: osx
+#      osx_image: xcode9.4
+#    - name: "Windows"
+#      os: windows
+#      # Help : https://travis-ci.community/c/environments/windows
+#      # Pre-installed packages: https://docs.travis-ci.com/user/reference/windows/
+#      # use `choco` command
+jdk:
+  - oraclejdk8
+#  - oraclejdk11
+#  - openjdk10
+#  - openjdk11
+
+install:
+  - WD=$PWD
+  - cd ..
+  - git clone https://github.com/Funz/funz-profile
+  - git clone https://github.com/Funz/funz-core
+  - cd funz-core
+  - ant dist
+  - git clone https://github.com/Funz/funz-calculator
+  - cd funz-calculator
+  - ant dist
+  - cd $WD
+  - ant dist
+
+before_script:
+  #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rm -f '/usr/local/include/c++'; brew install r; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "deb https://cloud.r-project.org/bin/linux/ubuntu trusty-cran35/" | sudo tee -a /etc/apt/sources.list; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install r-recommended -y; fi
+
+script: ant test
+
+before_deploy:
+  - mv dist Funz_client
+  - zip -r Funz_client.zip Funz_client
+
+deploy:
+  provider: releases
+  name: funz_client
+  api_key:
+    secure: E6RhJ6bvS8g9UZiCJUh31jqAJ0p6M1JMVqUrV1wKDbn7ua0oiDvM33e39vRhIUaTtsPcCVV9qzC7D4oU+VXhDa6/r3ZRrTBEwsOJ8A5y7DB8V2reKZ+4MweiJVGbj6Wky0bU/bbZQtJec+hSxOqFXbbnhgMC9H2fQRnB6JaPfMXIhpDfHpcKxbdHDowaoP40Oidwf0YCAb9EeEuCKehuJ4yR/lksCLYUYRKrNOEYv5E0cRmOoVYYF6abFclzOW3TmbvZC0qt/i3+zirJejKZkXA6PIQ4hrMSijDSfdSWufio6s7eEHpfe3VJdXc4IwwlFV+SzHonOLa1wq1FLQwUtrPx3JybSD70s+OVqvp+uQxyCnCyZoY7pWxy6jApc5wTf7YnjspLLUf20tuwe3tKR3/x+y99gnBO7W4dmRyVM5vaC/jxm97NIntjxbEQpBkaT+I4RYEnAtn46fAaOFG7W9u9c48PLOX+/JYG2qFXDBW1tRzygHeLMW2VgMc3RVjzxTFvVAPJKOunBzmSwHQM43OP6V8el6zjPeExlHl8y2r+6Uv6UNkTygzXzZWf7VKnjY4KMGhuascGz8kLaPrLSWYSCtN7XBqwYJXh/EprSbwd3wGESNlVvi7CLGA+t/LVd6YuekxLgV7UszaEeDnca38EPPzPQchP+SkpuQ7ZYxs=
+  file_glob: true
+  file: Funz_client*.zip
+  on:
+    tags: true
+    branch: master
+  skip_cleanup: true
+  overwrite: true
