@@ -1,0 +1,45 @@
+
+<CONFIGURATION version="trunk" expires="20180101" userid="default" pro="true">
+
+    <!-- ne pas donner ce fichier a l'utilisateur       -->
+    <!-- java -jar conftool.jar config.xml > config.hex -->
+    <!-- config.hex est pour l'utilisateur              -->
+
+    <!--
+
+    RFC 2365—Administratively Scoped Addresses
+RFC 2365 provides limited guidelines on how the multicast address space can be divided and used privately by enterprises.
+The terminology “Administratively Scoped IPv4 multicast space” relates to the group address range of 239.0.0.0 to
+239.255.255.255. The key properties of Administratively Scoped IP Multicast are that:
+ • Packets addressed to Administratively Scoped multicast addresses do not cross configured administrative boundaries. The
+    limits of these scope boundaries often are called “Zones” or “Scoped Zones.”
+ • Administratively Scoped multicast addresses are locally assigned and are not required to be unique across administrative
+    boundaries.
+Table 9 and the bullet items that follow it summarize the recommendations of RFC 2365.
+Table 9 Administratively Scoped Addresses 239.0.0.0/8
+  Range                                      Description                                        Reference
+  239.000.000.000-239.191.255.255            Organization-Local Scope Expansion Space           [Meyer, RFC 2365]
+  239.192.000.000-239.195.255.255            Organization-Local Scope                           [Meyer, RFC 2365]
+  239.195.000.000-239.254.255.255            Site-Local Scope Expansion Space                   [Meyer, RFC 2365]
+  239.255.000.000-239.255.255.255            Site-Local Scope                                   [Meyer, RFC 2365]
+    -->
+
+    <SLOTS  max-calcs="40" multicast-ip="239.192.0.100">
+        <SLOT port="19001" />
+        <SLOT port="19002" />
+        <SLOT port="19003" />
+        <SLOT port="19003" />
+        <SLOT port="19004" />
+        <SLOT port="19005" />
+        <SLOT port="19006" />
+        <SLOT port="19007" />
+        <SLOT port="19008" />
+        <SLOT port="19009" />
+    </SLOTS>
+    <MODELS>
+        <MODEL name="R" ioplugin="file:./plugins/io/R.ioplugin"  code="R" />
+        <MODEL name="R Crash" ioplugin="file:./plugins/io/R.ioplugin"  code="RR" />
+        <MODEL name="ExitError" ioplugin="file:./plugins/io/exit-1.ioplugin"  code="exit-1" />
+        <MODEL name="Crash" ioplugin="file:./plugins/io/crash.ioplugin"  code="crash" />
+    </MODELS>
+</CONFIGURATION>

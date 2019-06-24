@@ -1,0 +1,689 @@
+<project name="funz-client" default="help" basedir=".">
+    
+    <property name="funz-root.dir" value="${basedir}/.." />
+    <property name="funz.properties" location="../funz-profile/funz.properties" />
+    <!-- funz dependent properties -->
+    <property file="${funz.properties}" />
+    <!-- funz client dependent properties -->
+    <property file="funz-client.properties"/>
+
+    <path id="antcontrib.classpath">
+        <pathelement location="../funz-profile/lib/ant-contrib-0.6.jar" />
+    </path>
+
+    <property name="unit.test.jar" value="../funz-profile/lib/concutest-junit-4.7-withrt.jar" />
+    <!--property name="unit.test.jar" value="../funz-profile/lib/junit-4.3.jar" /-->
+    
+    <taskdef name="for" taskname="for" classname="net.sf.antcontrib.logic.For" classpathref="antcontrib.classpath" />
+    <taskdef name="if" taskname="if" classname="net.sf.antcontrib.logic.IfTask" classpathref="antcontrib.classpath" />
+    <taskdef name="propertycopy" taskname="propertycopy" classname="net.sf.antcontrib.property.PropertyCopy" classpathref="antcontrib.classpath" />
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="antcontrib.classpath" />
+   
+        <!-- verify that the ${funz.properties} file has been set -->
+    <fail message="Set the funz properties file ${funz.properties} from funz-profile with a symbolic link in order to set project global configuration:
+          try something like   ln -s ../funz-profile/funz.properties    from the root directory">
+        <condition>
+            <not>
+                <and>
+                    <available file="${funz.properties}" type="file" />
+                </and>
+            </not>
+        </condition>
+    </fail>
+
+    <!-- verify that the ${default.properties} file has been set -->
+    <fail message="Set a quotas.xml file using a symbolic link in order to set the client quota
+          . Try something like     ln -s ${funz-client.dir}/src/main/resources/config/quotas.default.xml ${quotas.xml}    in the root directory">
+        <condition>
+            <not>
+                <and>
+                    <available file="${quotas.xml}" type="file" />
+                </and>
+            </not>
+        </condition>
+    </fail>
+
+    <property name="main.class" value="org.funz.main.RunDesign" />
+
+    <!--  classpathes -->
+    <path id="core.classpath">
+        <fileset dir="${core.lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="calculator.classpath">
+        <fileset dir="${calculator.lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="lib.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="dist.classpath">
+        <fileset dir="${dist.lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="run.classpath">
+        <pathelement location="." />
+        <path refid="lib.classpath" />
+        <path refid="core.classpath" />
+        <path refid="calculator.classpath" />
+    </path>
+
+    <path id="javadoc.jars">
+        <fileset dir="${javadoc.lib.dir}">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <path id="compile.path" >
+        <path refid="core.classpath" />
+        <path refid="lib.classpath" />
+        <path refid="calculator.classpath" />
+    </path>
+
+
+    <!-- clean targets -->
+    <target name="clean-build" description="clean up">
+        <delete dir="${build.dir}" failonerror="false"/>
+        <delete dir="${build.ide.dir}" failonerror="false"/>
+        <delete dir="${tmp.dir}" failonerror="false"/>
+    </target>
+
+
+    <target name="clean-dist" description="clean up">
+        <delete dir="${dist.dir}" failonerror="false"/>
+    </target>
+
+    <target name="clean-doc" description="">
+        <delete dir="${doc.dir}" failonerror="false"/>
+    </target>
+
+    <target name="clean-quotas">
+        <delete file="${quotas.hex}"/>
+    </target>
+    
+    <target name="clean-project">
+        <delete>
+            <fileset dir="." includes="*.err"/>
+            <fileset dir="." includes="*.out"/>
+            <!--fileset dir="." includes="*.log"/ otherwise no grep possible from cron job... -->
+            <fileset dir="." includes="*.old.*"/>
+            <fileset dir="." includes="*.Rout"/>
+            <fileset dir="." includes="*.png"/>
+            <fileset dir="." includes="*.Rdata"/>
+            <fileset dir="." includes="*.txt"/>
+            <fileset dir="." includes="*.csv"/>
+            <fileset dir="." includes=".*"/>
+        </delete>
+    </target>
+
+    <target name="clean-all" depends="clean-build, clean-dist, clean-doc,clean-quotas, clean-project" >
+        <delete dir="${javadoc.dir}" failonerror="false" />
+    </target>
+
+    <!-- COMPILE -->
+    <target name="compile" description="compile the source ">
+        <mkdir dir="${build.dir}" />
+        <javac deprecation="true" target="${java.compiler.version}" source="${java.compiler.version}" srcdir="${src.dir}" destdir="${build.dir}" encoding="ISO-8859-1" debug="true">
+            <classpath refid="compile.path" />
+            <!--exclude name="org/funz/ui/**"/-->
+        </javac>
+    </target>
+
+    <target name="compile-test" depends="compile" description="compile the tests ">
+        <mkdir dir="${build.dir}" />
+        <javac deprecation="true" target="${java.compiler.version}" source="${java.compiler.version}" srcdir="${test.dir}" destdir="${build.dir}" encoding="ISO-8859-1" debug="true" >
+            <classpath refid="compile.path" />
+            <classpath path="${build.dir}" />
+            <classpath path="${unit.test.jar}" />
+            <!--exclude name="org/funz/ui/**"/-->
+        </javac>
+    </target>
+
+    <target name="dist" depends="jar-doe, jar, build-quotas" description="generate the distribution" >
+        <copy todir="${dist.scripts.dir}">
+            <fileset dir="${resources.scripts.dir}">
+                <include name="Funz.*" />
+            </fileset>
+        </copy>
+        <chmod perm="a+x">
+            <fileset dir="${dist.scripts.dir}">
+                <include name="Funz.*" />
+            </fileset>
+        </chmod>
+        <copy todir="${dist.config.dir}">
+            <fileset file="${calculator.xml}"/>
+            <fileset file="*.conf"/>
+        </copy>
+        <copy todir="${dist.dir}">
+            <fileset file="${quotas.hex}"/>
+        </copy>
+        
+        <mkdir dir="${dist.plugins.dir}" />
+        <copy todir="${dist.plugins.dir}">
+            <fileset dir="${resources.plugins.dir}">
+                <exclude name="doe/**.jar"/>
+                <include name="io/*"/>
+                <include name="doe/*.R"/>
+            </fileset>
+        </copy>
+        
+        <mkdir dir="${dist.examples.dir}" />
+        <copy todir="${dist.examples.dir}" >
+            <fileset dir="${resources.examples.dir}" />
+        </copy>
+
+        <copy todir="${dist.lib.dir}">
+            <fileset file="${build.funz.jar}"/>
+        </copy>
+    </target>
+
+    <target name="jar" depends="compile" description="generate the jar file" >
+        <mkdir dir="${dist.lib.dir}" />
+        <copy todir="${dist.lib.dir}">
+            <fileset dir="${lib.dir}" excludes="*.groovy"/>
+            <fileset dir="${core.lib.dir}"/>
+            <fileset dir="${calculator.lib.dir}"/>
+        </copy>
+
+        <manifestclasspath property="manifest.classpath" jarfile="${dist.lib.dir}/${client.jar.name}">
+            <classpath refid="dist.classpath" />
+        </manifestclasspath>
+
+        <jar destfile="${dist.funz.jar}">
+            <fileset dir="${build.dir}">
+                <include name="**"/>
+                <exclude name="**/TEST*"/>
+            </fileset>
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}" />
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="jar-doe" depends="compile-test" description="generate the jar file" >
+        <echo message="${resources.plugins.dir} ${build.dir}"/>
+        <jar destfile="${resources.plugins.dir}/doe/TESTDirect.jar">
+            <fileset dir="${build.dir}">
+                <include name="org/funz/doe/TESTDirect*"/>
+                <exclude name="org/funz/doe/TESTDirectW*"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="${resources.plugins.dir}/doe/TESTDirectWithPool.jar">
+            <fileset dir="${build.dir}">
+                <include name="org/funz/doe/TESTDirectW*"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="${resources.plugins.dir}/doe/TESTIterative.jar">
+            <fileset dir="${build.dir}">
+                <include name="org/funz/doe/TESTIterative*"/>
+                <exclude name="org/funz/doe/TESTIterativeW*"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="${resources.plugins.dir}/doe/TESTIterativeWithPool.jar">
+            <fileset dir="${build.dir}">
+                <include name="org/funz/doe/TESTIterativeW*"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="${resources.plugins.dir}/doe/TESTIterativeLoop.jar">
+            <fileset dir="${build.dir}">
+                <include name="org/funz/doe/TESTIterativeL*"/>
+            </fileset>
+        </jar>
+        
+        <jar destfile="${resources.plugins.dir}/doe/TESTLotofcalc.jar">
+            <fileset dir="${build.dir}">
+                <include name="org/funz/doe/TESTLotofcalc*"/>
+            </fileset>
+        </jar>
+    </target>
+    
+    <!-- testing the funz client module -->
+    <target name="test" depends="">
+        <antcall target="clean-project"/>
+
+        <antcall target="test-java"/>
+        <antcall target="test-R"/>
+        <antcall target="test-bash"/>
+        <!--antcall target="test-cmd.exe"/--> <!--Only for windows hosts... but should be identical to bash (very similar code)-->
+        <antcall target="test-python"/>
+    </target>
+        
+    <target name="test-java" depends="compile-test">
+        <fileset id="tests" dir="${build.dir}" includes="**/*Test.class" excludes="**/doe/**" />
+        <!--property name="tests.p" refid="tests"/>
+        <echo message="${tests.p}"/-->
+
+        <pathconvert pathsep="${line.separator}" property="tests.list" refid="tests">
+            <map from="${build.dir}/" to=""/>
+        </pathconvert>
+        <!--echo message="${tests.list}"/>
+        <echo message="================"/-->
+        
+        <for list="${tests.list}" param="test.class" delimiter="${line.separator}">
+        <!--for list="org/funz/api/BatchRunTest.class" param="test.class" delimiter="${line.separator}"-->
+            <sequential>
+                <echo level="error" message="@{test.class}"/>
+                <echo message="========================================="/>
+                <echo message="============= @{test.class} ============="/>
+                <echo message="========================================="/>
+                <propertyregex property="test.class.name" input="@{test.class}" regexp="\.class" replace="" global="true"  override="true"/>
+                <!--echo message="${test.class.name}"/-->
+                <propertyregex property="test.class.id" input="${test.class.name}" regexp="/" replace="\." global="true"  override="true"/>
+                <!--echo message="${test.class.id}"/-->
+                
+                <record name="${test.class.id}.txt" action="start" />
+                <java classname="${test.class.id}" fork="true" timeout="1200000">
+                    <classpath refid="run.classpath" />
+                    <classpath path="${build.dir}" />
+                    <classpath path="${unit.test.jar}" />
+                    <assertions>
+                        <enable/>
+                    </assertions>
+                </java>        
+                <record name="${test.class.id}.txt" action="stop"/>
+                
+            </sequential>
+        </for>
+    </target>
+
+    <target name="run-calculator" depends="compile-test">
+        <java classname="org.funz.main.RunCalculators" fork="true" spawn="true">
+            <classpath refid="run.classpath" />
+            <classpath path="${build.dir}" />
+            <classpath path="${unit.test.jar}" />
+            <arg value="4" />
+            <arg value="3600000" />
+        </java>
+    </target>
+
+    <target name="test-cmd" depends="run-calculator,dist">
+        <fileset id="tests" dir="${root.dir}/src/test/cmd/" includes="**/*Test.bat" />
+        <property name="tests.p" refid="tests"/>
+        <!--echo message="${tests.p}"/-->
+        
+        <pathconvert pathsep="${line.separator}" property="tests.list" refid="tests">
+            <map from="${root.dir}/src/test/cmd/" to=""/>
+        </pathconvert>
+        <!--echo message="${tests.list}"/-->
+        <!--echo message="================"/-->
+        
+        <for list="${tests.list}" param="test.file" delimiter="${line.separator}">
+            <sequential>
+                <echo level="error" message="@{test.file}"/>
+                <echo message="========================================="/>
+                <echo message="============= @{test.file} ============="/>
+                <echo message="========================================="/>
+
+                <script language="javascript">
+                    project.setProperty('startTime', new Date().getTime());
+                    project.setProperty('startDate', new Date());
+                </script>
+                <echo level="error">Start: ${startDate}</echo>
+                <exec executable="cmd" osfamily="unix" failonerror="false" output="${root.dir}/@{test.file}.txt"  timeout="1200000">
+                    <arg line="/c ${root.dir}/src/test/cmd/@{test.file}"/>
+                </exec>
+                <script language="javascript">
+                    project.setProperty('elapsedTime', new Date().getTime() - startTime)
+                </script>
+                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
+                <echo level="error" message=" Time: ${elapsedTime} ms"/>
+                
+                <loadfile property="@{test.file}.txt" srcFile="${root.dir}/@{test.file}.txt"/>
+                <echo message="${@{test.file}.txt}"/> 
+                
+            </sequential>
+        </for>
+    </target>
+
+    <target name="test-bash" depends="run-calculator,dist">
+      <fileset id="tests" dir="${root.dir}/src/test/bash/" includes="**/*Test.sh" />
+        <property name="tests.p" refid="tests"/>
+        <!--echo message="${tests.p}"/-->
+        
+        <pathconvert pathsep="${line.separator}" property="tests.list" refid="tests">
+            <map from="${root.dir}/src/test/bash/" to=""/>
+        </pathconvert>
+        <!--echo message="${tests.list}"/-->
+        <!--echo message="================"/-->
+        
+        <for list="${tests.list}" param="test.file" delimiter="${line.separator}">
+            <sequential>
+                <echo level="error" message="@{test.file}"/>
+                <echo message="========================================="/>
+                <echo message="============= @{test.file} ============="/>
+                <echo message="========================================="/>
+
+                <script language="javascript">
+                    project.setProperty('startTime', new Date().getTime());
+                    project.setProperty('startDate', new Date());
+                </script>
+                <echo level="error">Start: ${startDate}</echo>
+                <exec executable="/bin/bash" osfamily="unix" failonerror="false" output="${root.dir}/@{test.file}.txt" timeout="1200000">
+                    <arg value="${root.dir}/src/test/bash/@{test.file}"/>
+                </exec>
+                <script language="javascript">
+                    project.setProperty('elapsedTime', new Date().getTime() - startTime)
+                </script>
+                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
+                <echo level="error" message=" Time: ${elapsedTime} ms"/>
+                
+                <loadfile property="@{test.file}.txt" srcFile="${root.dir}/@{test.file}.txt"/>
+                <echo message="${@{test.file}.txt}"/> 
+                
+            </sequential>
+        </for>
+    </target>
+
+    <target name="test-python" depends="run-calculator,dist">
+        <fileset id="tests" dir="${root.dir}/src/test/python/" includes="**/*Test.py" />
+        <property name="tests.p" refid="tests"/>
+        <!--echo message="${tests.p}"/-->
+        
+        <pathconvert pathsep="${line.separator}" property="tests.list" refid="tests">
+            <map from="${root.dir}/src/test/python/" to=""/>
+        </pathconvert>
+        <!--echo message="${tests.list}"/-->
+        <!--echo message="================"/-->
+        
+        <for list="${tests.list}" param="test.file" delimiter="${line.separator}">
+            <sequential>
+                <echo level="error" message="@{test.file}"/>
+                <echo message="========================================="/>
+                <echo message="============= @{test.file} ============="/>
+                <echo message="========================================="/>
+
+                <script language="javascript">
+                    project.setProperty('startTime', new Date().getTime());
+                    project.setProperty('startDate', new Date());
+                </script>
+                <echo level="error">Start: ${startDate}</echo>
+                <exec executable="python3" osfamily="unix" failonerror="false" output="${root.dir}/@{test.file}.txt" timeout="1200000">
+                    <arg value="${root.dir}/src/test/python/@{test.file}"/>
+                </exec>
+                <script language="javascript">
+                    project.setProperty('elapsedTime', new Date().getTime() - startTime)
+                </script>
+                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
+                <echo level="error" message=" Time: ${elapsedTime} ms"/>
+                
+                <loadfile property="@{test.file}.txt" srcFile="${root.dir}/@{test.file}.txt"/>
+                <echo message="${@{test.file}.txt}"/> 
+                
+            </sequential>
+        </for>
+        
+        <fileset id="tests" dir="${root.dir}/src/test/python/" includes="**/*Test.sh" />
+        <property name="tests.p" refid="tests"/>
+        <!--echo message="${tests.p}"/-->
+        
+        <pathconvert pathsep="${line.separator}" property="tests.list" refid="tests">
+            <map from="${root.dir}/src/test/python/" to=""/>
+        </pathconvert>
+        <!--echo message="${tests.list}"/-->
+        <!--echo message="================"/-->
+        
+        <for list="${tests.list}" param="test.file" delimiter="${line.separator}">
+            <sequential>
+                <echo level="error" message="@{test.file}"/>
+                <echo message="========================================="/>
+                <echo message="============= @{test.file} ============="/>
+                <echo message="========================================="/>
+
+                <script language="javascript">
+                    project.setProperty('startTime', new Date().getTime());
+                    project.setProperty('startDate', new Date());
+                </script>
+                <echo level="error">Start: ${startDate}</echo>
+                <exec executable="/bin/bash" osfamily="unix" failonerror="false" output="${root.dir}/@{test.file}.txt" timeout="1200000">
+                    <arg value="${root.dir}/src/test/python/@{test.file}"/>
+                </exec>
+                <script language="javascript">
+                    project.setProperty('elapsedTime', new Date().getTime() - startTime)
+                </script>
+                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
+                <echo level="error" message=" Time: ${elapsedTime} ms"/>
+                
+                <loadfile property="@{test.file}.txt" srcFile="${root.dir}/@{test.file}.txt"/>
+                <echo message="${@{test.file}.txt}"/> 
+                
+            </sequential>
+        </for>
+    </target>
+    
+    <target name="test-R" depends="run-calculator,dist">  
+        <fileset id="tests" dir="${root.dir}/src/test/R/" includes="**/*Test.R" />
+        <property name="tests.p" refid="tests"/>
+        <!--echo message="${tests.p}"/-->
+        
+        <pathconvert pathsep="${line.separator}" property="tests.list" refid="tests">
+            <map from="${root.dir}/src/test/R/" to=""/>
+        </pathconvert>
+        <!--echo message="${tests.list}"/-->
+        <!--echo message="================"/-->
+        
+        <for list="${tests.list}" param="test.file" delimiter="${line.separator}">
+            <sequential>
+                <echo level="error" message="@{test.file}"/>
+                <echo message="========================================="/>
+                <echo message="============= @{test.file} ============="/>
+                <echo message="========================================="/>
+
+                <script language="javascript">
+                    project.setProperty('startTime', new Date().getTime());
+                    project.setProperty('startDate', new Date());
+                </script>
+                <echo level="error">Start: ${startDate}</echo>
+                <exec executable="/bin/bash" osfamily="unix" failonerror="false" timeout="1200000">
+                    <!--env key="JAVA_HOME" value=""/-->
+                    <arg value="R"/> 
+                    <arg value="CMD"/> 
+                    <arg value="BATCH"/>
+                    <arg value="${root.dir}/src/test/R/@{test.file}"/>
+                    <arg value="${root.dir}/@{test.file}.txt"/>
+                </exec>
+                <script language="javascript">
+                    project.setProperty('elapsedTime', new Date().getTime() - startTime)
+                </script>
+                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
+                <echo level="error" message=" Time: ${elapsedTime} ms"/>
+                
+                <loadfile property="@{test.file}.txt" srcFile="${root.dir}/@{test.file}.txt"/>
+                <echo message="${@{test.file}.txt}"/> 
+
+            </sequential>
+        </for>
+        
+        <fileset id="testsh" dir="${root.dir}/src/test/R/" includes="**/*Test.sh" />
+        <property name="testsh.p" refid="testsh"/>
+        <!--echo message="${tests.p}"/-->
+        
+        <pathconvert pathsep="${line.separator}" property="testsh.list" refid="testsh">
+            <map from="${root.dir}/src/test/R/" to=""/>
+        </pathconvert>
+        <!--echo message="${tests.list}"/-->
+        <!--echo message="================"/-->
+        
+        <for list="${testsh.list}" param="testh.file" delimiter="${line.separator}">
+            <sequential>
+                <echo level="error" message="@{testh.file}"/>
+                <echo message="========================================="/>
+                <echo message="============= @{testh.file} ============="/>
+                <echo message="========================================="/>
+
+                <script language="javascript">
+                    project.setProperty('startTime', new Date().getTime());
+                    project.setProperty('startDate', new Date());
+                </script>
+                <echo level="error">Start: ${startDate}</echo>
+                <exec executable="/bin/bash" osfamily="unix" failonerror="false" output="${root.dir}/@{testh.file}.txt" timeout="1200000">
+                    <arg value="${root.dir}/src/test/R/@{testh.file}"/>
+                </exec>
+                <script language="javascript">
+                    project.setProperty('elapsedTime', new Date().getTime() - startTime)
+                </script>
+                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{testh.file}.txt" append="true"/>
+                <echo level="error" message=" Time: ${elapsedTime} ms"/>
+                
+                <loadfile property="@{testh.file}.txt" srcFile="${root.dir}/@{testh.file}.txt"/>
+                <echo message="${@{testh.file}.txt}"/> 
+                
+            </sequential>
+        </for>
+    </target>
+
+    <!-- quotas file management -->
+    <target name="build-quotas" depends="clean-quotas" description="generate the test configuration">
+        <!-- verify that the ${quotas.xml} file has been set -->
+        <fail message="Set a quotas.xml file using a symbolic link in order to set the client configuration
+              . Try something like     ln -s ${funz-client.dir}/src/main/resources/config/quotas.default.xml ${quotas.xml}    in the root directory">
+            <condition>
+                <not>
+                    <and>
+                        <available file="${quotas.xml}" type="file" />
+                    </and>
+                </not>
+            </condition>
+        </fail>
+
+        <!-- convert the quotas.xml to quotas.hex file -->
+        <java dir="${dist.dir}" classname="org.funz.conf.Configuration" fork="true" >
+            <classpath>
+                <fileset dir="${dist.lib.dir}">
+                    <include name="**/*.jar" />
+                </fileset>
+                <filelist>
+                    <file name="${dist.dir}/${client.jar.name}"/>
+                </filelist>
+            </classpath>
+            <jvmarg value="-Dcharset=ISO-8859-1" />
+            <jvmarg value="-Dapp.home=${dist.dir}" />
+            <arg value="${quotas.xml}" />
+            <redirector output="${quotas.hex}" />
+        </java>
+    </target>
+
+    <target name="read-quotas" description="read the test configuration">
+        <java dir="${dist.dir}" classname="org.funz.conf.Configuration" fork="true" >
+            <classpath>
+                <fileset dir="${dist.lib.dir}">
+                    <include name="**/*.jar" />
+                </fileset>
+                <filelist>
+                    <file name="${dist.dir}/${client.jar.name}"/>
+                </filelist>
+            </classpath>
+            <jvmarg value="-Dcharset=ISO-8859-1" />
+            <jvmarg value="-Dapp.home=${dist.dir}" />
+            <arg value="-dump" />
+            <arg value="${quotas.hex}" />
+        </java>
+    </target>
+
+    <!-- application run -->
+
+    <target name="run" depends="dist">
+        <mkdir dir="${tmp.dir}" />
+        <mkdir dir="${tmp.funz.dir}" />
+
+        <!-- launch the client application -->
+        <java jvm="java" dir="${dist.dir}" jar="${dist.lib.dir}/${client.jar.name}" fork="true"  >
+            <assertions>
+                <enable/>
+            </assertions>
+            <jvmarg value="-splash:${dist.icons.dir}/funz.png" />
+            <!--jvmarg value="-agentpath:/home/richet/opt/netbeans-6.8/profiler3/lib/deployed/jdk16/linux/libprofilerinterface.so=/home/richet/opt/netbeans-6.8/profiler3/lib,5140" /-->
+            <jvmarg value="-Dcharset=ISO-8859-1" />
+            <jvmarg value="-Dapp.user=${tmp.funz.dir}" />
+            <jvmarg value="-Dapp.home=${dist.dir}" />
+
+            <arg value="file:${quotas.hex}" />
+            <arg value="file:${default.properties}" />
+        </java>
+    </target>
+
+    <!-- documentation generation -->
+    <target name="doc" depends="doc-javadoc" >
+    </target>
+
+    <target name="doc-javadoc" >
+        <mkdir dir="${javadoc.dir}" />
+        <javadoc sourcepath="${src.dir}" classpathref="compile.path" destdir="${javadoc.dir}" access="private">
+            <doclet name="org.umlgraph.doclet.UmlGraphDoc" pathref="javadoc.jars">
+                <param name="-enumerations" />
+                <param name="-enumconstants" />
+                <!--<param name="-all" />-->
+                <param name="-qualify" />
+                <param name="-horizontal" />
+                <param name="-types" />
+                <param name="-visibility" />
+                <param name="-inferrel"/>
+                <param name="-inferdep"/>
+                <param name="-hide" value="java.*"/>
+                <param name="-nodefontsize" value="8"/>
+                <param name="-nodefontpackagesize" value="8"/>
+            </doclet>
+        </javadoc>
+        <apply executable="${dot.exec}" dest="${javadoc.dir}" parallel="false">
+            <arg value="-Tpng"/>
+            <arg value="-o"/>
+            <targetfile/>
+            <srcfile/>
+            <fileset dir="${javadoc.dir}" includes="*.dot"/>
+            <mapper type="glob" from="*.dot" to="*.png"/>
+        </apply>
+    </target>
+
+    <target name="doc-API" >
+        <mkdir dir="${javadoc.dir}" />
+        <mkdir dir="${javadoc.dir}/api" />
+        <javadoc sourcepath="${src.dir}" packagenames="org.funz.api.*" classpathref="compile.path" destdir="${javadoc.dir}/api" access="public">
+        </javadoc>
+    </target>
+
+    <target name="doc-IOPlugin" >
+        <mkdir dir="${javadoc.dir}" />
+        <mkdir dir="${javadoc.dir}/ioplugin" />
+        <javadoc sourcepath="${src.dir}" packagenames="org.funz.codeplugin.*" classpathref="compile.path" destdir="${javadoc.dir}/ioplugin" access="public">
+        </javadoc>
+    </target>
+
+    <!-- help -->
+    <target name="help" description="display the help on standard output">
+        <echo message="********************************" />
+        <echo message="***" />
+        <echo message="***    Funz client" />
+        <echo message="***" />
+        <echo message="********************************" />
+        <echo />
+        <echo message="help            :   display this help" />
+        <echo />
+        <echo message="clean-all       :   clean everything that can be generated by ant targets" />
+        <echo message="clean-build     :   clean temp directories (./build, ./bin)" />
+        <echo message="clean-dist      :   clean distribution (./dist)" />
+        <echo message="clean-doc       :   clean documentation (./doc)" />
+        <echo message="clean-quotas    :   clean the generated quotas.hex file (./quotas.hex)" />
+        <echo />
+        <echo message="dist            :   generate a distribution" />
+        <echo message="generate-quotas :   generate the quotas.hex file from the quotas.xml file" />
+        <echo message="run             :   run the application from the distribution" />
+        <echo message="doc             :   generate the code documentation" />
+        <echo />
+        <echo message="build-quotas	   :   generate the quotas.hex from the quotas.xml file" />
+        <echo message="read-quotas     :   read and display the quotas.hex file" />
+
+    </target>
+</project>

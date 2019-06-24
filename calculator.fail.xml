@@ -1,0 +1,31 @@
+
+<CALCULATOR trace="true" spool="/tmp" timeout="0">
+    <!-- localhost -->
+    <HOST name="127.0.0.1"  port="19001" />
+    <HOST name="127.0.0.1"  port="19002" />
+    <HOST name="127.0.0.1"  port="19003" />
+    <HOST name="127.0.0.1"  port="19004" />
+    
+    <HOST name="192.158.56.1"  port="19001" />
+    <HOST name="192.158.56.1"  port="19002" />
+    <HOST name="192.158.56.1"  port="19003" />
+    <HOST name="192.158.56.1"  port="19004" />
+
+    <HOST name="192.158.56.101"  port="19001" />
+    <HOST name="192.158.56.101"  port="19002" />
+    <HOST name="192.158.56.101"  port="19003" />
+    <HOST name="192.158.56.101"  port="19004" />
+    
+    <CODE name="R"     command="RR CMD BATCH" />
+    <CODE name="RR"     command="RRR CMD BATCH" />
+
+    <CODE name="bash"     command="/bin/bash" />
+    <CODE name="cmd.exe"     command="cmd.exe /c" />
+    
+    <CODE name="exit-1"     command="./exit-1.sh" />
+    <CODE name="crash"     command="./crash.sh" />
+    <CODE name="cat"     command="cat" />
+    <CODE name="mult"     command="./mult.sh" />
+    
+<!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+</CALCULATOR>

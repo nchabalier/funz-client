@@ -1,0 +1,18 @@
+information=
+
+variableStartSymbol=?
+variableLimit=[...]
+formulaStartSymbol=!
+formulaLimit={...}
+commentLineChar=#
+
+datasetFilter=contains("(.*)","crash")
+
+outputlist=echo
+outputfunctions=Numeric:1
+
+output.echo.if=true
+output.echo.get=filecat("(.*)") >> split("\n") >> get(0) >> asNumeric1D()
+output.echo.default=1.0
+
+

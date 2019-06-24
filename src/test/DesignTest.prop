@@ -1,0 +1,8 @@
+VERBOSITY=10
+CODE="R"
+SRC="src/main/resources/samples/branin.R"
+DESIGN="GradientDescent"
+NMAX=4
+BraninGradientDescent_MIN=0.4781157
+FUN="src/main/resources/samples/mult.sh"
+FUN_MIN=-0.4

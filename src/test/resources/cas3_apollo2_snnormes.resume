@@ -1,0 +1,125 @@
+107.OCT.2008                          Sn NORMES                           PAGE   1
+   
+                  -----------------------------------------------
+                  | nitrate Pu4 C(X)=40.0000 H/X=653.1394 CAS 1 |
+                  |---------------------------------------------|
+   
+                                ------------------
+                                | U+Pu= 239.4708 |
+                                |----------------|
+   
+                      Resultats du calcul PIJ a B2 critique :  
+                     ----------------------------------------- 
+   
+                     _________________________________________  
+                     |                                       |  
+                     |  BILAN:       FLUX DIRECT             |  
+                     |_______________________________________|  
+                     |                                       |  
+                     |  OBJETS:                              |  
+                     |  GEOMETRIE :  TSTR.MILHOM1.GEO        |  
+                     |  MACROLIB  :  TSTR.MILHOM1.MAC        |  
+                     |  CALINIT   :  TSTR.MILHOM1.CALIN      |  
+                     |  PIJ       :  TSTR.MILHOM1.PIJ        |  
+                     |  CALCUL    :  TSTR.MILHOM1.FLX        |  
+                     |_______________________________________|  
+                     |     92 RAPIDES ET    80 THERMIQUES    |  
+                     |  NIV =   1 Nb Region(s) =        1    |  
+                     |     NG =   172    (     1 -   172)    |  
+                     |_______________________________________|  
+                     |                                       |  
+                     | ITEX                  2               |  
+                     |                                       |  
+                     | KEFF                  1.000004292     |  
+                     | KINF                  1.496604085     |  
+                     |                                       |  
+                     | M2                   28.809713364 cm2 |  
+                     | B2                    0.017237160     |  
+                     |                                       |  
+                     | RALENTISSEMENT        0.668667853     |  
+                     |                                       |  
+                     | TAUX D'ABSORPTION     0.668190598 s-1 |  
+                     | TAUX DE FISSION       0.346736670 s-1 |  
+                     | TAUX DE PRODUCTION    1.000009656 s-1 |  
+                     | TAUX DE NEXCES        0.000004738 s-1 |  
+                     | FUITES DB2 (S)        0.331820518 s-1 |  
+                     | Erreur du bilan      -0.000001014     |  
+                     | VALEUR PROPRE         1.000004292     |  
+                     |_______________________________________|  
+   
+                             Resultats du calcul Sn :  
+                            -------------------------- 
+   
+                      Type de la geometrie Sn :  CYLINDRIQUE  
+   
+                          Type du reflecteur :  EAU 20 cm  
+   
+                    Convergence sur un Keff de :  0.950000E+00  
+   
+              -------------------------------------------------------
+              | LE RAYON RECHERCHE VAUT (en cm.)  0.109909E+02      |
+              | ECART AU KEFF CIBLE (en pcm)           0.118456E+01 |
+              | PENTE EN REACTIVITE (en pcm/cm.)       -.757212E+12 |
+              |-----------------------------------------------------|
+   
+                  -----------------------------------------------
+                  | nitrate Pu4 C(X)=100.0000 H/X=255.606 CAS 2 |
+                  |---------------------------------------------|
+   
+                                ------------------
+                                | U+Pu= 239.4708 |
+                                |----------------|
+   
+                      Resultats du calcul PIJ a B2 critique :  
+                     ----------------------------------------- 
+   
+                     _________________________________________  
+                     |                                       |  
+                     |  BILAN:       FLUX DIRECT             |  
+                     |_______________________________________|  
+                     |                                       |  
+                     |  OBJETS:                              |  
+                     |  GEOMETRIE :  TSTR.MILHOM2.GEO        |  
+                     |  MACROLIB  :  TSTR.MILHOM2.MAC        |  
+                     |  CALINIT   :  TSTR.MILHOM2.CALIN      |  
+                     |  PIJ       :  TSTR.MILHOM2.PIJ        |  
+                     |  CALCUL    :  TSTR.MILHOM2.FLX        |  
+                     |_______________________________________|  
+                     |     92 RAPIDES ET    80 THERMIQUES    |  
+                     |  NIV =   1 Nb Region(s) =        1    |  
+                     |     NG =   172    (     1 -   172)    |  
+                     |_______________________________________|  
+                     |                                       |  
+                     | ITEX                  2               |  
+                     |                                       |  
+                     | KEFF                  1.000005364     |  
+                     | KINF                  1.558637857     |  
+                     |                                       |  
+                     | M2                   27.808933258 cm2 |  
+                     | B2                    0.020088131     |  
+                     |                                       |  
+                     | RALENTISSEMENT        0.608752191     |  
+                     |                                       |  
+                     | TAUX D'ABSORPTION     0.641602635 s-1 |  
+                     | TAUX DE FISSION       0.346822083 s-1 |  
+                     | TAUX DE PRODUCTION    1.000008464 s-1 |  
+                     | TAUX DE NEXCES        0.000011359 s-1 |  
+                     | FUITES DB2 (S)        0.358412594 s-1 |  
+                     | Erreur du bilan      -0.000000771     |  
+                     | VALEUR PROPRE         1.000005484     |  
+                     |_______________________________________|  
+   
+                             Resultats du calcul Sn :  
+                            -------------------------- 
+   
+                      Type de la geometrie Sn :  CYLINDRIQUE  
+   
+                          Type du reflecteur :  EAU 20 cm  
+   
+                    Convergence sur un Keff de :  0.950000E+00  
+   
+              -------------------------------------------------------
+              | LE RAYON RECHERCHE VAUT (en cm.)  0.943223E+01      |
+              | ECART AU KEFF CIBLE (en pcm)           0.262260E+00 |
+              | PENTE EN REACTIVITE (en pcm/cm.)       -.264887E+12 |
+              |-----------------------------------------------------|

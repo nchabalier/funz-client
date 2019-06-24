@@ -1,0 +1,8 @@
+outputlist=Z
+outputfunctions=Numeric:Z
+
+output.Z.if=true
+output.Z.get=grep("(.*)Rout","z =") >> get(0) >> split("=") >> get(0) >> trim() >> asNumeric()
+output.Z.default=1.0
+
+

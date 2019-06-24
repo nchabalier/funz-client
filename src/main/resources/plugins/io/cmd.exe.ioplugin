@@ -1,0 +1,16 @@
+information=Windows batch plugin made by IRSN/Yann Richet\nLesser General Public License
+
+variableStartSymbol=$
+variableLimit=(...)
+formulaStartSymbol=&
+formulaLimit={...}
+commentLineChar=REM
+
+datasetFilter=contains("(.*)","@echo")
+
+outputlist=echo
+outputfunctions=Numeric:echo
+
+output.echo.if=true
+output.echo.get=filecat("out\.txt") >> split("=") >> get(0) >> trim() >> asNumeric()
+output.echo.default=1.0

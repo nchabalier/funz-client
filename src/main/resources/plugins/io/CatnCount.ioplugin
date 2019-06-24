@@ -1,0 +1,18 @@
+information=basic plugin for testing purpose
+
+variableStartSymbol=?
+variableLimit=[...]
+formulaStartSymbol=!
+formulaLimit={...}
+commentLineChar=#
+
+datasetFilter=contains("(.*)","echo")
+
+outputlist=content
+outputfunctions=
+
+output.content.if=true
+output.content.get=filecat("(.*)")
+output.content.default="abcd"
+
+

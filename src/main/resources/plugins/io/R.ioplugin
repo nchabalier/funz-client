@@ -1,0 +1,18 @@
+information=basic [R] plugin made by IRSN/Yann Richet\nLesser General Public License
+
+variableStartSymbol=?
+variableLimit=[...]
+formulaStartSymbol=!
+formulaLimit={...}
+commentLineChar=#
+
+datasetFilter=contains("(.*)","cat")
+
+outputlist=cat
+outputfunctions=Numeric:cat
+
+output.cat.if=true
+output.cat.get=filecat("(.*)Rout") >> afterLast(" cat") >> before(">") >> split("=") >> get(0) >> trim() >> split(" ") >> asNumeric1DArray()
+output.cat.default=1.0
+
+
