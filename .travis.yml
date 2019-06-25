@@ -7,7 +7,6 @@ matrix:
       env:
         - NO_TEST_R=1
         - NO_TEST_PYTHON=1
-        - NO_TEST_R=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
     - name: "Linux Test R,python,bash"
@@ -29,8 +28,12 @@ matrix:
 jdk:
 #  - oraclejdk8
 #  - oraclejdk11
-  - openjdk10
-#  - openjdk11
+#  - openjdk10
+  - openjdk11
+
+before_install:
+#  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install ant -y; fi
 
 install:
   - WD=$PWD
