@@ -27,9 +27,9 @@ matrix:
 #        - NO_TEST_JAVA=1
 #        - NO_TEST_CMD=1
 jdk:
-  - oraclejdk8
+#  - oraclejdk8
 #  - oraclejdk11
-#  - openjdk10
+  - openjdk10
 #  - openjdk11
 
 install:
