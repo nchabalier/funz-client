@@ -496,7 +496,7 @@
     <target name="test-R" depends="run-calculator,dist" unless="env.NO_TEST_R">  
         <fileset id="tests" dir="${root.dir}/src/test/R/" includes="**/*Test.R" />
         
-        <pathconvert pathsep="${line.separator}" property="tests-R.list" refid="testsR">
+        <pathconvert pathsep="${line.separator}" property="tests-R.list" refid="tests">
             <map from="${root.dir}/src/test/R/" to=""/>
         </pathconvert>
         <!--echo message="${tests-R.list}"/-->
