@@ -543,7 +543,7 @@
         
         <fileset id="tests_sh" dir="${root.dir}/src/test/R/" includes="**/*Test.sh" />
         
-        <pathconvert pathsep="${line.separator}" property="tests_sh-R.list" refid="testsRh">
+        <pathconvert pathsep="${line.separator}" property="tests_sh-R.list" refid="tests_sh">
             <map from="${root.dir}/src/test/R/" to=""/>
         </pathconvert>
         <!--echo message="${testsR.list}"/-->
@@ -561,16 +561,16 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="/bin/bash" osfamily="unix" failonerror="false" output="${root.dir}/@{testsRh.file}.txt" timeout="1200000" resultproperty="@{test.file}_R.failed">
+                <exec executable="/bin/bash" osfamily="unix" failonerror="false" output="${root.dir}/@{tests.file}.txt" timeout="1200000" resultproperty="@{test.file}_R.failed">
                     <arg value="${root.dir}/src/test/R/@{test.file}"/>
                 </exec>
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
                 </script>
-                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{testsRh.file}.txt" append="true"/>
+                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{tests.file}.txt" append="true"/>
                 <echo level="error" message=" Time: ${elapsedTime} ms"/>
                 
-                <loadfile property="@{test.file}.txt" srcFile="${root.dir}/@{testsRh.file}.txt"/>
+                <loadfile property="@{test.file}.txt" srcFile="${root.dir}/@{tests.file}.txt"/>
                 <echo message="${@{test.file}.txt}"/> 
                 <if>
                     <equals arg1="${@{test.file}_R.failed}" arg2="0" />
