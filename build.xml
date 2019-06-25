@@ -260,7 +260,7 @@
         <antcall target="test-java"/>
         <antcall target="test-R"/>
         <antcall target="test-bash"/>
-        <antcall target="test-cmd.exe"/>
+        <antcall target="test-cmd"/>
         <antcall target="test-python"/>
     </target>
         
