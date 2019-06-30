@@ -1,4 +1,4 @@
-<project name="funz-client" default="help" basedir=".">
+<project name="funz-client" default="help" basedir="." xmlns:jacoco="antlib:org.jacoco.ant">
     
     <property name="funz-root.dir" value="${basedir}/.." />
     <property name="funz.properties" location="../funz-profile/funz.properties" />
@@ -11,6 +11,10 @@
         <pathelement location="../funz-profile/lib/ant-contrib-0.6.jar" />
     </path>
 
+    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+        <classpath path="../funz-profile/lib/jacocoant.jar"/>
+    </taskdef>
+    
     <property name="unit.test.jar" value="../funz-profile/lib/concutest-junit-4.7-withrt.jar" />
     <!--property name="unit.test.jar" value="../funz-profile/lib/junit-4.3.jar" /-->
     
@@ -307,7 +311,80 @@
                 </if>
             </sequential>
         </for>
+        <fail message="Test failure detected, check test results." if="failed" />
     </target>
+
+<target name="coverage" >
+        <fileset id="tests" dir="${build.dir}" includes="**/*Test.class" excludes="**/doe/**" />
+        <!--property name="tests.p" refid="tests"/>
+        <echo message="${tests.p}"/-->
+
+        <pathconvert pathsep="${line.separator}" property="tests.list" refid="tests">
+            <map from="${build.dir}/" to=""/>
+        </pathconvert>
+        <!--echo message="${tests.list}"/>
+        <echo message="================"/-->
+        
+        <for list="${tests.list}" param="test.class" delimiter="${line.separator}">
+        <!--for list="org/funz/api/BatchRunTest.class" param="test.class" delimiter="${line.separator}"-->
+            <sequential>
+                <echo level="error" message="@{test.class}"/>
+                <echo message="========================================="/>
+                <echo message="============= @{test.class} ============="/>
+                <echo message="========================================="/>
+                <propertyregex property="test.class.name" input="@{test.class}" regexp="\.class" replace="" global="true"  override="true"/>
+                <!--echo message="${test.class.name}"/-->
+                <propertyregex property="test.class.id" input="${test.class.name}" regexp="/" replace="\." global="true"  override="true"/>
+                <!--echo message="${test.class.id}"/-->
+                
+                <record name="${test.class.id}.txt" action="start" />
+            <jacoco:coverage destfile="@{test.class}.exec">  
+                <java classname="${test.class.id}" fork="true" timeout="1200000" failonerror="false" resultproperty="@{test.class}.failed">
+                    <classpath refid="run.classpath" />
+                    <classpath path="${build.dir}" />
+                    <classpath path="${unit.test.jar}" />
+                    <assertions>
+                        <enable/>
+                    </assertions>
+                </java>
+            </jacoco:coverage>      
+                <record name="${test.class.id}.txt" action="stop"/>
+                <if>
+                    <equals arg1="${@{test.class}.failed}" arg2="0" />
+                    <then>
+                    </then>
+                    <else>
+                        <property name="failed" value="1" />
+                    </else>
+                </if>
+            </sequential>
+        </for>
+
+        <jacoco:merge destfile="merged.exec">
+            <fileset dir="." includes="*.exec"/>
+        </jacoco:merge>
+
+        <jacoco:report>
+                        
+            <executiondata>
+                <file file="merged.exec"/>
+            </executiondata>
+                        
+            <structure name="funz-client">
+                <classfiles>
+                    <fileset dir="build"/>
+                </classfiles>
+                <sourcefiles encoding="UTF-8">
+                    <fileset dir="src/main/java"/>
+                </sourcefiles>
+            </structure>
+                        
+            <html destdir="coverage"/>
+            <xml destfile="jacoco.xml"/>
+                        
+        </jacoco:report>
+    </target>
+
 
     <target name="run-calculator" depends="compile-test">
         <java classname="org.funz.main.RunCalculators" fork="true" spawn="true">
