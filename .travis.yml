@@ -21,7 +21,6 @@ matrix:
         - NO_TEST_CMD=1
       jdk:
         - openjdk8
-  include:
     - name: "Linux JDK11"
       os: linux
       dist: xenial
