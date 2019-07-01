@@ -138,6 +138,7 @@
         <mkdir dir="${build.dir}" />
         <javac deprecation="true" target="${java.compiler.version}" source="${java.compiler.version}" srcdir="${src.dir}" destdir="${build.dir}" encoding="ISO-8859-1" debug="true">
             <classpath refid="compile.path" />
+            <compilerarg line="-J-Xms128m -J-Xmx512m" />
             <!--exclude name="org/funz/ui/**"/-->
         </javac>
     </target>
@@ -148,6 +149,7 @@
             <classpath refid="compile.path" />
             <classpath path="${build.dir}" />
             <classpath path="${unit.test.jar}" />
+            <compilerarg line="-J-Xms128m -J-Xmx512m" />
             <!--exclude name="org/funz/ui/**"/-->
         </javac>
     </target>
