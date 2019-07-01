@@ -112,7 +112,7 @@ public class TestUtils {
         }
     }
 
-    String[] CLEANUP_FILES = {"(.*)\\.Rdata", "(.*)\\.png", "(.*)\\.csv", "x(.*)"};
+    String[] CLEANUP_FILES = {"(.*)\\.Rdata", "(.*)\\.png", /*"(.*)\\.csv",*/ "x(.*)"};
 
     @After
     public void tearDown() throws InterruptedException {
