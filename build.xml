@@ -294,6 +294,7 @@
                 <!--echo message="${test.class.id}"/-->
                 
                 <record name="${test.class.id}.txt" action="start" />
+                <jacoco:coverage> 
                 <java classname="${test.class.id}" fork="true" timeout="1200000" failonerror="false" resultproperty="@{test.class}.failed">
                     <classpath refid="run.classpath" />
                     <classpath path="${build.dir}" />
@@ -302,6 +303,7 @@
                         <enable/>
                     </assertions>
                 </java>        
+                </jacoco:coverage>
                 <record name="${test.class.id}.txt" action="stop"/>
                 <if>
                     <equals arg1="${@{test.class}.failed}" arg2="0" />
@@ -316,60 +318,11 @@
         <fail message="Test failure detected, check test results." if="failed" />
     </target>
 
-<target name="coverage" >
-        <fileset id="tests" dir="${build.dir}" includes="**/*Test.class" excludes="**/doe/**" />
-        <!--property name="tests.p" refid="tests"/>
-        <echo message="${tests.p}"/-->
-
-        <pathconvert pathsep="${line.separator}" property="tests.list" refid="tests">
-            <map from="${build.dir}/" to=""/>
-        </pathconvert>
-        <!--echo message="${tests.list}"/>
-        <echo message="================"/-->
-        
-        <for list="${tests.list}" param="test.class" delimiter="${line.separator}">
-        <!--for list="org/funz/api/BatchRunTest.class" param="test.class" delimiter="${line.separator}"-->
-            <sequential>
-                <echo level="error" message="@{test.class}"/>
-                <echo message="========================================="/>
-                <echo message="============= @{test.class} ============="/>
-                <echo message="========================================="/>
-                <propertyregex property="test.class.name" input="@{test.class}" regexp="\.class" replace="" global="true"  override="true"/>
-                <!--echo message="${test.class.name}"/-->
-                <propertyregex property="test.class.id" input="${test.class.name}" regexp="/" replace="\." global="true"  override="true"/>
-                <!--echo message="${test.class.id}"/-->
-                
-                <record name="${test.class.id}.txt" action="start" />
-            <jacoco:coverage destfile="@{test.class}.exec">  
-                <java classname="${test.class.id}" fork="true" timeout="1200000" failonerror="false" resultproperty="@{test.class}.failed">
-                    <classpath refid="run.classpath" />
-                    <classpath path="${build.dir}" />
-                    <classpath path="${unit.test.jar}" />
-                    <assertions>
-                        <enable/>
-                    </assertions>
-                </java>
-            </jacoco:coverage>      
-                <record name="${test.class.id}.txt" action="stop"/>
-                <if>
-                    <equals arg1="${@{test.class}.failed}" arg2="0" />
-                    <then>
-                    </then>
-                    <else>
-                        <property name="failed" value="1" />
-                    </else>
-                </if>
-            </sequential>
-        </for>
-
-        <jacoco:merge destfile="merged.exec">
-            <fileset dir="." includes="*.exec"/>
-        </jacoco:merge>
-
+    <target name="coverage" >
         <jacoco:report>
                         
             <executiondata>
-                <file file="merged.exec"/>
+                <file file="jacoco.exec"/>
             </executiondata>
                         
             <structure name="funz-client">
