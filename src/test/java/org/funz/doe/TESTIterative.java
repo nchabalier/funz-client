@@ -122,7 +122,7 @@ public class TESTIterative extends Design {
         throw new IllegalArgumentException("Random error !!");
         }*/
         try {
-            Thread.sleep(10000);
+            Thread.sleep(2000);
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }

@@ -681,7 +681,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         sac.shutdown();
 
-        Thread.sleep(100000);
+        Thread.sleep(1000);
     }
 
     @Test
@@ -717,7 +717,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         sac.shutdown();
 
-        Thread.sleep(100000);
+        Thread.sleep(1000);
     }
 
     @Test
