@@ -43,6 +43,7 @@ FUNZ_HOME="dist"
 source src/test/RunDesignTest.prop
 
 TMP_IN=tmp/branin.R
+mkdir tmp
 cp $SRC $TMP_IN
 
 for t in testRunDesignParseError testRun1Design testRun2Design testRunDesignFailed testBraninGradientDescent testBraninGradientDescentx2; do

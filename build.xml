@@ -138,7 +138,7 @@
         <mkdir dir="${build.dir}" />
         <javac fork="true" deprecation="true" target="${java.compiler.version}" source="${java.compiler.version}" srcdir="${src.dir}" destdir="${build.dir}" encoding="ISO-8859-1" debug="true">
             <classpath refid="compile.path" />
-            <compilerarg line="-J-Xms128m -J-Xmx512m" />
+            <compilerarg line="-J-Xms1g -J-Xmx4g" />
             <!--exclude name="org/funz/ui/**"/-->
         </javac>
     </target>
@@ -149,7 +149,7 @@
             <classpath refid="compile.path" />
             <classpath path="${build.dir}" />
             <classpath path="${unit.test.jar}" />
-            <compilerarg line="-J-Xms128m -J-Xmx512m" />
+            <compilerarg line="-J-Xms1g -J-Xmx4g" />
             <!--exclude name="org/funz/ui/**"/-->
         </javac>
     </target>
@@ -435,11 +435,12 @@
                     <then>
                     </then>
                     <else>
-                        <property name="failed" value="1" />
+                        <property name="failed_cmd" value="1" />
                     </else>
                 </if>
             </sequential>
         </for>
+        <fail message="Test failure detected, check test results." if="failed_cmd" />
     </target>
 
     <target name="test-bash" depends="run-calculator,dist"  unless="env.NO_TEST_BASH">
@@ -479,11 +480,12 @@
                     <then>
                     </then>
                     <else>
-                        <property name="failed" value="1" />
+                        <property name="failed_bash" value="1" />
                     </else>
                 </if>
             </sequential>
         </for>
+        <fail message="Test failure detected, check test results." if="failed_bash" />
     </target>
 
     <target name="test-python" depends="run-calculator,dist" unless="env.NO_TEST_PYTHON">
@@ -523,7 +525,7 @@
                     <then>
                     </then>
                     <else>
-                        <property name="failed" value="1" />
+                        <property name="failed_python" value="1" />
                     </else>
                 </if>
             </sequential>
@@ -565,11 +567,12 @@
                     <then>
                     </then>
                     <else>
-                        <property name="failed" value="1" />
+                        <property name="failed_python" value="1" />
                     </else>
                 </if>
             </sequential>
         </for>
+        <fail message="Test failure detected, check test results." if="failed" />
     </target>
     
     <target name="test-R" depends="run-calculator,dist" unless="env.NO_TEST_R">  
@@ -614,7 +617,7 @@
                     <then>
                     </then>
                     <else>
-                        <property name="failed" value="1" />
+                        <property name="failed_R" value="1" />
                     </else>
                 </if>
             </sequential>
@@ -656,11 +659,12 @@
                     <then>
                     </then>
                     <else>
-                        <property name="failed" value="1" />
+                        <property name="failed_R" value="1" />
                     </else>
                 </if>
             </sequential>
         </for>
+        <fail message="Test failure detected, check test results." if="failed_R" />
     </target>
 
     <!-- quotas file management -->

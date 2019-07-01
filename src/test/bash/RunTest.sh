@@ -31,6 +31,7 @@ FUNZ_HOME="dist"
 source src/test/RunTest.prop
 
 TMP_IN=tmp/branin.R
+mkdir tmp
 cp $SRC $TMP_IN
 
 for t in testRunParseError testRun1 testOutputExpression testRun9; do

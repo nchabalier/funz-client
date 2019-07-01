@@ -24,6 +24,7 @@ FUNZ_HOME="dist"
 source src/test/DesignTest.prop
 
 TMP_IN=tmp/branin.R
+mkdir tmp
 cp $SRC $TMP_IN
 
 for t in testDesignParseError testDesign testDesignPar; do
