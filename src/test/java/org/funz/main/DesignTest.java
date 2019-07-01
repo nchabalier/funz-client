@@ -134,6 +134,8 @@ public class DesignTest extends org.funz.api.TestUtils {
         }
         assert new File("Design.csv").exists() : "No output file Design.csv created";
 
+        Thread.sleep(2000);
+        
         assert matchesIn(ParserUtils.getASCIIFileContent(new File("Design.csv")),"found at x1 = -0\\.5(.*)x2 = 0\\.8") : "Did not succeded to find min: \n" + ParserUtils.getASCIIFileContent(new File("Design.csv"));
     }
 
