@@ -69,9 +69,9 @@ before_script:
   - if [[ "$TRAVIS_DIST_NAME" == "trusty" ]]; then echo "deb https://cloud.r-project.org/bin/linux/ubuntu trusty-cran35/" | sudo tee -a /etc/apt/sources.list; fi
   - if [[ "$TRAVIS_DIST_NAME" == "xenial" ]]; then echo "deb https://cloud.r-project.org/bin/linux/ubuntu xenial/" | sudo tee -a /etc/apt/sources.list; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install r-recommended r-cran-rjava -y; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install r-recommended -y; fi
   - if [[ "$NO_TEST_PYTHON" != "1" ]]; then if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install numpy; fi; if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt install python3-numpy; fi; fi
-  - if [[ "$NO_TEST_R" != "1" ]]; then sudo R -e "install.packages('rJava')"; fi
+  - if [[ "$NO_TEST_R" != "1" ]]; then sudo R -e "install.packages('rJava')"; sudo R CMD javareconf; fi
 
 script:  
   - ant test
