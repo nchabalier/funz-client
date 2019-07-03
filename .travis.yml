@@ -71,7 +71,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install r-recommended -y; fi
   - if [[ "$NO_TEST_PYTHON" != "1" ]]; then if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install numpy; fi; if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt install python3-numpy; fi; fi
-  - if [[ "$NO_TEST_R" != "1" ]]; then sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; sudo R -e "install.packages('rJava')"; sudo R CMD javareconf; fi
+  - if [[ "$NO_TEST_R" != "1" ]]; then sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; sudo R CMD javareconf; sudo R -e "install.packages('rJava')"; fi
 
 script:  
   - ant test
