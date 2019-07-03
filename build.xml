@@ -282,7 +282,6 @@
         <echo message="================"/-->
         
         <for list="${tests.list}" param="test.class" delimiter="${line.separator}">
-        <!--for list="org/funz/api/BatchRunTest.class" param="test.class" delimiter="${line.separator}"-->
             <sequential>
                 <echo level="error" message="@{test.class}"/>
                 <echo message="========================================="/>
