@@ -1,5 +1,6 @@
-import os, math, numpy
+import os, math, numpy, sys
 
+failed=False
 
 # @test branin_runshell({'x1':.5,'x2':.3})
 def branin_runshell(X=None) :
@@ -22,6 +23,8 @@ def test1Case() :
     Y_ref = branin_ref(X)[0]
 
     if not math.fabs(Y_runshell-Y_ref) < 1e-4 :
+        global failed
+        failed=True
         return("FAILED to match reference and Funz evaluation")
     else : 
         return("OK")
@@ -34,6 +37,8 @@ def test10Cases() :
     Y_ref = branin_ref(X)
     
     if not (numpy.fabs(numpy.array(Y_runshell).transpose()-numpy.array(Y_ref)) < 1e-4).all() :
+        global failed
+        failed=True
         return("FAILED to match reference and Funz evaluation")
     else : 
         return("OK")
@@ -52,6 +57,8 @@ def testDuplicateCases() :
     Y_ref = branin_ref(X)
 
     if not (numpy.fabs(numpy.array(Y_runshell).transpose()-numpy.array(Y_ref)) < 1e-4).all() :
+        global failed
+        failed=True
         return("FAILED to match reference and Funz evaluation")
     else : 
         return("OK")
@@ -61,6 +68,8 @@ def testFail1() :
     r = Funz_Run(model=CODE,input_files=SRC,input_variables={'x1':["0.5","abc"]},verbosity=VERBOSITY,archive_dir="/tmp")
 
     if not (r['state'][0]=="done") & (r['state'][1]=="failed") :
+        global failed
+        failed=True
         return("FAILED")
     else : 
         return("OK")
@@ -70,6 +79,8 @@ def testFail2() :
     r = Funz_Run(model=CODE,input_files=SRC,input_variables={'x1':["def","abc"]},verbosity=VERBOSITY,archive_dir="/tmp")
 
     if not (r['state'][0]=="failed") & (r['state'][1]=="failed") :
+        global failed
+        failed=True
         return("FAILED")
     else : 
         return("OK")
@@ -87,3 +98,7 @@ exec(open(os.path.join("src/test/RunTest.prop")).read())
 for t in ["test1Case","test10Cases","testDuplicateCases","testFail1","testFail2"] :
     print("Test "+t+": "+eval(t+"()"))
 
+if failed:
+    sys.exit(1)
+else:
+    sys.exit(0)

@@ -1,4 +1,6 @@
-import os, math, numpy
+import os, math, numpy, sys
+
+failed=False
 
 # @test branin_runshell({'x1':.5,'x2':.3})
 def branin_runshell_vec(X=None) :
@@ -24,6 +26,8 @@ def testMatchRef() :
     runshell = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"}, fun = branin_runshell_vec,verbosity=VERBOSITY,archive_dir="/tmp")
 
     if not (numpy.fabs(numpy.array(float(runshell['analysis.min'])).transpose()-numpy.array(float(ref['analysis.min']))) < 1e-4).all() :
+        global failed
+        failed=True
         return("FAILED to match reference and Funz design results: ref min="+ref['analysis.min']+" runshell min="+runshell['analysis.min'])
     else : 
         return("OK")
@@ -33,6 +37,8 @@ def testVectorizeFun() :
     ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"},fun=branin_ref_vec,fun_control={'vectorize':"fun"},verbosity=VERBOSITY,archive_dir="/tmp")
 
     if not math.fabs(float(ref['analysis.min'])-BraninGradientDescent_MIN)<1e-5 :
+        global failed
+        failed=True
         return("FAILED to match reference and Funz evaluation")
     else : 
         return("OK")
@@ -42,6 +48,8 @@ def testNoVectorize() :
     ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"}, fun = branin_ref_novec,verbosity=VERBOSITY,fun_control={'vectorize':None},archive_dir="/tmp")
 
     if not math.fabs(float(ref['analysis.min'])-BraninGradientDescent_MIN)<1e-5 :
+        global failed
+        failed=True
         return("FAILED to match reference and Funz evaluation")
     else : 
         return("OK")
@@ -60,3 +68,8 @@ DESIGN_OPT={'nmax':NMAX}
 for t in ["testMatchRef","testVectorizeFun","testNoVectorize"] :
     print("Test "+t+": "+eval(t+"()"))
 
+
+if failed:
+    sys.exit(1)
+else:
+    sys.exit(0)
