@@ -1,13 +1,13 @@
 import os, math, numpy, sys
 
-failed=False
+failed=0
 
 def testBraninGradientDescent() :
     rundesign = Funz_RunDesign(model=CODE,input_files=SRC,design = DESIGN, design_options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"},verbosity=VERBOSITY,archive_dir="/tmp")
 
     if not math.fabs(float(rundesign['analysis.min'][0])-BraninGradientDescent_MIN)<1e-5 :
         global failed
-        failed=True
+        failed=1
         return("FAILED to match reference and Funz evaluation")
     else : 
         return("OK")
@@ -18,7 +18,7 @@ def testBraninGradientDescentx2() :
 
     if not (numpy.fabs(numpy.array([ float(m) for m in rundesign['analysis.min'] ])-numpy.array([BraninGradientDescentx2_x1_0_MIN,BraninGradientDescentx2_x1_1_MIN]))<1e-5).all() :
         global failed
-        failed=True
+        failed=1
         return("FAILED to match reference and Funz evaluation")
     else : 
         return("OK")
@@ -37,7 +37,4 @@ DESIGN_OPT={'nmax':NMAX}
 for t in ["testBraninGradientDescent","testBraninGradientDescentx2"] :
     print("Test "+t+": "+eval(t+"()"))
 
-if failed:
-    sys.exit(1)
-else:
-    sys.exit(0)
+sys.exit(failed)

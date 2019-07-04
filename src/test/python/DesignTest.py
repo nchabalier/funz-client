@@ -1,6 +1,6 @@
 import os, math, numpy, sys
 
-failed=False
+failed=0
 
 # @test branin_runshell({'x1':.5,'x2':.3})
 def branin_runshell_vec(X=None) :
@@ -27,7 +27,7 @@ def testMatchRef() :
 
     if not (numpy.fabs(numpy.array(float(runshell['analysis.min'])).transpose()-numpy.array(float(ref['analysis.min']))) < 1e-4).all() :
         global failed
-        failed=True
+        failed=1
         return("FAILED to match reference and Funz design results: ref min="+ref['analysis.min']+" runshell min="+runshell['analysis.min'])
     else : 
         return("OK")
@@ -38,7 +38,7 @@ def testVectorizeFun() :
 
     if not math.fabs(float(ref['analysis.min'])-BraninGradientDescent_MIN)<1e-5 :
         global failed
-        failed=True
+        failed=1
         return("FAILED to match reference and Funz evaluation")
     else : 
         return("OK")
@@ -49,7 +49,7 @@ def testNoVectorize() :
 
     if not math.fabs(float(ref['analysis.min'])-BraninGradientDescent_MIN)<1e-5 :
         global failed
-        failed=True
+        failed=1
         return("FAILED to match reference and Funz evaluation")
     else : 
         return("OK")
@@ -69,7 +69,4 @@ for t in ["testMatchRef","testVectorizeFun","testNoVectorize"] :
     print("Test "+t+": "+eval(t+"()"))
 
 
-if failed:
-    sys.exit(1)
-else:
-    sys.exit(0)
+sys.exit(failed)
