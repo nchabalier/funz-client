@@ -97,7 +97,7 @@ public class TestUtils {
     public static void test(String arg) throws Exception {
         Configuration.setVerboseLevel(verbose);
 
-        calculators = new Calculator[4];
+        calculators = new Calculator[8];
         for (int i = 0; i < calculators.length - 1; i++) {
             calculators[i] = startCalculator(i, CONF_XML);
         }
