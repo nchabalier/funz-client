@@ -33,7 +33,6 @@ public class Funz_v1 extends Funz {
     }
 
     public static void init(Configuration conf, CalculatorsPool pool, MathExpression math) {
-        Log.out("Funz init: "+HMS(),0);
         try {
             //tic("Verbose");
             //First, try to read form System.getProperty (which overloads everything)
@@ -54,9 +53,11 @@ public class Funz_v1 extends Funz {
                     setVerbosity(10);
                 }
             }
-
+            
             Log.out("Verbose level set to " + Log.level, 1);
             //toc("Verbose");
+            
+            Log.out("Funz init: "+HMS(),0);
 
             //tic("APP_USER_DIR");
             if (Constants.APP_USER_DIR.exists()) {
