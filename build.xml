@@ -286,6 +286,7 @@
                 <echo level="error" message="@{test.class}"/>
                 <echo message="========================================="/>
                 <echo message="============= @{test.class} ============="/>
+                <local name="current.time"/>
                 <tstamp>
                     <format property="current.time" pattern="hh:mm:ss" />
                 </tstamp>
