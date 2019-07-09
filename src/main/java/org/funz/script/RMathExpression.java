@@ -79,7 +79,6 @@ public class RMathExpression extends MathExpression {
     String R_engine = null;
     
     public void initConfiguration() {
-        Log.out("initConfiguration",0);
         if (Configuration.hasProperty("R.source")) {
             toSource = Configuration.getProperty("R.source", null);
         }

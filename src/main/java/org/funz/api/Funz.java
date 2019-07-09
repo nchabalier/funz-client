@@ -10,6 +10,7 @@ import java.util.Locale;
 import org.funz.Constants;
 import org.funz.log.Log;
 import org.funz.log.LogFile;
+import static org.funz.log.LogTicToc.HMS;
 
 /**
  *

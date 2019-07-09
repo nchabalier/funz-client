@@ -9,6 +9,7 @@ import org.funz.log.Alert;
 import org.funz.log.AlertCollector;
 import org.funz.log.Log;
 import org.funz.log.LogFile;
+import static org.funz.log.LogTicToc.HMS;
 import org.funz.main.MainUtils;
 import org.funz.script.MathExpression;
 import org.funz.util.ASCII;
@@ -152,6 +153,7 @@ public class TestUtils {
 
     public void setUp(String name) throws Exception {
         MainUtils.init(name, verbose);
+        System.err.println("Funz init: "+HMS());
 
         File dir = new File("tmp");
         org.apache.commons.io.FileUtils.deleteDirectory(dir);
