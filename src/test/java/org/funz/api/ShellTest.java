@@ -427,7 +427,7 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         boolean alltrue = false;
         while (!alltrue) {
-            Thread.sleep(2000);
+            Thread.sleep(500);
             //System.err.println(".");
             synchronized (tests) {
                 alltrue = alltrue(done);

@@ -239,7 +239,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         System.err.println("+++++++++++++++++++++++++ test1CaseLongExec");
         File tmp_in = tmp_in();
         // will exceed tcp timeout for readResponse (10 s.)
-        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/main/resources/samples/branin.R")).replace("t=0", "t=5"));
+        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/main/resources/samples/branin.R")).replace("t=0", "t=15"));
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -379,7 +379,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         System.err.println("+++++++++++++++++++++++++ test20CasesLongExec");
         File tmp_in = tmp_in();
         // will exceed tcp timeout for readResponse (10 s.)
-        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/main/resources/samples/branin.R")).replace("t=0", "t=10"));
+        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/main/resources/samples/branin.R")).replace("t=0", "t=5"));
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);

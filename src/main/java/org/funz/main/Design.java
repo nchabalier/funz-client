@@ -402,7 +402,7 @@ public class Design extends MainUtils {
                     System.exit(START_ERROR);
                 }
 
-                double sleep = 5000;
+                double sleep = 1000;
                 if (_monitorControl.containsKey("sleep")) {
                     sleep = Math.floor(1000 * Double.parseDouble(_monitorControl.get("sleep")));
                 }
