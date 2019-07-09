@@ -286,6 +286,10 @@
                 <echo level="error" message="@{test.class}"/>
                 <echo message="========================================="/>
                 <echo message="============= @{test.class} ============="/>
+                <tstamp>
+                    <format property="current.time" pattern="hh:mm:ss" />
+                </tstamp>
+                <echo message="============ ${current.time} ============"/> 
                 <echo message="========================================="/>
                 <propertyregex property="test.class.name" input="@{test.class}" regexp="\.class" replace="" global="true"  override="true"/>
                 <!--echo message="${test.class.name}"/-->
