@@ -16,6 +16,7 @@ import org.funz.script.MathExpression;
 import org.funz.script.RMathExpression;
 import org.funz.util.ASCII;
 import org.math.R.Rsession;
+import static org.funz.log.LogTicToc.HMS;
 
 /**
  *
@@ -155,6 +156,8 @@ public class Funz_v1 extends Funz {
             
             Log.out("  Funz models (port "+POOL.getPort()+"): "+ASCII.cat(" ", MODELS), 0);
             Log.out("  Funz designs (engine "+MATH.getEngineName()+"): "+ASCII.cat(" ", DESIGNS), 0);
+            
+            Log.out("  Funz initialized at "+HMS(), 0);       
         } catch (Exception e) {
             e.printStackTrace();
             Log.err("Error while initializing Funz", -1);
