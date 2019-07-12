@@ -136,8 +136,10 @@
     <!-- COMPILE -->
     <target name="compile" description="compile the source ">
         <mkdir dir="${build.dir}" />
-        <javac fork="true" deprecation="true" srcdir="${src.dir}" destdir="${build.dir}" encoding="ISO-8859-1">
-               <!--target="${java.compiler.version}" source="${java.compiler.version}" debug="true"  -->
+        <javac fork="true" deprecation="true" srcdir="${src.dir}" destdir="${build.dir}" encoding="ISO-8859-1"
+ target="${java.compiler.version}" source="${java.compiler.version}" debug="true" 
+memoryinitialsize="512m"
+            memorymaximumsize="1024m">
             <classpath refid="compile.path" />
             <compilerarg line="-J-Xms1g -J-Xmx4g" />
             <!--exclude name="org/funz/ui/**"/-->
