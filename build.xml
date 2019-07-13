@@ -263,7 +263,7 @@
     <property environment="env"/>
 
     <!-- testing the funz client module -->
-    <target name="test" depends="">
+    <target name="test" depends="build-quotas">
         <antcall target="clean-project"/>
 
         <antcall target="test-java"/>
