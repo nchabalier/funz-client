@@ -59,6 +59,7 @@ install:
   - ant dist
   - cd ..
   - cd $WD
+  - export ANT_OPTS="-Xmx2g -XX:MaxPermSize=512m"
   - ant dist
 
 before_script:
