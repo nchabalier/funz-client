@@ -60,7 +60,7 @@ install:
   - cd ..
   - cd $WD
   - export ANT_OPTS="-Xmx2g -XX:MaxPermSize=512m"
-  - ant dist
+#  - ant dist
 
 before_script:
   #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
