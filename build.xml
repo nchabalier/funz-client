@@ -469,7 +469,7 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="python3" osfamily="unix" failonerror="false" output="${root.dir}/@{test.file}.txt" timeout="1200000" resultproperty="@{test.file}.failed">
+                <exec executable="python3" osfamily="unix" failonerror="false" output="${root.dir}/@{test.file}.txt" timeout="1200000" resultproperty="@{test.file}_python.failed">
                     <arg value="${root.dir}/src/test/python/@{test.file}"/>
                 </exec>
                 <script language="javascript">
@@ -481,7 +481,7 @@
                 <loadfile property="@{test.file}.txt" srcFile="${root.dir}/@{test.file}.txt"/>
                 <echo message="${@{test.file}.txt}"/> 
                 <if>
-                    <equals arg1="${@{test.class}.failed}" arg2="0" />
+                    <equals arg1="${@{test.file}_python.failed}" arg2="0" />
                     <then>
                     </then>
                     <else>
@@ -496,8 +496,6 @@
         <pathconvert pathsep="${line.separator}" property="tests_sh-python.list" refid="tests_sh">
             <map from="${root.dir}/src/test/python/" to=""/>
         </pathconvert>
-        <!--echo message="${tests_sh-python.list}"/-->
-        <!--echo message="================"/-->
         
         <for list="${tests_sh-python.list}" param="test.file" delimiter="${line.separator}">
             <sequential>
@@ -532,7 +530,7 @@
                 </if>
             </sequential>
         </for>
-        <fail message="Test failure detected, check test results." if="failed" />
+        <fail message="Test failure detected, check test results." if="failed_python" />
     </target>
     
     <target name="test-R" depends="run-calculator,dist" unless="env.NO_TEST_R">  
@@ -588,8 +586,6 @@
         <pathconvert pathsep="${line.separator}" property="tests_sh-R.list" refid="tests_sh">
             <map from="${root.dir}/src/test/R/" to=""/>
         </pathconvert>
-        <!--echo message="${testsR.list}"/-->
-        <!--echo message="================"/-->
         
         <for list="${tests_sh-R.list}" param="test.file" delimiter="${line.separator}">
             <sequential>
@@ -603,16 +599,16 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="/bin/bash" osfamily="unix" failonerror="false" output="${root.dir}/@{tests.file}.txt" timeout="1200000" resultproperty="@{test.file}_R.failed">
+                <exec executable="/bin/bash" osfamily="unix" failonerror="false" output="${root.dir}/@{test.file}.txt" timeout="1200000" resultproperty="@{test.file}_R.failed">
                     <arg value="${root.dir}/src/test/R/@{test.file}"/>
                 </exec>
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
                 </script>
-                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{tests.file}.txt" append="true"/>
+                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
                 <echo level="error" message=" Time: ${elapsedTime} ms"/>
                 
-                <loadfile property="@{test.file}.txt" srcFile="${root.dir}/@{tests.file}.txt"/>
+                <loadfile property="@{test.file}.txt" srcFile="${root.dir}/@{test.file}.txt"/>
                 <echo message="${@{test.file}.txt}"/> 
                 <if>
                     <equals arg1="${@{test.file}_R.failed}" arg2="0" />
