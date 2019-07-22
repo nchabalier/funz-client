@@ -366,19 +366,8 @@ public class RunDesign extends MainUtils {
                             System.exit(RUN_ERROR);
                         }
                         
-                            finished = state.startsWith(SHELL_OVER) || state.startsWith(SHELL_ERROR) || state.startsWith(SHELL_EXCEPTION);
-                        } else {
-                            finished = true;
-                            String[] states = state.split("\n");
-                            if (states.length > 0) {
-                                for (int i = 0; i < states.length; i++) {
-                                    if (!(states[i].contains(SHELL_OVER) || states[i].contains(SHELL_ERROR) || states[i].contains(SHELL_EXCEPTION))) {
-                                        finished = false;
-                                        break;
-                                    }
-                                }
-                            }
-                        }*/
+                        finished = state.startsWith(SHELL_OVER) || state.startsWith(SHELL_ERROR) || state.startsWith(SHELL_EXCEPTION);
+
                         if (verb > 0) {
 //                            if (!new_state.equals(state)) {
                             System.out.print(CLEAR_LINE + state.replaceAll("\n", " | "));
