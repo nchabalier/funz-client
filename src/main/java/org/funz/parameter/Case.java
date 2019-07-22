@@ -1154,7 +1154,6 @@ public class Case extends Experiment {
 
             return props;
         } catch (Exception e) {
-            System.err.println("intermediate");
             e.printStackTrace();
 
             props.setProperty("exception:intermediate", e.getMessage());

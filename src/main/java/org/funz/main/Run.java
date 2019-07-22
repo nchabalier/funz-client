@@ -1,13 +1,15 @@
 package org.funz.main;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.plexus.util.FileUtils;
 import org.funz.Project;
-import static org.funz.api.AbstractShell.SHELL_ERROR;
+import static org.funz.api.AbstractShell.*;
 import org.funz.api.BatchRun_v1;
 import org.funz.api.Funz_v1;
 import org.funz.api.RunShell_v1;
@@ -15,6 +17,7 @@ import org.funz.log.Log;
 import static org.funz.parameter.OutputFunctionExpression.OutputFunctions;
 import org.funz.util.ASCII;
 import org.funz.util.Data;
+import org.funz.util.Disk;
 import static org.funz.util.Format.ArrayMapToCSVString;
 import static org.funz.util.Format.ArrayMapToJSONString;
 import static org.funz.util.Format.ArrayMapToMDString;
@@ -99,7 +102,11 @@ public class Run extends MainUtils {
         return null;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+//        FileUtils.mkdir("tmp");
+//        Disk.copyFile(new File("src/main/resources/samples/branin.R"),new File("tmp/branin.R"));
+//        ASCII.saveFile(new File("tmp/branin.R"), ParserUtils.getASCIIFileContent(new File("tmp/branin.R")).replace("t=0", "t=5"));
+//        args="Run -m R -if tmp/branin.R -all -iv x1=.5,.6,.7 x2=0.3,.4 -v 10 -ad tmp -rc blacklistTimeout=10".split(" ");
 //        ASCII.saveFile(new File("tmp/branin.R"), ParserUtils.getASCIIFileContent(new File("tmp/branin.R")).replace("t=0", "t=5"));
 //        args="Run -m R -if tmp/branin.R -iv x1=.5,.6,.7 x2=0.3,.4 -v 10 -ad tmp -rc blacklistTimeout=1".split(" ");
 
@@ -347,7 +354,7 @@ public class Run extends MainUtils {
                             System.exit(RUN_ERROR);
                         }
 
-                        finished = state.contains(BatchRun_v1.BATCH_OVER) || state.contains(BatchRun_v1.BATCH_ERROR) || state.contains(BatchRun_v1.BATCH_EXCEPTION);
+                        finished = state.startsWith(SHELL_OVER) || state.startsWith(SHELL_ERROR) || state.startsWith(SHELL_EXCEPTION);
 
                         if (verb > 0) {
                             //if (!new_state.equals(state)) {

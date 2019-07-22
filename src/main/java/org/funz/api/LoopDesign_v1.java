@@ -790,7 +790,7 @@ public abstract class LoopDesign_v1 {
         return doe;
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Funz_v1.init();
 
         Observer o = new Case.Observer() {
@@ -878,5 +878,5 @@ public abstract class LoopDesign_v1 {
         } catch (Exception e) {
         }
         System.err.println(loopDesign.getResults());
-    }
+    }*/
 }

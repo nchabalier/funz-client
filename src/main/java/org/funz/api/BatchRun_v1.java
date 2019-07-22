@@ -119,9 +119,9 @@ public abstract class BatchRun_v1 {
         if (askToStop) {
             return;
         }
-        Log.out("Blacklisting computer " + comp.host + ":" + comp.port + " for "+Math.round(prj.blacklistTimeout/1000)+" s. because " + because, 4);
+        Log.out("Blacklisting computer " + comp.host + ":" + comp.port + " for "+Math.round(prj.blacklistTimeout)+" s. because " + because, 4);
         Funz_v1.POOL.blacklistComputer(comp.host, comp.port, prj.blacklistTimeout);
-        Alert.showInformation("Blacklisting computer " + comp.host + ":" + comp.port + " for "+Math.round(prj.blacklistTimeout/1000)+" s. because " + because);
+        Alert.showInformation("Blacklisting computer " + comp.host + ":" + comp.port + " for "+Math.round(prj.blacklistTimeout)+" s. because " + because);
     }
 
     /**
@@ -1592,7 +1592,7 @@ public abstract class BatchRun_v1 {
         runCases.clear();
     }
 
-    public static void main(String[] args) throws Exception {
+    /*public static void main(String[] args) throws Exception {
         Funz_v1.init();
         Funz.setVerbosity(1);
 
@@ -1658,5 +1658,5 @@ public abstract class BatchRun_v1 {
         batchRun.runBatch();
 
         System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
-    }
+    }*/
 }

@@ -681,7 +681,7 @@ Funz_Run <- function(model=NULL,input.files,input.variables=NULL,all.combination
         if (grepl("Failed!",state))
             stop(paste0(sep="","Run failed:\n", .jclassFormat$ArrayMapToMDString(runshell$getResultsArrayMap())))
 
-        finished = (grepl("Batch over",state) | grepl("Batch failed",state) | grepl("Batch exception",state))
+        finished = (grepl("Over.",state) | grepl("Failed!",state) | grepl("Exception!!",state))
 
         if (verbosity>0) cat(paste("\r",state))
 
@@ -735,6 +735,7 @@ Funz_Run.start <- function(model,input.files,input.variables=NULL,all.combinatio
 
     # First, process the input design, because if it includes a call to Funz itself (compisition of Funz functions), it will lock Funz as long as nothing is returned.
     if(!is.null(input.variables)) {
+        if(!is.list(input.variables)) input.variables = as.list(input.variables)
         JMapinput.variables <- new(.jclassLinkedHashMap)
         for (key in names(input.variables)) {
             JMapinput.variables$put(key, .RVectorToJStringArray(input.variables[[key]]))
@@ -975,10 +976,9 @@ Funz_RunDesign <- function(model=NULL,input.files,output.expressions=NULL,design
         if (grepl("Failed!",state))
             stop(paste0(sep="","Run failed:\n", .jclassFormat$ArrayMapToMDString(shell$getResultsArrayMap())))
 
-        if (length(unlist(strsplit(state,"\n")))>0)
-            finished = all(grepl("Design over|Design failed|Design exception",unlist(strsplit(state,"\n"))))
+        finished = (grepl("Over.",state) | grepl("Failed!",state) | grepl("Exception!!",state))
 
-        if (verbosity>0) cat(paste("\r",state))
+        if (verbosity>0) cat(paste("\r",gsub("\n"," | ",state)))
 
         if (is.function(monitor.control$display.fun)) {
             new_status = shell$getCalculationPointsStatus()
@@ -1022,6 +1022,7 @@ Funz_RunDesign.start <- function(model,input.files,output.expressions=NULL,desig
 
     # First, process the input design, because if it includes a call to Funz itself (compisition of Funz functions), it will lock Funz as long as nothing is returned.
     if(!is.null(input.variables)) {
+        if(!is.list(input.variables)) input.variables = as.list(input.variables)
         JMapinput.variables <- .RListToJStringMap(input.variables)
     } else if (verbosity>0) cat("Using default input values.\n")
 

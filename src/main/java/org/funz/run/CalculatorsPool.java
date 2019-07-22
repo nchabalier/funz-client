@@ -199,7 +199,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
             for (Iterator it = getComputers().iterator(); it.hasNext();) {
                 final Computer comp = (Computer) it.next();
                 if (comp.host.equals(host) && comp.port == port) {
-                    Thread b = new BlackLister(comp, time);
+                    Thread b = new BlackLister(comp, time*1000);
                     b.start();
                     blackList.add(b);
                     return;

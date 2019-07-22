@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.funz.Project;
-import static org.funz.api.AbstractShell.SHELL_ERROR;
+import static org.funz.api.AbstractShell.*;
 import org.funz.api.DesignShell_v1;
 import static org.funz.api.DesignShell_v1.DEFAULT_FUNCTION_NAME;
 import org.funz.api.DesignShell_v1.Function;
@@ -420,11 +420,11 @@ public class Design extends MainUtils {
                             System.exit(RUN_ERROR);
                         }
                         
-                        finished =state.contains(LoopDesign_v1.DESIGN_OVER) || state.contains(LoopDesign_v1.DESIGN_ERROR) || state.contains(LoopDesign_v1.DESIGN_EXCEPTION);
+                        finished = state.startsWith(SHELL_OVER) || state.startsWith(SHELL_ERROR) || state.startsWith(SHELL_EXCEPTION);
 
                         if (verb > 0) {
 //                            if (!new_state.equals(state)) {
-                            System.out.println(CLEAR_LINE + state.replace("\n", " | "));
+                              System.out.println(CLEAR_LINE + state.replaceAll("\n", " | "));
 //                            } else {
 //                                System.out.print("~");
 //                            }
@@ -485,9 +485,6 @@ public class Design extends MainUtils {
                     }
                 }
             }
-            
-            System.err.println("results:\n"+results);
-            System.err.println("print_results:\n"+print_results);
             
             System.out.println(MapToMDString(print_results));
             Log.out(MapToMDString(print_results), 0);

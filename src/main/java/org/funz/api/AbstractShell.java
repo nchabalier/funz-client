@@ -533,7 +533,7 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
         buildParameters();
     }
 
-    public final static String SHELL_NOTSTARTED = "Not started.", SHELL_RUNNING = "Running...", SHELL_OVER = "Over.", SHELL_ERROR = "Failed!";
+    public final static String SHELL_NOTSTARTED = "Not started.", SHELL_RUNNING = "Running...", SHELL_OVER = "Over.", SHELL_ERROR = "Failed!", SHELL_EXCEPTION = "Exception!!";
     protected String state = SHELL_NOTSTARTED;
 
     /**

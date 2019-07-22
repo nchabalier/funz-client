@@ -415,6 +415,10 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
 
     @Override
     public String getState() {
+        return state + "\n" + getRunDesignState().trim();
+    }
+
+    public String getRunDesignState() {
         if (super.getState().equals(SHELL_ERROR)) {
             return super.getState();
         }
@@ -427,8 +431,8 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
             for (int i = 0; i < currentresult.length; i++) {
                 if (currentresult[i] != null) {
                     states.add(i, (currentresult.length > 1 ? currentresult[i].get("case") + " " : "")
-                            + loopDesigns[i].getState().replace('\n', ',') + " "
-                            + batchRuns[i].getState().replace('\n', ','));
+                            + loopDesigns[i].getState().trim().replace('\n', ',') + " "
+                            + batchRuns[i].getState().trim().replace('\n', ','));
                 } else {
                     states.add(i, "?");
                 }
@@ -455,6 +459,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
 
     @Override
     public boolean startComputationAndWait() {
+        state = SHELL_RUNNING;
         try {
             //tic("buildDesign");
             buildDesign();
@@ -462,11 +467,17 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
         } catch (Exception e) {
             Log.err("Error in buildDesign: " + e.getLocalizedMessage(), 0);
             Alert.showException(e);
+            state = SHELL_EXCEPTION;
             return false;
         }
 
         if (haveNoDesign()) {
-            return startDiscComputationAndWait();
+            boolean comp = startDiscComputationAndWait();
+            if (comp)
+                state = SHELL_OVER;
+            else 
+                state = SHELL_ERROR;
+            return comp;
         } else {
             Thread[] computations = new Thread[prj.getDiscreteCases().size()];
             final boolean[] computations_success = new boolean[prj.getDiscreteCases().size()];
@@ -493,7 +504,12 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
                 }
             }
 
-            return all(computations_success);
+            boolean comp = all(computations_success);
+            if (comp)
+                state = SHELL_OVER;
+            else 
+                state = SHELL_ERROR;
+            return comp;
         }
     }
 
@@ -631,7 +647,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
         super.shutdown();
     }
 
-    public static void main(String[] args) throws Exception {
+    /*public static void main(String[] args) throws Exception {
         Utils.startCalculator(1);
         Utils.startCalculator(2);
         Utils.startCalculator(3);
@@ -664,7 +680,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
         //System.out.println(ArrayMapToMDString(results));
         System.out.println(asString(results.get("analysis")));
 
-    }
+    }*/
 
     private List<Cache> cache = new LinkedList<>();
 

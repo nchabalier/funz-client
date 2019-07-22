@@ -248,6 +248,10 @@ public class RunShell_v1 extends AbstractShell {
 
     @Override
     public String getState() {
+        return state + " (" + getRunState().trim() + ")";
+    }
+
+    public String getRunState() {
         if (super.getState().equals(SHELL_ERROR)) {
             return super.getState();
         }
@@ -271,15 +275,22 @@ public class RunShell_v1 extends AbstractShell {
 
     @Override
     public boolean startComputationAndWait() {
+        state = SHELL_RUNNING;
         prj.resetDiscreteCases(this);
         prj.setCases(prj.getDiscreteCases(), this);
 
         try {
             batchRun.setArchiveDirectory(this.directory);
-            return batchRun.runBatch();
+            boolean ran = batchRun.runBatch();
+            if (ran) 
+                state = SHELL_OVER; 
+            else 
+                state = SHELL_ERROR;
+            return ran;
         } catch (Exception ex) {
             Log.err(ex, 0);
             Alert.showException(ex);
+            state = SHELL_EXCEPTION;
             return false;
         }
     }
@@ -329,7 +340,7 @@ public class RunShell_v1 extends AbstractShell {
         super.shutdown();
     }
 
-    public static void main(String[] args) throws Exception {
+    /*public static void main(String[] args) throws Exception {
         Utils.startCalculator(1);
         Utils.startCalculator(2);
         Utils.startCalculator(3);
@@ -377,6 +388,6 @@ public class RunShell_v1 extends AbstractShell {
         }
 
         sac.shutdown();
-    }
+    }*/
 
 }

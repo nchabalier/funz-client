@@ -645,7 +645,7 @@ def Funz_Run(model=None, input_files=None, input_variables=None, all_combination
              if bool(re.search('Failed!',state)):
                  raise Exception("Run failed:\n"+ _jclassFormat.ArrayMapToMDString(runshell.getResultsArrayMap()))
 
-             finished = (bool(re.search('Batch over',state)) | bool(re.search('Batch failed',state)) | bool(re.search('Batch exception',state)))
+             finished = (bool(re.search('Over.',state)) | bool(re.search('Failed!',state)) | bool(re.search('Exception!!',state)))
 
              if verbosity>0: 
                  print("\r" + state,end="") 
@@ -952,10 +952,10 @@ def Funz_RunDesign(model=None,input_files=None,output_expressions=None,design=No
              if bool(re.search('Failed!',state)):
                  raise Exception("Run failed:\n"+ _jclassFormat.ArrayMapToMDString(runshell.getResultsArrayMap()))
 
-             finished = all([ (bool(re.search('Design over',state_)) | bool(re.search('Design failed',state_)) | bool(re.search('Design exception',state_))) for state_ in state.split("\n")])
+             finished = (bool(re.search('Over.',state)) | bool(re.search('Failed!',state)) | bool(re.search('Exception!!',state)))
 
              if verbosity>0: 
-                 print("\r" + state,end="") 
+                 print("\r" + state.replace("\n"," | "),end="") 
 
              if callable(monitor_control['display_fun']):
                  new_status = shell.getCalculationPointsStatus()

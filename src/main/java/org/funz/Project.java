@@ -129,10 +129,10 @@ public class Project {
         this.archiveFilter = filter;
     }
 
-    public long blacklistTimeout = 60000;
+    public long blacklistTimeout = 60;
 
     public void setBlacklistTimeout(int seconds) {
-        blacklistTimeout = seconds * 1000;
+        blacklistTimeout = seconds;
     }
     
     public long getBlacklistTimeout() {

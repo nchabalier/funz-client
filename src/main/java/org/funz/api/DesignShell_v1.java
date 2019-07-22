@@ -109,17 +109,6 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
         buildParameters();
     }
 
-    @Override
-    void buildParameters() {
-        super.buildParameters(); 
-//        try {
-//            System.err.println("buildParameters");
-//            buildDesign();
-//        } catch (Exception ex) {
-//            Log.err(ex, 0);
-//        }
-    }
-
     public List<Case> buildDesign() throws Exception {
         //System.out.println("makeInitialDesign");
         List<Parameter> contparams = prj.getContinuousParameters();
@@ -228,6 +217,10 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
 
     @Override
     public String getState() {
+        return state + " (" + getDesignState().trim() + ")";
+    }
+
+    public String getDesignState() {
         if (super.getState().equals(SHELL_ERROR)) {
             return super.getState();
         }
@@ -303,6 +296,7 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
     
     @Override
     public boolean startComputationAndWait() {
+        state = SHELL_RUNNING;
         int time = 0;
         try {
             currentresult = new HashMap<>();
@@ -402,7 +396,8 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
                 currentresult.putAll(loopDesign.getResults());
                 currentresult.putAll(merge(allX));
                 currentresult.putAll(merge(allY));
-            }
+                state = SHELL_OVER;
+            } else state = SHELL_ERROR;
 
             return true;
         } catch (Exception e) {
@@ -410,6 +405,7 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
             Log.err(e, 0);
             currentresult.put("error", e.getMessage());
             Alert.showException(e);
+            state = SHELL_EXCEPTION;
             return false;
         }
     }
@@ -542,7 +538,7 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    /*public static void main(String[] args) throws Exception {
         Funz_v1.init();
         Funz_v1.setVerbosity(10);
         DesignShell_v1.Function f = new DesignShell_v1.Function(DEFAULT_FUNCTION_NAME,"x1", "x2") {
@@ -566,6 +562,6 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
 
         shell.startComputationAndWait();
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
-    }
+    }*/
 
 }

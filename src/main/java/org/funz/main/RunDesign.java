@@ -1,13 +1,15 @@
 package org.funz.main;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.plexus.util.FileUtils;
 import org.funz.Project;
-import static org.funz.api.AbstractShell.SHELL_ERROR;
+import static org.funz.api.AbstractShell.*;
 import org.funz.api.BatchRun_v1;
 import org.funz.api.Funz_v1;
 import org.funz.api.LoopDesign_v1;
@@ -18,6 +20,7 @@ import static org.funz.main.MainUtils.init;
 import static org.funz.parameter.OutputFunctionExpression.OutputFunctions;
 import org.funz.util.ASCII;
 import org.funz.util.Data;
+import org.funz.util.Disk;
 import static org.funz.util.Format.ArrayMapToCSVString;
 import static org.funz.util.Format.ArrayMapToJSONString;
 import static org.funz.util.Format.ArrayMapToMDString;
@@ -103,12 +106,16 @@ public class RunDesign extends MainUtils {
         return null;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        //FileUtils.mkdir("tmp");
+        //Disk.copyFile(new File("src/main/resources/samples/branin.R"),new File("tmp/branin.R"));
+        //ASCII.saveFile(new File("tmp/branin.R"), ParserUtils.getASCIIFileContent(new File("tmp/branin.R")).replace("t=0", "t=1"));
         //args = "RunDesign -m R -d GradientDescent -do nmax=3 -oe N(1+cat,1) -if tmp/branin.R -iv x1=0.5 x2=[0.3,.4] -v 10 -ad tmp".split(" ");
         //args = "RunDesign -m R -d GradientDescent -do nmax=3 -oe 1+cat -if tmp/branin.R -iv x1=0.5 x2=[0.3,.4] -v 10 -ad tmp".split(" ");
         //args = "RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/branin.R -iv x1=0.5,0.6 x2=[0.3,.4] -v 10 -ad tmp".split(" ");
         //args = "RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/branin.R -iv x1=0,1 x2=[0.3,.4] -v 10 -ad tmp".split(" ");
         //args = "RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/branin.R -iv x1=[-1.1,1] x2=[0.3,.4] -v 10 -ad tmp -oe x1+min(cat,10,na.rm=F)".split(" ");
+        //args = "RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/branin.R -iv x1=0,.3,.5,1 x2=[0.3,.4] -v 10 -ad tmp".split(" ");
         //args = "RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/branin.R -iv x1=0,.3,.5,1 x2=[0.3,.4] -v 10 -ad tmp".split(" ");
 
         if (args.length == 1 || Option.HELP.is(args[1])) {
@@ -359,23 +366,22 @@ public class RunDesign extends MainUtils {
                             System.exit(RUN_ERROR);
                         }
                         
-                        if (_designer == null) {
-                            finished = state.contains(BatchRun_v1.BATCH_OVER) || state.contains(BatchRun_v1.BATCH_ERROR) || state.contains(BatchRun_v1.BATCH_EXCEPTION);
+                            finished = state.startsWith(SHELL_OVER) || state.startsWith(SHELL_ERROR) || state.startsWith(SHELL_EXCEPTION);
                         } else {
                             finished = true;
                             String[] states = state.split("\n");
                             if (states.length > 0) {
                                 for (int i = 0; i < states.length; i++) {
-                                    if (!(states[i].contains(LoopDesign_v1.DESIGN_OVER) || states[i].contains(LoopDesign_v1.DESIGN_ERROR) || states[i].contains(LoopDesign_v1.DESIGN_EXCEPTION))) {
+                                    if (!(states[i].contains(SHELL_OVER) || states[i].contains(SHELL_ERROR) || states[i].contains(SHELL_EXCEPTION))) {
                                         finished = false;
                                         break;
                                     }
                                 }
                             }
-                        }
+                        }*/
                         if (verb > 0) {
 //                            if (!new_state.equals(state)) {
-                            System.out.print(CLEAR_LINE + state);//.replace("\n", " | "));
+                            System.out.print(CLEAR_LINE + state.replaceAll("\n", " | "));
 //                            } else {
 //                                System.out.print("=");
 //                            }
