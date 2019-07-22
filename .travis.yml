@@ -75,7 +75,7 @@ before_script:
   - if [[ "$NO_TEST_R" != "1" ]]; then sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; sudo R CMD javareconf; sudo R -e "install.packages('rJava')"; fi
 
 script:  
-  - ant dist test
+  - ant test
 
 after_success:
   - if [[ "$NO_TEST_JAVA" != "1" ]]; then ant coverage ; fi
