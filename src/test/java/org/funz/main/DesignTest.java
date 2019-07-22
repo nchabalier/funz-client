@@ -23,6 +23,7 @@ public class DesignTest extends org.funz.api.TestUtils {
         System.setSecurityManager(new Exit0SecurityManager());
 
         if (new File("Design.csv").exists()) {
+            System.err.println("Will delete Design.csv:\n"+ParserUtils.getASCIIFileContent(new File("Design.csv")));
             assert new File("Design.csv").delete() : "could not delete Design.csv";
         }
     }
