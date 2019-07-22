@@ -23,7 +23,7 @@ function testOutputExpression {
 }
 
 function testRun9 {
-    $FUNZ_HOME/Funz.sh Run -m $CODE -if $TMP_IN -iv x1=.5,.6,.7 x2=0.3,.4,.5 -v $VERBOSITY -ad tmp > testRun9.out 2>&1
+    $FUNZ_HOME/Funz.sh Run -m $CODE -if $TMP_IN -all -iv x1=.5,.6,.7 x2=0.3,.4,.5 -v $VERBOSITY -ad tmp > testRun9.out 2>&1
     ok=`grep "done" testRun9.out | wc -l`
     if [ $ok = "10" ]; then rm testRun9.out; echo "OK"; return 0; else echo "FAILED:"; cat testRun9.out; return 1; fi
 }
