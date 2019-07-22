@@ -486,6 +486,8 @@ public class Design extends MainUtils {
                 }
             }
             
+            System.err.println("print_results:\n"+print_results);
+            
             System.out.println(MapToMDString(print_results));
             Log.out(MapToMDString(print_results), 0);
 
