@@ -153,7 +153,7 @@ public class TestUtils {
 
     public void setUp(String name) throws Exception {
         MainUtils.init(name, verbose);
-        Log.out("Funz init: "+HMS(),0);
+        System.err.println("Test init at: "+HMS());
         
         File dir = new File("tmp");
         org.apache.commons.io.FileUtils.deleteDirectory(dir);
