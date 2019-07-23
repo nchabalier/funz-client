@@ -21,26 +21,26 @@ matrix:
         - NO_TEST_CMD=1
       jdk:
         - openjdk8
-    - name: "Linux JDK11"
-      os: linux
-      dist: xenial
-      jdk:
-        - openjdk11
-      env:
-        - TRAVIS_DIST_NAME="xenial"
-        - NO_TEST_R=1
-        - NO_TEST_PYTHON=1
-        - NO_TEST_BASH=1
-        - NO_TEST_CMD=1
-    - name: "Linux JDK11 Test R,python,bash"
-      os: linux
-      dist: xenial
-      env:
-        - TRAVIS_DIST_NAME="xenial"
-        - NO_TEST_JAVA=1
-        - NO_TEST_CMD=1
-      jdk:
-        - openjdk11
+#    - name: "Linux JDK11"
+#      os: linux
+#      dist: xenial
+#      jdk:
+#        - openjdk11
+#      env:
+#        - TRAVIS_DIST_NAME="xenial"
+#        - NO_TEST_R=1
+#        - NO_TEST_PYTHON=1
+#        - NO_TEST_BASH=1
+#        - NO_TEST_CMD=1
+#    - name: "Linux JDK11 Test R,python,bash"
+#      os: linux
+#      dist: xenial
+#      env:
+#        - TRAVIS_DIST_NAME="xenial"
+#        - NO_TEST_JAVA=1
+#        - NO_TEST_CMD=1
+#      jdk:
+#        - openjdk11
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rm -f '/usr/local/include/c++'; brew install ant; fi
