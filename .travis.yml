@@ -97,7 +97,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install r-recommended -y; fi
   - if [[ "$NO_TEST_PYTHON" != "1" ]]; then if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install python3; brew install numpy; pip3 install py4j;  fi; if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt install python3-numpy python3-pip; sudo pip3 install py4j; fi; fi
-  - if [[ "$NO_TEST_R" != "1" ]]; then sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; sudo R CMD javareconf; sudo R -e "install.packages('rJava')"; fi
+  - if [[ "$NO_TEST_R" != "1" ]]; then if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; sudo R CMD javareconf; sudo R -e "install.packages('rJava')"; fi; if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then R CMD javareconf; R -e "install.packages('rJava')"; fi; fi
 
 script:
   - ant dist
@@ -113,9 +113,9 @@ before_deploy:
 
 deploy:
   provider: releases
-  name: funz_client
+  name: funz-client
   api_key:
-    secure: E6RhJ6bvS8g9UZiCJUh31jqAJ0p6M1JMVqUrV1wKDbn7ua0oiDvM33e39vRhIUaTtsPcCVV9qzC7D4oU+VXhDa6/r3ZRrTBEwsOJ8A5y7DB8V2reKZ+4MweiJVGbj6Wky0bU/bbZQtJec+hSxOqFXbbnhgMC9H2fQRnB6JaPfMXIhpDfHpcKxbdHDowaoP40Oidwf0YCAb9EeEuCKehuJ4yR/lksCLYUYRKrNOEYv5E0cRmOoVYYF6abFclzOW3TmbvZC0qt/i3+zirJejKZkXA6PIQ4hrMSijDSfdSWufio6s7eEHpfe3VJdXc4IwwlFV+SzHonOLa1wq1FLQwUtrPx3JybSD70s+OVqvp+uQxyCnCyZoY7pWxy6jApc5wTf7YnjspLLUf20tuwe3tKR3/x+y99gnBO7W4dmRyVM5vaC/jxm97NIntjxbEQpBkaT+I4RYEnAtn46fAaOFG7W9u9c48PLOX+/JYG2qFXDBW1tRzygHeLMW2VgMc3RVjzxTFvVAPJKOunBzmSwHQM43OP6V8el6zjPeExlHl8y2r+6Uv6UNkTygzXzZWf7VKnjY4KMGhuascGz8kLaPrLSWYSCtN7XBqwYJXh/EprSbwd3wGESNlVvi7CLGA+t/LVd6YuekxLgV7UszaEeDnca38EPPzPQchP+SkpuQ7ZYxs=
+    secure: HeT5LHGWXUoTAj2G3TF+86uY+JmUNZeh/UT2XYB8NLUIz3z4/K+6odBDl+OTBlKsxTPLyV4T/RqBd0dZFN4YfuLnW5Q20GvItv6squCxCIw1pzAtVv0nOREeqk5b+zy+zF9snIAM9dPG2YUp1sdfk3eX6y0cnIcsNARXTZpfJozzzfGfkWFemqpNvGyM/l9mYgYx3ScOFSr6OCXLlF5v1Vb2XLt43Lp3mASpi9n8q1TfGXQr7+Si2fvZgS0srp3w/adeuPdEn6gadLH9E33kAwc30nH901Nwu+zQDeJiKl14Hiy2xmNZc/pgddwUFdCR+j0aJ16kPbHuURNEUnXeBdwnJ9/+GG7UVJD50WXG4JrXF7nPVnkjjl3MgcXojREhPrHL3VyoTsvmPjCPNPeCERKo/qMkuM663vpYwJc7krjyQ+45YHM0R5Z+iGeN7mbY1qAoaGrybct3GPDHsmtTB70Hn1pLUWMeqop4XhF+UjJhFtZr7P+ALquBxCZl1UOwFz9t+8ZHnDa3Ti1k3/u0OcciAtj2c20F0xE7qD9DRP80qX13Y21EwGEfSv0N/2rLEKRgpBXEP/mKtY4InpSsDQqVqJhebJnMKfr66+g3SwSQjz26MN0KVvN8EmpQggBhWB/PyMo+DR6gyZDAGSQakv9bcycevR1I0gjeV+dXCbI=
   file_glob: true
   file: funz-client*.zip
   on:
