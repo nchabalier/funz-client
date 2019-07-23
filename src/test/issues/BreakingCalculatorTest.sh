@@ -44,7 +44,7 @@ ok2=`ps | grep $PID_RUN | wc -l`
 if [ ! $ok2 = "1" ]; then echo "FAILED to restart calculation"; kill -9 $PID_RUN $PID_CALCULATOR; exit 2; fi
 echo "OK to restart calculation"
 
-sleep 20
+sleep 30
 
 ok3=`ps | grep $PID_RUN | wc -l`
 if [ ! $ok3 = "0" ]; then echo "FAILED to finish calculation"; kill -9 $PID_RUN $PID_CALCULATOR; exit 3; fi
