@@ -97,7 +97,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install r-recommended -y; fi
   - if [[ "$NO_TEST_PYTHON" != "1" ]]; then if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install python3; brew install numpy; pip3 install py4j;  fi; if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt install python3-numpy python3-pip; sudo pip3 install py4j; fi; fi
-  - if [[ "$NO_TEST_R" != "1" ]]; then if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; sudo R CMD javareconf; sudo R -e "install.packages('rJava')"; fi; if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then R CMD javareconf; R -e "install.packages('rJava')"; fi; fi
+  - if [[ "$NO_TEST_R" != "1" ]]; then if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; sudo R CMD javareconf; sudo R -e "install.packages('rJava')"; fi; if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then R -e "install.packages('rJava')"; fi; fi
 
 script:
   - ant dist
