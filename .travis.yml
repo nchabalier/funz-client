@@ -8,6 +8,7 @@ matrix:
         - openjdk8
       env:
         - TRAVIS_DIST_NAME="trusty"
+        - NO_TEST_ISSUES=1
         - NO_TEST_R=1
         - NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
@@ -41,7 +42,31 @@ matrix:
 #        - NO_TEST_CMD=1
 #      jdk:
 #        - openjdk11
-
+    - name: "MacOS JDK8"
+      os: osx
+      osx_image: xcode9.3
+      env:
+        - NO_TEST_ISSUES=1
+        - NO_TEST_R=1
+        - NO_TEST_PYTHON=1
+        - NO_TEST_BASH=1
+        - NO_TEST_CMD=1
+    - name: "MacOS JDK8 Test R,python,bash"
+      os: osx
+      osx_image: xcode9.3
+      env:
+        - NO_TEST_JAVA=1
+        - NO_TEST_CMD=1
+#    - name: "MacOS JDK11"
+#      os: osx
+#      osx_image: xcode10.1
+#      env:
+#        - global: JAVA_OPTS=-Xmx4g
+#    - name: "Windows" --- Not yet supported
+#      os: windows
+#      jdk:
+#        - oraclejdk8
+#        - oraclejdk11
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rm -f '/usr/local/include/c++'; brew install ant; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install ant -y; fi
@@ -71,7 +96,7 @@ before_script:
   - if [[ "$TRAVIS_DIST_NAME" == "xenial" ]]; then echo "deb https://cloud.r-project.org/bin/linux/ubuntu xenial/" | sudo tee -a /etc/apt/sources.list; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -qq; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install r-recommended -y; fi
-  - if [[ "$NO_TEST_PYTHON" != "1" ]]; then if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install numpy; fi; if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt install python3-numpy; fi; fi
+  - if [[ "$NO_TEST_PYTHON" != "1" ]]; then if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install python3; brew install numpy; pip3 install py4j;  fi; if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt install python3-numpy python3-pip; pip3 install py4j; fi; fi
   - if [[ "$NO_TEST_R" != "1" ]]; then sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; sudo R CMD javareconf; sudo R -e "install.packages('rJava')"; fi
 
 script:
@@ -83,8 +108,8 @@ after_success:
   - if [[ "$NO_TEST_JAVA" != "1" ]]; then bash <(curl -s https://codecov.io/bash) ; fi
 
 before_deploy:
-  - mv dist Funz_client
-  - zip -r Funz_client.zip Funz_client
+  - mv dist Funz
+  - zip -r funz-client.zip Funz
 
 deploy:
   provider: releases
@@ -92,7 +117,7 @@ deploy:
   api_key:
     secure: E6RhJ6bvS8g9UZiCJUh31jqAJ0p6M1JMVqUrV1wKDbn7ua0oiDvM33e39vRhIUaTtsPcCVV9qzC7D4oU+VXhDa6/r3ZRrTBEwsOJ8A5y7DB8V2reKZ+4MweiJVGbj6Wky0bU/bbZQtJec+hSxOqFXbbnhgMC9H2fQRnB6JaPfMXIhpDfHpcKxbdHDowaoP40Oidwf0YCAb9EeEuCKehuJ4yR/lksCLYUYRKrNOEYv5E0cRmOoVYYF6abFclzOW3TmbvZC0qt/i3+zirJejKZkXA6PIQ4hrMSijDSfdSWufio6s7eEHpfe3VJdXc4IwwlFV+SzHonOLa1wq1FLQwUtrPx3JybSD70s+OVqvp+uQxyCnCyZoY7pWxy6jApc5wTf7YnjspLLUf20tuwe3tKR3/x+y99gnBO7W4dmRyVM5vaC/jxm97NIntjxbEQpBkaT+I4RYEnAtn46fAaOFG7W9u9c48PLOX+/JYG2qFXDBW1tRzygHeLMW2VgMc3RVjzxTFvVAPJKOunBzmSwHQM43OP6V8el6zjPeExlHl8y2r+6Uv6UNkTygzXzZWf7VKnjY4KMGhuascGz8kLaPrLSWYSCtN7XBqwYJXh/EprSbwd3wGESNlVvi7CLGA+t/LVd6YuekxLgV7UszaEeDnca38EPPzPQchP+SkpuQ7ZYxs=
   file_glob: true
-  file: Funz_client*.zip
+  file: funz-client*.zip
   on:
     tags: true
     branch: master
