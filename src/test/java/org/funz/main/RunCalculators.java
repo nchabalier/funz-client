@@ -10,6 +10,8 @@ import static org.funz.api.TestUtils.startCalculator;
 import static org.funz.api.TestUtils.verbose;
 import org.funz.calculator.Calculator;
 import org.funz.conf.Configuration;
+import java.io.File;
+import org.funz.util.ASCII;
 
 /**
  *
@@ -19,10 +21,10 @@ public class RunCalculators {
 
     public static void main(String[] args) throws Exception {
         if (args == null || args.length != 2) {
-            args = new String[]{"4", ""+(10 * 60 * 1000)};
+            args = new String[]{"4", ""+(10 * 60)};
         }
         int n = Integer.parseInt(args[0]);
-        int t = Integer.parseInt(args[1]);
+        int tmax = Integer.parseInt(args[1]);
 
         Configuration.setVerboseLevel(verbose);
 
@@ -32,8 +34,13 @@ public class RunCalculators {
         }
         calculators[calculators.length - 1] = startCalculator(calculators.length - 1, CONF_XML_FAILING);
 
-        Thread.sleep(t);
-
+        File lock = new File("calculators.lock");
+        ASCII.saveFile(lock,"1");
+        for (int t=0; t < tmax; t = t+5) {
+            if (!lock.exists()) break; // once file calculators.lock is removed, stop calculators.
+            Thread.sleep(5000);
+        }
+        
         for (int i = 0; i < calculators.length; i++) {
             calculators[i].askToStop("end claculators");
         }
