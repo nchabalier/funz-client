@@ -18,15 +18,15 @@ PID_CALCULATOR=$!
 
 sleep 10
 
+PS=`ps | grep $PID_CALCULATOR`
+echo $PS
+
 echo "///////////////////////////////// KILL CALCULATOR /////////////////////////////////////" >> run.out
 echo "" >> run.out
 sleep 1
 kill -9 $PID_CALCULATOR
 
 sleep 3
-
-PS=`ps | grep $PID_CALCULATOR`
-echo $PS
 
 ok0=`ps | grep $PID_CALCULATOR | wc -l`
 if [ ! $ok0 = "0" ]; then echo "FAILED to stop calculation: $ok0"; kill -9 $PID_RUN $PID_CALCULATOR; cat run.out; cat calc.out; exit -1; fi
