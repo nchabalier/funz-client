@@ -32,7 +32,7 @@ ok0=`ps | grep $PID_CALCULATOR | grep java | wc -l`
 if [ ! $ok0 = "0" ]; then echo "FAILED to stop calculation: $ok0"; kill -9 $PID_RUN $PID_CALCULATOR; cat calc.out; exit -1; fi
 echo "OK to stop calculation"
 
-PS=`ps | grep $PID_RUN | grep java`
+PS=`ps | grep $PID_RUN`
 echo $PS
 
 ok1=`ps | grep $PID_RUN | grep java | wc -l`
