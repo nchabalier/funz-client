@@ -26,7 +26,7 @@ kill -9 $PID_CALCULATOR
 sleep 3
 
 ok0=`ps | grep $PID_CALCULATOR | wc -l`
-if [ ! $ok0 = "0" ]; then echo "FAILED to stop calculation"; kill -9 $PID_RUN $PID_CALCULATOR; exit -1; fi
+if [ ! $ok0 = "0" ]; then echo "FAILED to stop calculation"; kill -9 $PID_RUN $PID_CALCULATOR; cat run.out; cat calc.out; exit -1; fi
 echo "OK to stop calculation"
 
 
