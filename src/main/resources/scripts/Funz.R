@@ -7,57 +7,6 @@
 ## License: BSD
 ## Author: Y. Richet
 
-################################# Example ######################################
-#
-## 1. Create a R function calling an external Monte Carlo code of neutronic launched (remotely) on Funz grid:
-## (Suppose you have installed and configured Funz environment and MCNP)
-#>  godiva = function(r) {
-#>    Funz_Run(model = "MCNP_5",input.files = file.path(FUNZ_HOME,"samples","godiva.p"),input.variables = r)$mean_keff
-#>  }
-#
-## 2. Now, try this function for an arbitrary "r" value:
-#> godiva(data.frame(r=9.0))
-#
-## Result:
-## [1] 1.02042
-#
-## 3. Again, try this function, but for many arbitrary "r" value:
-## (Note that MCNP calculations are launched in parallel, thanks to Funz grid)
-#> godiva(data.frame(r=1:10))
-#
-## Result:
-##  [1] 0.11860 0.23928 0.36149 0.48200 0.59928 0.71293 0.82090 0.92365 1.02042
-## [10] 1.11112
-#
-## 4. Let's find the radius leading to keff = 1.0 +/- 0.001
-#> d = Funz_Design(design="Dichotomy",input.variables=list(r="[1,20]"),fun=godiva,options=list(Output_precision=0.001,Output_target_value=1.0), verbosity=1)
-#
-## Result:
-## $r
-## [1] "8.776501196538314"
-##
-## $data
-## [1] "| r\t| Output\t|\n| 1.0\t| 0.1186\t|\n| 20.0\t| 1.69179\t|\n| 10.5\t| 1.15292\t|\n| 8.754169698698966\t| 0.99702\t|\n| 8.743348751168663\t| 0.99634\t|\n| 8.764997608766679\t| 0.99798\t|\n| 8.787778157176508\t| 0.99989\t|\n| 8.776501196538314\t| 1.00007\t|\n| 8.799054062084672\t| 1.00265\t|\n"
-##
-## $`Input parameter value`
-## [1] "<br/>r = 8.776501196538314<br/>Output = 1.00007<br/><img src='././dichotomy.png' width='400' height='400'/>"
-##
-## $information
-## [1] "  Output precision:\t0.001\n  Output target value:\t1\n"
-##
-#> cat(d$data)
-## | r                 | Output    |
-## | 1.0               | 0.1186    |
-## | 20.0              | 1.69179   |
-## | 10.5              | 1.15292   |
-## | 8.754169698698966 | 0.99702   |
-## | 8.743348751168663 | 0.99634   |
-## | 8.764997608766679 | 0.99798   |
-## | 8.787778157176508 | 0.99989   |
-## | 8.776501196538314 | 1.00007   |
-## | 8.799054062084672 | 1.00265   |
-
-
 ################################# Imports ######################################
 
 if (Sys.info()[['sysname']]=="Windows") system("echo JAVA_HOME=%JAVA_HOME%") else system("echo JAVA_HOME=$JAVA_HOME")
@@ -296,7 +245,7 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
     .FUNZ_HOME <<- normalizePath(FUNZ_HOME)
 
     if (!file.exists(.FUNZ_HOME))
-        stop(paste("FUNZ_HOME environment variable not correctly set: FUNZ_HOME=",FUNZ_HOME,"\nPlease setup FUNZ_HOME to your Funz installation path.\n(you can get Funz freely at http://funz.irsn.fr)",sep=""))
+        stop(paste("FUNZ_HOME environment variable not correctly set: FUNZ_HOME=",FUNZ_HOME,"\nPlease setup FUNZ_HOME to your Funz installation path.\n(you can get Funz freely at https://funz.github.io/funz.org/)",sep=""))
 
     parameters = c(paste("-Dapp.home",.FUNZ_HOME,sep="="),"-Duser.language=en","-Duser.country=US",paste(sep="","-Dverbosity=",verbosity),"-Douterr=.Funz")
     for (p in names(java.control)) {

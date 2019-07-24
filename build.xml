@@ -324,7 +324,6 @@
                 </if>
             </sequential>
         </for>
-        <antcall target="stop-calculators"/>
         <fail message="Test failure detected, check test results." if="failed" />
     </target>
 

@@ -179,6 +179,7 @@ public class TestUtils {
         System.err.println("------------- startCalculator " + i + " " + conf_xml);
         File conf = new File(conf_xml);
         assert conf.exists();
+        Calculator.PING_PERIOD = 1000;
         final Calculator calc = new Calculator("file:" + conf.getName(), new LogFile("Calculator." + i + ".out"), new LogFile("Calculator." + i + ".log"));
         new Thread("Calculator " + i) {
 

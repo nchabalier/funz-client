@@ -112,7 +112,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     
     @Test
     public void testOutputExprGaussian() throws Exception {
-        System.err.println("+++++++++++++++++++++++++ testOutputExpr");
+        System.err.println("+++++++++++++++++++++++++ testOutputExprGaussian");
         File tmp_in = tmp_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
@@ -309,7 +309,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
-        prj.blacklistTimeout = 10; //10 s. timeout after blacklisting
+        //prj.blacklistTimeout = 10; //10 s. timeout after blacklisting
 
         assert prj.getVariableByName("x1") != null : "Variable x1 not detected";
         assert prj.getVariableByName("x2") != null : "Variable x2 not detected";
