@@ -35,7 +35,7 @@ echo "OK to stop calculation"
 PS=`ps | grep $PID_RUN`
 echo $PS
 
-ok1=`ps | grep $PID_RUN | grep java | wc -l`
+ok1=`ps | grep $PID_RUN | grep sh | wc -l`
 if [ ! $ok1 = "1" ]; then echo "FAILED to pause client: $ok1"; kill -9 $PID_RUN $PID_CALCULATOR; cat run.out; exit 1; fi
 echo "OK to pause client"
 
@@ -45,13 +45,13 @@ PID_CALCULATOR=$!
 
 sleep 3
 
-ok2=`ps | grep $PID_RUN | grep java | wc -l`
+ok2=`ps | grep $PID_RUN | grep sh | wc -l`
 if [ ! $ok2 = "1" ]; then echo "FAILED to restart calculation: $ok2"; kill -9 $PID_RUN $PID_CALCULATOR; cat run.out; exit 2; fi
 echo "OK to restart calculation"
 
 sleep 30
 
-ok3=`ps | grep $PID_RUN | grep java | wc -l`
+ok3=`ps | grep $PID_RUN | grep sh | wc -l`
 if [ ! $ok3 = "0" ]; then echo "FAILED to finish calculation: $ok3"; kill -9 $PID_RUN $PID_CALCULATOR; cat run.out; exit 3; fi
 echo "OK to finish calculation"
 
