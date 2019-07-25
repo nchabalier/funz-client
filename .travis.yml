@@ -108,7 +108,8 @@ after_success:
 
 before_deploy:
   - ant clean dist
-  - cd dist; zip -r ../funz-client.zip *
+  - cd dist; zip -r ../funz-client.zip ./*
+  - cd ..
 
 deploy:
   provider: releases
