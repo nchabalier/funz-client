@@ -3,3 +3,14 @@
 /tmp/
 /.f/
 /src/.Rproj.user/
+/build/
+/test/
+/*.out
+/*.log
+/*.csv
+/*.txt
+/*.Rout
+/*.Rmd
+/*.vbs
+/*.sh
+/*.exec
