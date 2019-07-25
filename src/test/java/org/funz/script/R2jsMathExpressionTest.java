@@ -68,7 +68,7 @@ public class R2jsMathExpressionTest {
     @Test
     public void testGradientDescent() throws Exception {
 
-        engine.R.source(new File("src/main/resources/plugins/doe/GradientDescent.R"));
+        engine.R.source(new File("src/test/plugins/doe/GradientDescent.R"));
 
         engine.R.voidEval("f <- function(X) {\n"
                 + " Y = apply(X,1,function (x) {\n"

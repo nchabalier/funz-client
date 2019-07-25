@@ -113,7 +113,6 @@
                memoryinitialsize="512m" memorymaximumsize="1024m" includeantruntime="false"
                target="${java.compiler.version}" source="${java.compiler.version}" >
             <classpath refid="compile.path" />
-            <compilerarg line="-J-Xms1g -J-Xmx4g" />
         </javac>
     </target>
 
@@ -180,7 +179,6 @@
             <classpath refid="calculator.classpath" />
             <classpath path="${build.dir}" />
             <classpath path="${unit.test.jar}" />
-            <compilerarg line="-J-Xms1g -J-Xmx4g" />
         </javac>
     </target>
 
@@ -195,6 +193,9 @@
             <arg value="${test.config.dir}/${quotas.xml}" />
             <redirector output="${dist.dir}/${quotas.hex}" />
         </java>  
+        <copy todir="${dist.dir}" >
+            <fileset file="${test.config.dir}/*"/>
+        </copy>
 
         <mkdir dir="${dist.dir}/plugins/doe" />
         <jar destfile="${dist.dir}/plugins/doe/TESTDirect.jar">

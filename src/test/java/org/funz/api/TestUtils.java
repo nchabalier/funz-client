@@ -27,7 +27,7 @@ public class TestUtils {
     static {
         MainUtils.CLEAR_LINE = "\n> ";
         System.setProperty("java.awt.headless", "true");
-        System.setProperty("app.home", "./distest");
+        System.setProperty("app.home", "./dist");
         Configuration.writeUserProperty = false;
         Alert.setCollector(new AlertCollector() {
 
@@ -85,7 +85,7 @@ public class TestUtils {
         if (tmp_in.exists()) {
             tmp_in.delete();
         }
-        Disk.copyFile(new File("src/main/resources/samples/branin.R"), tmp_in);
+        Disk.copyFile(new File("src/test/samples/branin.R"), tmp_in);
         assert tmp_in.exists() : "File " + tmp_in + " does not exist.";
 
         return tmp_in;
@@ -168,8 +168,8 @@ public class TestUtils {
         }
     }
 
-    public static final String CONF_XML = "calculator.xml";
-    public static final String CONF_XML_FAILING = "calculator.fail.xml";
+    public static final String CONF_XML = "./dist/calculator.xml";
+    public static final String CONF_XML_FAILING = "./dist/calculator.fail.xml";
 
     static {
         ASCII.saveFile(new File(CONF_XML_FAILING), getASCIIFileContent(new File(CONF_XML)).replace("R CMD", "RR CMD"));
@@ -180,7 +180,7 @@ public class TestUtils {
         File conf = new File(conf_xml);
         assert conf.exists();
         Calculator.PING_PERIOD = 1000;
-        final Calculator calc = new Calculator("file:" + conf.getName(), new LogFile("Calculator." + i + ".out"), new LogFile("Calculator." + i + ".log"));
+        final Calculator calc = new Calculator("file:" + conf.getAbsolutePath(), new LogFile("Calculator." + i + ".out"), new LogFile("Calculator." + i + ".log"));
         new Thread("Calculator " + i) {
 
             @Override

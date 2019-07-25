@@ -31,9 +31,9 @@ public class ClientTest {
     public void setUp() throws Exception {
         System.err.println("########################################### setUp ###########################################");
         Session.REQUEST_TIMEOUT = 5000; //2s instead of 1 minute...
-        File conf = new File("calculator.xml");
+        File conf = new File("dist/calculator.xml");
         assert conf.exists();
-        calc = new Calculator("file:calculator.xml", new LogConsole(), new LogConsole());
+        calc = new Calculator("file:dist/calculator.xml", new LogConsole(), new LogConsole());
         r = new Thread() {
             @Override
             public void run() {
@@ -80,7 +80,7 @@ public class ClientTest {
 
             System.err.println("------------------------------------------------[CLIENT]>newCase " + gui.newCase(new HashMap()));
 
-            System.err.println("------------------------------------------------[CLIENT]>putFile " + gui.putFile(new File("src/main/resources/samples/novar.R"), new File("src/main/resources/samples/")));
+            System.err.println("------------------------------------------------[CLIENT]>putFile " + gui.putFile(new File("src/test/samples/novar.R"), new File("src/test/samples/")));
 
             System.err.println("------------------------------------------------[CLIENT]>execute " + gui.execute("R", new DataListener() {
                 public void informationLineArrived(String str) {
@@ -136,7 +136,7 @@ public class ClientTest {
 
             System.err.println("------------------------------------------------[CLIENT]>newCase " + gui.newCase(new HashMap()));
 
-            System.err.println("------------------------------------------------[CLIENT]>putFile " + gui.putFile(new File("src/main/resources/samples/novar.R"), new File("src/main/resources/samples/")));
+            System.err.println("------------------------------------------------[CLIENT]>putFile " + gui.putFile(new File("src/test/samples/novar.R"), new File("src/test/samples/")));
 
             System.err.println("------------------------------------------------[CLIENT]>execute " + gui.execute("R", new DataListener() {
                 public void informationLineArrived(String str) {
@@ -184,7 +184,7 @@ public class ClientTest {
     @Test
     public void testCaseFast() throws Exception {
         File f = File.createTempFile("fast", "tmp");
-        ASCII.saveFile(f, ParserUtils.getASCIIFileContent(new File("src/main/resources/samples/novar.R")).replace("t=0", "t="+Session.REQUEST_TIMEOUT/10/1000));
+        ASCII.saveFile(f, ParserUtils.getASCIIFileContent(new File("src/test/samples/novar.R")).replace("t=0", "t="+Session.REQUEST_TIMEOUT/10/1000));
     
         testCase(f);
     }
@@ -192,7 +192,7 @@ public class ClientTest {
     @Test
     public void testCaseLong() throws Exception {
         File f = File.createTempFile("long", "tmp");
-        ASCII.saveFile(f, ParserUtils.getASCIIFileContent(new File("src/main/resources/samples/novar.R")).replace("t=0", "t="+Session.REQUEST_TIMEOUT*2/1000));
+        ASCII.saveFile(f, ParserUtils.getASCIIFileContent(new File("src/test/samples/novar.R")).replace("t=0", "t="+Session.REQUEST_TIMEOUT*2/1000));
     
         testCase(f);
     }
@@ -308,7 +308,7 @@ public class ClientTest {
 
         System.err.println("------------------------------------------------[CLIENT]>newCase " + gui.newCase(new HashMap()));
 
-        System.err.println("------------------------------------------------[CLIENT]>putFile " + gui.putFile(new File("src/main/resources/samples/novar.R"), new File("src/main/resources/samples/")));
+        System.err.println("------------------------------------------------[CLIENT]>putFile " + gui.putFile(new File("src/test/samples/novar.R"), new File("src/test/samples/")));
 
         System.err.println("------------------------------------------------[CLIENT]>execute " + gui.execute("R", new DataListener() {
             public void informationLineArrived(String str) {
@@ -361,7 +361,7 @@ public class ClientTest {
 
         System.err.println("------------------------------------------------[CLIENT]>newCase " + gui.newCase(new HashMap()));
 
-        System.err.println("------------------------------------------------[CLIENT]>putFile " + gui.putFile(new File("src/main/resources/samples/novar.R"), new File("src/main/resources/samples/")));
+        System.err.println("------------------------------------------------[CLIENT]>putFile " + gui.putFile(new File("src/test/samples/novar.R"), new File("src/test/samples/")));
 
         System.err.println("------------------------------------------------[CLIENT]>execute " + gui.execute("RR", new DataListener() {
             public void informationLineArrived(String str) {

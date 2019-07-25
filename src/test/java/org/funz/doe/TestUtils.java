@@ -76,7 +76,7 @@ public abstract class TestUtils {
         R = ((RMathExpression) (MathExpression.GetDefaultInstance())).R;
         System.err.println("R " + R);
 
-        File test_functions = new File(System.getProperty("test.functions", "src" + File.separator + "test" + File.separator + "R" + File.separator + "TestFunctions.R"));
+        File test_functions = new File(System.getProperty("test.functions", ".." + File.separator + "src" + File.separator + "test" + File.separator + "R" + File.separator + "TestFunctions.R"));
         R.source(test_functions);
 
         /*try {

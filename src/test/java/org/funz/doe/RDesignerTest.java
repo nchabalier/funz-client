@@ -97,7 +97,7 @@ public class RDesignerTest extends TestUtils {
     
     public static void main(String[] args) {
         if (args == null || args.length == 0) {
-            args = new String[]{"file:src/main/resources/plugins/doe/GradientDescent.R"};
+            args = new String[]{"file:src/test/plugins/doe/GradientDescent.R"};
         }
         
         HashMap<String, String> options = new HashMap<String, String>();

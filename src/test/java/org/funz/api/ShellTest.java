@@ -385,7 +385,7 @@ public class ShellTest extends org.funz.api.TestUtils {
                     }
                     while (true) {
                         try {
-                            Disk.copyFile(new File("src/main/resources/samples/branin.R"), tmp_in);
+                            Disk.copyFile(new File("src/test/samples/branin.R"), tmp_in);
                             break;
                         } catch (Exception e) {
                             System.err.println("Retrying initialization of test ...");

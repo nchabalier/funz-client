@@ -96,7 +96,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         if (tmp_in.exists()) {
             tmp_in.delete();
         }
-        Disk.copyFile(new File("src/main/resources/samples/branin.nop.R"), tmp_in);
+        Disk.copyFile(new File("src/test/samples/branin.nop.R"), tmp_in);
 
         RunShell_v1 sac = new RunShell_v1("R Crash", tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -192,7 +192,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         assert tmp.list().length == 0 : "Cannot empty tmp !";
 
         File tmp_in = tmp_in();
-        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/main/resources/samples/branin.R")).replace("t=0", "t=2"));
+        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=2"));
 
         Funz.setVerbosity(verbose);
 
@@ -303,7 +303,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         if (tmp_in.exists()) {
             tmp_in.delete();
         }
-        Disk.copyFile(new File("src/main/resources/samples/branin.nop.R"), tmp_in);
+        Disk.copyFile(new File("src/test/samples/branin.nop.R"), tmp_in);
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -371,7 +371,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         File tmp_in = tmp_in();
         File tmp_plugin = new File("tmp/getZ.ioplugin");
-        Disk.copyFile(new File("src/main/resources/samples/getZ.ioplugin"), tmp_plugin);
+        Disk.copyFile(new File("src/test/samples/getZ.ioplugin"), tmp_plugin);
 
         RunShell_v1 sac = new RunShell_v1(R, new File[]{tmp_in, tmp_plugin}, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -583,7 +583,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
                     }
                     while (true) {
                         try {
-                            Disk.copyFile(new File("src/main/resources/samples/branin.R"), tmp_in);
+                            Disk.copyFile(new File("src/test/samples/branin.R"), tmp_in);
                             break;
                         } catch (Exception e) {
                             System.err.println("Retrying initialization of test ...");
