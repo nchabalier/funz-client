@@ -1,6 +1,6 @@
 cat <<EOF > run.sh
 FUNZ_HOME="dist"
-\$FUNZ_HOME/Funz.sh Run -m R -if src/test/samples/branin.R -iv x1=.1,.2,.3,.4,.5,.6,.7,.8,.9 x2=.1,.2,.3,.4,.5,.6,.7,.8,.9 -v 5
+\$FUNZ_HOME/Funz.sh Run -m R -if src/test/samples/branin.R -iv x1=.1,.2,.3,.4,.5,.6,.7,.8,.9 x2=.1,.2,.3,.4,.5,.6,.7,.8,.9 -rc blacklistTimeout=1 -v 5
 EOF
 
 rm run.out
@@ -44,7 +44,7 @@ ok2=`ps | grep $PID_RUN | grep sh | wc -l`
 if [ ! $ok2 = "1" ]; then echo "FAILED to restart calculation: $ok2"; kill -9 $PID_RUN $PID_CALCULATOR; cat run.out; exit 2; fi
 echo "OK to restart calculation"
 
-sleep 30
+sleep 40
 
 ok3=`ps | grep $PID_RUN | grep sh | wc -l`
 if [ ! $ok3 = "0" ]; then echo "FAILED to finish calculation: $ok3"; kill -9 $PID_RUN $PID_CALCULATOR; cat run.out; exit 3; fi

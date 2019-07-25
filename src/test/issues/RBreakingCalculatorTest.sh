@@ -2,7 +2,7 @@ cat <<EOF > run.R
 FUNZ_HOME="dist"
 source(file.path(FUNZ_HOME,"Funz.R"))
 Funz.init(FUNZ_HOME)
-res=Funz_Run("R","src/test/samples/branin.R",input.variables = list(x1=(1:9)/10,x2=(1:9)/10),verbosity=5)
+res=Funz_Run("R","src/test/samples/branin.R",input.variables = list(x1=(1:9)/10,x2=(1:9)/10),run.control=list(blacklistTimeout=1),verbosity=5)
 print(unlist(res[['cat']]))
 q(save="no")
 EOF
@@ -34,7 +34,7 @@ ok0=`ps | grep $PID_CALCULATOR | grep java | wc -l`
 if [ ! $ok0 = "0" ]; then echo "FAILED to stop calculation: $ok0"; kill -9 $PID_R $PID_CALCULATOR; cat calc.out; exit -1; fi
 echo "OK to stop calculation"
 
-ok1=`ps | grep $PID_R | grep java | wc -l`
+ok1=`ps | grep $PID_R | grep sh | wc -l`
 if [ ! $ok1 = "1" ]; then echo "FAILED to pause client: $ok1"; kill -9 $PID_R $PID_CALCULATOR; cat run.Rout; exit 1; fi
 echo "OK to pause client"
 
@@ -44,13 +44,13 @@ PID_CALCULATOR=$!
 
 sleep 3
 
-ok2=`ps | grep $PID_R | grep java | wc -l`
+ok2=`ps | grep $PID_R | grep sh | wc -l`
 if [ ! $ok2 = "1" ]; then echo "FAILED to restart calculation: $ok2"; kill -9 $PID_R $PID_CALCULATOR; cat run.Rout; exit 2; fi
 echo "OK to restart calculation"
 
-sleep 30
+sleep 40
 
-ok3=`ps | grep $PID_R | grep java | wc -l`
+ok3=`ps | grep $PID_R | grep sh | wc -l`
 if [ ! $ok3 = "0" ]; then echo "FAILED to finish calculation: $ok3"; kill -9 $PID_R $PID_CALCULATOR; cat run.Rout; exit 3; fi
 echo "OK to finish calculation"
 
