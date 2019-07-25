@@ -1,3 +1,3 @@
 VERBOSITY=10
 CODE="R"
-SRC="src/main/resources/samples/branin.R"
+SRC="src/test/samples/branin.R"
