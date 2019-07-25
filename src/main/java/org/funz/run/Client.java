@@ -21,7 +21,6 @@ import static org.funz.Protocol.END_OF_REQ;
 import static org.funz.Protocol.RET_HEARTBEAT;
 import static org.funz.Protocol.RET_INFO;
 import static org.funz.Protocol.RET_YES;
-import org.funz.calculator.Calculator;
 import org.funz.util.ASCII;
 import org.funz.util.Disk;
 import org.funz.util.TimeOut;
@@ -125,7 +124,7 @@ public class Client implements Protocol {
                         }
                     } catch (InterruptedException ex) {
                     }
-                    if (Calendar.getInstance().getTimeInMillis() - tstamp_reader > Calculator.PING_PERIOD*10) { 
+                    if (Calendar.getInstance().getTimeInMillis() - tstamp_reader > PING_PERIOD*10) { 
                         break;
                     }
                 }
@@ -168,7 +167,7 @@ public class Client implements Protocol {
                 _socket = new Socket(_host, _port);
                 _socket.setTcpNoDelay(true);
                 _socket.setTrafficClass(0x04);
-                _socket.setSoTimeout(Calculator.PING_PERIOD*5); // this will avoid blocking operation on client side, like unreserve when network failure
+                _socket.setSoTimeout(PING_PERIOD*5); // this will avoid blocking operation on client side, like unreserve when network failure
 
                 if (_reader != null) {
                     try {

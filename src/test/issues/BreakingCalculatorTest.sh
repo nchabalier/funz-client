@@ -8,8 +8,9 @@ sh run.sh 2>&1 > run.out &
 PID_RUN=$!
 
 rm calc.out
-LIB=`find dist/lib -name "funz-core-*.jar"`:`find dist/lib -name "funz-calculator-*.jar"`:dist/lib/commons-io-2.4.jar:dist/lib/commons-exec-1.1.jar:dist/lib/commons-lang-2.6.jar:dist/lib/ftpserver-core-1.1.1.jar:dist/lib/ftplet-api-1.1.1.jar:dist/lib/mina-core-2.0.16.jar:dist/lib/sigar-1.6.6.jar:dist/lib/slf4j-api-1.5.2.jar:dist/lib/slf4j-log4j12-1.5.2.jar
-java -Dapp.home=dist -classpath $LIB org.funz.calculator.Calculator file:dist/calculator.xml 2>&1 > calc.out &
+FUNZ_HOME="dist"
+LIB=`find $FUNZ_HOME/lib -name "funz-core-*.jar"`:`find $FUNZ_HOME/lib -name "funz-calculator-*.jar"`:$FUNZ_HOME/lib/commons-io-2.4.jar:$FUNZ_HOME/lib/commons-exec-1.1.jar:$FUNZ_HOME/lib/commons-lang-2.6.jar:$FUNZ_HOME/lib/ftpserver-core-1.1.1.jar:$FUNZ_HOME/lib/ftplet-api-1.1.1.jar:$FUNZ_HOME/lib/mina-core-2.0.16.jar:$FUNZ_HOME/lib/sigar-1.6.6.jar:$FUNZ_HOME/lib/slf4j-api-1.5.2.jar:$FUNZ_HOME/lib/slf4j-log4j12-1.5.2.jar
+java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:$FUNZ_HOME/calculator.xml 2>&1 > calc.out &
 PID_CALCULATOR=$!
 
 ## for loop testing of previous Run only. Comment otherwis
@@ -17,9 +18,6 @@ PID_CALCULATOR=$!
 # kill -9 $PID_CALCULATOR
 
 sleep 10
-
-PS=`ps | grep $PID_CALCULATOR | grep java`
-echo $PS
 
 echo "///////////////////////////////// KILL CALCULATOR /////////////////////////////////////" >> run.out
 echo "" >> run.out
@@ -38,7 +36,7 @@ if [ ! $ok1 = "1" ]; then echo "FAILED to pause client"; kill -9 $PID_RUN $PID_C
 echo "OK to pause client"
 
 rm calc.out
-java -Dapp.home=dist -classpath $LIB org.funz.calculator.Calculator file:dist/calculator.xml 2>&1 > calc.out &
+java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:$FUNZ_HOME/calculator.xml 2>&1 > calc.out &
 PID_CALCULATOR=$!
 
 sleep 3

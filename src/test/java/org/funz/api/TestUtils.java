@@ -27,7 +27,7 @@ public class TestUtils {
     static {
         MainUtils.CLEAR_LINE = "\n> ";
         System.setProperty("java.awt.headless", "true");
-        System.setProperty("app.home", "./dist");
+        System.setProperty("app.home", "./distest");
         Configuration.writeUserProperty = false;
         Alert.setCollector(new AlertCollector() {
 

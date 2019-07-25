@@ -81,10 +81,9 @@ install:
   - cd ..
   - git clone https://github.com/Funz/funz-calculator
   - cd funz-calculator
-  - ant dist
+  - ant dist-test
   - cd ..
   - cd $WD
-#  - ant dist
 
 before_script:
   #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
@@ -99,7 +98,6 @@ before_script:
   - if [[ "$NO_TEST_R" != "1" ]]; then if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; fi; if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home; fi; sudo R CMD javareconf JAVA_HOME=$JAVA_HOME; sudo R -e "install.packages('rJava',repos = 'http://cran.us.r-project.org')"; fi
 
 script:
-  - ant dist
   - ant test
 
 after_success:
@@ -107,8 +105,8 @@ after_success:
   - if [[ "$NO_TEST_JAVA" != "1" ]]; then bash <(curl -s https://codecov.io/bash) ; fi
 
 before_deploy:
-  - mv dist Funz
-  - zip -r funz-client.zip Funz
+  - ant clean dist
+  - zip -r funz-client.zip dist/*
 
 deploy:
   provider: releases

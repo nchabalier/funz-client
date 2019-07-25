@@ -1,0 +1,24 @@
+
+<CONFIGURATION version="master" userid="default">
+
+    <SLOTS  max-calcs="40" multicast-ip="239.192.0.100">
+        <SLOT port="19001" />
+        <SLOT port="19002" />
+        <SLOT port="19003" />
+        <SLOT port="19003" />
+        <SLOT port="19004" />
+        <SLOT port="19005" />
+        <SLOT port="19006" />
+        <SLOT port="19007" />
+        <SLOT port="19008" />
+        <SLOT port="19009" />
+    </SLOTS>
+
+    <MODELS>
+        <MODEL name="R" ioplugin="file:./plugins/io/R.ioplugin"  code="R" />
+        <MODEL name="R Crash" ioplugin="file:./plugins/io/R.ioplugin"  code="RR" />
+        <MODEL name="ExitError" ioplugin="file:./plugins/io/exit-1.ioplugin"  code="exit-1" />
+        <MODEL name="Crash" ioplugin="file:./plugins/io/crash.ioplugin"  code="crash" />
+    </MODELS>
+
+</CONFIGURATION>

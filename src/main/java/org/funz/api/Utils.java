@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.funz.Project;
 import org.funz.ProjectController;
-import org.funz.calculator.Calculator;
 import org.funz.conf.Configuration;
 import org.funz.ioplugin.IOPluginInterface;
 import org.funz.ioplugin.IOPluginsLoader;
@@ -147,7 +146,7 @@ public class Utils {
         return asString(o);
     }
 
-    static void startCalculator(final int i) throws Exception {
+    /*static void startCalculator(final int i) throws Exception {
         System.err.println("Start calculator " + i);
         File conf = new File("calculator.xml");
         assert conf.exists();
@@ -159,6 +158,6 @@ public class Utils {
             }
         }.start();
         Thread.sleep(100);
-    }
+    }*/
 
 }

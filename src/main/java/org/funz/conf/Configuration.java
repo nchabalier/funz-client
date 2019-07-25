@@ -54,8 +54,6 @@ public class Configuration {
             ELEM_MODEL = "MODEL",
             ATTR_VERSION = "version",
             ATTR_UID = "userid",
-            ATTR_FREE = "free",
-            ATTR_EXPIRES = "expires",
             ATTR_MAX_CALCS = "max-calcs",
             ATTR_MAX_PROJECTS = "max-projects",
             ATTR_PORT = "port",
@@ -191,7 +189,6 @@ public class Configuration {
                 conf.justry = true;
                 System.out.println("\nPrevious quotas:");
                 conf.print(System.out);
-                Configuration._expires = Configuration._expires + 10000 - 600;
                 System.out.println("\nNew quotas:");
                 conf.print(System.out);
                 conf.encrypt("never modify this file", new PrintStream(new File(f.getParentFile(), f.getName() + ".new")));
@@ -339,9 +336,7 @@ public class Configuration {
 
             _line = 0;
             w.println(makeLine(LINE_SIGNATURE + _version));
-            w.println(makeLine(LINE_SIGNATURE + _expires));
             w.println(makeLine(LINE_SIGNATURE + _uid));
-            w.println(makeLine(LINE_SIGNATURE + _free));
             w.println(makeLine(LINE_SIGNATURE)); //reserve a couple of lines
             w.println(makeLine(LINE_SIGNATURE));
 
@@ -377,43 +372,6 @@ public class Configuration {
 
     public static String getCode(String model) {
         return _model_code.get(model);
-    }
-
-    /**
-     * Returns the expiration date in format YYYYMMDD
-     */
-    public static int getExpiration() {
-        return _expires;
-    }
-    public final static String NOT_EXPIRED = "ok";
-    public final static String SOON_EXPIRED = "Expiration date in ";
-    public final static String EXPIRED = "Expiration date reached:";
-
-    /**
-     * Returns the expiration date in format YYYYMMDD
-     */
-    public static String checkDate(String expiration/*, boolean crypted*/) {
-        if (expiration == null) {
-            return NOT_EXPIRED;
-        }
-
-        /*if (crypted)
-         expiration = new String(xorIt(hexStringToBytes(expiration), makeSimpleMask()));*/
-        Calendar now = Calendar.getInstance();
-        Calendar last = Calendar.getInstance();
-        last.set(Integer.parseInt(expiration.substring(0, 4)), Integer.parseInt(expiration.substring(4, 6)) - 1, Integer.parseInt(expiration.substring(6, 8)));
-        Log.logMessage(null, SeverityLevel.INFO, false, "Current date is " + now.getTime().toString() + " ... expiration date is " + last.getTime().toString());
-        if (last.before(now)) {
-            String mess = EXPIRED + last.getTime().toString();
-            Log.logMessage(null, SeverityLevel.PANIC, false, mess);
-            return mess;
-        } else if (((int) ((last.getTimeInMillis() - now.getTimeInMillis()) / 86400000L)) < 30) {
-            int remaining = (int) ((last.getTimeInMillis() - now.getTimeInMillis()) / 86400000L);
-            String mess = SOON_EXPIRED + remaining + " days.";
-            Log.logMessage(null, SeverityLevel.WARNING, false, mess);
-            return mess;
-        }
-        return NOT_EXPIRED;
     }
 
     /**
@@ -508,10 +466,6 @@ public class Configuration {
     }
     public boolean docrypt = true;
 
-    public static boolean isProVersion() {
-        return _free;
-    }
-
     private String makeLine(String str) {
         if (docrypt == true) {
             return toHexString(xorIt(appendSpaces(str).getBytes(), makeNextLineMask()));
@@ -562,7 +516,7 @@ public class Configuration {
      * @param w output stream
      */
     public void print(PrintStream w) {
-        w.println(ELEM_CONFIG + " " + ATTR_VERSION + "=" + _version + " " + ATTR_EXPIRES + "=" + _expires + " " + ATTR_UID + "=" + _uid + ATTR_FREE + "=" + _free);
+        w.println(ELEM_CONFIG + " " + ATTR_VERSION + "=" + _version + " " + ATTR_UID + "=" + _uid);
         if (multicastIp != null && multicastIp.length() > 0) {
             w.println(ELEM_SLOTS + " " + ATTR_MAX_CALCS + "=" + _maxCalcs + " " + ATTR_MAX_PROJECTS + "=" + _maxProjects + " " + ATTR_MULTICAST_IP + "=" + multicastIp);
         } else {
@@ -620,10 +574,7 @@ public class Configuration {
             _line = 0;
 
             _version = (decodeLine(reader.readLine()));
-            _expires = Integer.parseInt(decodeLine(reader.readLine()));
             _uid = decodeLine(reader.readLine());
-            _free = Boolean.parseBoolean(decodeLine(reader.readLine()));
-            //Funz.userID = _uid;
 
             decodeLine(reader.readLine()); // reserved lines
             decodeLine(reader.readLine());
@@ -803,29 +754,11 @@ public class Configuration {
         }
         // TODO check version
 
-        _expires = 0;
-        try {
-            _expires = Integer.parseInt(e.getAttribute(ATTR_EXPIRES).trim());
-        } catch (Exception ex) {
-            _expires = -1;
-        }
-
-        if (_expires == -1) {
-            throw new Exception("bad expiration date");
-        }
-
         try {
             //System.out.println("UID="+e.getAttribute(ATTR_UID));
             _uid = e.getAttribute(ATTR_UID);
         } catch (Exception ex) {
             _uid = "UNDEFINED";
-        }
-
-        try {
-            //System.out.println("UID="+e.getAttribute(ATTR_UID));
-            _free = Boolean.parseBoolean(e.getAttribute(ATTR_FREE));
-        } catch (Exception ex) {
-            _free = false;
         }
 
         NodeList slots = e.getElementsByTagName(ELEM_SLOTS);
@@ -1223,7 +1156,6 @@ public class Configuration {
         StringBuilder sb = new StringBuilder();
         sb.append("\n  file: " + file);
         sb.append("\n  version: " + _version);
-        sb.append("\n  expires: " + _expires);
 
         sb.append("\n  models: " + _models);
         sb.append("\n  designs: " + _designers);
@@ -1281,9 +1213,8 @@ public class Configuration {
     private static boolean wwwconnetced = false;
     private static String _propertiesUrl = null;
     private static String _uid = "";
-    public static boolean _free = true;
     private static String _version = "NOTSET";
-    private static int _maxCalcs = 0, _maxProjects = 10, _expires = 0;
+    private static int _maxCalcs = 0, _maxProjects = 10;
     private static HashMap<String, String> GUIproperties = new HashMap<String, String>();
     //private static boolean _fulliconify = false,_viewcalculatorstab = false,  _notifyVisual = true,  _notifySound = true,  _verboseR = false,  _testFormulas = true,  _printLog = true;
     //private static String _browser,  _filemanager,  _log = "";

@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.funz.api.Funz_v1;
-import static org.funz.calculator.Calculator.PING_PERIOD;
+import static org.funz.Protocol.PING_PERIOD;
 import org.funz.conf.Configuration;
 import org.funz.log.Alert;
 import org.funz.log.Log;

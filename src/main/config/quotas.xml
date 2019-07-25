@@ -1,0 +1,17 @@
+
+<CONFIGURATION version="master" userid="default">
+
+    <SLOTS  max-calcs="40" multicast-ip="239.192.0.100"> <!-- see RFC 2365—Administratively Scoped Addresses for multicast setting-->
+        <SLOT port="19001" />
+        <SLOT port="19002" />
+        <SLOT port="19003" />
+        <SLOT port="19004" />
+    </SLOTS>
+
+    <MODELS>
+        <!-- these settings will overload automatic plugins loading 
+        <MODEL name="R" ioplugin="file:./plugins/io/R.ioplugin" code="R" />
+        -->
+    </MODELS>
+
+</CONFIGURATION>
