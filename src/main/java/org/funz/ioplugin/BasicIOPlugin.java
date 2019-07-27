@@ -19,7 +19,6 @@ import org.funz.script.MathExpression;
 import org.funz.script.ParseExpression;
 import org.funz.util.Data;
 import org.math.io.parser.ArrayString;
-import sun.dc.path.PathError;
 
 /**
  * Simplified IOPlugin implementation based on properties file. Following
