@@ -17,7 +17,7 @@ public class Log /*implements LogCollector*/ {
     }
     
     public static String[] SPACES = new String[]{"", " ", "  ", "   ", "    ", "     ", "      ", "       ", "        ", "         ", "          ", "           ", "             ", "              ", "               ", "                "};
-    public static int level = 10;
+    public static int level = 1;
 
     static synchronized void out_noln(String message, int l) {
         if (l < level) {

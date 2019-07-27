@@ -6,6 +6,9 @@ package org.funz.ioplugin;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -25,8 +28,10 @@ import org.funz.script.MathExpression;
 import org.funz.script.ParseExpression;
 import org.funz.script.RMathExpression;
 import org.funz.util.ASCII;
+import org.funz.util.Data;
 import static org.funz.util.Data.asString;
 import org.funz.util.Disk;
+import org.math.io.parser.ArrayString;
 
 public class ExtendedIOPlugin implements IOPluginInterface {
 
@@ -300,37 +305,37 @@ public class ExtendedIOPlugin implements IOPluginInterface {
         return Calendar.getInstance().getTimeInMillis();
     }
 
+    // This is the test entry point. 1st arg is ioplugin path, next are test case directories.
     public static void main(String[] args) throws Exception {
-        MathExpression.SetDefaultInstance(RMathExpression.class);
-
-        if (args == null || args.length <= 1) {
-            String[] tests = new File("test").list();
-            String[] oldargs = args.clone();
-            args = new String[tests.length + 1];
-            if (oldargs == null || oldargs.length == 0) {
-                args[0] = ExtendedIOPlugin.class.getCanonicalName();
-            } else {
-                args[0] = oldargs[0];
-            }
-            for (int i = 1; i < args.length; i++) {
-                args[i] = "test" + File.separator + tests[i - 1];
-            }
-        }
-
-        System.out.println("DefaultIOPlugin " + args[0]);
+        String errors = "";
+        System.out.println("{\n\"class\": \"ExtendedIOPlugin\",");
+        System.out.println("\"arg\": \"" + args[0] + "\",");
         for (int i = 1; i < args.length; i++) {
             String a = args[i];
 
-            System.out.println("Test: " + a);
+            System.out.println("\"test\": {");
+            System.out.println("  \"name\": \"" + a + "\",");
+
             File dir = new File(a);
-            if (!dir.exists()) {
-                System.out.println("FAILED: " + a + " does no exists.");
-
+            if (!dir.exists() ||!dir.isDirectory() ) {
+                System.err.println("FAILED: " + a + " does no exists.");
+                System.out.println("  \"status\": \"test directory NOT found\",");
+            } else {
+                System.out.println("  \"status\": \"test directory found\",");
             }
-            if (!dir.isDirectory()) {
-                System.out.println("FAILED: " + a + " is not a directory.");
 
+            File[] infotxt = dir.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.equals("info.txt");
+                }
+            });
+            if (infotxt.length == 1) {
+                System.out.println("  \"reference\": \"info.txt is available\",");
+            } else {
+                System.out.println("  \"reference\": \"NO info.txt available!!!\",");
             }
+
             if (dir.exists() && dir.isDirectory()) {
                 File[] input = dir.listFiles(new FileFilter() {
 
@@ -342,8 +347,12 @@ public class ExtendedIOPlugin implements IOPluginInterface {
                     }
                 });
                 if (input == null || input.length == 0) {
-                    System.out.println("FAILED: no input directory");
+                    System.err.println("FAILED: no input directory");
+                    System.out.println("  \"input\": \"no input directory\",");
+                } else {
+                    System.out.println("  \"input\": \"" + input[0].getAbsolutePath() + "\",");
                 }
+
                 File[] output = dir.listFiles(new FileFilter() {
 
                     public boolean accept(File f) {
@@ -354,106 +363,106 @@ public class ExtendedIOPlugin implements IOPluginInterface {
                     }
                 });
                 if (output == null || output.length == 0) {
-                    System.out.println("FAILED: no output directory");
+                    System.err.println("FAILED: no output directory");
+                    System.out.println("  \"output\": \"no output directory\",");
+                } else {
+                    System.out.println("  \"output\": \"" + output[0].getAbsolutePath() + "\",");
                 }
 
                 if (input != null && input.length == 1 && output != null && output.length == 1) {
-                    //Configuration conf = new Configuration();
-                    //conf.readQuota("file:./quotas.hex");
-
-                    tic();
-
                     ExtendedIOPlugin plugin = null;
                     try {
                         Class pluginclass = Class.forName(args[0]);
                         plugin = (ExtendedIOPlugin) pluginclass.newInstance();
-                    } catch (ClassNotFoundException ex) {
-                        System.err.println("Class " + args[0] + " not found:\n" + ex.getMessage());
-                    } catch (InstantiationException ex) {
-                        System.err.println("Class " + args[0] + " not instanciated:\n" + ex.getMessage());
-                    } catch (IllegalAccessException ex) {
-                        System.err.println("Class " + args[0] + " not accessible:\n" + ex.getMessage());
+                    } catch (Exception ex) {
+                        assert false:"Class " + args[0] + " not found:\n" + ex.getMessage();
                     }
-
+                    
                     plugin.setProject(new Project(a));
-
-                    System.err.println("[perf] Instanciate plugin in " + ((toc() - tic()) / 1000) + " s.");
-
+             
                     File[] inputdirs = input[0].listFiles(new FileFilter() {
-
                         public boolean accept(File pathname) {
                             return pathname.isDirectory();
                         }
                     });
                     File[] inputfiles = input[0].listFiles(new FileFilter() {
-
                         public boolean accept(File pathname) {
                             return pathname.isFile();
                         }
                     });
-                    for (File inputfile : inputfiles) {
-                        System.out.println("  acceptsDataSet " + inputfile + ":" + plugin.acceptsDataSet(inputfile));
-                    }
-                    for (File inputdir : inputdirs) {
-                        System.out.println("  acceptsDataDirectory " + inputdir + ":" + plugin.acceptsDataDirectory(inputdir));
-                    }
-
-                    System.err.println("[perf] Accept dataset in " + ((toc() - tic()) / 1000) + " s.");
-
                     InputFile[] prj_inputfiles = plugin.importFileOrDir(input[0]);
-                    System.err.println("[perf] Import file or dir in " + ((toc() - tic()) / 1000) + " s.");
-
                     File[] prj_files = new File[prj_inputfiles.length];
                     for (int j = 0; j < prj_files.length; j++) {
                         prj_files[j] = prj_inputfiles[j].getFile();
                     }
+                    
+                    System.out.println("  \"methods\": {");
+                    for (File inputfile : inputfiles) 
+                         System.out.println("    \"acceptsDataSet\": \"" + plugin.acceptsDataSet(inputfile) + "\",");
+                    for (File inputdir : inputdirs) 
+                        System.out.println("    \"acceptsDataDirectory\": \"" + plugin.acceptsDataDirectory(inputdir) + "\",");
                     plugin.setInputFiles(prj_files);
-                    System.err.println("[perf] Set input files in " + ((toc() - tic()) / 1000) + " s.");
-
-                    System.out.println("  setInputFiles: " + ASCII.cat(",", prj_files));
-                    System.out.println("  output: ");
+                    System.out.println("    \"setInputFiles.output\": {");
                     for (String ok : plugin._output.keySet()) {
-                        System.out.println("    " + ok + ": " + asString(plugin._output.get(ok)));
+                        Object o = plugin._output.get(ok);
+                        String ostr = Data.asString(o);
+                        System.out.println("      \"" + ok + "\": \"" + ostr + "\",");
                     }
+                    System.out.println("    },");
 
-                    System.out.println("  suggestOutputFunctions: ");
+                    System.out.println("    \"suggestOutputFunctions\": [");
                     for (OutputFunctionExpression of : plugin.suggestOutputFunctions()) {
-                        System.out.println("    " + of.toNiceSymbolicString() + " -> " + asString(of.eval(plugin.getFormulaInterpreter(), plugin.getVoidOutput())));
-                        //System.out.println("    " + of.toNiceSymbolicString());
+                        System.out.println("  \"" + of.toNiceSymbolicString() + "\",");
                     }
-                    System.err.println("[perf] Suggest output in " + ((toc() - tic()) / 1000) + " s.");
+                    System.out.println("    ],");
 
-                    System.out.println("  readOutput: ");
+                    System.out.println("    \"readOutput\": {");
                     Map<String, Object> out = plugin.readOutput(output[0]);
-                    System.err.println("[perf] Read output in " + ((toc() - tic()) / 1000) + " s.");
-
                     for (String ok : out.keySet()) {
-                        /*Object o = out.get(ok);
-                         String ostr;
-                         if (o != null) {
-                         ostr = o.toString();
-                         } else {
-                         ostr = "null";
-                         }
-                         if (o instanceof double[]) {
-                         ostr = ArrayString.printDoubleArray((double[]) o);
-                         }
-                         if (o instanceof double[][]) {
-                         ostr = ArrayString.printDoubleArray((double[][]) o);
-                         }
-                         System.out.println("    " + ok + ": " + ostr);*/
-                        System.out.println("    " + ok + ": " + asString(out.get(ok)));
+                        Object o = out.get(ok);
+                        String ostr = Data.asString(o);
+                        System.out.println("        \"" + ok + "\": \"" + ostr + "\",");
                     }
+                    System.out.println("    },");
 
-                    System.out.println("  outputFunctions: ");
-                    for (OutputFunctionExpression of : plugin.suggestOutputFunctions()) {
-                        System.out.println("    " + of.toNiceSymbolicString() + " -> " + asString(of.eval(plugin.getFormulaInterpreter(), out)));
-                        System.err.println("[perf] Eval output " + of.toNiceSymbolicString() + " in " + ((toc() - tic()) / 1000) + " s.");
+                    if (infotxt.length == 1) {
+                        Properties infos = new Properties();
+                        try {
+                            URL url = new URL("file:" + infotxt[0].getAbsolutePath());
+                            infos.load(url.openStream());
+                        } catch (IOException e) {
+                            System.err.println("info.txt unreadable:\n" + e.getMessage());
+                        }
+                        System.out.println("    \"results\": {");
+                        for (String ok : out.keySet()) {
+                            Object o = out.get(ok);
+                            String ostr = Data.asString(o);
+                            String res = "FAILED:";
+                            String ref = infos.getProperty("output." + ok);
+                            if (ostr.equals(ref)) {
+                                res = "OK";
+                            } else {
+                                res = res + " " + ostr + " != " + ref;
+                            }
+                            if (!res.equals("OK")) {
+                                errors = errors + "\n" + a + ": " + res;
+                            }
+                            System.out.println("        \"" + ok + "\": \"" + res + "\",");
+                        }
+                        System.out.println("    },");
+                    } else {
+                        System.out.println("    \"results\": \"ERROR no reference found.\",");
                     }
                 }
+                System.out.println("  },");
             }
+            System.out.println("},");
         }
+        System.out.println("}");
+        assert errors.length() == 0 : errors;
     }
+    // ant compile dist; cd dist; zip -r ../../plugin-R/funz-client.zip *; cd ..
+    
     public boolean setSyntax = false;
 
     @Override

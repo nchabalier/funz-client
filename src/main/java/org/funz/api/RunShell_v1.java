@@ -176,6 +176,7 @@ public class RunShell_v1 extends AbstractShell {
             uniq = new VarGroup("uniq");
         }
         //for (Variable v : prj.getVariables()) {
+        if (var_values != null)
         for (Object ov : var_values.keySet()) {
             Variable v = Variable.newVariable(ov.toString(), var_values.get(ov), prj);
 
@@ -191,8 +192,8 @@ public class RunShell_v1 extends AbstractShell {
                 v.setGroup(uniq);
                 uniq.addVariable(v);
             }
-
         }
+        
         if (g.getVariables().size() > 0) {
             prj.addGroup(g);
         }

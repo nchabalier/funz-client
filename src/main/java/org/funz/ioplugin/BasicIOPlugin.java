@@ -2,6 +2,7 @@ package org.funz.ioplugin;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -16,7 +17,9 @@ import org.funz.parameter.OutputFunctionExpression;
 import org.funz.parameter.SyntaxRules;
 import org.funz.script.MathExpression;
 import org.funz.script.ParseExpression;
+import org.funz.util.Data;
 import org.math.io.parser.ArrayString;
+import sun.dc.path.PathError;
 
 /**
  * Simplified IOPlugin implementation based on properties file. Following
@@ -25,7 +28,8 @@ import org.math.io.parser.ArrayString;
  * keywords.BLUE=toto titi tata keywords.RED= keywords.GREEN=
  * information=blablabla ! links=http://toto.doc http//sdfsf outputlist=z y #
  * output.z.if=true output.z.get=property("*.out","z")
- * output.z.default=Double.NaN output.y.get=grep("*.listing",DEFAULT_FUNCTION_NAME)
+ * output.z.default=Double.NaN
+ * output.y.get=grep("*.listing",DEFAULT_FUNCTION_NAME)
  * output.y.if=contains("*","ASK_Y")
  *
  * @author richet
@@ -124,7 +128,7 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
     boolean isExpression(String e) {
         return e.startsWith("`") && e.endsWith("`");
     }
-    
+
     @Override
     public void setInputFiles(File[] inputfiles) {
         super.setInputFiles(inputfiles);
@@ -255,7 +259,9 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
         return false;
     }
 
+    // This is the test entry point. 1st arg is ioplugin path, next are test case directories.
     public static void main(String[] args) throws Exception {
+        String errors = "";
         System.out.println("{\n\"class\": \"BasicIOPlugin\",");
         System.out.println("\"arg\": \"" + args[0] + "\",");
         for (int i = 1; i < args.length; i++) {
@@ -265,18 +271,23 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
             System.out.println("  \"name\": \"" + a + "\",");
 
             File dir = new File(a);
-            if (!dir.exists()) {
+            if (!dir.exists() || !dir.isDirectory()) {
                 System.err.println("FAILED: " + a + " does no exists.");
                 System.out.println("  \"status\": \"test directory NOT found\",");
             } else {
                 System.out.println("  \"status\": \"test directory found\",");
             }
 
-            if (!dir.isDirectory()) {
-                System.err.println("FAILED: " + a + " is not a directory.");
-                System.out.println("  \"status\": \"test is NOT directory\",");
+            File[] infotxt = dir.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.equals("info.txt");
+                }
+            });
+            if (infotxt.length == 1) {
+                System.out.println("  \"reference\": \"info.txt is available\",");
             } else {
-                System.out.println("  \"status\": \"test directory ok\",");
+                System.out.println("  \"reference\": \"NO info.txt available!!!\",");
             }
 
             if (dir.exists() && dir.isDirectory()) {
@@ -293,7 +304,7 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
                     System.err.println("FAILED: no input directory");
                     System.out.println("  \"input\": \"no input directory\",");
                 } else {
-                    System.out.println("  \"input\": \""+input[0].getAbsolutePath()+"\",");
+                    System.out.println("  \"input\": \"" + input[0].getAbsolutePath() + "\",");
                 }
 
                 File[] output = dir.listFiles(new FileFilter() {
@@ -309,28 +320,20 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
                     System.err.println("FAILED: no output directory");
                     System.out.println("  \"output\": \"no output directory\",");
                 } else {
-                    System.out.println("  \"output\": \""+output[0].getAbsolutePath()+"\",");
+                    System.out.println("  \"output\": \"" + output[0].getAbsolutePath() + "\",");
                 }
 
                 if (input != null && input.length == 1 && output != null && output.length == 1) {
                     BasicIOPlugin plugin = new BasicIOPlugin(args[0]);
-                    File inputfile = new File(input[0],dir.getName());
+                    File inputfile = new File(input[0], dir.getName());
                     System.out.println("  \"methods\": {");
                     System.out.println("    \"acceptsDataSet\": \"" + plugin.acceptsDataSet(inputfile) + "\",");
                     plugin.setInputFiles(new File[]{inputfile});
                     System.out.println("    \"setInputFiles.output\": {");
                     for (String ok : plugin._output.keySet()) {
                         Object o = plugin._output.get(ok);
-                        String ostr = o.toString();
-                        //System.out.println(ok+"->"+ostr);
-                        if (o instanceof double[]) {
-                            ostr = ArrayString.printDoubleArray((double[]) o);
-                        }
-                        if (o instanceof double[][]) {
-                            ostr = ArrayString.printDoubleArray((double[][]) o);
-                        }
+                        String ostr = Data.asString(o);
                         System.out.println("      \"" + ok + "\": \"" + ostr + "\",");
-
                     }
                     System.out.println("    },");
 
@@ -341,32 +344,51 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
                     System.out.println("    ],");
 
                     System.out.println("    \"readOutput\": {");
-
                     Map<String, Object> out = plugin.readOutput(output[0]);
                     for (String ok : out.keySet()) {
                         Object o = out.get(ok);
-                        String ostr;
-                        if (o != null) {
-                            ostr = o.toString();
-                        } else {
-                            ostr = "null";
-                        }
-                        if (o instanceof double[]) {
-                            ostr = ArrayString.printDoubleArray((double[]) o);
-                        }
-                        if (o instanceof double[][]) {
-                            ostr = ArrayString.printDoubleArray((double[][]) o);
-                        }
+                        String ostr = Data.asString(o);
                         System.out.println("        \"" + ok + "\": \"" + ostr + "\",");
                     }
                     System.out.println("    },");
+
+                    if (infotxt.length == 1) {
+                        Properties infos = new Properties();
+                        try {
+                            URL url = new URL("file:" + infotxt[0].getAbsolutePath());
+                            infos.load(url.openStream());
+                        } catch (IOException e) {
+                            System.err.println("info.txt unreadable:\n" + e.getMessage());
+                        }
+                        System.out.println("    \"results\": {");
+                        for (String ok : out.keySet()) {
+                            Object o = out.get(ok);
+                            String ostr = Data.asString(o);
+                            String res = "FAILED:";
+                            String ref = infos.getProperty("output." + ok);
+                            if (ostr.equals(ref)) {
+                                res = "OK";
+                            } else {
+                                res = res + " " + ostr + " != " + ref;
+                            }
+                            if (!res.equals("OK")) {
+                                errors = errors + "\n" + a + ": " + res;
+                            }
+                            System.out.println("        \"" + ok + "\": \"" + res + "\",");
+                        }
+                        System.out.println("    },");
+                    } else {
+                        System.out.println("    \"results\": \"ERROR no reference found.\",");
+                    }
                 }
                 System.out.println("  },");
             }
             System.out.println("},");
         }
         System.out.println("}");
+        assert errors.length() == 0 : errors;
     }
+    // ant compile dist; cd dist; zip -r ../../plugin-R/funz-client.zip *; cd ..
 
     @Override
     public void setCommentLine(String c) {
