@@ -1114,12 +1114,12 @@ public class Project {
         return caseParametersCache.get(c);
 
     }
-    WeakHashMap<Case, WeakHashMap<String, String>> caseParametersCache = new WeakHashMap<Case, WeakHashMap<String, String>>();
+    Map<Case, Map<String, String>> caseParametersCache = new WeakHashMap<Case, Map<String, String>>();
 
     public void buildCaseParameters(Case c) {
         //System.err.println("Project.getCaseVariables " + c.getName());
 
-        WeakHashMap<String, String> vars = new WeakHashMap<String, String>();
+        HashMap<String, String> vars = new HashMap<String, String>();
 
         if (_params.size() == 0) {
             for (Iterator vit = _vars.iterator(); vit.hasNext();) {
