@@ -48,7 +48,7 @@ ok2=`ps | grep $PID_R | grep sh | wc -l`
 if [ ! $ok2 = "1" ]; then echo "FAILED to restart calculation: $ok2"; kill -9 $PID_R $PID_CALCULATOR; cat run.Rout; exit 2; fi
 echo "OK to restart calculation"
 
-sleep 40
+sleep 60
 
 ok3=`ps | grep $PID_R | grep sh | wc -l`
 if [ ! $ok3 = "0" ]; then echo "FAILED to finish calculation: $ok3"; kill -9 $PID_R $PID_CALCULATOR; cat run.Rout; exit 3; fi
