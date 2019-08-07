@@ -370,7 +370,7 @@ public class RunDesign extends MainUtils {
 
                         if (verb > 0) {
 //                            if (!new_state.equals(state)) {
-                            System.out.print(CLEAR_LINE + state.replaceAll("\n", " | "));
+                            System.out.print(CLEAR_LINE + StringUtils.rightPad(state.replaceAll("\n", " | "),80));
 //                            } else {
 //                                System.out.print("=");
 //                            }

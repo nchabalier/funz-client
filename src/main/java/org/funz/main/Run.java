@@ -45,8 +45,8 @@ public class Run extends MainUtils {
         OUTPUT_EXPRESSION("Output expression", "output_expression", "oe", "Output expression to parse when calculation finished:\n" + S + ASCII.cat("\n" + S, OutputFunctions.toArray()).replaceAll("(class)(.*)(\\$)", "")),
         INPUT_VARIABLES("Input variables", "input_variables", "iv", "Input variables definition 'name=values|model', e.g. x1=0.1,0.2,0.3 x2=0,1 x3=-0.5,-0.6"),
         RUN_CONTROL("Run control", "run_control", "rc", "Features of the run, e.g. retry=3 cache=/tmp/MyCache archiveFilter=\"(.*)\" blacklistTimeout=60"),
-	COMBINATIONS("Combinations", "all_combinations", "all", "Use a factorial design to compute all combiations."),      
-	MONITOR_CONTROL("Monitor control", "monitor_control", "mc", "Monitoring options, e.g. sleep=5 display=/usr/local/command_to_display_results"),
+	    COMBINATIONS("Combinations", "all_combinations", "all", "Use a factorial design to compute all combinations of input variables."),      
+	    MONITOR_CONTROL("Monitor control", "monitor_control", "mc", "Monitoring options, e.g. sleep=5 display=/usr/local/command_to_display_results"),
         VERBOSITY("Verbosity", "verbosity", "v", "Verbosity level in 0-10"),
         ARCHIVE_DIR("Archiving directory", "archive_dir", "ad", "Directory where to store output files and data"),
         PRINT_FILTER("Print filter", "print_filter", "pf", "Output data filter: x1 x2 y code duration ..."),
@@ -358,7 +358,7 @@ public class Run extends MainUtils {
 
                         if (verb > 0) {
                             //if (!new_state.equals(state)) {
-                            System.out.print(CLEAR_LINE + state.replaceAll("\n", " | "));
+                            System.out.print(CLEAR_LINE + StringUtils.rightPad(state.replaceAll("\n", " | "),80));
                             //} else {
                             //    System.out.print("-");
                             //}
