@@ -127,8 +127,8 @@ before_script:
   - if [[ "$NO_TEST_R" != "1" ]]; then if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; fi; if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home; fi; sudo R CMD javareconf JAVA_HOME=$JAVA_HOME; sudo R -e "install.packages('rJava',repos = 'http://cran.us.r-project.org')"; fi
 
 script:
-  - echo "R.server="$R_SERVER >> Funz.conf
-  - cd dist; echo "R.server="$R_SERVER >> Funz.conf; cd ..
+  - echo "R.server="$R_SERVER > Funz.conf
+  - cd dist; echo "R.server="$R_SERVER > Funz.conf; cd ..
   - ant test
 
 after_success:
