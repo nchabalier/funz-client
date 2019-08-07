@@ -247,7 +247,7 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
     if (!file.exists(.FUNZ_HOME))
         stop(paste("FUNZ_HOME environment variable not correctly set: FUNZ_HOME=",FUNZ_HOME,"\nPlease setup FUNZ_HOME to your Funz installation path.\n(you can get Funz freely at https://funz.github.io/funz.org/)",sep=""))
 
-    parameters = c(paste("-Dapp.home",.FUNZ_HOME,sep="="),"-Duser.language=en","-Duser.country=US",paste(sep="","-Dverbosity=",verbosity),"-Douterr=.Funz")
+    parameters = c(paste("-Dapp.home",.FUNZ_HOME,sep="="),"-Dnashorn.args=\"--no-deprecation-warning\"","-Duser.language=en","-Duser.country=US",paste(sep="","-Dverbosity=",verbosity)) #,"-Douterr=.Funz")
     for (p in names(java.control)) {
         if(substr(p,1,1)=="X") parameters = c(parameters,paste("-",p,java.control[[p]],sep=""))
         else parameters = c(parameters,paste("-D",p,"=",java.control[[p]],sep=""))

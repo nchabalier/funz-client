@@ -34,11 +34,11 @@ for /F "delims=" %%a in ('dir /B /S "!BASEDIR!*.jar"') do (
   set LIB=%%a;!LIB!
 )
 
-java -Dcharset=ISO-8859-1 -Xmx512m -Dapp.home=%FUNZ_PATH% -classpath "!LIB!" %MAIN% %*
+java -Dnashorn.args="--no-deprecation-warning" -Dcharset=ISO-8859-1 -Xmx512m -Dapp.home=%FUNZ_PATH% -classpath "!LIB!" %MAIN% %*
 rem -Douterr=.%1% 
 
 if NOT %ERRORLEVEL% == 0 (
-  echo "See log file .%1%.log"
+  echo "See log file %1%.log"
   echo "See help: Funz.bat %1% -h"
 )
 ))

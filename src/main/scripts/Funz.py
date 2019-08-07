@@ -192,7 +192,7 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
     if not os.path.isdir(_FUNZ_HOME):
         raise Exception("FUNZ_HOME environment variable not correctly set: FUNZ_HOME="+_FUNZ_HOME+"\nPlease setup FUNZ_HOME to your Funz installation path.\n(you can get Funz freely at https://funz.github.io/funz.org/)")
 
-    parameters = ["-Dapp.home="+_FUNZ_HOME,"-Duser.language=en","-Duser.country=US","-Dverbosity="+str(verbosity),"-Douterr=.Funz"]
+    parameters = ["-Dapp.home="+_FUNZ_HOME,"-Dnashorn.args=\"--no-deprecation-warning\"","-Duser.language=en","-Duser.country=US","-Dverbosity="+str(verbosity),"-Douterr=.Funz"]
     for p in java_control.keys():
         if p[0]=="X":
             parameters.append("-"+p+java_control[p])
@@ -560,7 +560,7 @@ def Funz_Design_info(design, input_variables) :
 # @param monitor_control.sleep delay time between two checks of results.
 # @param monitor_control.display_fun a function to display project cases status. Argument passed to is the data.frame of DoE state.
 # @return list of array results from the code, arrays size being equal to input_variables arrays size.
-# @example Funz_Run(model = "R", input_files = os.path.join(_FUNZ_HOME,"samples","branin.R"),input_variables = {'x1':numpy.random.uniform(size=10), 'x2':numpy.random.uniform(size=10)}, output_expressions = "cat")
+# @example Funz_Run("R", os.path.join(_FUNZ_HOME,"samples","branin.R"),{'x1':numpy.random.uniform(size=10), 'x2':numpy.random.uniform(size=10)}, "cat")
 def Funz_Run(model=None, input_files=None, input_variables=None, all_combinations=False, output_expressions=None, run_control={'force_retry':2, 'cache_dir':None}, archive_dir=None, verbosity=0, verbose_level=None, log_file=True, monitor_control={'sleep':5, 'display_fun':None}):   
     if input_files is None: raise Exception("Input files has to be defined")
     if not isinstance(input_files, list): input_files = [input_files]
@@ -786,7 +786,7 @@ def Funz_GridStatus():
 # @param model name of the code wrapper to use. See _Funz.Models global var for a list of possible values.
 # @param input_files files to give as input for the code.
 # @return list of variables & their possible default value
-# @example Funz_ParseInput(model = "R", input_files = os.path.join(_FUNZ_HOME,"samples","branin.R"))
+# @example Funz_ParseInput("R", os.path.join(_FUNZ_HOME,"samples","branin.R"))
 def Funz_ParseInput(model,input_files):
     if '_Funz_Models' in globals():
         if (not model is None) & (not model in _Funz_Models):
@@ -804,7 +804,7 @@ def Funz_ParseInput(model,input_files):
 # @param input_values list of variable values to compile.
 # @param output_dir directory where to put compiled files.
 # @example Funz_CompileInput(model = "R", input_files = os.path.join(_FUNZ_HOME,"samples","branin.R"),input_values = {'x1':1, 'x2':.5},output_dir=".")
-# @example Funz.CompileInput(model = "R", input_files = os.path.join(_FUNZ_HOME,"samples","branin.R"),input_values = {'x1':[1,2], 'x2':[.3,.5]},output_dir=".")
+# @example Funz.CompileInput("R", os.path.join(_FUNZ_HOME,"samples","branin.R"),{'x1':[1,2], 'x2':[.3,.5]},".")
 def Funz_CompileInput(model,input_files,input_values,output_dir=".") :
     if '_Funz_Models' in globals():
         if (not model is None) & (not model in _Funz_Models):
@@ -838,7 +838,7 @@ def Funz_CompileInput(model,input_files,input_values,output_dir=".") :
 # @param input_files files given as input for the code.
 # @param output_dir directory where calculated files are.
 # @return list of outputs & their value
-# @example Funz_ReadOutput(model = "R", input_files = os.path.join(_FUNZ_HOME,"samples","branin.R"), output_dir= os.path.join(_FUNZ_HOME,"samples"))
+# @example Funz_ReadOutput("R", os.path.join(_FUNZ_HOME,"samples","branin.R"), os.path.join(_FUNZ_HOME,"samples"))
 def Funz_ReadOutput(model, input_files, output_dir) :
     if '_Funz_Models' in globals():
         if (not model is None) & (not model in _Funz_Models):
@@ -856,7 +856,7 @@ def Funz_ReadOutput(model, input_files, output_dir) :
 #' @param TODO
 #' @return list of array design and results from the code.
 #' @example Funz_RunDesign(model="R", input_files=os.path.join(FUNZ_HOME,"samples","branin.R"), output_expressions="cat", design = "gradientdescent", design_options = {nmax=5),input_variables = {x1="[0,1]",x2="[0,1]"))
-#' @example Funz_RunDesign(model="R", input_files=os.path.join(FUNZ_HOME,"samples","branin.R"), output_expressions="cat", design = "gradientdescent", design_options = {nmax=5),input_variables = {x1="[0,1]",x2=c(0,1)))
+#' @example Funz_RunDesign("R", os.path.join(FUNZ_HOME,"samples","branin.R"), "cat", "gradientdescent", {nmax:5}, {x1:"[0,1]",x2:[0,1]})
 def Funz_RunDesign(model=None,input_files=None,output_expressions=None,design=None,input_variables=None,design_options=None,run_control={'force_retry':2,'cache_dir':None},monitor_control={'results_tmp':True,'sleep':5,'display_fun':None},archive_dir=None,verbosity=0,verbose_level=None,log_file=True) :
     if input_files is None: raise Exception("Input files has to be defined")
     if not isinstance(input_files, list): input_files = [input_files]
@@ -937,7 +937,7 @@ def Funz_RunDesign(model=None,input_files=None,output_expressions=None,design=No
 #' Initialize a Funz shell to perform calls to an external code.
 #' @param
 #' @return a Java shell object, which calculations are started.
-#' @example Funz_RunDesign_start(model = "[R]", input_files = os.path.join(FUNZ_HOME,"samples","branin.R"),output_expressions = "z",design = "Conjugate Gradient",input_variables = {a=numpy.random.uniform(size=10), b="[0,1]"),design_options = {Maximum_iterations=10))
+#' @example Funz_RunDesign_start("[R]", os.path.join(FUNZ_HOME,"samples","branin.R"),"z","Conjugate Gradient",{a:numpy.random.uniform(size=10), b:"[0,1]"},{Maximum_iterations:10))
 def Funz_RunDesign_start(model,input_files,output_expressions=None,design=None,input_variables=None,design_options=None,run_control={'force_retry':2,'cache_dir':None},archive_dir=None,verbosity=0,log_file=True) :
     if not '_Funz_Last_rundesin' in globals():
         global _Funz_Last_rundesign

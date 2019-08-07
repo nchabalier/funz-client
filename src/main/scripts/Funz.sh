@@ -20,10 +20,10 @@ MAIN=org.funz.main.$1
 
 LIB=`find $FUNZ_PATH/lib -name '*.jar' | xargs echo | tr ' ' ':'`
 
-java -Dcharset=ISO-8859-1 -Xmx512m -Dapp.home=$FUNZ_PATH -classpath $LIB $MAIN $*
+java -Dnashorn.args="--no-deprecation-warning" -Dcharset=ISO-8859-1 -Xmx512m -Dapp.home=$FUNZ_PATH -classpath $LIB $MAIN $*
 # -Douterr=.$1
 
 if [ $? -ne 0 ]; then 
-  echo "See log file: ."$1".log" >&2
+  echo "See log file: "$1".log" >&2
   echo "See help: Funz.sh "$1" -h"
 fi
