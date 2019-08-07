@@ -334,10 +334,8 @@ public class RDesigner_V1 extends Designer {
                 }
             
                 R.note_text("Create R designer environment");
-                Log.logMessage(Rsrc.getName(), SeverityLevel.INFO, true, "init: " + R.voidEval("e <- " + _designer.getName() + "(.GlobalEnv)"));
-                //Log.logMessage(Rsrc.getName(), SeverityLevel.INFO, true, "...init: " + R.voidEval("for (n in names(e)) {\n.GlobalEnv[[n]] = e[[n]]\n}\nprint(getInitialDesign)\n"));
+                Log.logMessage(Rsrc.getName(), SeverityLevel.INFO, true, "init: " + R.voidEval("DesignEnv <- " + _designer.getName() + "(.GlobalEnv)"));
                 Log.logMessage(Rsrc.getName(), SeverityLevel.INFO, true, "R:>" + R.getLastLogEntry() + "; R!>" + R.getLastError());
-                //System.err.println("init " + "R:>" + R.getLastLogEntry() + "\nR!>" + R.getLastError());
                 
                 R.savels(new File(_repository, getName().replace(' ', '_') + (currentiteration) + ".Rdata"), "");//(currentiteration) );
             } catch (Rsession.RException e) {
@@ -364,11 +362,11 @@ public class RDesigner_V1 extends Designer {
                 try {
                     String Rinput = "list(";
                     for (Parameter p : _parameters) {
-                        Rinput = Rinput + p.getName() + "=list(min=" + p.getLowerBound() + ",max=" + p.getUpperBound() + "),";
+                        Rinput = Rinput + "'" + p.getName() + "'=list('min'=" + p.getLowerBound() + ",'max'=" + p.getUpperBound() + "),";
                     }
                     Rinput = Rinput.substring(0, Rinput.length() - 1) + ")";
                     String Routput = "'" + _designer.getOutputFunctionExpression().toNiceSymbolicString() + "'";
-                    X0 = R.asMatrix(R.eval("getInitialDesign(.GlobalEnv," + Rinput + "," + Routput + ")"));
+                    X0 = R.asMatrix(R.eval("getInitialDesign(DesignEnv," + Rinput + "," + Routput + ")"));
                 } catch (Exception r) {
                     Log.err(r, 1);
                     return new Status(Decision.ERROR, r.getMessage() + "\nR> " + R.getLastLogEntry() + "\nR!> " + R.getLastError());
@@ -434,7 +432,7 @@ public class RDesigner_V1 extends Designer {
 
                 Object rexp = null;
                 try {
-                    rexp = R.eval("getNextDesign(.GlobalEnv,X" + currentiteration + ",Y" + currentiteration + ")");
+                    rexp = R.eval("getNextDesign(DesignEnv,X" + currentiteration + ",Y" + currentiteration + ")");
                     if (rexp == null) {
                         Status s = new Status(Decision.DESIGN_OVER);
                         R.note_text(s.toString());
@@ -536,7 +534,7 @@ public class RDesigner_V1 extends Designer {
                 if (R.asLogical(R.eval("exists('displayResultsTmp')"))) {
                     String out = null;
                     try {
-                        out = R.asString(R.eval("displayResultsTmp(.GlobalEnv,X" + suffix + ",Y" + suffix + ")"));
+                        out = R.asString(R.eval("displayResultsTmp(DesignEnv,X" + suffix + ",Y" + suffix + ")"));
                                         
                         try {
                             if (Arrays.asList(R.ls()).contains("files")) {
@@ -598,7 +596,7 @@ public class RDesigner_V1 extends Designer {
 
                 R.savels(new File(_repository, getName().replace(' ', '_') + (currentiteration) + ".res.Rdata"), "");//(currentiteration) );
 
-                out = R.asString(R.eval("displayResults(.GlobalEnv,Xanalyse" + currentiteration + ",Yanalyse" + currentiteration + ")"));
+                out = R.asString(R.eval("displayResults(DesignEnv,Xanalyse" + currentiteration + ",Yanalyse" + currentiteration + ")"));
 
                 try {
                     if (Arrays.asList(R.ls()).contains("files")) {
