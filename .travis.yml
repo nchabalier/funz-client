@@ -1,7 +1,7 @@
 language: java
 matrix:
   include:
-    - name: "Linux JDK8"
+    - name: "Linux JDK8 - R2js"
       os: linux
       dist: trusty
       jdk:
@@ -13,6 +13,33 @@ matrix:
         - NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        - R_SERVER=R2js
+    - name: "Linux JDK8 - Renjin"
+      os: linux
+      dist: trusty
+      jdk:
+        - openjdk8
+      env:
+        - TRAVIS_DIST_NAME="trusty"
+        - NO_TEST_ISSUES=1
+        - NO_TEST_R=1
+        - NO_TEST_PYTHON=1
+        - NO_TEST_BASH=1
+        - NO_TEST_CMD=1
+        - R_SERVER=Renjin
+    - name: "Linux JDK8 - Rserve"
+      os: linux
+      dist: trusty
+      jdk:
+        - openjdk8
+      env:
+        - TRAVIS_DIST_NAME="trusty"
+        - NO_TEST_ISSUES=1
+        - NO_TEST_R=1
+        - NO_TEST_PYTHON=1
+        - NO_TEST_BASH=1
+        - NO_TEST_CMD=1
+        - R_SERVER="R://"
     - name: "Linux JDK8 Test R,python,bash"
       os: linux
       dist: trusty
@@ -42,15 +69,15 @@ matrix:
 #        - NO_TEST_CMD=1
 #      jdk:
 #        - openjdk11
-    - name: "MacOS JDK8"
-      os: osx
-      osx_image: xcode9.3
-      env:
-        - NO_TEST_ISSUES=1
-        - NO_TEST_R=1
-        - NO_TEST_PYTHON=1
-        - NO_TEST_BASH=1
-        - NO_TEST_CMD=1
+#    - name: "MacOS JDK8" This one is too slow to finsih in less than 50 min
+#      os: osx
+#      osx_image: xcode9.3
+#      env:
+#        - NO_TEST_ISSUES=1
+#        - NO_TEST_R=1
+#        - NO_TEST_PYTHON=1
+#        - NO_TEST_BASH=1
+#        - NO_TEST_CMD=1
     - name: "MacOS JDK8 Test R,python,bash"
       os: osx
       osx_image: xcode9.3
@@ -100,6 +127,8 @@ before_script:
   - if [[ "$NO_TEST_R" != "1" ]]; then if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; fi; if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home; fi; sudo R CMD javareconf JAVA_HOME=$JAVA_HOME; sudo R -e "install.packages('rJava',repos = 'http://cran.us.r-project.org')"; fi
 
 script:
+  - echo "R.server="$R_SERVER > Funz.conf
+  - cd dist; echo "R.server="$R_SERVER > Funz.conf; cd ..
   - ant test
 
 after_success:
