@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/bash -f
+# -f is there to disable the pattern matching of files using [] delimiters (which are also used inside vaiables bounds expression !)
 
 if [ $# -le 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then 
   echo "Usage: Funz.sh COMMAND [ARGS]"
