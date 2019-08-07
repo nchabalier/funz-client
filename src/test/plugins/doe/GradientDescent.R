@@ -1,6 +1,6 @@
 #help: First-order local optimization algorithm<br/>http://en.wikipedia.org/wiki/Gradient_descent
 #tags: Optimization
-#options: nmax=10; delta=0.1; epsilon=0.01; target=0.0
+#options: nmax=100; delta=1; epsilon=0.01; target=0.0
 #input: x=list(min=0,max=1)
 #output: y=0.99
 
@@ -118,17 +118,10 @@ displayResults <- function(gradientdescent,X,Y) {
             '" width="',resolution,'" height="',resolution,
             '"/></HTML>'))
 
-    plotmin=paste('<Plot1D name="min">',m,'</Plot1D>')
+    m=paste('<min>',m,'</min>')
+    argmin=paste('<argmin>[',paste(collapse=',',x),']</argmin>')
 
-    if (d == 1) {
-        plotx=paste('<Plot1D name="argmin">',paste(x),'</Plot1D>')
-    } else if (d == 2) {
-        plotx=paste('<Plot2D name="argmin">[',paste(collapse=',',x),']</Plot2D>')
-    } else {
-        plotx=paste('<PlotnD name="argmin">[',paste(collapse=',',x),']</PlotnD>')
-    }
-
-    return(paste(html,plotmin,plotx,collapse=';'))
+    return(paste(html,m,argmin,collapse=';'))
 }
 
 panel.vec <- function(x, y , col, Y, d, ...) {
