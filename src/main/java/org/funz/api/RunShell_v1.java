@@ -249,14 +249,14 @@ public class RunShell_v1 extends AbstractShell {
 
     @Override
     public String getState() {
+        if (!super.getState().equals(SHELL_RUNNING)) {
+            return super.getState();
+        }
+
         return state + " (" + getRunState().trim() + ")";
     }
 
     public String getRunState() {
-        if (super.getState().equals(SHELL_ERROR)) {
-            return super.getState();
-        }
-
         return batchRun.getState().replace('\n', ',');
     }
 

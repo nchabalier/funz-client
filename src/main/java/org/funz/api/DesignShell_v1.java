@@ -217,14 +217,14 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
 
     @Override
     public String getState() {
+        if (!super.getState().equals(SHELL_RUNNING)) {
+            return super.getState();
+        }
+
         return state + " (" + getDesignState().trim() + ")";
     }
 
     public String getDesignState() {
-        if (super.getState().equals(SHELL_ERROR)) {
-            return super.getState();
-        }
-
         return loopDesign.getState().replace('\n', ',');
     }
 
@@ -301,11 +301,12 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
         try {
             currentresult = new HashMap<>();
             currentresult.put("time", time);
+            currentresult.put("state", SHELL_RUNNING);
 
             List<Case> news = buildDesign();
 
             Map<String, Object[]> X = loopDesign.initDesign();
-            currentresult.put("state", loopDesign.getState());
+            currentresult.put("state", getDesignState());
 
             allX = new LinkedList<Map<String, Object[]>>();
             allX.add(X);
@@ -348,7 +349,7 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
                 time = time + 1;
                 currentresult.put("time", time);
 
-                currentresult.put("state", loopDesign.getState());
+                currentresult.put("state", getDesignState());
 
                 allX.add(X);
 
@@ -398,6 +399,8 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
                 currentresult.putAll(merge(allY));
                 state = SHELL_OVER;
             } else state = SHELL_ERROR;
+
+            currentresult.put("state", getDesignState());
 
             return true;
         } catch (Exception e) {
