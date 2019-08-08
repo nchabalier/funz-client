@@ -55,10 +55,11 @@ public class RendererHelper {
         if (res == null) {
             return "<" + type + " name='" + toHTML(title) + "'></" + type + ">";
         }
-        if (res.startsWith("<" + type + ">")) {
+        res = res.trim();
+        if (res.contains("<" + type + ">")) {
             res = res.replace("<" + type + ">", "<" + type + " name='" + toHTML(title) + "'>");
         }
-        if (!res.trim().startsWith("<") || !res.contains("<" + type + " name=")) {
+        if (!res.startsWith("<") || !res.contains("<" + type + " name=")) {
             res = "<" + type + " name='" + toHTML(title) + "'>" + toHTML(res) + "</" + type + ">";
         }
         return res;
