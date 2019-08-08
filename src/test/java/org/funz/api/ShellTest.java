@@ -91,7 +91,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert sac.getProject().getVariableByName("x1").getDefaultValue().equals(".3") : "Did not found x1 default value.";
         assert sac.getProject().getVariableByName("x2").getDefaultValue().equals(".5") : "Did not found x2 default value.";
 
-        assert sac.startComputationAndWait() : "Failed to run with default cases !";
+        assert sac.startComputationAndWait() : "Failed to run with default cases: " + sac.getState();
 
         Map<String, String[]> results = sac.getResultsStringArrayMap();
         System.err.println(ArrayMapToMDString(results));
@@ -121,7 +121,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.startComputationAndWait();
         Map<String, String[]> results = sac.getResultsStringArrayMap();
 
-        assert Double.parseDouble(results.get("analysis.min")[0].trim())<3 : "Bad convergence to " + results.get("analysis.min")[0];
+        assert Double.parseDouble(results.get("analysis.min")[0].trim()) < 3 : "Bad convergence to " + results.get("analysis.min")[0];
 
         sac.shutdown();
     }
@@ -132,7 +132,7 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         File tmp_in = tmp_in();
 
-        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]", "x2", "[0,1]"), newMap("nmax", "5")); // R should be dedected by plugin automatically.
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]", "x2", "[0,1]"), newMap("nmax", "5", "delta", "0.1")); // R should be dedected by plugin automatically.
         sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
         Funz.setVerbosity(verbose);
 
@@ -144,19 +144,26 @@ public class ShellTest extends org.funz.api.TestUtils {
         Map<String, String[]> results = sac.getResultsStringArrayMap();
         sac.shutdown();
 
+        System.err.println(sac.getState());
         System.err.println(ArrayMapToMDString(results));
 
+        assert results != null : "No results";
+        assert results.get("analysis.min") != null : "No analysis.min in results:" + results.keySet();
+        assert results.get("analysis.min").length > 0 : "No content analysis.min in results";
         assert results.get("analysis.min")[0].trim().startsWith("0.4") : "Bad convergence to " + results.get("analysis.min")[0];
     }
 
     @Test
     public void test1DesignOutExpr() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ test1DesignOutExpr");
-        if (!RMathExpression.GetEngineName().contains("Rserve")) {System.err.println("Not using Rserve, so skipping test"); return;} // Do not run if using Renjin or R2js...
+        if (!RMathExpression.GetEngineName().contains("Rserve")) {
+            System.err.println("Not using Rserve, so skipping test");
+            return;
+        } // Do not run if using Renjin or R2js...
 
         File tmp_in = tmp_in();
 
-        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", "EGO", newMap("x1", "[0,1]", "x2", "[0,1]"), newMap("iterations", "5"));
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", "EGO", newMap("x1", "[0,1]", "x2", "[0,1]"), newMap("iterations", "10"));
         sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
         Funz.setVerbosity(verbose);
 
@@ -170,15 +177,16 @@ public class ShellTest extends org.funz.api.TestUtils {
         Map<String, String[]> results = sac.getResultsStringArrayMap();
         sac.shutdown();
 
+        System.err.println(sac.getState());
         System.err.println(ArrayMapToMDString(results));
 
         assert results != null : "No results";
-        assert results.get("analysis.min") != null : "No analysis.min in results";
+        assert results.get("analysis.min") != null : "No analysis.min in results:" + results.keySet();
         assert results.get("analysis.min").length > 0 : "No content analysis.min in results";
-        assert results.get("analysis.min")[0].trim().startsWith("0.") : "Bad convergence to " + results.get("analysis.min")[0];
+        assert results.get("analysis.min")[0].trim().startsWith("0.4") : "Bad convergence to " + results.get("analysis.min")[0];
     }
 
-   @Test
+    @Test
     public void testNoDesignOutExpr() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testNoDesignOutExpr");
 
@@ -197,7 +205,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.startComputationAndWait();
         Map<String, String[]> results = sac.getResultsStringArrayMap();
         sac.shutdown();
-       System.err.println(ArrayMapToMDString(results));
+        System.err.println(ArrayMapToMDString(results));
         assert results.get("N(cat[1],1)")[0].contains("[305.9563,1") : "Bad eval for N(cat[1],1) : \n" + ArrayMapToMDString(results);
     }
 
@@ -207,7 +215,7 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         File tmp_in = tmp_in();
 
-        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]"), newMap("nmax", "5")); // R should be dedected by plugin automatically.
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]"), newMap("nmax", "5", "delta", "0.1")); // R should be dedected by plugin automatically.
         sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
         Funz.setVerbosity(verbose);
 
@@ -223,8 +231,8 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
 
         //System.err.println(ASCII.cat(",",results.get("analysis.min")));
-        assert Double.parseDouble(results.get("analysis.min")[0].trim()) < 10 : "Bad convergence to " + results.get("analysis.min")[0];
-        assert Double.parseDouble(results.get("analysis.min")[1].trim()) < 10 : "Bad convergence to " + results.get("analysis.min")[1];
+        assert Double.parseDouble(results.get("analysis.min")[0].trim()) < 10 : "0: Bad convergence to " + results.get("analysis.min")[0];
+        assert Double.parseDouble(results.get("analysis.min")[1].trim()) < 10 : "1: Bad convergence to " + results.get("analysis.min")[1];
     }
 
     @Test
@@ -272,7 +280,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.startComputationAndWait();
         Map<String, String[]> results = sac.getResultsStringArrayMap();
         System.err.println(ArrayMapToMDString(results));
-        
+
         sac.shutdown();
     }
 
@@ -328,7 +336,6 @@ public class ShellTest extends org.funz.api.TestUtils {
         }).length == 1 : "Did not built the error stream in the defined archive dir";
     }
 
-    
     public void testKill() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testKill");
 
