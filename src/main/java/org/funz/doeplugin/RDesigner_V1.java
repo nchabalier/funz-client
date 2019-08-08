@@ -238,6 +238,7 @@ public class RDesigner_V1 extends Designer {
                     lib = lib.trim();
                     if (lib.length() > 0) {
                         try {
+                            String loadmsg = "?";
                             if (lib.contains(":")) {
                                 String src = lib.substring(0, lib.indexOf(":"));
                                 String n = lib.substring(lib.lastIndexOf("/") + 1);
@@ -245,20 +246,22 @@ public class RDesigner_V1 extends Designer {
                                 if (!R.isPackageInstalled(n, null)) {
                                     R.eval("devtools::install_" + src + "('" + path + "/" + n + "')", true);
                                 }
-                                String loadmsg = R.loadPackage(n);
+                                loadmsg = R.loadPackage(n);
                                 if (loadmsg.equals(Rsession.PACKAGELOADED)) {
                                     Log.logMessage(Rsrc.getName(), SeverityLevel.INFO, true, "Loading package " + n + ": " + loadmsg + " (version " + R.eval("packageDescription('" + n + "')$Version") + ")");
                                 } else {
                                     Log.logMessage(Rsrc.getName(), SeverityLevel.WARNING, true, "Loading package " + n + ": " + loadmsg);
+                                    throw new Exception(loadmsg);
                                 }
                             } else {
-                                String loadmsg = R.installPackage(lib, true);
+                                loadmsg = R.installPackage(lib, true);
                                 if (loadmsg.equals(Rsession.PACKAGELOADED) || loadmsg.equals(Rsession.PACKAGEINSTALLED)) {
                                     Log.logMessage(Rsrc.getName(), SeverityLevel.INFO, true, "Installing & loading package " + lib + ": " + loadmsg + " (version " + R.eval("packageDescription('" + lib + "')$Version") + ")");
                                 } else {
                                     Log.logMessage(Rsrc.getName(), SeverityLevel.WARNING, true, "Installing & loading package " + lib + ": " + loadmsg);
+                                    throw new Exception(loadmsg);
                                 }
-                            }
+                            } 
                         } catch (Exception e) {
                             if (initFailedMsg != null) {
                                 initFailedMsg = initFailedMsg + "\n" + e.getMessage();

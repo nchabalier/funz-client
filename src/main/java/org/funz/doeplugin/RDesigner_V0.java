@@ -26,6 +26,7 @@ import org.math.R.RLog;
 import org.math.R.RLog.Level;
 import org.math.R.RserveSession;
 import org.math.R.Rsession;
+import org.math.R.Rsession.RException;
 import org.math.array.DoubleArray;
 import static org.math.array.DoubleArray.getColumnCopy;
 
@@ -235,6 +236,7 @@ public class RDesigner_V0 extends Designer {
                             Log.logMessage(Rsrc.getName(), SeverityLevel.INFO, true, "Installing & loading package " + lib + ": " + loadmsg + " (version " + R.eval("packageDescription('" + lib + "')$Version") + ")");
                         } else {
                             Log.logMessage(Rsrc.getName(), SeverityLevel.WARNING, true, "Installing & loading package " + lib + ": " + loadmsg);
+                            throw new Exception(loadmsg);
                         }
                     } catch (Exception e) {
                             if (initFailedMsg != null) {
