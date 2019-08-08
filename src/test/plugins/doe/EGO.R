@@ -2,7 +2,7 @@
 #help: Efficient Global Optimization (EGO)
 #tags: optimization; sparse
 #author: yann.richet@irsn.fr; DiceKriging authors
-#require: DiceDesign; DiceKriging; DiceView; pso; jsonlite
+#require: DiceDesign; DiceKriging; DiceEval; DiceView; pso; jsonlite
 #options: search_ymin='true'; initBatchSize='4'; batchSize='4'; iterations='10'; initBatchBounds='true'; trend='y~1'; covtype='matern3_2'; knots='0'; liar='upper95'; seed='1'
 #options.help: search_ymin=minimization or maximisation; initBatchSize=Initial batch size; batchSize=iterations batch size; iterations=number of iterations; initBatchBounds=add input variables bounding values (2^d combinations); trend=(Universal) kriging trend; covtype=Kriging covariance kernel; knots=number of non-stationary points for each Xi; liar=liar value for in-batch loop (when batchsize>1); seed=random seed
 #input: x=list(min=0,max=1)
@@ -16,20 +16,20 @@ EGO <- function(options) {
     library(pso)
     library(jsonlite)
 
-    options$search_ymin <- as.logical(options$search_ymin)
-    options$initBatchSize <- as.integer(options$initBatchSize)
-    options$batchSize <- as.integer(options$batchSize)
-    options$iterations <- as.integer(options$iterations)
-    options$initBatchBounds <- as.logical(options$initBatchBounds)
-    options$trend <- as.formula(options$trend)
-    options$knots <- as.integer(unlist(strsplit(options$knots,",")))
-
-    options$seed <- as.integer(options$seed)
-
     ego = new.env()
     ego$i = 0
 
-    lapply(names(options), function(x) assign(x, options[[x]],ego))
+    ego$search_ymin <- as.logical(options$search_ymin)
+    ego$initBatchSize <- as.integer(options$initBatchSize)
+    ego$batchSize <- as.integer(options$batchSize)
+    ego$iterations <- as.integer(options$iterations)
+    ego$initBatchBounds <- as.logical(options$initBatchBounds)
+    ego$trend <- as.formula(options$trend)
+    ego$covtype <- as.character(options$covtype)
+    ego$liar <- as.character(options$liar)
+    ego$knots <- as.integer(unlist(strsplit(options$knots,",")))
+
+    ego$seed <- as.integer(options$seed)
     return(ego)
 }
 
@@ -123,7 +123,6 @@ displayResults <- function(algorithm, X, Y) {
     }
 
     if (isTRUE(algorithm$search_ymin)) {
-        y = Y[, 1]
         m = min(Y[, 1])
         x = as.matrix(X)[which(Y[, 1] == m), ]
         html = paste0(sep = "<br/>",
@@ -135,7 +134,6 @@ displayResults <- function(algorithm, X, Y) {
                            "' width='", resolution, "' height='", resolution, "'/></HTML>"))
         html = paste0(html,"<min>",m,"</min><argmin>",toJSON(x),"</argmin>")
     } else {
-        y = -Y[, 1]
         m = max(Y[, 1])
         x = as.matrix(X)[which(Y[, 1] == m), ]
         html = paste0(sep = "<br/>",
@@ -175,9 +173,10 @@ displayResults <- function(algorithm, X, Y) {
         html = paste0(html,"<model_json>",toJSON(as.data.frame(cbind(Xm,Ym)),dataframe = "columns"),"</model_json>")
     #}
 
-    return(html,collapse=';')
+    return(paste0(html,collapse=';'))
 }
 
+displayResultsTmp <- displayResults
 
 ################### Algorithm dependencies ###################
 

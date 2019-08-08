@@ -2,7 +2,7 @@
 #type=Optimization
 #output=Optimum
 #options=initBatchSize=4,batchSize=4,iterations=10,bounds='true',trend='y~1',covtype='matern3_2',liar='max',search_min='true'
-#require=DiceDesign,DiceKriging,DiceView
+#require=DiceDesign,DiceKriging,DiceEval,DiceView
 
 #' constructor and initializer of R session
 init <- function() {
@@ -93,7 +93,7 @@ analyseDesign <- function(X,Y) {
   if (search_min) {
     m = min(Y[,1])
     x = as.matrix(X)[which(Y[,1]==m),]
-    html=paste(sep="<br/>",paste("<HTML>minimum is ",m),paste(sep="","found at ",paste(collapse="<br/>",paste(sep="= ",names(x),x)),"<br/><img src='",analyse.files,"' width='",resolution,"' height='",resolution,"'/></HTML>"))
+    html=paste(sep="<br/>",paste("<HTML>minimum is",m),paste(sep="","found at ",paste(collapse="<br/>",paste(sep="= ",names(x),x)),"<br/><img src='",analyse.files,"' width='",resolution,"' height='",resolution,"'/></HTML>"))
     plot=paste("<Plot1D name='min'>",m,"</Plot1D>")
     
     d = dim(X)[2]
@@ -107,7 +107,7 @@ analyseDesign <- function(X,Y) {
   } else {
     m = max(Y[,1])
     x = as.matrix(X)[which(Y[,1]==m),]
-    html=paste(sep="<br/>",paste("<HTML>maximum is ",m),paste(sep="","found at ",paste(collapse="<br/>",paste(sep="= ",names(x),x)),"<br/><img src='",analyse.files,"' width='",resolution,"' height='",resolution,"'/></HTML>"))
+    html=paste(sep="<br/>",paste("<HTML>maximum is",m),paste(sep="","found at ",paste(collapse="<br/>",paste(sep="= ",names(x),x)),"<br/><img src='",analyse.files,"' width='",resolution,"' height='",resolution,"'/></HTML>"))
     plot=paste("<Plot1D name='max'>",m,"</Plot1D>")
     
     d = dim(X)[2]
