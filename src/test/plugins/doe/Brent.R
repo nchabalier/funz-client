@@ -22,7 +22,7 @@ Brent <- function(options) {
 #' @param input variables description (min/max, properties, ...)
 #' @param output values of interest description
 getInitialDesign <- function(brent, input, output) {
-    if (length(input)!=1) stop("Cannot find root of >1D function")
+    if (length(input)!=1) stop("Cannot find root of more than 1D function")
     brent$i <- 0
     brent$input <- input
     brent$exit <- -1    # Reason end of algo
@@ -79,7 +79,7 @@ getNextDesign <- function(brent, X, Y) {
 
     tol1 = 2. * brent$ytol * abs(b) + 0.5 * brent$xtol # Convergence check tolerance.
     xm = .5 * (c - b)
-    if (abs(xm) <= tol1 | fb == 0) {
+    if ((abs(xm) <= tol1) | (fb == 0)) {
         # stop if fb = 0 return root b or tolerance reached
         brent$exit <- 0
         return(NULL)
@@ -156,15 +156,18 @@ displayResults <- function(brent, X, Y) {
     abline(h = brent$ytarget,           lty = 2,           col = "grey70")
     dev.off()
 
-    html <- paste(sep = '',
-            ' <HTML name="Root">in iteration number ',brent$i,'.<br/>',
+    html <- paste0(' <HTML name="Root">in iteration number ',brent$i,'.<br/>',
             'the root approximation is ', X[3 * brent$i - 1, 1], '.<br/>',
             'corresponding to the value ', Y[3 * brent$i - 1, 1],'<br/>',
             '<img src="',  brent$files,  '" width="', width, '" height="', height, '"/>',
-            '<br/>Exit due to ', exit.txt, '<br/></HTML>')
+            '<br/>Exit due to ', exit.txt, '<br/></HTML>',collapse=';')
     
-    return(html,collapse=';')
+    arg <- paste0('<root>',X[3 * brent$i - 1, 1],'</root>')
+
+    return(paste0(html,arg))
 }
+
+displayResultsTmp <- displayResults
 
 from01 = function(X, inp) {
     for (i in 1:ncol(X)) {
