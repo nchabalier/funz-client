@@ -54,7 +54,7 @@ ok3=`ps | grep $PID_R | grep sh | wc -l`
 if [ ! $ok3 = "0" ]; then echo "FAILED to finish calculation: $ok3"; kill -9 $PID_R $PID_CALCULATOR; cat run.Rout; exit 3; fi
 echo "OK to finish calculation"
 
-ok4=`tail -10 run.out | grep "136.0767" | wc -l`
+ok4=`tail -10 run.Rout | grep "136.0767" | wc -l`
 if [ ! $ok4 = "1" ]; then echo "FAILED to complete calculation: $ok4"; kill -9 $PID_R $PID_CALCULATOR; cat run.Rout; exit 4; fi
 echo "OK to complete calculation"
 
