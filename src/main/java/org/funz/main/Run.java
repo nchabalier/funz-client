@@ -265,7 +265,7 @@ public class Run extends MainUtils {
         //tic("setVerbosity");
         Funz_v1.setVerbosity(verb);
         Log.level = verb;
-        //toc("setVerbosity");        //toc("setVerbosity");
+        //toc("setVerbosity");
 
         RunShell_v1 shell = null;
         try {
