@@ -192,7 +192,7 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
     if not os.path.isdir(_FUNZ_HOME):
         raise Exception("FUNZ_HOME environment variable not correctly set: FUNZ_HOME="+_FUNZ_HOME+"\nPlease setup FUNZ_HOME to your Funz installation path.\n(you can get Funz freely at https://funz.github.io/funz.org/)")
 
-    parameters = ["-Dapp.home="+_FUNZ_HOME,"-Dnashorn.args=\"--no-deprecation-warning\"","-Duser.language=en","-Duser.country=US","-Dverbosity="+str(verbosity),"-Douterr=.Funz"]
+    parameters = ["-Dapp.home="+_FUNZ_HOME,"-Duser.language=en","-Duser.country=US","-Dverbosity="+str(verbosity),"-Douterr=.Funz"]
     for p in java_control.keys():
         if p[0]=="X":
             parameters.append("-"+p+java_control[p])
