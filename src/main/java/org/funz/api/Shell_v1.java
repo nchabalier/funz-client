@@ -65,7 +65,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
     }
 
     public Shell_v1(String _model, File[] _input, String[] _output, String _designer, Map _variableModel, Map _designOptions) throws Exception {
-        Log.out("Creating Shell for code " + _model + " with intput files " + Arrays.asList(_input) + " with design " + _designer + asString(_designOptions) + " in " + asString(_variableModel), 2);
+        Log.out("Creating Shell for code " + _model + " with input files " + Arrays.asList(_input) + " with design " + _designer + asString(_designOptions) + " in " + asString(_variableModel), 2);
 
         setArchiveDirectory((File) null);
 

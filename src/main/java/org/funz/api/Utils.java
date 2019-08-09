@@ -106,7 +106,7 @@ public class Utils {
             model = _model;
         }
 
-        Log.out("Parsing for code " + model + " with intput files " + Arrays.asList(_input), 1);
+        Log.out("Parsing for code " + model + " with input files " + Arrays.asList(_input), 1);
 
         String name = _input[0].getName() + "_" + Configuration.timeDigest();
         IOPluginInterface plugin = IOPluginsLoader.newInstance(model, _input);

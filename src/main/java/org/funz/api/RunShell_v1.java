@@ -82,7 +82,7 @@ public class RunShell_v1 extends AbstractShell {
     }
 
     public RunShell_v1(String _model, File[] _input, Map _variableModel, String... outputExpression) throws Exception {
-        Log.out("Creating RunShell for code " + _model + " with intput files " + asString(_input), 2);
+        Log.out("Creating RunShell for code " + _model + " with input files " + asString(_input), 2);
 
         setInputModel(_model, _input);
 
