@@ -199,16 +199,10 @@ public class RMathExpression extends MathExpression {
     void newR() {
         createR();
 
-        if (R == null || (!R.isAvailable() && !Configuration.isWWWConnected())) { //fail may be due to impossibility to live install of Rserve
-            //MessageDialog.showError("Rserve startup failed, check your network connectivity");
-            Log.err("R startup failed, check your network connectivity", 2);
-            testWWWConnection();
-            if (Configuration.isWWWConnected()) {
-                createR();
-            }
+        if (R == null || !R.isAvailable()) { 
+            createR();
 
-            if (!R.isAvailable()) {
-                //MessageDialog.showError("Rserve not available.\nPlease check your R/Rserve installation manually.");
+            if (R == null || !R.isAvailable()) { //still !!!
                 Log.err("R not available.\nPlease check your R/Rserve/Renjin installation manually.", 2);
                 Alert.showError("R not available.\nPlease check your R/Rserve/Renjin installation manually.");
                 System.exit(-1);
