@@ -87,6 +87,7 @@ public class ProjectController {
     }
 
     public static void setupProject(Project prj, String name, File f, String model, IOPluginInterface plugin) throws Exception {
+        if (plugin == null) throw new Exception("No plugin set for this project!");
         try {
             if (prj.getResultsDir().isDirectory()) {
                 File olddir = new File(prj.getOldResultsDir(), Configuration.timeDigest());
