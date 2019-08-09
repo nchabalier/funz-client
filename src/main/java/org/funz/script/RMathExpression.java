@@ -199,7 +199,7 @@ public class RMathExpression extends MathExpression {
     void newR() {
         createR();
 
-        if (R==null|(!R.isAvailable() && !Configuration.isWWWConnected())) { //fail may be due to impossibility to live install of Rserve
+        if (R == null || (!R.isAvailable() && !Configuration.isWWWConnected())) { //fail may be due to impossibility to live install of Rserve
             //MessageDialog.showError("Rserve startup failed, check your network connectivity");
             Log.err("R startup failed, check your network connectivity", 2);
             testWWWConnection();
