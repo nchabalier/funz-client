@@ -14,10 +14,10 @@ PID_R=$!
 rm calc.out
 FUNZ_HOME="../funz-calculator/dist"
 LIB=`find $FUNZ_HOME/lib -name "funz-core-*.jar"`:`find $FUNZ_HOME/lib -name "funz-calculator-*.jar"`:`find $FUNZ_HOME/lib -name "commons-io-*.jar"`:`find $FUNZ_HOME/lib -name "commons-exec-*.jar"`:`find $FUNZ_HOME/lib -name "commons-lang-*.jar"`:`find $FUNZ_HOME/lib -name "ftpserver-core-*.jar"`:`find $FUNZ_HOME/lib -name "ftplet-api-*.jar"`:`find $FUNZ_HOME/lib -name "mina-core-*.jar"`:`find $FUNZ_HOME/lib -name "sigar-*.jar"`:`find $FUNZ_HOME/lib -name "slf4j-api-*.jar"`:`find $FUNZ_HOME/lib -name "slf4j-log4j*.jar"`
-java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:$FUNZ_HOME/calculator.xml 2>&1 > calc.out &
+java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:`realpath dist/calculator.xml` 2>&1 > calc.out &
 PID_CALCULATOR=$!
 
-## for loop testing of previous Run only. Comment otherwis
+## for loop testing of previous Run only. Comment otherwise
 # wait $PID_R
 # kill -9 $PID_CALCULATOR
 
@@ -39,7 +39,7 @@ if [ ! $ok1 = "1" ]; then echo "FAILED to pause client: $ok1"; kill -9 $PID_R $P
 echo "OK to pause client"
 
 rm calc.out
-java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:$FUNZ_HOME/calculator.xml 2>&1 > calc.out &
+java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:`realpath dist/calculator.xml` 2>&1 > calc.out &
 PID_CALCULATOR=$!
 
 sleep 3
