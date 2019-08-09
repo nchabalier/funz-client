@@ -122,7 +122,7 @@ public class RMathExpression extends MathExpression {
         } 
         if (R_engine == null) {
             R_engine = "R2js";
-            Log.out("Using R2js by default.", 2);
+            Log.out("Using R2js (by default)", 2);
         }
 
         if (serverConf != null && serverConf.isLocal()) {
@@ -152,7 +152,7 @@ public class RMathExpression extends MathExpression {
             if (RserveDaemon.R_HOME != null) {
                 Log.out("R_HOME: " + RserveDaemon.R_HOME, 2);
             } else {
-                Log.err("R installation not available, using Renjin instead.", 2);
+                Log.err("R installation not available.", 2);
                 serverConf = null;
             }
         }
@@ -293,14 +293,17 @@ public class RMathExpression extends MathExpression {
                     R.setCRANRepository("http://cloud.r-project.org");
                 } else if (R_engine.equals("Renjin")) {
                     R = new RenjinSession(streamlogger, env);
+                } else {
+                    R = null;
                 }                
             } catch (Exception e) {
                 Log.out("Could not instanciate Rsession: " + e.getMessage(), 0);
                 R = null;
             }
             
-            if (R == null) { //default if (R_class.equals("R2js")){
+            if (R == null) { //default if (R_engine.equals("R2js")){
                 R = new R2jsSession(streamlogger, env);
+                if (R == null) throw new Exception("Cannot instanciate R2jsSession");
                 ((R2jsSession)R).debug_js = Boolean.parseBoolean(Configuration.getProperty("R2js.debug", "false"));
                 R.voidEval("Sys__info = function() {return("+asRList(Data.newMap(
                         "nodename",InetAddress.getLocalHost().getHostName(),
@@ -317,7 +320,7 @@ public class RMathExpression extends MathExpression {
 
             R.TRY_MODE = true;
         } catch (Exception e) {
-            Log.logException(false, e);
+            Log.logException(true, e);
         }
     }
     
