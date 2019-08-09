@@ -26,16 +26,17 @@ public class MainUtils {
     public static String CLEAR_LINE = "\r";
 
     public static void init(String name, int level) {
+        //tic("init");
         try {
             Log.setCollector(new LogFile(name + ".log"));
             Funz_v1.init();
-            Log.level = level; // keep after Prom.init(), otherwise it will be reseted !
+            Log.level = level; // keep after Funz.init(), otherwise it will be reseted !
         } catch (Exception e) {
             System.err.println("[ERROR] failed to INIT Funz: " + e.getMessage());
             //e.printStackTrace();
             System.exit(FUNZ_ERROR);
         }
-                    //toc("init");
+        //toc("init");
     }
 
     final static String S = StringUtils.repeat(" ", 50);
