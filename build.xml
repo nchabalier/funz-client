@@ -336,7 +336,7 @@
     </target>
 
     <target name="test-issues" depends="dist-test"  unless="env.NO_TEST_ISSUES">
-      <fileset id="tests" dir="${root.dir}/src/test/issues/" includes="**/*Test.sh" />
+        <fileset id="tests" dir="${root.dir}/src/test/issues/" includes="**/*Test.sh" />
         
         <pathconvert pathsep="${line.separator}" property="tests-issues.list" refid="tests">
             <map from="${root.dir}/src/test/issues/" to=""/>

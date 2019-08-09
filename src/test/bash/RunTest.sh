@@ -11,8 +11,8 @@ function testRunParseError {
 
 function testRun1 {
     $FUNZ_HOME/Funz.sh Run -m $CODE -if $TMP_IN -iv x1=.5 x2=0.3 -v $VERBOSITY -ad tmp > testRun1.out 2>&1
-    ok=`grep "Batch over" testRun1.out | wc -l`
-    if [ $ok = "1" ]; then rm testRun1.out; echo "OK";return 0;  else echo "FAILED:"; cat testRun1.out; return 1; fi
+    ok=`grep "done" testRun1.out | wc -l`
+    if [ $ok = "2" ]; then rm testRun1.out; echo "OK";return 0;  else echo "FAILED:"; cat testRun1.out; return 1; fi
 }
 
 
