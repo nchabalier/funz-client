@@ -10,7 +10,7 @@ PID_RUN=$!
 rm calc.out
 FUNZ_HOME="../funz-calculator/dist"
 LIB=`find $FUNZ_HOME/lib -name "funz-core-*.jar"`:`find $FUNZ_HOME/lib -name "funz-calculator-*.jar"`:`find $FUNZ_HOME/lib -name "commons-io-*.jar"`:`find $FUNZ_HOME/lib -name "commons-exec-*.jar"`:`find $FUNZ_HOME/lib -name "commons-lang-*.jar"`:`find $FUNZ_HOME/lib -name "ftpserver-core-*.jar"`:`find $FUNZ_HOME/lib -name "ftplet-api-*.jar"`:`find $FUNZ_HOME/lib -name "mina-core-*.jar"`:`find $FUNZ_HOME/lib -name "sigar-*.jar"`:`find $FUNZ_HOME/lib -name "slf4j-api-*.jar"`:`find $FUNZ_HOME/lib -name "slf4j-log4j*.jar"`
-java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:`realpath dist/calculator.xml` 2>&1 > calc.out &
+java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:dist/calculator.xml 2>&1 > calc.out &
 PID_CALCULATOR=$!
 
 ## for loop testing of previous Run only. Comment otherwise
@@ -31,11 +31,11 @@ if [ ! $ok0 = "0" ]; then echo "FAILED to stop calculation: $ok0"; kill -9 $PID_
 echo "OK to stop calculation"
 
 ok1=`ps | grep $PID_RUN | grep sh | wc -l`
-if [ ! $ok1 = "1" ]; then echo "FAILED to pause client: $ok1"; kill -9 $PID_RUN $PID_CALCULATOR; cat "* run.out"; cat run.out; cat "* Run.log"; cat Run.log; exit 1; fi
+if [ ! $ok1 = "1" ]; then echo "FAILED to pause client: $ok1"; kill -9 $PID_RUN $PID_CALCULATOR; echo "* run.out"; cat run.out; echo "* Run.log"; cat Run.log; exit 1; fi
 echo "OK to pause client"
 
 rm calc.out
-java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:`realpath dist/calculator.xml` 2>&1 > calc.out &
+java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:dist/calculator.xml 2>&1 > calc.out &
 PID_CALCULATOR=$!
 
 sleep 3
