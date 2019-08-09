@@ -31,7 +31,7 @@ if [ ! $ok0 = "0" ]; then echo "FAILED to stop calculation: $ok0"; kill -9 $PID_
 echo "OK to stop calculation"
 
 ok1=`ps | grep $PID_RUN | grep sh | wc -l`
-if [ ! $ok1 = "1" ]; then echo "FAILED to pause client: $ok1"; kill -9 $PID_RUN $PID_CALCULATOR; cat run.out; exit 1; fi
+if [ ! $ok1 = "1" ]; then echo "FAILED to pause client: $ok1"; kill -9 $PID_RUN $PID_CALCULATOR; cat "* run.out"; cat run.out; cat "* Run.log"; cat Run.log; exit 1; fi
 echo "OK to pause client"
 
 rm calc.out
