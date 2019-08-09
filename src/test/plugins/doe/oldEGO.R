@@ -2,7 +2,7 @@
 #type=Optimization
 #output=Optimum
 #options=initBatchSize=4,batchSize=4,iterations=10,bounds='true',trend='y~1',covtype='matern3_2',liar='max',search_min='true'
-#require=DiceDesign,DiceKriging,DiceEval,DiceView
+#require=DiceDesign,DiceKriging,DiceEval,rgl,DiceView
 
 #' constructor and initializer of R session
 init <- function() {
