@@ -39,8 +39,10 @@ if [ ! $ok1 = "1" ]; then echo "FAILED to pause client: $ok1"; kill -9 $PID_R $P
 echo "OK to pause client"
 
 rm calc.out
-java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:dist/calculator.xml 2>&1 > calc.out &
-PID_CALCULATOR=$!
+java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:dist/calculator.xml 2>&1 > calc1.out &
+PID_CALCULATOR1=$!
+java -Dapp.home=$FUNZ_HOME -classpath $LIB org.funz.calculator.Calculator file:dist/calculator.xml 2>&1 > calc2.out &
+PID_CALCULATOR2=$!
 
 sleep 3
 
@@ -58,4 +60,4 @@ ok4=`tail -10 run.Rout | grep "136.0767" | wc -l`
 if [ ! $ok4 = "1" ]; then echo "FAILED to complete calculation: $ok4"; kill -9 $PID_R $PID_CALCULATOR; cat run.Rout; exit 4; fi
 echo "OK to complete calculation"
 
-kill -9 $PID_CALCULATOR
+kill -9 $PID_CALCULATOR1 $PID_CALCULATOR2
