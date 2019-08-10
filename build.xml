@@ -384,7 +384,7 @@
             <classpath refid="calculator.classpath" />
             <classpath path="${build.dir}" />
             <classpath path="${unit.test.jar}" />
-            <arg value="4" />
+            <arg value="8" />
             <arg value="3600" />
         </java>
     </target>
