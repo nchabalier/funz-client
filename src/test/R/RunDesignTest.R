@@ -49,7 +49,7 @@ source(file.path(FUNZ_HOME,"Funz.R"))
 Funz.init(FUNZ_HOME,verbosity=10)
 
 source("src/test/RunDesignTest.prop")
-DESIGN_OPT=list(nmax=NMAX)
+DESIGN_OPT=list(nmax=NMAX,delta=DELTA)
 
 t0=Sys.time()
 for (t in c("testBraninGradientDescent","testBraninGradientDescentx2")) {

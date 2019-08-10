@@ -93,18 +93,20 @@ public class CompileInput extends MainUtils {
         String _model = null;
         File[] _input = null;
         Map _variableModel = null;
-        int verb = 3;
-        File _archiveDir = new File(".");
+        int verb = -666;
+        File _archiveDir = null;
 
         try {
             for (int i = 1; i < args.length; i++) {
                 //System.err.print(args[i] + ": ");
 
                 if (Option.MODEL.is(args[i])) {
+                    if (_model != null) throw new Exception("[ERROR] Option "+Option.MODEL.key+" already set!");
                     _model = args[i + 1];
                     //System.err.println(_model);
                     i++;
                 } else if (Option.INPUT_FILES.is(args[i])) {
+                    if (_input != null) throw new Exception("[ERROR] Option "+Option.INPUT_FILES.key+" already set!");
                     List<File> files = new LinkedList<>();
                     int j = 1;
                     while (i + j < args.length && !isOption(args[i + j])) {
@@ -119,6 +121,7 @@ public class CompileInput extends MainUtils {
                     //System.err.println(_input);
                     i += j - 1;
                 } else if (Option.INPUT_VARIABLES.is(args[i])) {
+                    if (_variableModel != null) throw new Exception("[ERROR] Option "+Option.INPUT_VARIABLES.key+" already set!");
                     Map<String, Object> vars = new HashMap<>();
                     int j = 1;
                     while (i + j < args.length && !isOption(args[i + j])) {
@@ -135,10 +138,12 @@ public class CompileInput extends MainUtils {
                     //System.err.println(_variableModel);
                     i += j - 1;
                 } else if (Option.ARCHIVE_DIR.is(args[i])) {
+                    if (_archiveDir != null) throw new Exception("[ERROR] Option "+Option.ARCHIVE_DIR.key+" already set!");
                     _archiveDir = new File(args[i + 1]);
                     //System.err.println(_archiveDir);
                     i++;
                 } else if (Option.VERBOSITY.is(args[i])) {
+                    if (verb != -666) throw new Exception("[ERROR] Option "+Option.VERBOSITY.key+" already set!");
                     verb = Integer.parseInt(args[i + 1]);
                     //System.err.println(verb);
                     i++;
@@ -146,8 +151,9 @@ public class CompileInput extends MainUtils {
                 } else {
                     throw new Exception("[ERROR] Unknwon option " + args[i]);
                 }
-
             }
+            if (verb == -666) verb = 3;
+            if (_archiveDir == null) _archiveDir = new File(".");
         } catch (Exception e) {
             System.err.println("[ERROR] failed to parse options: " + e.getMessage());
             e.printStackTrace();

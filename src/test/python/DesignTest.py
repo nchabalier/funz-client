@@ -63,7 +63,7 @@ exec(open(os.path.join(FUNZ_HOME,"Funz.py")).read())
 Funz_init(FUNZ_HOME=FUNZ_HOME,verbosity=10)
 
 exec(open(os.path.join("src/test/DesignTest.prop")).read())
-DESIGN_OPT={'nmax':NMAX}
+DESIGN_OPT={'nmax':NMAX,'delta':DELTA}
 
 for t in ["testMatchRef","testVectorizeFun","testNoVectorize"] :
     print("Test "+t+": "+eval(t+"()"))

@@ -94,19 +94,21 @@ public class ReadOutput extends MainUtils{
         //tic("options");
         String _model = null;
         File[] _input = null;
-        File _print = new File(name + ".csv");
-        int verb = 3;
-        File _archiveDir = new File(".");
+        File _print = null;
+        int verb = -666;
+        File _archiveDir = null;
 
         try {
             for (int i = 1; i < args.length; i++) {
                 //System.err.print(args[i] + ": ");
 
                 if (Option.MODEL.is(args[i])) {
+                    if (_model != null) throw new Exception("[ERROR] Option "+Option.MODEL.key+" already set!");
                     _model = args[i + 1];
                     //System.err.println(_model);
                     i++;
                 } else if (Option.INPUT_FILES.is(args[i])) {
+                    if (_input != null) throw new Exception("[ERROR] Option "+Option.INPUT_FILES.key+" already set!");
                     List<File> files = new LinkedList<>();
                     int j = 1;
                     while (i + j < args.length && !isOption(args[i + j])) {
@@ -121,14 +123,17 @@ public class ReadOutput extends MainUtils{
                     //System.err.println(_input);
                     i += j - 1;
                 } else if (Option.PRINT.is(args[i])) {
+                    if (_print != null) throw new Exception("[ERROR] Option "+Option.PRINT.key+" already set!");
                     _print = new File(args[i + 1]);
                     //System.err.println(_format);
                     i++;
                 } else if (Option.OUTPUT_DIR.is(args[i])) {
+                    if (_archiveDir != null) throw new Exception("[ERROR] Option "+Option.OUTPUT_DIR.key+" already set!");
                     _archiveDir = new File(args[i + 1]);
                     //System.err.println(_archiveDir);
                     i++;
                 } else if (Option.VERBOSITY.is(args[i])) {
+                    if (verb != -666) throw new Exception("[ERROR] Option "+Option.VERBOSITY.key+" already set!");
                     verb = Integer.parseInt(args[i + 1]);
                     //System.err.println(verb);
                     i++;
@@ -136,8 +141,10 @@ public class ReadOutput extends MainUtils{
                 } else {
                     throw new Exception("[ERROR] Unknwon option " + args[i]);
                 }
-
             }
+            if (_print == null) _print = new File(name + ".csv");
+            if (verb == -666) verb = 3;
+            if (_archiveDir == null) _archiveDir = new File(".");
         } catch (Exception e) {
             System.err.println("[ERROR] failed to parse options: " + e.getMessage());
             e.printStackTrace();

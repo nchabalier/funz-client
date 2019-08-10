@@ -10,13 +10,13 @@ function testDesignParseError {
 }
 
 function testDesign {
-    $FUNZ_HOME/Funz.sh Design -d $DESIGN -do nmax=$NMAX epsilon=0.000000001 delta=0.01 target=-10 -f ./$FUN -fa x1 x2 -iv x1=[-0.5,.0001] x2=[-0.3,.8] -v 10 > testDesign.out 2>&1
+    $FUNZ_HOME/Funz.sh Design -d $DESIGN -do nmax=$NMAX epsilon=0.000000001 delta=$DELTA target=-10 -f ./$FUN -fa x1 x2 -iv x1=[-0.5,.0001] x2=[-0.3,.8] -v 10 > testDesign.out 2>&1
     ok=`grep "minimum is $FUN_MIN" testDesign.out | wc -l`
     if [ $ok = "2" ]; then rm testDesign.out; echo "OK";return 0; else echo "FAILED:"; cat testDesign.out;return 1; fi
 }
 
 function testDesignPar {
-    $FUNZ_HOME/Funz.sh Design -d $DESIGN -do nmax=$NMAX epsilon=0.000000001 delta=0.01 target=-10 -f ./$FUN -fa x1 x2 -fp 3 -iv x1=[-0.5,.0001] x2=[-0.3,.8] -v 10 > testDesignPar.out 2>&1
+    $FUNZ_HOME/Funz.sh Design -d $DESIGN -do nmax=$NMAX epsilon=0.000000001 delta=$DELTA target=-10 -f ./$FUN -fa x1 x2 -fp 3 -iv x1=[-0.5,.0001] x2=[-0.3,.8] -v 10 > testDesignPar.out 2>&1
     ok=`grep "minimum is $FUN_MIN" testDesignPar.out | wc -l`
     if [ $ok = "2" ]; then rm testDesignPar.out; echo "OK";return 0; else echo "FAILED:"; cat testDesignPar.out;return 1; fi
 }

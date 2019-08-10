@@ -394,7 +394,7 @@
         <sleep seconds="5"/>
     </target>
 
-    <target name="test-cmd" depends="start-calculators,dist-test" unless="env.NO_TEST_CMD">
+    <target name="test-cmd" depends="dist-test, start-calculators" unless="env.NO_TEST_CMD">
         <fileset id="tests" dir="${root.dir}/src/test/cmd/" includes="**/*Test.bat" />
         
         <pathconvert pathsep="${line.separator}" property="tests-cmd.list" refid="tests">
@@ -439,7 +439,7 @@
         <fail message="Test failure detected, check test results." if="failed_cmd" />
     </target>
 
-    <target name="test-bash" depends="start-calculators,dist-test"  unless="env.NO_TEST_BASH">
+    <target name="test-bash" depends="dist-test, start-calculators"  unless="env.NO_TEST_BASH">
       <fileset id="tests" dir="${root.dir}/src/test/bash/" includes="**/*Test.sh" />
         
         <pathconvert pathsep="${line.separator}" property="tests-bash.list" refid="tests">
@@ -484,7 +484,7 @@
         <fail message="Test failure detected, check test results." if="failed_bash" />
     </target>
 
-    <target name="test-python" depends="start-calculators,dist-test" unless="env.NO_TEST_PYTHON">
+    <target name="test-python" depends="dist-test, start-calculators" unless="env.NO_TEST_PYTHON">
         <fileset id="tests" dir="${root.dir}/src/test/python/" includes="**/*Test.py" />
         
         <pathconvert pathsep="${line.separator}" property="tests-python.list" refid="tests">
@@ -529,7 +529,7 @@
         <fail message="Test failure detected, check test results." if="failed_python" />
     </target>
     
-    <target name="test-R" depends="start-calculators,dist-test" unless="env.NO_TEST_R">  
+    <target name="test-R" depends="dist-test, start-calculators" unless="env.NO_TEST_R">  
         <fileset id="tests" dir="${root.dir}/src/test/R/" includes="**/*Test.R" />
         
         <pathconvert pathsep="${line.separator}" property="tests-R.list" refid="tests">

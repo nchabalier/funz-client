@@ -130,20 +130,22 @@ public class RunDesign extends MainUtils {
         String _designer = null;
         Map _variableModel = null;
         Map _designOptions = null;
-        Map<String, String> _runControl = new HashMap<>();
-        Map<String, String> _monitorControl = new HashMap<>();
+        Map<String, String> _runControl = null;
+        Map<String, String> _monitorControl = null;
         List<String> _filter = null;
-        File _print = new File(name + ".csv");
+        File _print = null;
         boolean X = false;
-        int verb = 3;
-        File _archiveDir = new File(".");
+        int verb = -666;
+        File _archiveDir = null;
 
         try {
             for (int i = 1; i < args.length; i++) {
                 if (Option.MODEL.is(args[i])) {
+                    if (_model != null) throw new Exception("[ERROR] Option "+Option.MODEL.key+" already set!");
                     _model = args[i + 1];
                     i++;
                 } else if (Option.INPUT_FILES.is(args[i])) {
+                    if (_input != null) throw new Exception("[ERROR] Option "+Option.INPUT_FILES.key+" already set!");
                     List<File> files = new LinkedList<>();
                     int j = 1;
                     while (i + j < args.length && !isOption(args[i + j])) {
@@ -157,6 +159,7 @@ public class RunDesign extends MainUtils {
                     _input = files.toArray(new File[files.size()]);
                     i += j - 1;
                 } else if (Option.OUTPUT_EXPRESSION.is(args[i])) {
+                    if (_outputExpressions != null) throw new Exception("[ERROR] Option "+Option.OUTPUT_EXPRESSION.key+" already set!");
                     List<String> expressions = new LinkedList<>();
                     int j = 1;
                     while (i + j < args.length && !isOption(args[i + j])) {
@@ -167,9 +170,11 @@ public class RunDesign extends MainUtils {
                     _outputExpressions = expressions.toArray(new String[expressions.size()]);
                     i += j - 1;
                 } else if (Option.DESIGN.is(args[i])) {
+                    if (_designer != null) throw new Exception("[ERROR] Option "+Option.DESIGN.key+" already set!");
                     _designer = args[i + 1];
                     i++;
                 } else if (Option.INPUT_VARIABLES.is(args[i])) {
+                    if (_variableModel != null) throw new Exception("[ERROR] Option "+Option.INPUT_VARIABLES.key+" already set!");
                     Map<String, Object> vars = new HashMap<>();
                     int j = 1;
                     while (i + j < args.length && !isOption(args[i + j])) {
@@ -189,6 +194,7 @@ public class RunDesign extends MainUtils {
                     _variableModel = vars;
                     i += j - 1;
                 } else if (Option.DESIGN_OPTIONS.is(args[i])) {
+                    if (_designOptions != null) throw new Exception("[ERROR] Option "+Option.DESIGN_OPTIONS.key+" already set!");
                     Map<String, String> opts = new HashMap<>();
                     int j = 1;
                     while (i + j < args.length && !isOption(args[i + j])) {
@@ -210,6 +216,7 @@ public class RunDesign extends MainUtils {
                     _designOptions = opts;
                     i += j - 1;
                 } else if (Option.RUN_CONTROL.is(args[i])) {
+                    if (_runControl != null) throw new Exception("[ERROR] Option "+Option.RUN_CONTROL.key+" already set!");
                     Map<String, String> opts = new HashMap<>();
                     int j = 1;
                     while (i + j < args.length && !isOption(args[i + j])) {
@@ -225,6 +232,7 @@ public class RunDesign extends MainUtils {
                     _runControl = opts;
                     i += j - 1;
                 } else if (Option.MONITOR_CONTROL.is(args[i])) {
+                    if (_monitorControl != null) throw new Exception("[ERROR] Option "+Option.MONITOR_CONTROL.key+" already set!");
                     Map<String, String> opts = new HashMap<>();
                     int j = 1;
                     while (i + j < args.length && !isOption(args[i + j])) {
@@ -240,6 +248,7 @@ public class RunDesign extends MainUtils {
                     _monitorControl = opts;
                     i += j - 1;
                 } else if (Option.PRINT_FILTER.is(args[i])) {
+                    if (_filter != null) throw new Exception("[ERROR] Option "+Option.PRINT_FILTER.key+" already set!");
                     List<String> outs = new LinkedList<>();
                     int j = 1;
                     while (i + j < args.length && !isOption(args[i + j])) {
@@ -254,19 +263,26 @@ public class RunDesign extends MainUtils {
                     _filter = outs;
                     i += j - 1;
                 } else if (Option.PRINT.is(args[i])) {
+                    if (_print != null) throw new Exception("[ERROR] Option "+Option.PRINT.key+" already set!");
                     _print = new File(args[i + 1]);
                     i++;
                 } else if (Option.ARCHIVE_DIR.is(args[i])) {
+                    if (_archiveDir != null) throw new Exception("[ERROR] Option "+Option.ARCHIVE_DIR.key+" already set!");
                     _archiveDir = new File(args[i + 1]);
                     i++;
                 } else if (Option.VERBOSITY.is(args[i])) {
+                    if (verb != -666) throw new Exception("[ERROR] Option "+Option.VERBOSITY.key+" already set!");
                     verb = Integer.parseInt(args[i + 1]);
                     i++;
                 } else {
                     throw new Exception("[ERROR] Unknown option: " + args[i]);
                 }
-
             }
+            if (_runControl==null) _runControl = new HashMap<>();
+            if (_monitorControl==null) _monitorControl = new HashMap<>();
+            if (_print == null) _print = new File(name + ".csv");
+            if (verb == -666) verb = 3;
+            if (_archiveDir == null) _archiveDir = new File(".");
         } catch (Exception e) {
             System.err.println("[ERROR] failed to parse options: " + e.getMessage());
             //e.printStackTrace();

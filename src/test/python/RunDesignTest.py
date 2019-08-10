@@ -32,7 +32,7 @@ exec(open(os.path.join(FUNZ_HOME,"Funz.py")).read())
 Funz_init(FUNZ_HOME=FUNZ_HOME,verbosity=10)
 
 exec(open(os.path.join("src/test/RunDesignTest.prop")).read())
-DESIGN_OPT={'nmax':NMAX}
+DESIGN_OPT={'nmax':NMAX,'delta':DELTA}
 
 for t in ["testBraninGradientDescent","testBraninGradientDescentx2"] :
     print("Test "+t+": "+eval(t+"()"))

@@ -3,6 +3,7 @@ CODE="R"
 SRC="src/test/samples/branin.R"
 DESIGN="GradientDescent"
 NMAX=4
+DELTA=0.1
 BraninGradientDescent_MIN=0.4781157
 BraninGradientDescentx2_x1_0_MIN=17.23528
 BraninGradientDescentx2_x1_1_MIN=1.943141
