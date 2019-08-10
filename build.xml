@@ -379,8 +379,8 @@
         <fail message="Test failure detected, check test results." if="failed_issues" />
     </target>
 
-    <target name="start-calculators" depends="compile, compile-test">
-        <java classname="org.funz.main.RunCalculators" fork="true" spawn="true">
+    <target name="start-calculators" depends="compile, compile-test, stop-calculators">
+       <java classname="org.funz.main.RunCalculators" fork="true" spawn="true">
             <classpath refid="calculator.classpath" />
             <classpath path="${build.dir}" />
             <classpath path="${unit.test.jar}" />
