@@ -46,7 +46,16 @@ ok2=`ps | grep $PID_RUN | grep sh | wc -l`
 if [ ! $ok2 = "1" ]; then echo "FAILED to restart calculation: $ok2"; kill -9 $PID_RUN $PID_CALCULATOR; cat run.out; exit 2; fi
 echo "OK to restart calculation"
 
-sleep 60
+done=0
+i=0
+while [ $i -le 10 ]; do
+  ok3=`ps | grep $PID_RUN | grep sh | wc -l`
+  if [ $ok3 = "0" ]; then
+      break
+  fi
+  i=$(( $i + 1 ))
+  sleep 10
+done
 
 ok3=`ps | grep $PID_RUN | grep sh | wc -l`
 if [ ! $ok3 = "0" ]; then echo "FAILED to finish calculation: $ok3"; kill -9 $PID_RUN $PID_CALCULATOR; cat run.out; exit 3; fi
