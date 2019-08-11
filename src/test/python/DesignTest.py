@@ -68,5 +68,4 @@ DESIGN_OPT={'nmax':NMAX,'delta':DELTA}
 for t in ["testMatchRef","testVectorizeFun","testNoVectorize"] :
     print("Test "+t+": "+eval(t+"()"))
 
-
 sys.exit(failed)
