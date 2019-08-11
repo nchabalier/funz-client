@@ -107,32 +107,6 @@ public class RunDesignTest extends org.funz.api.TestUtils {
     }
 
     @Test
-    public void testRunDesign() throws Exception {
-        System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRunDesign");
-        File tmp_in = tmp_in();
-
-        try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=10 -if tmp/branin.R -iv x1=0,.3,.5,1 x2=[0.1,.9] -v 10 -ad tmp".split(" "));
-        } catch (ExitCatcher e) {
-            assert e.status == 0 : "Not 0 exit status :" + e.status;
-        }
-        assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
-    }
-
-    @Test
-    public void testRunDesigns() throws Exception {
-        System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRunDesigns");
-        File tmp_in = tmp_in();
-
-        try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/branin.R -iv x1=0,.3,.5,1 x2=[0.3,.4] -v 10 -ad tmp".split(" "));
-        } catch (ExitCatcher e) {
-            assert e.status == 0 : "Not 0 exit status :" + e.status;
-        }
-        assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
-    }
-
-    @Test
     public void testRun1Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRun1Design");
         File tmp_in = tmp_in();
@@ -146,7 +120,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
     }
 
     @Test
-    public void testRun2Design() throws Exception {
+    public void testRun2Designs() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRun2Design");
         File tmp_in = tmp_in();
 
