@@ -147,7 +147,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         HashMap<String, String> variable_bounds = new HashMap<String, String>();
         variable_bounds.put("x1", "[0,1]");
         variable_bounds.put("x2", "[0,1]");
-        DesignShell_v1 shell = new DesignShell_v1(branin, "oldEGO", variable_bounds, newMap("iterations", "10"));
+        DesignShell_v1 shell = new DesignShell_v1(branin, "oldEGO", variable_bounds, newMap("iterations", "15"));
         shell.setArchiveDirectory("tmp");
 
         assert shell.startComputationAndWait();
@@ -175,7 +175,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         HashMap<String, String> variable_bounds = new HashMap<String, String>();
         variable_bounds.put("x1", "[0,1]");
         variable_bounds.put("x2", "[0,1]");
-        DesignShell_v1 shell = new DesignShell_v1(branin, "EGO", variable_bounds, newMap("iterations", "10"));
+        DesignShell_v1 shell = new DesignShell_v1(branin, "EGO", variable_bounds, newMap("iterations", "15"));
         shell.setArchiveDirectory("tmp");
 
         assert shell.startComputationAndWait();
