@@ -119,11 +119,11 @@ def _PTypeToJClass(object) :
         if len(object)>0:
             return(("[L"+_PTypeToJClass(object[0])+";").replace("L[","[").replace(";;",";"))
         else:
-            warnings.warn("!!! empty array")
-            return(None)     
+            warnings.warn(" !!! empty array")
+            return("null")     
     else:
-        warnings.warn("!!! unsupported class")
-        return(None)       
+        warnings.warn(" !!! unsupported class")
+        return("null")       
 
 # may be replaced by _gateway = JavaGateway(gateway_parameters=GatewayParameters(auto_convert=True)) in init()
 #def _PArrayToJArray(a):
