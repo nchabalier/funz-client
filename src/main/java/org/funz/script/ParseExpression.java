@@ -419,7 +419,6 @@ public class ParseExpression {
             out = exportObject(CallAlgebra(o, ie));
             Log.logMessage("ParseExpression", SeverityLevel.INFO, false, "  >> " + out);
         } catch (Exception e) {
-            e.printStackTrace();
             Log.logException(false, new Exception("Failed to evaluate expression " + f + " on files " + rfiles + "\n" + e.getMessage()));
         }
         return out;
