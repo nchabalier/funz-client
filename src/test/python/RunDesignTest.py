@@ -35,6 +35,9 @@ exec(open(os.path.join("src/test/RunDesignTest.prop")).read())
 DESIGN_OPT={'nmax':NMAX,'delta':DELTA}
 
 for t in ["testBraninGradientDescent","testBraninGradientDescentx2"] :
-    print("Test "+t+": "+eval(t+"()"))
+    print("")
+    res = eval(t+"()")
+    print("")
+    print("Test "+t+": "+res)
 
 sys.exit(failed)

@@ -96,6 +96,9 @@ Funz_init(FUNZ_HOME=FUNZ_HOME,verbosity=10)
 exec(open(os.path.join("src/test/RunTest.prop")).read())
 
 for t in ["test1Case","test10Cases","testDuplicateCases","testFail1","testFail2"] :
-    print("Test "+t+": "+eval(t+"()"))
+    print("")
+    res = eval(t+"()")
+    print("")
+    print("Test "+t+": "+res)
 
 sys.exit(failed)
