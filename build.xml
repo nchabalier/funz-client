@@ -376,7 +376,7 @@
                 </if>
             </sequential>
         </for>
-        <fail message="Test failure detected, check test results." if="failed_issues" />
+        <fail message="Test failure detected for issues, check test results." if="failed_issues" />
     </target>
 
     <target name="start-calculators" depends="compile, compile-test, stop-calculators">
@@ -436,7 +436,7 @@
             </sequential>
         </for>
         <antcall target="stop-calculators"/>
-        <fail message="Test failure detected, check test results." if="failed_cmd" />
+        <fail message="Test failure detected for cmd, check test results." if="failed_cmd" />
     </target>
 
     <target name="test-bash" depends="dist-test, start-calculators"  unless="env.NO_TEST_BASH">
@@ -481,7 +481,7 @@
             </sequential>
         </for>
         <antcall target="stop-calculators"/>
-        <fail message="Test failure detected, check test results." if="failed_bash" />
+        <fail message="Test failure detected for bash, check test results." if="failed_bash" />
     </target>
 
     <target name="test-python" depends="dist-test, start-calculators" unless="env.NO_TEST_PYTHON">
@@ -526,7 +526,7 @@
             </sequential>
         </for>
         <antcall target="stop-calculators"/>
-        <fail message="Test failure detected, check test results." if="failed_python" />
+        <fail message="Test failure detected for python, check test results." if="failed_python" />
     </target>
     
     <target name="test-R" depends="dist-test, start-calculators" unless="env.NO_TEST_R">  
@@ -576,7 +576,7 @@
             </sequential>
         </for>
         <antcall target="stop-calculators"/>
-        <fail message="Test failure detected, check test results." if="failed_R" />
+        <fail message="Test failure detected for R, check test results." if="failed_R" />
     </target>
 
     <target name="read-quotas" description="read the test configuration">
