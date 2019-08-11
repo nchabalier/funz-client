@@ -425,12 +425,15 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
 
     public String getRunDesignState(int i) {
         if (haveNoDesign()) {
-            return StringUtils.rightPad(batchRuns[i].getState().trim().replace('\n', ','),15);
+            return StringUtils.rightPad(
+                    batchRuns[i] != null ? batchRuns[i].getState().trim().replace('\n', ',').replace("Running (i/p/r/d/f/e):\t", ""): "-",
+                    30);
         } else {
-            return 
-                (loopDesigns[i] != null ? StringUtils.rightPad(loopDesigns[i].getState().trim().replace('\n', ','),15) : "-") +
-                " / "+
-                (batchRuns[i] != null ? StringUtils.rightPad(batchRuns[i].getState().trim().replace('\n', ','),15) : "-");
+            return StringUtils.rightPad(
+                (loopDesigns[i] != null ? loopDesigns[i].getState().trim().replace('\n', ',') : "-") +
+                ": "+
+                (batchRuns[i] != null ? batchRuns[i].getState().trim().replace('\n', ',').replace("Running (i/p/r/d/f/e):\t", "") : "-"),
+                30);
         }
     }
 
@@ -442,7 +445,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
         List<String> states = new LinkedList<>();
         for (int i = 0; i < currentresult.length; i++) {
             if (currentresult[i] != null) {
-                states.add(i, currentresult[i].get("case") + ": " + getRunDesignState(i));
+                states.add(i, (currentresult.length>1?currentresult[i].get("case") + ": ":"") + getRunDesignState(i));
             } else {
                 states.add(i, "?");
             }

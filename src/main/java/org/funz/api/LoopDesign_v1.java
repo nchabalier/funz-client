@@ -555,7 +555,7 @@ public abstract class LoopDesign_v1 {
         }
 
         if (stat.getDecision() == Decision.DESIGN_OVER) {
-            setState(DESIGN_OVER + " at iteration " + iteration + (stat.getMessage() != null ? " (" + stat.getMessage() + ")" : ""));
+            setState(DESIGN_OVER + (stat.getMessage() != null ? " (" + stat.getMessage() + ")" : ""));
             out("Design ended " + (stat.getMessage() != null ? " (" + stat.getMessage() + ")" : ""), 1);
             return null;
         }
@@ -617,7 +617,7 @@ public abstract class LoopDesign_v1 {
         }
 
         if (stat.getDecision() == Decision.DESIGN_OVER) {
-            setState(DESIGN_OVER + " at iteration " + iteration + ": " + stat.getMessage());
+            setState(DESIGN_OVER + (stat.getMessage() != null ? " (" + stat.getMessage() + ")" : ""));
             out("Design ended: " + stat.getMessage(), 1);
             return null;
         }
