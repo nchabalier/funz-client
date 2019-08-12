@@ -468,7 +468,7 @@ public class Report {
                 try {
                     interValues = ProjectController.getCaseIntermediates(_project, c.getIndex());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.err(e, 1);
                 }
                 if (interKeys == null && interValues != null) {
                     interKeys = interValues.keySet();
@@ -496,7 +496,7 @@ public class Report {
                 try {
                     outputValues = ProjectController.getCaseOutputs(_project, c.getIndex(), false);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.err(e, 1);
                 }
                 //outputValues.put(ParseExpression.FILES, caseoutputFiles);
                 StringBuilder result_val = new StringBuilder();
@@ -526,7 +526,6 @@ public class Report {
                         result_val.append(" ");
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
                     Log.err(e, 1);
                     result_val.append("| ").append(e.getLocalizedMessage());
                 }
@@ -538,7 +537,6 @@ public class Report {
                         .replace("__inputfiles__", caseinputfiles_a.toString())
                         .replace("__outputfiles__", caseoutputfiles_a.toString()));
             } catch (Exception e) {
-                e.printStackTrace();
                 Log.err(e, 1);
                 cases_tr.append("| ").append(toHTML(e.getLocalizedMessage()));
             }
