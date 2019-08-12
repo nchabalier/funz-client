@@ -104,7 +104,7 @@ displayResults <- function(gradientdescent,X,Y) {
         gradientdescent$files <- paste0("plot_",gradientdescent$i-1,".png",sep="")
         png(file=gradientdescent$files,bg="transparent",height=resolution,width = resolution)
         red = (as.matrix(Y)-min(Y))/(max(Y)-min(Y))
-        plot(x=X[,1],y=Y,xlab=names(X),ylab=names(Y),col=rgb(r=red,g=0,b=1-red))
+        plot(X[,1],y=Y,xlab=names(X),ylab=names(Y),col=rgb(r=red,g=0,b=1-red))
         dev.off()
     }
 
