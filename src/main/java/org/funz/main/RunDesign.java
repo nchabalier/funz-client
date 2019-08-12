@@ -2,25 +2,21 @@ package org.funz.main;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.plexus.util.FileUtils;
 import org.funz.Project;
 import static org.funz.api.AbstractShell.*;
-import org.funz.api.BatchRun_v1;
 import org.funz.api.Funz_v1;
-import org.funz.api.LoopDesign_v1;
 import org.funz.api.Shell_v1;
 import org.funz.log.Log;
 import static org.funz.main.MainUtils.CLEAR_LINE;
 import static org.funz.main.MainUtils.init;
 import static org.funz.parameter.OutputFunctionExpression.OutputFunctions;
 import org.funz.util.ASCII;
-import org.funz.util.Data;
-import org.funz.util.Disk;
 import static org.funz.util.Format.ArrayMapToCSVString;
 import static org.funz.util.Format.ArrayMapToJSONString;
 import static org.funz.util.Format.ArrayMapToMDString;
@@ -132,7 +128,7 @@ public class RunDesign extends MainUtils {
         Map _designOptions = null;
         Map<String, String> _runControl = null;
         Map<String, String> _monitorControl = null;
-        List<String> _filter = null;
+        LinkedList<String> _filter = null;
         File _print = null;
         boolean X = false;
         int verb = -666;
@@ -249,7 +245,7 @@ public class RunDesign extends MainUtils {
                     i += j - 1;
                 } else if (Option.PRINT_FILTER.is(args[i])) {
                     if (_filter != null) throw new Exception("[ERROR] Option "+Option.PRINT_FILTER.key+" already set!");
-                    List<String> outs = new LinkedList<>();
+                    LinkedList<String> outs = new LinkedList<>();
                     int j = 1;
                     while (i + j < args.length && !isOption(args[i + j])) {
                         try {
@@ -430,24 +426,33 @@ public class RunDesign extends MainUtils {
             //e.printStackTrace();
             System.exit(RUN_ERROR);
         } finally {
-            Map<String, Object[]> print_results = new HashMap();
             if (_filter == null) {
-                print_results = Data.keep_array(results, "case|analysis(.*)");
-                print_results = Data.remove_array(print_results, "(.*)\\.(\\d+)");
-            } else {
-                if (results != null) {
-                    for (String s : _filter) {
-                        for (String r : results.keySet()) {
-                            if (r.equals(s) || r.matches(s)) {
-                                print_results.put(s, results.get(r));
-                            }
+                _filter = new LinkedList<>();
+                _filter.add("case");
+                _filter.add("analysis\\.(\\D+)");
+                _filter.addAll(Arrays.asList(shell.getInputVariables()));
+                _filter.addAll(Arrays.asList(shell.getOutputExpressions()));
+                _filter.add("state");
+                _filter.add("duration");
+                _filter.add("calc");
+            }
+
+            Map<String, Object[]> print_results = new HashMap();
+            if (results != null) {
+                for (int i = 0; i < _filter.size(); i++) {
+                    String s = _filter.get(i);
+                    for (String r : results.keySet()) {
+                        if (r.equals(s) || r.matches(s)) {
+                            _filter.add(i + 1, r);
+                            print_results.put(r, results.get(r));
                         }
                     }
+                    _filter.remove(i);
                 }
             }
-            
-            System.out.println(ArrayMapToMDString(print_results));
-            Log.out(ArrayMapToMDString(print_results), 0);
+
+            System.out.println(ArrayMapToMDString(print_results, _filter));
+            Log.out(ArrayMapToMDString(print_results,_filter), 0);
 
             if (_print.getName().endsWith(".xml")) {
                 ASCII.saveFile(_print, ArrayMapToXMLString(print_results));

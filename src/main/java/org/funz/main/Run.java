@@ -2,22 +2,19 @@ package org.funz.main;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.plexus.util.FileUtils;
 import org.funz.Project;
 import static org.funz.api.AbstractShell.*;
-import org.funz.api.BatchRun_v1;
 import org.funz.api.Funz_v1;
 import org.funz.api.RunShell_v1;
 import org.funz.log.Log;
 import static org.funz.parameter.OutputFunctionExpression.OutputFunctions;
 import org.funz.util.ASCII;
-import org.funz.util.Data;
-import org.funz.util.Disk;
 import static org.funz.util.Format.ArrayMapToCSVString;
 import static org.funz.util.Format.ArrayMapToJSONString;
 import static org.funz.util.Format.ArrayMapToMDString;
@@ -404,23 +401,31 @@ public class Run extends MainUtils {
             //e.printStackTrace();
             System.exit(RUN_ERROR);
         } finally {
-            Map<String, Object[]> print_results = new HashMap();
             if (_filter == null) {
-                print_results = Data.remove_array(results, "code|input(.*)|output(.*)|start|end|calc|info");
-            } else {
-                if (results != null) {
-                    for (String s : _filter) {
-                        for (String r : results.keySet()) {
-                            if (r.equals(s) || r.matches(s)) {
-                                print_results.put(s, results.get(r));
-                            }
+                _filter = new LinkedList<>();
+                _filter.addAll(Arrays.asList(shell.getInputVariables()));
+                _filter.addAll(Arrays.asList(shell.getOutputExpressions()));
+                _filter.add("state");
+                _filter.add("duration");
+                _filter.add("calc");
+            }
+
+            Map<String, Object[]> print_results = new HashMap();
+            if (results != null) {
+                for (int i = 0; i < _filter.size(); i++) {
+                    String s = _filter.get(i);
+                    for (String r : results.keySet()) {
+                        if (r.equals(s) || r.matches(s)) {
+                            _filter.add(i+1, r);
+                            print_results.put(r, results.get(r));
                         }
                     }
+                    _filter.remove(i);
                 }
             }
 
-            System.out.println(ArrayMapToMDString(print_results));
-            Log.out(ArrayMapToMDString(print_results), 0);
+            System.out.println(ArrayMapToMDString(print_results, _filter));
+            Log.out(ArrayMapToMDString(print_results,_filter), 0);
 
             if (_print.getName().endsWith(".xml")) {
                 ASCII.saveFile(_print, ArrayMapToXMLString(print_results));

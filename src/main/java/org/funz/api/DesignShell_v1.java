@@ -27,8 +27,6 @@ import org.funz.util.ASCII;
 import org.funz.util.Data;
 import static org.funz.util.Data.*;
 import org.funz.util.Format;
-import static org.funz.util.Format.ArrayMapToMDString;
-import org.math.array.DoubleArray;
 
 /**
  * @author Y. Richet
@@ -221,7 +219,7 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
             return super.getState();
         }
 
-        return state + " (" + getDesignState().trim() + ")";
+        return getDesignState().trim();
     }
 
     public String getDesignState() {

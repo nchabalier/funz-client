@@ -13,7 +13,6 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.funz.Project;
-import static org.funz.api.DesignShell_v1.DEFAULT_FUNCTION_NAME;
 import org.funz.doeplugin.Design;
 import org.funz.doeplugin.DesignConstants.Decision;
 import org.funz.doeplugin.DesignConstants.Status;
@@ -22,10 +21,8 @@ import org.funz.doeplugin.DesignPluginsLoader;
 import org.funz.doeplugin.DesignSession;
 import org.funz.doeplugin.DesignedExperiment;
 import org.funz.doeplugin.Experiment;
-import org.funz.ioplugin.ExtendedIOPlugin;
 import org.funz.log.Alert;
 import org.funz.parameter.Case;
-import org.funz.parameter.Case.Observer;
 import org.funz.parameter.OutputFunctionExpression;
 import org.funz.parameter.Parameter;
 import org.funz.parameter.Variable;
@@ -33,7 +30,6 @@ import org.funz.util.ASCII;
 import static org.funz.util.Data.*;
 import static org.funz.util.Format.ArrayMapToMDString;
 import static org.funz.util.Format.MapToMDString;
-import org.math.array.DoubleArray;
 
 /**
  * Open API to use Funz (possibly iterative) algorithm. It is intended to be
@@ -304,7 +300,7 @@ public abstract class LoopDesign_v1 {
             throw new Exception(DESIGN_ERROR + " at first iteration: " + stat.getMessage());
         }
 
-        setState("First iteration" + (stat.getMessage() != null ? " (" + stat.getMessage() + ")" : ""));
+        setState("Iteration 1" + (stat.getMessage() != null ? " (" + stat.getMessage() + ")" : ""));
         out("First design: " + stat.getDecision() + ": " + stat.getMessage(), 2);
 
         nextExperiments = new ArrayList<ShellExperiment>(initialExperiments.size());

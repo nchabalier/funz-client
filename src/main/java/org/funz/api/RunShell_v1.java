@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.funz.Project;
-import org.funz.conf.Configuration;
 import org.funz.doeplugin.DesignConstants;
 import org.funz.log.Alert;
 import org.funz.log.Log;
@@ -15,7 +14,6 @@ import org.funz.parameter.VarGroup;
 import org.funz.parameter.Variable;
 import org.funz.util.ASCII;
 import static org.funz.util.Data.*;
-import org.funz.util.Disk;
 
 /**
  * Open API to launch Funz grid computations using parametrized input files and
@@ -253,7 +251,7 @@ public class RunShell_v1 extends AbstractShell {
             return super.getState();
         }
 
-        return state + " (" + getRunState().trim() + ")";
+        return getRunState().trim();
     }
 
     public String getRunState() {

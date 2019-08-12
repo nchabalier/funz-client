@@ -22,7 +22,6 @@ import org.funz.parameter.VarGroup;
 import org.funz.parameter.Variable;
 import org.funz.util.ASCII;
 import static org.funz.util.Data.*;
-import org.funz.util.Disk;
 
 /**
  * Open API to launch Funz grid computations using parametrized input files and
@@ -420,20 +419,22 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
             return super.getState();
         }
 
-        return state + "\n" + getRunDesignState().trim();
+        return state + "\n" + getRunDesignState() + "\n";
     }
 
+    public static int STATE_PRINT_WIDTH = 30;
+    
     public String getRunDesignState(int i) {
         if (haveNoDesign()) {
             return StringUtils.rightPad(
                     batchRuns[i] != null ? batchRuns[i].getState().trim().replace('\n', ',').replace("Running (i/p/r/d/f/e):\t", ""): "-",
-                    30);
+                    STATE_PRINT_WIDTH);
         } else {
             return StringUtils.rightPad(
                 (loopDesigns[i] != null ? loopDesigns[i].getState().trim().replace('\n', ',') : "-") +
                 ": "+
                 (batchRuns[i] != null ? batchRuns[i].getState().trim().replace('\n', ',').replace("Running (i/p/r/d/f/e):\t", "") : "-"),
-                30);
+                STATE_PRINT_WIDTH);
         }
     }
 
@@ -447,7 +448,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
             if (currentresult[i] != null) {
                 states.add(i, (currentresult.length>1?currentresult[i].get("case") + ": ":"") + getRunDesignState(i));
             } else {
-                states.add(i, "?");
+                states.add(i, StringUtils.rightPad("?",STATE_PRINT_WIDTH));
             }
         }
         return ASCII.cat("\n", states.toArray(new String[states.size()]));
