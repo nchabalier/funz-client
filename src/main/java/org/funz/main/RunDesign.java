@@ -292,6 +292,11 @@ public class RunDesign extends MainUtils {
             System.exit(INPUT_FILE_ERROR);
         }
 
+        if (_designer == null) {
+            System.err.println("[ERROR] Design not defined.\n" + help("--design"));
+            System.exit(DESIGN_ERROR);
+        }
+
         //tic("setVerbosity");
         Funz_v1.setVerbosity(verb);
         //toc("setVerbosity");        //toc("setVerbosity");
