@@ -594,7 +594,7 @@ public class VariableMethods {
                                 if (writer != null) {
                                     writer.close();
                                 }
-                                throw new BadSyntaxException(file, lineNumber, var.toString(), "bad syntax " + varStart + varRLimit + "..." + " :\n" + line);
+                                throw new BadSyntaxException(file, lineNumber, "?", "bad syntax " + varStart + varRLimit + "..." + " :\n" + line);
                             }
                         } else {
                             reader.close();
