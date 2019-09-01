@@ -333,12 +333,11 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
             try{            
                 s.receive(p); // blocking as long as a packet not received / or SoTimeout exceeded
             }catch(SocketTimeoutException t) {
-                System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! UPDATE SOCKET EXCEPTION "+t);
                 force_close(s);
                 s = getSocket(_port);
                 return;
             }catch(Exception t) {
-                                System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! UPDATE EXCEPTION "+t);
+                Log.err(t,2);
             }
             String data = new String(p.getData());
             buf = null;
