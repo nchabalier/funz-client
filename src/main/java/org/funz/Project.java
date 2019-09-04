@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.io.FileUtils;
 import static org.funz.Constants.*;
@@ -1114,7 +1113,7 @@ public class Project {
         return caseParametersCache.get(c);
 
     }
-    Map<Case, Map<String, String>> caseParametersCache = new WeakHashMap<Case, Map<String, String>>();
+    Map<Case, Map<String, String>> caseParametersCache = new HashMap<Case, Map<String, String>>();
 
     public void buildCaseParameters(Case c) {
         //System.err.println("Project.getCaseVariables " + c.getName());
@@ -2226,6 +2225,9 @@ public class Project {
                     _vars.add(v);
                 }
                 buildParameterList();
+                throw ex;
+            } catch (Exception ex) {
+                Log.logMessage(this, SeverityLevel.ERROR, false, "Error:\n" + ex.toString());
                 throw ex;
             }
 
