@@ -6,17 +6,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.funz.Constants;
-import static org.funz.StarterMonitor.POOL;
 import org.funz.conf.Configuration;
 import org.funz.log.Log;
-import static org.funz.log.LogTicToc.HMS;
 import org.funz.run.CalculatorsPool;
 import org.funz.run.Computer;
 import org.funz.script.MathExpression;
 import org.funz.script.RMathExpression;
 import org.funz.util.ASCII;
-import org.math.R.Rsession;
-import static org.funz.log.LogTicToc.HMS;
 
 /**
  *
