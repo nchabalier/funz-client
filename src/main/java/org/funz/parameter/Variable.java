@@ -704,10 +704,10 @@ public class Variable extends VariableMethods implements XMLConstants, Parameter
                 String[] bounds = m.substring(1, m.length() - 1).split(",");
                 setLowerBound(Double.parseDouble(bounds[0]));
                 setUpperBound(Double.parseDouble(bounds[bounds.length - 1]));
-            } else if (m.startsWith("'") && m.endsWith("'")) {
+            } else if (m.startsWith("\"") && m.endsWith("\"")) {
                 comment = m.substring(1, m.length() - 1);
-            } else if (m.startsWith(":")) {
-                String grp = m.substring(1);
+            } else if (m.contains(":")) {
+                String grp = m.substring(0,m.indexOf(':'));
                 if (grp.length() > 0) {
                     VarGroup g = prj.findGroup(grp);
                     if (g == null) {
@@ -717,6 +717,14 @@ public class Variable extends VariableMethods implements XMLConstants, Parameter
                     setGroup(g);
                     g.addVariable(this);
                 }
+            } else if (m.startsWith("'") && m.endsWith("'")) {
+                m = m.substring(1, m.length() - 1);
+                if (m.contains("/")) {
+                    setType(TYPE_TEXTFILE);
+                } else {
+                    setType(TYPE_STRING);
+                }
+                _default_value = m;
             } else {
                 setDiscTypeFromSampleValues(m);
                 _default_value = m;
