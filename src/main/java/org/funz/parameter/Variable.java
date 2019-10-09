@@ -706,8 +706,8 @@ public class Variable extends VariableMethods implements XMLConstants, Parameter
                 setUpperBound(Double.parseDouble(bounds[bounds.length - 1]));
             } else if (m.startsWith("\"") && m.endsWith("\"")) {
                 comment = m.substring(1, m.length() - 1);
-            } else if (m.startsWith(":")) {
-                String grp = m.substring(1);
+            } else if (m.contains(":")) {
+                String grp = m.substring(0,m.indexOf(':'));
                 if (grp.length() > 0) {
                     VarGroup g = prj.findGroup(grp);
                     if (g == null) {
