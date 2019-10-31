@@ -3,7 +3,7 @@
 if %1 == -h ( 
   echo Usage: Funz.bat COMMAND [ARGS]
   echo
-  echo   Run ...             Launch (remote) calculations, replacing variables by given values
+  echo   Run ...             Launch remote calculations, replacing variables by given values
   echo   Design ...          Apply an algorithm on an executable program returning target output value
   echo   RunDesign ...       Apply an algorithm and launch required calculations
   echo   ParseInput ...      Find variables inside parametrized input file
@@ -15,7 +15,7 @@ if %1 == -h (
 if %1 == --help ( 
   echo Usage: Funz.bat COMMAND [ARGS]
   echo 
-  echo   Run ...             Launch (remote) calculations, replacing variables by given values
+  echo   Run ...             Launch remote calculations, replacing variables by given values
   echo   Design ...          Apply an algorithm on an executable program returning target output value
   echo   RunDesign ...       Apply an algorithm and launch required calculations
   echo   ParseInput ...      Find variables inside parametrized input file
