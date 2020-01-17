@@ -769,6 +769,10 @@ public class Project {
         if (_outputFunctions.size() <= _mainOutputFunctionIndex) {
             _mainOutputFunctionIndex = 0;
         }
+        
+        if (_outputFunctions.size() == 0 && getOutputNames().length > 0)
+            for (String o : getOutputNames())
+                _outputFunctions.add(new OutputFunctionExpression.Text(o));
     }
 
     /**
