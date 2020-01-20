@@ -1109,6 +1109,10 @@ public abstract class OutputFunctionExpression {
             char c = arglist.charAt(i);
             if (c == '(' || c == '[' || c == '{') {
                 int i2 = matchingCloseBrace(arglist, i);
+                if (i2==-1) {
+                    Log.logMessage("splitArgs", SeverityLevel.ERROR, true, "Could not find closing brace in " + arglist+" after "+i);
+                    break;
+                }
                 b = b.append(arglist.substring(i, i2 + 1));
                 i = i2;
                 continue;
