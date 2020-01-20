@@ -232,9 +232,9 @@ public class VariableMethodsTest {
         assert readVar("" + vs + vl + "v~123;{1,2,3}" + vr,true).getNmOfValues() == 3 : "Failed to read var values";
         assert readVar("" + vs + vl + "v~123;[1,2]" + vr,false).getNmOfValues() == 0 : "Failed to read var values";
         assert readVar("" + vs + vl + "v~123;[1,2]" + vr,true).getNmOfValues() == 1 : "Failed to read var values";
-        assert readVar("" + vs + vl + "v~123;{1,2,3};'comment'" + vr,false).getComment().equals("comment") : "Failed to read var comment";
-        assert readVar("" + vs + vl + "v~123;{1,2,3};'comment';[10,20]" + vr,false).getLowerBound() == 10 : "Failed to read var bound";
-        assert readVar("" + vs + vl + "v~123;{1,2,3};'comment';[10,20]" + vr,false).getUpperBound() == 20 : "Failed to read var bound";
+        assert readVar("" + vs + vl + "v~123;{1,2,3};\"comment\"" + vr,false).getComment().equals("comment") : "Failed to read var comment";
+        assert readVar("" + vs + vl + "v~123;{1,2,3};\"comment\";[10,20]" + vr,false).getLowerBound() == 10 : "Failed to read var bound";
+        assert readVar("" + vs + vl + "v~123;{1,2,3};\"comment\";[10,20]" + vr,false).getUpperBound() == 20 : "Failed to read var bound";
     }
 
     @Test
