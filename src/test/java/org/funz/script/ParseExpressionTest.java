@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
+import org.funz.util.Data;
 import org.funz.util.Format;
 import static org.funz.util.Format.repeat;
 import org.funz.util.Parser;
@@ -44,7 +45,7 @@ public class ParseExpressionTest {
 
         expressions.add("`grep(\"(.*)vbs\",\"WScript\\.StdOut\\.WriteLine\\(\\\"(.*)=\")>>before(\"=\")>>after(\"\"\")`");
         results.add("z");
-        
+
         expressions.add("`grep(\"(.*)R\",\"cat\\(\\'(.*)=\")>>before(\"=\")>>after(\"'\")`");
         results.add("z");
 
@@ -196,6 +197,77 @@ public class ParseExpressionTest {
                 assert ostr.equals(resstr) : "Result not matching when eval " + ex + ": [" + o.getClass().getSimpleName() + "] " + ostr + " != [" + res.getClass().getSimpleName() + "] " + resstr;
             }
         }
+
+    }
+
+    @Test
+    public void testBugFailedContains() {
+        //contains("(.*)","DEBUT_APOLLO") && !contains("(.*)","DEBUT_MORET") && !contains("(.*)","SN KEFF") && !contains("(.*)","RECHERCHE_DIM_S") && contains("(.*)","CIGALES version 3(.)2")
+        // on files [Y:\Promethee\samples\branin.R] 
+        // org.funz.util.Parser.contains(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String) 
+        // Failed to evaluate expression contains("(.*)","DEBUT_APOLLO") && !contains("(.*)","DEBUT_MORET") && !contains("(.*)","SN KEFF") && !contains("(.*)","RECHERCHE_DIM_S") && contains("(.*)","CIGALES version 3(.)2") on files [Y:\Promethee\samples\branin.R] org.funz.util.Parser.contains(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String) java.lang.Exception null at org.funz.script.ParseExpression.eval(ParseExpression.java:422) 
+
+        System.err.println("===============>"
+                + ParseExpression.eval("contains(\"(.*)\",\"DEBUT_APOLLO\")",
+                        Data.newMap("files", "src/test/samples/branin.R")
+                ));
+
+        System.err.println("===============>"
+                + ParseExpression.eval("contains(\"(.*)\",\"DEBUT_APOLLO\") & contains(\"(.*)\",\"DEBUT_MORET\")",
+                        Data.newMap("files", "src/test/samples/branin.R")
+                ));
+
+        System.err.println("===============>"
+                + ParseExpression.eval("contains(\"(.*)\",\"DEBUT_APOLLO\") & !contains(\"(.*)\",\"DEBUT_MORET\")",
+                        Data.newMap("files", "src/test/samples/branin.R")
+                ));
+
+        System.err.println("===============>"
+                + ParseExpression.eval("contains(\"(.*)\",\"DEBUT_APOLLO\") & !contains(\"(.*)\",\"DEBUT_MORET\") & !contains(\"(.*)\",\"SN KEFF\") & !contains(\"(.*)\",\"RECHERCHE_DIM_S\") & contains(\"(.*)\",\"CIGALES version 3(.)2\")",
+                        Data.newMap("files", "src/test/samples/branin.R")
+                ));
+    }
+
+    @Test
+    public void testBraces() {
+        System.err.println("===============>"
+                + ParseExpression.eval("containsIn(\"(abc)\",\"a\")",
+                        Data.newMap("files", "src/test/samples/branin.R")
+                ));
+
+        System.err.println("===============>"
+                + ParseExpression.eval("containsIn(\"(abc)\",\"a\") & containsIn(\"(abc)\",\"b\")",
+                        Data.newMap("files", "src/test/samples/branin.R")
+                ));
+
+        System.err.println("===============>"
+                + ParseExpression.eval("containsIn(\"(abc)\",\"a\") & !containsIn(\"(abc)\",\"d\")",
+                        Data.newMap("files", "src/test/samples/branin.R")
+                ));
+
+        System.err.println("===============>"
+                + ParseExpression.eval("containsIn(\"(abc)\",\"a\") & containsIn(\"(abc)\",\"b\") & containsIn(\"(abc)\",\"c\")",
+                        Data.newMap("files", "src/test/samples/branin.R")
+                ));
+
+    }
+
+    @Test
+    public void testSerialLogic() {
+        System.err.println(
+                ParseExpression.eval("containsIn(\"abc\",\"a\")",
+                        Data.newMap("files", "src/test/samples/branin.R")
+                ));
+
+        System.err.println(
+                ParseExpression.eval("containsIn(\"abc\",\"a\") & containsIn(\"abc\",\"b\")",
+                        Data.newMap("files", "src/test/samples/branin.R")
+                ));
+
+        System.err.println(
+                ParseExpression.eval("containsIn(\"abc\",\"a\") & containsIn(\"abc\",\"b\") & containsIn(\"abc\",\"c\")",
+                        Data.newMap("files", "src/test/samples/branin.R")
+                ));
 
     }
 
