@@ -439,7 +439,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
     }
 
     public String getRunDesignState() {
-        if (super.getState().equals(SHELL_ERROR)) {
+        if (super.getState().equals(SHELL_ERROR) | currentresult==null) {
             return super.getState();
         }
 
