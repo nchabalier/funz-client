@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.lang.Math;
 import org.apache.commons.lang.StringUtils;
 import org.funz.log.Log;
 import org.funz.log.LogCollector.SeverityLevel;
@@ -293,7 +294,7 @@ public class VariableMethods {
      ex.printStackTrace();
      }
      }*/
-    public synchronized static HashSet parseFileVars(SyntaxRules varSyntax, File file, File trg, Map values, LinkedList replaceables, Map<String, String> defaultmodels)
+    public static HashSet parseFileVars(SyntaxRules varSyntax, File file, File trg, Map values, LinkedList replaceables, Map<String, String> defaultmodels)
             throws UnsupportedEncodingException, FileNotFoundException, IOException, BadSyntaxException {
         long tic = Calendar.getInstance().getTimeInMillis();
         char varStart = varSyntax.getStartSymbol(),
@@ -699,7 +700,7 @@ public class VariableMethods {
     public static final String MATHENGINE_SET_MARKER = ":";
     public static final String MATHENGINE_TEST_MARKER = "?";    
     
-    public synchronized static void parseFileForms(String commentLine, SyntaxRules formSyntax, File file, File trg, LinkedList replaceables, MathExpression formulaEngine) //
+    public static void parseFileForms(String commentLine, SyntaxRules formSyntax, File file, File trg, LinkedList replaceables, MathExpression formulaEngine) //
             throws UnsupportedEncodingException, FileNotFoundException, IOException, BadSyntaxException, ParseEvalException, MathExpression.MathException { //
 
         long tic = Calendar.getInstance().getTimeInMillis();
@@ -880,7 +881,7 @@ public class VariableMethods {
         Log.logMessage("VariableMethods.parseFileForms", SeverityLevel.INFO, false, "parse " + file.getName() + " forms in " + ((toc - tic) / 1000.0) + " s.");
     }
 
-    public synchronized static HashSet parseFile(String commentLine,
+    public static HashSet parseFile(String commentLine,
             SyntaxRules varSyntax, //
             SyntaxRules formSyntax, //
             File file, File trg, //
@@ -891,7 +892,7 @@ public class VariableMethods {
             Map lines, LoadProgressObserver observer, //
             Map<String, String> defaultmodels, //
             MathExpression formulaEngine) throws UnsupportedEncodingException, FileNotFoundException, IOException, BadSyntaxException, ParseEvalException, MathExpression.MathException {
-        File trg_vars = File.createTempFile("vars_", (trg == null ? "" + file.hashCode() : trg.getName()), (trg == null ? new File(".") : trg.getParentFile()));
+        File trg_vars = File.createTempFile("vars_", Double.toString(Math.random()), (trg == null ? new File(".") : trg.getParentFile()));
         //new File(System.getProperty("java.io.tmpdir"), "vars_" + (trg == null ? file.hashCode() : trg.getName()));
         HashSet vars = parseFileVars(varSyntax, file, trg_vars, values, replaceables, defaultmodels);
         parseFileForms(commentLine, formSyntax, trg_vars, trg, replaceables, formulaEngine);
