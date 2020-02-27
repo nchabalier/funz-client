@@ -81,7 +81,7 @@ matrix:
 #        - NO_TEST_CMD=1
     - name: "MacOS JDK8 Test R,python,bash"
       os: osx
-      osx_image: xcode9.3
+      osx_image: xcode8.3
       env:
         - NO_TEST_JAVA=1
         - NO_TEST_CMD=1
