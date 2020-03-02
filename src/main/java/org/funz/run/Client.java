@@ -565,11 +565,13 @@ public class Client implements Protocol {
         } catch (TimeOut.TimeOutException e) {
             log(e.getLocalizedMessage());
         }
+        if (to.getResult()==null) return null;
         return to.getResult().toString();
     }
 
     String readLineTimeout() throws IOException {
         tstamp_reader = Calendar.getInstance().getTimeInMillis();
+        if (_reader==null) return null;
         return _reader.readLine();
     }
 
