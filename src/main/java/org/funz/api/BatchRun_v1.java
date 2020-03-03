@@ -1008,7 +1008,11 @@ public abstract class BatchRun_v1 {
             }
 
             if (success) {
-                c.setInformation("Run succeded.");
+                if(c.isError()) {
+                    c.setInformation("Run error.");
+                } else {
+                    c.setInformation("Run succeded.");
+                }
             } else {
                 if (c.getTriesDone() > prj.getMaxRetry()) {
                     c.setInformation("Run failed: too much retry (" + c.getStatusInformation() + ")");
