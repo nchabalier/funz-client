@@ -247,10 +247,9 @@ public class RunShell_v1 extends AbstractShell {
 
     @Override
     public String getState() {
-        if (!super.getState().equals(SHELL_RUNNING)) {
+        /*if (!super.getState().equals(SHELL_RUNNING)) {
             return super.getState();
-        }
-
+        }*/
         return getRunState().trim();
     }
 
