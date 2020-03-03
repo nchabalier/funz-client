@@ -40,7 +40,46 @@ matrix:
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
         - R_SERVER="R://localhost"
-    - name: "Linux JDK8 Test R,python,bash"
+    - name: "Linux JDK latest - R2js"
+      os: linux
+      dist: trusty
+      jdk:
+        - openjdk13
+      env:
+        - TRAVIS_DIST_NAME="trusty"
+        - NO_TEST_ISSUES=1
+        - NO_TEST_R=1
+        - NO_TEST_PYTHON=1
+        - NO_TEST_BASH=1
+        - NO_TEST_CMD=1
+        - R_SERVER=R2js
+    - name: "Linux JDK latest - Renjin"
+      os: linux
+      dist: trusty
+      jdk:
+        - openjdk13
+      env:
+        - TRAVIS_DIST_NAME="trusty"
+        - NO_TEST_ISSUES=1
+        - NO_TEST_R=1
+        - NO_TEST_PYTHON=1
+        - NO_TEST_BASH=1
+        - NO_TEST_CMD=1
+        - R_SERVER=Renjin
+    - name: "Linux JDK latest - Rserve"
+      os: linux
+      dist: trusty
+      jdk:
+        - openjdk13
+      env:
+        - TRAVIS_DIST_NAME="trusty"
+        - NO_TEST_ISSUES=1
+        - NO_TEST_R=1
+        - NO_TEST_PYTHON=1
+        - NO_TEST_BASH=1
+        - NO_TEST_CMD=1
+        - R_SERVER="R://localhost"
+    - name: "Linux Test R,python,bash"
       os: linux
       dist: trusty
       env:
@@ -50,6 +89,7 @@ matrix:
         - R_SERVER=R2js
       jdk:
         - openjdk8
+        - openjdk13
 #    - name: "Linux JDK11"
 #      os: linux
 #      dist: xenial
@@ -79,13 +119,16 @@ matrix:
 #        - NO_TEST_PYTHON=1
 #        - NO_TEST_BASH=1
 #        - NO_TEST_CMD=1
-    - name: "MacOS JDK8 Test R,python,bash"
+    - name: "MacOS Test R,python,bash"
       os: osx
       osx_image: xcode9.3
       env:
         - NO_TEST_JAVA=1
         - NO_TEST_CMD=1
         - R_SERVER=R2js
+      jdk:
+        - oraclejdk8
+        - oraclejdk13
 #    - name: "MacOS JDK11"
 #      os: osx
 #      osx_image: xcode10.1
@@ -97,7 +140,7 @@ matrix:
 #        - oraclejdk8
 #        - oraclejdk11
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then travis_wait brew install ant; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then travis_wait brew update; brew install ant; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install ant -y; fi
 
 install:
@@ -118,7 +161,7 @@ install:
   - cd $WD
 
 before_script:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rm -f '/usr/local/include/c++'; travis_wait brew install r; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rm -f '/usr/local/include/c++'; brew install r; fi
   - if [[ "$TRAVIS_OSX_IMAGE" == "xcode9.3" ]]; then brew uninstall --ignore-dependencies --force python; brew install python3; fi # to get python3 instead of 2 -> ok.py test working
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9; fi
   - if [[ "$TRAVIS_DIST_NAME" == "trusty" ]]; then echo "deb https://cloud.r-project.org/bin/linux/ubuntu trusty-cran35/" | sudo tee -a /etc/apt/sources.list; fi
