@@ -79,7 +79,7 @@ matrix:
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
         - R_SERVER="R://localhost"
-    - name: "Linux Test R,python,bash"
+    - name: "Linux JDK8 Test R,python,bash"
       os: linux
       dist: trusty
       env:
@@ -89,6 +89,15 @@ matrix:
         - R_SERVER=R2js
       jdk:
         - openjdk8
+    - name: "Linux JDK latest Test R,python,bash"
+      os: linux
+      dist: trusty
+      env:
+        - TRAVIS_DIST_NAME="trusty"
+        - NO_TEST_JAVA=1
+        - NO_TEST_CMD=1
+        - R_SERVER=R2js
+      jdk:
         - openjdk13
 #    - name: "Linux JDK11"
 #      os: linux
@@ -119,7 +128,7 @@ matrix:
 #        - NO_TEST_PYTHON=1
 #        - NO_TEST_BASH=1
 #        - NO_TEST_CMD=1
-    - name: "MacOS Test R,python,bash"
+    - name: "MacOS JDK8 Test R,python,bash"
       os: osx
       osx_image: xcode9.3
       env:
@@ -128,6 +137,14 @@ matrix:
         - R_SERVER=R2js
       jdk:
         - oraclejdk8
+    - name: "MacOS JDK latest Test R,python,bash"
+      os: osx
+      osx_image: xcode9.3
+      env:
+        - NO_TEST_JAVA=1
+        - NO_TEST_CMD=1
+        - R_SERVER=R2js
+      jdk:
         - oraclejdk13
 #    - name: "MacOS JDK11"
 #      os: osx
