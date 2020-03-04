@@ -895,6 +895,10 @@ public class Case extends Experiment {
         return _state == STATE_FAILED;
     }
 
+    public boolean isError() {
+        return _state == STATE_ERROR;
+    }
+
     /**
      * Says whether the case is reserved or not.
      */
