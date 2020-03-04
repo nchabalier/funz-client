@@ -305,7 +305,7 @@ public class RMathExpression extends MathExpression {
                 R = new R2jsSession(streamlogger, env);
                 if (R == null) throw new Exception("Cannot instanciate R2jsSession");
                 ((R2jsSession)R).debug_js = Boolean.parseBoolean(Configuration.getProperty("R2js.debug", "false"));
-                R.voidEval("Sys__info = function() {return("+Rsession.toRcode(Data.newMap(
+                R.voidEval("Sys__info = function() {return("+RSession.toRcode(Data.newMap(
                         "nodename","'"+InetAddress.getLocalHost().getHostName()+"'",
                         "sysname","'"+System.getProperty("os.name")+"'",
                         "release","'?'",
@@ -313,7 +313,7 @@ public class RMathExpression extends MathExpression {
                         "user","'"+System.getProperty("user.name")+"'"                        
                         ))+")}");
                  R.voidEval("Sys__getenv = function(v) {env=list('R_HOME'='')\nreturn(env[v])}");//+toRcode(System.getenv())+")\nreturn(env[v])}");
-                 R.voidEval("options = function() {return("Rsession.toRcode(Data.newMap(
+                 R.voidEval("options = function() {return("+RSession.toRcode(Data.newMap(
                         "OutDec","'"+DecimalFormatSymbols.getInstance().getDecimalSeparator()+"'"
                         ))+")}");
             }
