@@ -534,7 +534,7 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
     }
 
     public final static String SHELL_NOTSTARTED = "Not started.", SHELL_RUNNING = "Running...", SHELL_OVER = "Over.", SHELL_ERROR = "Failed!", SHELL_EXCEPTION = "Exception!!";
-    protected String state = SHELL_NOTSTARTED;
+    protected volatile String state = SHELL_NOTSTARTED;
 
     /**
      * If project is correctly and enough set, launch calculation process.
