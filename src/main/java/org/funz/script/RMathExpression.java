@@ -305,17 +305,17 @@ public class RMathExpression extends MathExpression {
                 R = new R2jsSession(streamlogger, env);
                 if (R == null) throw new Exception("Cannot instanciate R2jsSession");
                 ((R2jsSession)R).debug_js = Boolean.parseBoolean(Configuration.getProperty("R2js.debug", "false"));
-                R.voidEval("Sys__info = function() {return("+Rsession.toRcode(Data.newMap(
-                        "nodename","'"+InetAddress.getLocalHost().getHostName()+"'",
-                        "sysname","'"+System.getProperty("os.name")+"'",
-                        "release","'?'",
-                        "version","'"+System.getProperty("os.version")+"'",
-                        "user","'"+System.getProperty("user.name")+"'"                        
+                R.voidEval("Sys__info = function() {return("+asRList(Data.newMap(
+                        "nodename",InetAddress.getLocalHost().getHostName(),
+                        "sysname",System.getProperty("os.name"),
+                        "release","?",
+                        "version",System.getProperty("os.version"),
+                        "user",System.getProperty("user.name")                        
                         ))+")}");
                  R.voidEval("Sys__getenv = function(v) {env=list('R_HOME'='')\nreturn(env[v])}");//+toRcode(System.getenv())+")\nreturn(env[v])}");
-                 R.voidEval("options = function() {return("+Rsession.toRcode(Data.newMap(
-                        "OutDec","'"+DecimalFormatSymbols.getInstance().getDecimalSeparator()+"'"
-                        ))+")}");
+                R.voidEval("options = function() {return(" + asRList(Data.newMap(
+                        "OutDec", DecimalFormatSymbols.getInstance().getDecimalSeparator()
+                )) + ")}");
             }
 
             R.TRY_MODE = true;
@@ -324,6 +324,17 @@ public class RMathExpression extends MathExpression {
         }
     }
 
+    String asRList(Map m) {
+        if (m.isEmpty()) {
+            return "list()";
+        }
+        String l = "list(";
+        for (Object k : m.keySet()) {
+            l = l + k + "='" + m.get(k) + "',";
+        }
+        return l.substring(0, l.length() - 1) + ")";
+    }
+        
     void endR() {
         if (R != null) {
             R.end();
