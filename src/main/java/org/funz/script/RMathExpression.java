@@ -304,6 +304,8 @@ public class RMathExpression extends MathExpression {
             if (R == null) { //default if (R_engine.equals("R2js")){
                 R = new R2jsSession(streamlogger, env);
                 if (R == null) throw new Exception("Cannot instanciate R2jsSession");
+            }
+            if (R instanceof R2jsSession) {
                 ((R2jsSession)R).debug_js = Boolean.parseBoolean(Configuration.getProperty("R2js.debug", "false"));
                 R.voidEval("Sys__info = function() {return("+asRList(Data.newMap(
                         "nodename",InetAddress.getLocalHost().getHostName(),
