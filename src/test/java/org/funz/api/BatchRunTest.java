@@ -235,6 +235,66 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     }
 
     @Test
+    public void testBatchTimeout() throws Exception {
+        System.err.println("+++++++++++++++++++++++++ testBatchTimeout");
+        File tmp_in = tmp_in();
+
+        IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
+        Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, "CodeNotAvailable", plugin);
+        prj.setCode( "CodeNotAvailable");// ensure to use an unavailable code
+
+        assert prj.getVariableByName("x1") != null : "Variable x1 not detected";
+        assert prj.getVariableByName("x2") != null : "Variable x2 not detected";
+        assert prj.getVariableByName("x1").getDefaultValue() == null : "Variable x1 default value not null.";
+        assert prj.getVariableByName("x2").getDefaultValue().equals(".5") : "Variable x2 default value not detected.";
+
+        plugin.setFormulaInterpreter(new RMathExpression(tmp_in.getName() + "_" + Configuration.timeDigest(), Configuration.isLog("R") ? new File(prj.getLogDir(), tmp_in.getName() + ".Rlog") : null));
+        prj.setMainOutputFunction(plugin.suggestOutputFunctions().get(0));
+        prj.setDesignerId(NODESIGNER_ID);
+
+        Variable x1 = prj.getVariableByName("x1");
+        x1.setType(Variable.TYPE_REAL);
+        x1.setValues(VariableMethods.Value.asValueList(".1"));
+
+        Variable x2 = prj.getVariableByName("x2");
+        x2.setType(Variable.TYPE_REAL);
+        x2.setValues(VariableMethods.Value.asValueList(".1"));
+
+        prj.buildParameterList();
+
+        prj.resetDiscreteCases(o);
+
+        prj.setCases(prj.getDiscreteCases(), o);
+
+        prj.useCache = false;
+        prj.waitingTimeout = 10;
+
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+
+            @Override
+            public void out(String string, int i) {
+                TestUtils.out(string, i);
+            }
+
+            @Override
+            public void err(String msg, int i) {
+                TestUtils.err(msg, i);
+            }
+
+            @Override
+            public void err(Exception ex, int i) {
+                TestUtils.err(ex, i);
+            }
+        };
+
+        assert !batchRun.runBatch() : "Run batch (should not !)";
+
+        assert batchRun.getState().contains("CodeNotAvailable") : "no timeout in "+batchRun.getState();
+        
+        batchRun.shutdown();
+    }
+
+    @Test
     public void test1CaseLongExec() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1CaseLongExec");
         File tmp_in = tmp_in();

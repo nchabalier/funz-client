@@ -18,10 +18,6 @@ import org.funz.Project;
 import org.funz.ProjectController;
 import org.funz.Protocol;
 import static org.funz.Protocol.ARCHIVE_FILTER;
-import org.funz.conf.Configuration;
-import static org.funz.doeplugin.DesignConstants.NODESIGNER_ID;
-import org.funz.ioplugin.IOPluginInterface;
-import org.funz.ioplugin.IOPluginsLoader;
 import org.funz.log.Alert;
 import org.funz.log.Log;
 import org.funz.log.LogTicToc;
@@ -30,14 +26,10 @@ import org.funz.parameter.Case;
 import org.funz.parameter.Case.Observer;
 import org.funz.parameter.CaseList;
 import org.funz.parameter.OutputFunctionExpression;
-import org.funz.parameter.Variable;
-import org.funz.parameter.VariableMethods.Value;
 import org.funz.run.Client;
 import org.funz.run.Computer;
-import org.funz.script.RMathExpression;
 import static org.funz.util.Data.*;
 import org.funz.util.Disk;
-import static org.funz.util.Format.ArrayMapToMDString;
 import static org.funz.util.Format.repeat;
 import org.funz.util.ZipTool;
 import org.math.array.IntegerArray;
@@ -1238,7 +1230,7 @@ public abstract class BatchRun_v1 {
         merged_results = new HashMap<>();
 
         setState(BATCH_STARTING);
-
+        
         //LogUtils.tic("checkVariablesAreValid");
         String cv = prj.checkVariablesAreValid();
         //LogUtils.toc("checkVariablesAreValid");
@@ -1265,6 +1257,20 @@ public abstract class BatchRun_v1 {
             //LogUtils.toc("cv != null 2");
             Alert.showError("Output expressions are not correclty set: " + cv);
             throw new Exception("Output expressions are not correclty set: " + cv);
+        }
+
+        int waited_time = 0;
+        while (waited_time< prj.waitingTimeout*1000 && !Funz_v1.POOL.getCodes().contains(prj.getCode())) {
+            setState(BATCH_WAITINGCOMPUTUERS);
+            synchronized (this) {
+                wait(SLEEP_PERIOD);
+            }
+            waited_time += SLEEP_PERIOD;
+        }
+        if (!Funz_v1.POOL.getCodes().contains(prj.getCode())) {
+            setState(BATCH_ERROR+": "+ prj.getCode() + " is missing in Funz grid.");
+            Alert.showError("Code " + prj.getCode() + " is missing in Funz grid.");
+            return false;
         }
 
         try {
@@ -1487,6 +1493,7 @@ public abstract class BatchRun_v1 {
     public static final String BATCH_OVER = "Batch over";
     public static final String BATCH_ARCHIVING = "Archiving...";
     public static final String BATCH_RUNNING = "Running...";
+    public static final String BATCH_WAITINGCOMPUTUERS = "Waiting...";
     public static final String BATCH_STARTING = "Starting...";
     public static final String BATCH_ERROR = "Batch failed";
     public static final String BATCH_EXCEPTION = "Batch exception";

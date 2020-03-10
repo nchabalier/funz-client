@@ -56,11 +56,12 @@ import org.w3c.dom.NodeList;
  * each discrete case.
  */
 public class Project {
-    
+
     @Override
     public String toString() {
         return getName();
     }
+    public int waitingTimeout = 10*60;
     public boolean useCache = true;
     public int maxCalcs = Configuration.defaultCalcs();
     public String archiveFilter = "(.*)";
