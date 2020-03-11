@@ -289,7 +289,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert !batchRun.runBatch() : "Run batch (should not !)";
 
-        assert batchRun.getState().contains("CodeNotAvailable") : "no timeout in "+batchRun.getState();
+        assert batchRun.getState().contains("CodeNotAvailable") : "no CodeNotAvailable in "+batchRun.getState();
         
         batchRun.shutdown();
     }
