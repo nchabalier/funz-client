@@ -83,7 +83,8 @@ options(OutDec= ".")
 #' @test m = new(.jclassHashMap);m$put("a","b");.JMapToRList(m)
 #' @test m = new(.jclassHashMap);m$put("a",NULL);.JMapToRList(m)
 #' @test m = new(.jclassHashMap);m$put("a",.jnull());.JMapToRList(m)
-#' @test m = new(.jclassHashMap);m$put(NULL,NULL);.JMapToRList(m)
+#' @test m = new(.jclassHashMap);m$put("a",.jarray(c(.jnull(),.jnull())));.JMapToRList(m)
+#' @test m = new(.jclassHashMap);m$put("a",NULL);.JMapToRList(m)
 #' @test m = new(.jclassHashMap);m$put("a",.jnew("java.lang.Double",3));.JMapToRList(m)
 #' @test m = new(.jclassHashMap);m$put("a",.jarray(runif(10)));.JMapToRList(m)
 #' @test m = new(.jclassHashMap);m$put("a",.jarray(c(.jarray(runif(10)),.jarray(runif(10)))));.JMapToRList(m)
@@ -97,6 +98,12 @@ options(OutDec= ".")
         try(vals <- .jevalArray( m$get(v),simplify=T),silent=T)
         if (is.null(vals)) {
             l[[v]] = NA
+        } else if (all(unlist(lapply(FUN = is.null,vals)))) {
+            l[[v]] = rep(NA,length(vals))
+        } else if( is.jnull(vals)) {
+            l[[v]] = NA
+        } else if( all(unlist(lapply(FUN = is.jnull,vals)))) {
+            l[[v]] = rep(NA,length(vals))
         } else {
             if (is.character(vals) | is.numeric(vals)) {
                 l[[v]] = vals
@@ -104,8 +111,13 @@ options(OutDec= ".")
                 val = list()
                 if (length(vals)>0) {
                     for (i in 1:length(vals)) {
-                        val[[i]] = vals[[i]]
-                        if (length(val)>=i) {
+                        
+                        if (is.null(vals[[i]])) 
+                            val[[i]] = NA 
+                        else
+                            val[[i]] = vals[[i]]
+                        
+                        # if (length(val)>=i) {
                             try(val[[i]] <- .jevalArray( vals[[i]],simplify=T),silent=T)
 
                             if (is.list(val[[i]])) {
@@ -116,12 +128,12 @@ options(OutDec= ".")
                                 try(val[[i]] <- .jsimplify(.jclassData$asObject(vals[[i]])),silent=T)
                             }
                             if (length(val)<i || is.null(val[[i]]) || !is.vector(val[[i]])) {
-                                try(val[[i]] <- .jsimplify(vals[[i]]))#.jsimplify(vals[[i]]$toString())
+                                try(val[[i]] <- .jsimplify(vals[[i]]),silent=T) #.jsimplify(vals[[i]]$toString())
                             }
                             if (length(val)<i || is.null(val[[i]]) || !is.vector(val[[i]])) {
-                                try(val[[i]] <- .jsimplify(.jclassData$asString(vals[[i]])))#.jsimplify(vals[[i]]$toString())
+                                try(val[[i]] <- .jsimplify(.jclassData$asString(vals[[i]])),silent=T) #.jsimplify(vals[[i]]$toString())
                             }
-                        }
+                        # }
                     }}
                 l[[v]] = val
             }
