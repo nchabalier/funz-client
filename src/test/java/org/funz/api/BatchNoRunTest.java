@@ -30,6 +30,7 @@ public class BatchNoRunTest extends org.funz.api.TestUtils {
         Configuration.setVerboseLevel(verbose);
 
         Funz_v1.init(null, new CalculatorsPool(CalculatorsPool.getSocket(1025)), M);
+        Project.DEFAULT_waitingTimeout=10;//10 s. max before hard stopping batch if no calc found.
 
         org.junit.runner.JUnitCore.main(BatchNoRunTest.class.getName());
     }

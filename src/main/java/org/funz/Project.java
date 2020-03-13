@@ -21,6 +21,7 @@ import org.apache.commons.io.FileUtils;
 import static org.funz.Constants.*;
 import static org.funz.XMLConstants.*;
 import org.funz.api.AbstractShell;
+import org.funz.api.Funz_v1;
 import org.funz.conf.Configuration;
 import org.funz.doeplugin.Design;
 import org.funz.doeplugin.DesignConstants;
@@ -61,16 +62,26 @@ public class Project {
     public String toString() {
         return getName();
     }
-    public int waitingTimeout = 10*60;
-    public boolean useCache = true;
+    public static int DEFAULT_waitingTimeout = 10 * 60;
+    public static boolean DEFAULT_useCache = true;
+    public static String DEFAULT_archiveFilter = "(.*)";
+    public static int DEFAULT_retries = 3;
+    public static long DEFAULT_minMemory = 0L;
+    public static long DEFAULT_minDisk = 0L;
+    public static double DEFAULT_minCPU = 0;
+    public static String DEFAULT_regexpCalculators = null;
+    public static boolean DEFAULT_patchInputWhenFailed = false;
+
+    public int waitingTimeout = DEFAULT_waitingTimeout;
+    public boolean useCache = DEFAULT_useCache;
     public int maxCalcs = Configuration.defaultCalcs();
-    public String archiveFilter = "(.*)";
-    public int retries = 3;
-    public long minMemory = 0L;
-    public long minDisk = 0L;
-    public double minCPU = 0;
-    public String regexpCalculators = null;
-    public boolean patchInputWhenFailed = false;
+    public String archiveFilter = DEFAULT_archiveFilter;
+    public int retries = DEFAULT_retries;
+    public long minMemory = DEFAULT_minMemory;
+    public long minDisk = DEFAULT_minDisk;
+    public double minCPU = DEFAULT_minCPU;
+    public String regexpCalculators = DEFAULT_regexpCalculators;
+    public boolean patchInputWhenFailed = DEFAULT_patchInputWhenFailed;
     private AbstractShell shell;
 
     /**
@@ -134,11 +145,11 @@ public class Project {
     public void setBlacklistTimeout(int seconds) {
         blacklistTimeout = seconds;
     }
-    
+
     public long getBlacklistTimeout() {
         return blacklistTimeout;
     }
-    
+
     /* too much dangerous : InputFile are not updated nor checked, so when calling Project.cleanParameters, var will disappear...
      public void replaceVariable(Variable x) {
      Variable x_old = getVariableByName(x.getName());
@@ -770,10 +781,12 @@ public class Project {
         if (_outputFunctions.size() <= _mainOutputFunctionIndex) {
             _mainOutputFunctionIndex = 0;
         }
-        
-        if (_outputFunctions.size() == 0 && getOutputNames().length > 0)
-            for (String o : getOutputNames())
+
+        if (_outputFunctions.size() == 0 && getOutputNames().length > 0) {
+            for (String o : getOutputNames()) {
                 _outputFunctions.add(new OutputFunctionExpression.Text(o));
+            }
+        }
     }
 
     /**
@@ -2508,7 +2521,6 @@ public class Project {
      saveDesignSessions(new File(dir, DESIGN_SESSIONS_FILE));
      saveCases(new File(dir, CASE_LIST_FILE));
      }*/
-    
     public void saveCases(File file) {
         Log.logMessage(this, SeverityLevel.INFO, false, "Saving cases");
         if (_cases != null) {

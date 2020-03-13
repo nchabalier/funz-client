@@ -3,6 +3,7 @@ package org.funz.api;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import org.funz.Project;
 import org.funz.calculator.Calculator;
 import org.funz.conf.Configuration;
 import org.funz.log.Alert;
@@ -166,6 +167,7 @@ public class TestUtils {
         if (Funz_v1.POOL == null) {
             throw new Exception("POOL is null !!!");
         }
+        Project.DEFAULT_waitingTimeout=10;//10 s. max before hard stopping batch if no calc found.
     }
 
     public static final String CONF_XML = "./dist/calculator.xml";
