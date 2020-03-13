@@ -71,7 +71,9 @@ public class Project {
     public static double DEFAULT_minCPU = 0;
     public static String DEFAULT_regexpCalculators = null;
     public static boolean DEFAULT_patchInputWhenFailed = false;
+    public static long DEFAULT_blacklistTimeout = 60;
 
+    public long blacklistTimeout = DEFAULT_blacklistTimeout;
     public int waitingTimeout = DEFAULT_waitingTimeout;
     public boolean useCache = DEFAULT_useCache;
     public int maxCalcs = Configuration.defaultCalcs();
@@ -139,9 +141,7 @@ public class Project {
     public void setArchiveFilter(String filter) {
         this.archiveFilter = filter;
     }
-
-    public long blacklistTimeout = 60;
-
+    
     public void setBlacklistTimeout(int seconds) {
         blacklistTimeout = seconds;
     }
