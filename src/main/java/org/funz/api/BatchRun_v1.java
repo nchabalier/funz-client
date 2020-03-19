@@ -1260,18 +1260,20 @@ public abstract class BatchRun_v1 {
         }
 
         int waited_time = 0;
+        Funz_v1.POOL.setRefreshing(true, this, "Searching for code "+prj.getCode());
         while (waited_time< prj.waitingTimeout*1000 && !Funz_v1.POOL.getCodes().contains(prj.getCode())) {
-            setState(BATCH_WAITINGCOMPUTUERS);
-            synchronized (this) {
-                wait(SLEEP_PERIOD);
-            }
+            setState(BATCH_WAITINGCOMPUTERS+StringUtils.repeat(".",waited_time/1000));
+            //synchronized (this) {
+                sleep(SLEEP_PERIOD);
+            //}
             waited_time += SLEEP_PERIOD;
         }
         if (!Funz_v1.POOL.getCodes().contains(prj.getCode())) {
-            setState(BATCH_ERROR);
-            Alert.showError("Code " + prj.getCode() + " is missing in Funz grid.");
-            throw new Exception("Code " + prj.getCode() + " is missing in Funz grid.");
-        }
+            setState(BATCH_ERROR+": "+ prj.getCode() + " is missing in Funz grid.");
+            Alert.showError("Code " + prj.getCode() + " is missing in Funz grid (only "+Funz_v1.POOL.getCodes()+" are available).");
+            return false;
+        } else if (waited_time>0)
+            Alert.showInformation("Code "+prj.getCode()+" was found in Funz grid.");
 
         try {
             torun = new ArrayList<>();
@@ -1493,7 +1495,7 @@ public abstract class BatchRun_v1 {
     public static final String BATCH_OVER = "Batch over";
     public static final String BATCH_ARCHIVING = "Archiving...";
     public static final String BATCH_RUNNING = "Running...";
-    public static final String BATCH_WAITINGCOMPUTUERS = "Waiting...";
+    public static final String BATCH_WAITINGCOMPUTERS = "Waiting...";
     public static final String BATCH_STARTING = "Starting...";
     public static final String BATCH_ERROR = "Batch failed";
     public static final String BATCH_EXCEPTION = "Batch exception";

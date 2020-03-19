@@ -2,6 +2,7 @@ package org.funz.doeplugin;
 
 import java.awt.Component;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -77,6 +78,12 @@ public abstract class Design implements DesignConstants/*, ResultPainter*/ {
      */
     public void init(File repository) throws Exception {
         _repository = repository;
+        if (!_repository.isDirectory()) {
+            if (!_repository.mkdirs()) {
+                Log.err("Cannot create design repository " + _repository.getAbsolutePath(), 0);
+                throw new IOException("Cannot create design repository " + _repository.getAbsolutePath());
+            }
+        }
     }
 
     /**

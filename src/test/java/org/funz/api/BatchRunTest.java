@@ -241,6 +241,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, "CodeNotAvailable", plugin);
+        prj.setCode( "CodeNotAvailable");// ensure to use an unavailable code
 
         assert prj.getVariableByName("x1") != null : "Variable x1 not detected";
         assert prj.getVariableByName("x2") != null : "Variable x2 not detected";
@@ -288,7 +289,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert !batchRun.runBatch() : "Run batch (should not !)";
 
-        assert batchRun.getState().contains("timeout");
+        assert batchRun.getState().contains("CodeNotAvailable") : "no CodeNotAvailable in "+batchRun.getState();
         
         batchRun.shutdown();
     }

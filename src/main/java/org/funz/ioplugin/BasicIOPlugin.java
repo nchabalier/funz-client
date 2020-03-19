@@ -80,7 +80,7 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
         }
 
         if (_properties.containsKey("information") && _properties.getProperty("information").length() > 0) {
-            information = _properties.getProperty("information");
+            information = _properties.getProperty("information").trim();
         }
 
         if (_properties.containsKey("links") && _properties.getProperty("links").length() > 0) {
@@ -88,12 +88,7 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
         }
 
         if (_properties.containsKey("roundOff") && _properties.getProperty("roundOff").length() > 0) {
-            _roundoff = Integer.parseInt(_properties.getProperty("roundOff"));
-        }
-
-        if (_properties.containsKey("outputfunctions") && _properties.getProperty("outputfunctions").length() > 0) {
-            for (String o : _properties.getProperty("outputfunctions").split(" ")) {
-            }
+            _roundoff = Integer.parseInt(_properties.getProperty("roundOff").trim());
         }
     }
 
