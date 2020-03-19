@@ -9,6 +9,7 @@ import org.funz.api.Funz_v1;
 import org.funz.api.Utils;
 import static org.funz.main.MainUtils.S;
 import org.funz.util.ASCII;
+import static org.funz.util.Data.newMap;
 import static org.funz.util.Format.MapToCSVString;
 import static org.funz.util.Format.MapToJSONString;
 import static org.funz.util.Format.MapToMDString;
@@ -29,9 +30,10 @@ public class ReadOutput extends MainUtils{
     static enum Option {
 
         HELP("Help", "help", "h", "Display help"),
-        MODEL("Model", "model", "m", "Code to launch:\n" + S + ASCII.cat("\n" + S, Funz_v1.getModelList())),
+        MODEL("Model", "model", "m", "Code output to parse (requires input files):\n" + S + ASCII.cat("\n" + S, Funz_v1.getModelList())),
         INPUT_FILES("Input files", "input_files", "if", "List of input files for code"),
         VERBOSITY("Verbosity", "verbosity", "v", "Verbosity level in 0-10"),
+        GET_EXPRESSION("Get expression", "get_expression", "ge", "Parsing sequence to get an output (eg. lines(\"out.txt\")>>get(0)>>after(\"=\")>>asNumeric())"),
         OUTPUT_DIR("Output directory", "output_dir", "od", "Directory where to output files are stored"),
         PRINT("Print file", "print", "p", "Filename with data format: xml json or csv (default if not recognized)");
 
@@ -93,6 +95,7 @@ public class ReadOutput extends MainUtils{
 
         //tic("options");
         String _model = null;
+        String _get = null;
         File[] _input = null;
         File _print = null;
         int verb = -666;
@@ -125,7 +128,12 @@ public class ReadOutput extends MainUtils{
                 } else if (Option.PRINT.is(args[i])) {
                     if (_print != null) throw new Exception("[ERROR] Option "+Option.PRINT.key+" already set!");
                     _print = new File(args[i + 1]);
-                    //System.err.println(_format);
+                    //System.err.println(_print);
+                    i++;
+                } else if (Option.GET_EXPRESSION.is(args[i])) {
+                    if (_get != null) throw new Exception("[ERROR] Option "+Option.GET_EXPRESSION.key+" already set!");
+                    _get = args[i + 1];
+                    //System.err.println(_get);
                     i++;
                 } else if (Option.OUTPUT_DIR.is(args[i])) {
                     if (_archiveDir != null) throw new Exception("[ERROR] Option "+Option.OUTPUT_DIR.key+" already set!");
@@ -147,14 +155,13 @@ public class ReadOutput extends MainUtils{
             if (_archiveDir == null) _archiveDir = new File(".");
         } catch (Exception e) {
             System.err.println("[ERROR] failed to parse options: " + e.getMessage());
-            e.printStackTrace();
             System.err.println(help());
             System.exit(PARSE_ERROR);
         }
 
         //toc("options");        //toc("options");
-        if (_input == null) {
-            System.err.println("[ERROR] Input files not defined.\n" + help("--input_files"));
+        if (_input == null && _get==null) {
+            System.err.println("[ERROR] Input files or Get expression not defined.\n" + help("--input_files") + "\n" + help("--get_expression"));
             System.exit(INPUT_FILE_ERROR);
         }
 
@@ -164,9 +171,13 @@ public class ReadOutput extends MainUtils{
 
         Map outs = null;
         try {
+            if (_input!=null)
             //tic("compileVariables");
-            outs = Utils.readOutputs(_model, _input, _archiveDir);
+                outs = Utils.readOutputs(_model, _input, _archiveDir);
             //toc("compileVariables");
+            
+            if (_get!=null)
+                outs = newMap(_get,Utils.readOutput(_get, _archiveDir));
         } catch (Exception e) {
             System.err.println("[ERROR] failed to READ: " + e.getMessage());
             e.printStackTrace();

@@ -11,6 +11,7 @@ import org.funz.ioplugin.IOPluginInterface;
 import org.funz.ioplugin.IOPluginsLoader;
 import org.funz.log.Log;
 import org.funz.log.LogFile;
+import org.funz.script.ParseExpression;
 import org.funz.script.RMathExpression;
 import static org.funz.util.Data.*;
 
@@ -120,7 +121,14 @@ public class Utils {
 
         return plugin.readOutput(_outputdir);
     }
+    
+    public static Object readOutput(String _get_expression, File _outputdir) throws Exception {
+        Log.out("Parsing expression '" + _get_expression + "' on output directory " + _outputdir, 1);
 
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put(ParseExpression.FILES, _outputdir.listFiles());
+        return ParseExpression.eval(_get_expression, params);
+    }
 
     public static void delete(Object o) {
         o = null;
