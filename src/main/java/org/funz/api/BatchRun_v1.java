@@ -1260,21 +1260,23 @@ public abstract class BatchRun_v1 {
         }
 
         int waited_time = 0;
-        Funz_v1.POOL.setRefreshing(true, this, "Searching for code "+prj.getCode());
-        while (waited_time< prj.waitingTimeout*1000 && !Funz_v1.POOL.getCodes().contains(prj.getCode())) {
-            setState(BATCH_WAITINGCOMPUTERS+StringUtils.repeat(".",waited_time/1000));
-            //synchronized (this) {
+        if (prj.waitingTimeout>0) {//otherwise ignore grid checking
+            Funz_v1.POOL.setRefreshing(true, this, "Searching for code "+prj.getCode());
+            while (waited_time< prj.waitingTimeout*1000 && !Funz_v1.POOL.getCodes().contains(prj.getCode())) {
+                setState(BATCH_WAITINGCOMPUTERS+StringUtils.repeat(".",waited_time/1000));
+                //synchronized (this) {
                 sleep(SLEEP_PERIOD);
-            //}
-            waited_time += SLEEP_PERIOD;
-        }
-        if (!Funz_v1.POOL.getCodes().contains(prj.getCode())) {
-            setState(BATCH_ERROR+": "+ prj.getCode() + " is missing in Funz grid.");
-            Alert.showError("Code " + prj.getCode() + " is missing in Funz grid (only "+Funz_v1.POOL.getCodes()+" are available).");
-            return false;
-        } else if (waited_time>0)
-            Alert.showInformation("Code "+prj.getCode()+" was found in Funz grid.");
-
+                //}
+                waited_time += SLEEP_PERIOD;
+            }
+            if (!Funz_v1.POOL.getCodes().contains(prj.getCode())) {
+                setState(BATCH_ERROR+": "+ prj.getCode() + " is missing in Funz grid.");
+                Alert.showError("Code " + prj.getCode() + " is missing in Funz grid (only "+Funz_v1.POOL.getCodes()+" are available).");
+                return false;
+            } else if (waited_time>0)
+                Alert.showInformation("Code "+prj.getCode()+" was found in Funz grid.");
+        } else 
+            Alert.showInformation("Bypass Funz grid checking for code "+prj.getCode());
         try {
             torun = new ArrayList<>();
             runCases.clear();

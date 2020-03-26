@@ -26,11 +26,10 @@ import org.junit.Test;
 public class BatchNoRunTest extends org.funz.api.TestUtils {
 
     public static void main(String args[]) throws Exception {
-        //test(BatchNoRunTest.class.getName()); <-- Do not start any calculator !!!
+        // test(BatchNoRunTest.class.getName()); //<-- Do not start any calculator !!!
         Configuration.setVerboseLevel(verbose);
 
         Funz_v1.init(null, new CalculatorsPool(CalculatorsPool.getSocket(1025)), M);
-        Project.DEFAULT_waitingTimeout=10;//10 s. max before hard stopping batch if no calc found.
 
         org.junit.runner.JUnitCore.main(BatchNoRunTest.class.getName());
     }
@@ -38,6 +37,7 @@ public class BatchNoRunTest extends org.funz.api.TestUtils {
     @Before
     public void setUp() throws Exception {
         super.setUp(BatchNoRunTest.class.getName());
+        Project.DEFAULT_waitingTimeout=-1;//no funz grid checking
     }
 
     Case.Observer o = new Case.Observer() {
