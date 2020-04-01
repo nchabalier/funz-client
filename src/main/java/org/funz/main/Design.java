@@ -50,7 +50,7 @@ public class Design extends MainUtils {
         DESIGN("Design", "design", "d", "Algorithm to drive calculations points:\n" + S + ASCII.cat("\n" + S, Funz_v1.getDesignList())),
         INPUT_VARIABLES("Input variables", "input_variables", "iv", "Input variables definition 'name=values|model', e.g. x1=0.1,0.2,0.3 x2=[0,1] x3=-0.5,-0.6"),
         DESIGN_OPTIONS("Design options", "design_options", "do", "Options of the algorithm definition name=value, e.g. n=100 iMax=20"),
-        RUN_CONTROL("Run control", "run_control", "rc", "Features of the run, e.g. retry=3 cache=/tmp/MyCache"),
+        RUN_CONTROL("Run control", "run_control", "rc", "Features of the run, e.g. retry=3"),
         MONITOR_CONTROL("Monitor control", "monitor_control", "mc", "Monitoring options, e.g. sleep=5 display=/usr/local/command_to_display_results"),
         VERBOSITY("Verbosity", "verbosity", "v", "Verbosity level in 0-10"),
         ARCHIVE_DIR("Archiving directory", "archive_dir", "ad", "Directory where to store output files and data"),

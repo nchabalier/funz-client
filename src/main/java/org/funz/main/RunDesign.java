@@ -324,7 +324,8 @@ public class RunDesign extends MainUtils {
             }
 
             for (String prop : _runControl.keySet()) {
-                shell.setProjectProperty(prop, _runControl.get(prop));
+                if (!prop.equals("cache"))
+                    shell.setProjectProperty(prop, _runControl.get(prop));
             }
         } catch (Exception e) {
             System.err.println("[ERROR] failed to CREATE Funz shell: " + e.getMessage() + "\n" + (shell != null ? ArrayMapToMDString(shell.getResultsArrayMap()) : "?"));
