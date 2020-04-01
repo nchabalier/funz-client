@@ -105,7 +105,11 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
     @Override
     public String getProjectProperty(String property) {
         Field[] fs = prj.getClass().getFields();
-        for (Field field : fs) {
+        List<Field> fs_nostatic = Arrays.asList(fs);
+        for (Field field : fs_nostatic) {
+            if (Modifier.isStatic(field.getModifiers())) fs_nostatic.remove(field);
+        }
+        for (Field field : fs_nostatic) {
             if (field.getName().equals(property)) {
                 try {
                     if (field.getType().equals(Integer.TYPE)) {
@@ -134,7 +138,11 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
     @Override
     public void setProjectProperty(String property, String value) {
         Field[] fs = prj.getClass().getFields();
-        for (Field field : fs) {
+        List<Field> fs_nostatic = Arrays.asList(fs);
+        for (Field field : fs_nostatic) {
+            if (Modifier.isStatic(field.getModifiers())) fs_nostatic.remove(field);
+        }
+        for (Field field : fs_nostatic) {
             if (field.getName().equals(property)) {
                 try {
                     Object cast_value = null;
