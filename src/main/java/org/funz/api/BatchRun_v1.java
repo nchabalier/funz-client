@@ -1270,13 +1270,16 @@ public abstract class BatchRun_v1 {
                 waited_time += SLEEP_PERIOD;
             }
             if (!Funz_v1.POOL.getCodes().contains(prj.getCode())) {
-                setState(BATCH_ERROR+": "+ prj.getCode() + " is missing in Funz grid.");
-                Alert.showError("Code " + prj.getCode() + " is missing in Funz grid (only "+Funz_v1.POOL.getCodes()+" are available).");
+                setState(BATCH_ERROR+": '"+ prj.getCode() + "' is missing in Funz grid.");
+                Alert.showError("Code '" + prj.getCode() + "' is missing in Funz grid (only "+Funz_v1.POOL.getCodes()+" are available).");
                 return false;
-            } else if (waited_time>0)
-                Alert.showInformation("Code "+prj.getCode()+" was found in Funz grid.");
+            } else if (waited_time>0) {
+                setState(BATCH_STARTING+": '"+ prj.getCode() + "' was found in Funz grid.");
+                Alert.showInformation("Code '"+prj.getCode()+"' was found in Funz grid.");
+            }
         } else 
-            Alert.showInformation("Bypass Funz grid checking for code "+prj.getCode());
+            Alert.showInformation("Bypass Funz grid checking for code '"+prj.getCode()+"'");
+        
         try {
             torun = new ArrayList<>();
             runCases.clear();
