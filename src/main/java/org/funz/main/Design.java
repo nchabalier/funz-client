@@ -483,7 +483,8 @@ public class Design extends MainUtils {
                 }
             }
         } catch (Exception e) {
-            System.err.println("[ERROR] failed to RUN Funz shell: " + e.getMessage() + "\n" + ArrayMapToMDString(shell.getResultsArrayMap()));
+            System.err.println("[ERROR] failed to RUN Funz shell: " + e.getMessage() + "\n" + 
+                    ArrayMapToMDString(Data.remove_array(shell.getResultsArrayMap(),"(.*)\\.(\\d+)")));
             //e.printStackTrace();
             System.exit(RUN_ERROR);
         } finally {

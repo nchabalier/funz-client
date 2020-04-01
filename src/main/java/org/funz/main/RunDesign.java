@@ -17,6 +17,7 @@ import static org.funz.main.MainUtils.CLEAR_LINE;
 import static org.funz.main.MainUtils.init;
 import static org.funz.parameter.OutputFunctionExpression.OutputFunctions;
 import org.funz.util.ASCII;
+import org.funz.util.Data;
 import static org.funz.util.Format.ArrayMapToCSVString;
 import static org.funz.util.Format.ArrayMapToJSONString;
 import static org.funz.util.Format.ArrayMapToMDString;
@@ -428,7 +429,8 @@ public class RunDesign extends MainUtils {
                 }
             }
         } catch (Exception e) {
-            System.err.println("[ERROR] failed to RUN Funz shell: " + e.getMessage() + "\n" + ArrayMapToMDString(shell.getResultsArrayMap()));
+            System.err.println("[ERROR] failed to RUN Funz shell: " + e.getMessage() + "\n" + 
+                    ArrayMapToMDString(Data.remove_array(shell.getResultsArrayMap(),"(.*)\\.(\\d+)")));
             //e.printStackTrace();
             System.exit(RUN_ERROR);
         } finally {
