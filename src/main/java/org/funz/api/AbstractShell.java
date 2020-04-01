@@ -105,9 +105,10 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
     @Override
     public String getProjectProperty(String property) {
         Field[] fs = prj.getClass().getFields();
-        List<Field> fs_nostatic = Arrays.asList(fs);
-        for (Field field : fs_nostatic) {
-            if (Modifier.isStatic(field.getModifiers())) fs_nostatic.remove(field);
+        List<Field> fs_nostatic = new LinkedList<>();
+        for (Field field : Arrays.asList(fs)) {
+            if (Modifier.isPublic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()))
+                fs_nostatic.add(field);
         }
         for (Field field : fs_nostatic) {
             if (field.getName().equals(property)) {
@@ -138,9 +139,10 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
     @Override
     public void setProjectProperty(String property, String value) {
         Field[] fs = prj.getClass().getFields();
-        List<Field> fs_nostatic = Arrays.asList(fs);
-        for (Field field : fs_nostatic) {
-            if (Modifier.isStatic(field.getModifiers())) fs_nostatic.remove(field);
+        List<Field> fs_nostatic = new LinkedList<>();
+        for (Field field : Arrays.asList(fs)) {
+            if (Modifier.isPublic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()))
+                fs_nostatic.add(field);
         }
         for (Field field : fs_nostatic) {
             if (field.getName().equals(property)) {
