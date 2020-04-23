@@ -79,12 +79,41 @@ matrix:
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
         - R_SERVER="R://localhost"
-    - name: "Linux JDK8 Test R,python,bash"
+    - name: "Linux JDK8 Test R"
       os: linux
       dist: trusty
       env:
         - TRAVIS_DIST_NAME="trusty"
         - NO_TEST_JAVA=1
+        #- NO_TEST_R=1
+        - NO_TEST_PYTHON=1
+        - NO_TEST_BASH=1
+        - NO_TEST_CMD=1
+        - R_SERVER=R2js
+      jdk:
+        - openjdk8
+    - name: "Linux JDK8 Test python"
+      os: linux
+      dist: trusty
+      env:
+        - TRAVIS_DIST_NAME="trusty"
+        - NO_TEST_JAVA=1
+        - NO_TEST_R=1
+        #- NO_TEST_PYTHON=1
+        - NO_TEST_BASH=1
+        - NO_TEST_CMD=1
+        - R_SERVER=R2js
+      jdk:
+        - openjdk8
+    - name: "Linux JDK8 Test bash"
+      os: linux
+      dist: trusty
+      env:
+        - TRAVIS_DIST_NAME="trusty"
+        - NO_TEST_JAVA=1
+        - NO_TEST_R=1
+        - NO_TEST_PYTHON=1
+        #- NO_TEST_BASH=1
         - NO_TEST_CMD=1
         - R_SERVER=R2js
       jdk:
