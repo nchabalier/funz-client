@@ -12,6 +12,7 @@ import org.funz.util.ASCII;
 import static org.funz.util.Data.newMap;
 import org.funz.util.Disk;
 import static org.funz.util.Format.ArrayMapToMDString;
+import org.funz.util.Parser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -106,8 +107,10 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         assert res.get("state").length == 1 : "Status: '" + ASCII.cat(",", res.get("state")) + "'";
         assert res.get("state")[0].toString().contains("Design over") : "Status: '" + res.get("state")[0] + "'";
 
-        assert ASCII.cat("\n", res.get("analysis")).contains("minimum is " + branin_min) : "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
-
+        assert ASCII.cat("\n", res.get("analysis")).contains("minimum is ") : "No convergence :" + ASCII.cat("\n", res.get("analysis"));
+        double min_found = Double.parseDouble(Parser.after(ASCII.cat("\n", res.get("analysis")),"minimum is ").trim().substring(0,3));
+        assert min_found <= branin_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
+        
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
 
@@ -131,8 +134,10 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         assert res.get("state").length == 1 : "Status: '" + ASCII.cat(",", res.get("state")) + "'";
         assert res.get("state")[0].toString().contains("Design over") : "Status: '" + res.get("state")[0] + "'";
 
-        assert ASCII.cat("\n", res.get("analysis")).contains("minimum is " + branin_min) : "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
-
+        assert ASCII.cat("\n", res.get("analysis")).contains("minimum is ") : "No convergence :" + ASCII.cat("\n", res.get("analysis"));
+        double min_found = Double.parseDouble(Parser.after(ASCII.cat("\n", res.get("analysis")),"minimum is ").trim().substring(0,3));
+        assert min_found <= branin_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
+        
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
 
@@ -159,7 +164,9 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         assert res.get("state").length == 1 : "Status: '" + ASCII.cat(",", res.get("state")) + "'";
         assert res.get("state")[0].toString().contains("Design over") : "Status: '" + res.get("state")[0] + "'";
 
-        assert ASCII.cat("\n", res.get("analysis")).contains("minimum is " + branin_min) : "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
+        assert ASCII.cat("\n", res.get("analysis")).contains("minimum is ") : "No convergence :" + ASCII.cat("\n", res.get("analysis"));
+        double min_found = Double.parseDouble(Parser.after(ASCII.cat("\n", res.get("analysis")),"minimum is ").trim().substring(0,3));
+        assert min_found <= branin_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
 
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
@@ -189,8 +196,10 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         assert res.get("state").length == 1 : "Status: '" + ASCII.cat(",", res.get("state")) + "'";
         assert res.get("state")[0].toString().contains("Design over") : "Status: '" + res.get("state")[0] + "'";
 
-        assert ASCII.cat("\n", res.get("analysis")).contains("minimum is " + branin_min) : "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
-
+        assert ASCII.cat("\n", res.get("analysis")).contains("minimum is ") : "No convergence :" + ASCII.cat("\n", res.get("analysis"));
+        double min_found = Double.parseDouble(Parser.after(ASCII.cat("\n", res.get("analysis")),"minimum is ").trim().substring(0,3));
+        assert min_found <= branin_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
+        
         System.out.println("analysis:\n" + ASCII.cat("\n", res.get("analysis")));
     }
 
