@@ -315,7 +315,8 @@ before_script:
 script:
   - echo "R.server="$R_SERVER > Funz.conf
   - cd dist; echo "R.server="$R_SERVER > Funz.conf; cd ..
-  - if [[ "$NO_TEST_JAVA" == "1" ]]; then travis_wait 50 ant test; else ant test; fi
+  #- if [[ "$NO_TEST_JAVA" == "1" ]]; then travis_wait 50 ant test; else 
+  - ant test #; fi
 
 after_success:
   - if [[ "$NO_TEST_JAVA" != "1" ]]; then ant coverage ; fi
