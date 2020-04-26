@@ -205,6 +205,7 @@ public class RenjinMathExpressionTest {
     
     @Test
     public void testls() throws Exception {
+        engine.reset();
         engine.set("a <- 1+pi");
         String list = (engine.listVariables(true, true)).toString();
         assert list.equals("[a]") : "failed to listVariables: " + list;
