@@ -389,7 +389,7 @@
 
     <target name="stop-calculators">
         <delete file="calculators.lock"/>
-        <sleep seconds="5"/>
+        <sleep seconds="10"/>
     </target>
 
     <target name="test-cmd" depends="dist-test, start-calculators" unless="env.NO_TEST_CMD">
