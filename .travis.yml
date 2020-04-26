@@ -281,7 +281,7 @@ matrix:
 #        - oraclejdk8
 #        - oraclejdk11
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then travis_wait brew update; brew install ant; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then travis_wait brew update >/dev/null; brew install ant; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install ant -y; fi
 
 install:
