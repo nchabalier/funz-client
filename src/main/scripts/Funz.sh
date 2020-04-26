@@ -15,7 +15,7 @@ if [ $# -le 0 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 fi
 
 
-FUNZ_PATH="$(readlink -f `dirname $0`)" #absolute `dirname $0`
+FUNZ_PATH="$( cd "$(dirname "$0")" ; pwd -P )" #absolute `dirname $0`
 
 MAIN=org.funz.main.$1
 
