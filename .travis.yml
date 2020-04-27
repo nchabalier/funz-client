@@ -13,6 +13,7 @@ matrix:
         - NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        - NO_CALCULATORS=1
         - R_SERVER=R2js
     - name: "Linux JDK8 - Renjin"
       os: linux
@@ -26,6 +27,7 @@ matrix:
         - NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        - NO_CALCULATORS=1
         - R_SERVER=Renjin
     - name: "Linux JDK8 - Rserve"
       os: linux
@@ -39,6 +41,7 @@ matrix:
         - NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        - NO_CALCULATORS=1
         - R_SERVER="R://localhost"
     - name: "Linux JDK latest - R2js"
       os: linux
@@ -52,6 +55,7 @@ matrix:
         - NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        - NO_CALCULATORS=1
         - R_SERVER=R2js
     - name: "Linux JDK latest - Renjin"
       os: linux
@@ -65,6 +69,7 @@ matrix:
         - NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        - NO_CALCULATORS=1
         - R_SERVER=Renjin
     - name: "Linux JDK latest - Rserve"
       os: linux
@@ -78,6 +83,7 @@ matrix:
         - NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        - NO_CALCULATORS=1
         - R_SERVER="R://localhost"
     - name: "Linux JDK8 Test R"
       os: linux
@@ -90,6 +96,7 @@ matrix:
         - NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        #- NO_CALCULATORS=1
         - R_SERVER=R2js
       jdk:
         - openjdk8
@@ -104,6 +111,7 @@ matrix:
         #- NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        #- NO_CALCULATORS=1
         - R_SERVER=R2js
       jdk:
         - openjdk8
@@ -118,6 +126,7 @@ matrix:
         - NO_TEST_PYTHON=1
         #- NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        #- NO_CALCULATORS=1
         - R_SERVER=R2js
       jdk:
         - openjdk8
@@ -132,6 +141,7 @@ matrix:
         - NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        #- NO_CALCULATORS=1
         - R_SERVER=R2js
       jdk:
         - openjdk13
@@ -146,6 +156,7 @@ matrix:
         #- NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        #- NO_CALCULATORS=1
         - R_SERVER=R2js
       jdk:
         - openjdk13
@@ -160,6 +171,7 @@ matrix:
         - NO_TEST_PYTHON=1
         #- NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        #- NO_CALCULATORS=1
         - R_SERVER=R2js
       jdk:
         - openjdk13
@@ -202,6 +214,7 @@ matrix:
         - NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        #- NO_CALCULATORS=1
         - R_SERVER=R2js
       jdk:
         - oraclejdk8
@@ -215,6 +228,7 @@ matrix:
         #- NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        #- NO_CALCULATORS=1
         - R_SERVER=R2js
       jdk:
         - oraclejdk8
@@ -228,6 +242,7 @@ matrix:
         - NO_TEST_PYTHON=1
         #- NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        #- NO_CALCULATORS=1
         - R_SERVER=R2js
       jdk:
         - oraclejdk8
@@ -241,6 +256,7 @@ matrix:
         - NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        #- NO_CALCULATORS=1
         - R_SERVER=R2js
       jdk:
         - oraclejdk13
@@ -254,6 +270,7 @@ matrix:
         #- NO_TEST_PYTHON=1
         - NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        #- NO_CALCULATORS=1
         - R_SERVER=R2js
       jdk:
         - oraclejdk13        
@@ -267,6 +284,7 @@ matrix:
         - NO_TEST_PYTHON=1
         #- NO_TEST_BASH=1
         - NO_TEST_CMD=1
+        #- NO_CALCULATORS=1
         - R_SERVER=R2js
       jdk:
         - oraclejdk13

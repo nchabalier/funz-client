@@ -377,7 +377,7 @@
         <fail message="Test failure detected for issues, check test results." if="failed_issues" />
     </target>
 
-    <target name="start-calculators" depends="compile, compile-test, stop-calculators">
+    <target name="start-calculators" depends="compile, compile-test, stop-calculators" unless="env.NO_CALCULATORS">
        <java classname="org.funz.main.RunCalculators" fork="true" spawn="true">
             <classpath refid="calculator.classpath" />
             <classpath path="${build.dir}" />
@@ -387,7 +387,7 @@
         </java>
     </target>
 
-    <target name="stop-calculators">
+    <target name="stop-calculators" unless="env.NO_CALCULATORS">
         <delete file="calculators.lock"/>
         <sleep seconds="10"/>
     </target>
