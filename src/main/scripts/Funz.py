@@ -167,6 +167,11 @@ def _jdelete(jo):
     _jclassUtils.delete(jo)
 
 
+import atexit
+
+
+
+
 ###################################### Init ###################################
 _dir = None
 if 'FUNZ_HOME' in globals(): _dir = FUNZ_HOME
@@ -215,11 +220,19 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
             
     if verbosity>3:
         print("  Initializing JVM ...\n    " + "\n    ".join(parameters))
-    port = py4j.java_gateway.launch_gateway(classpath=":".join(os.path.join(_FUNZ_HOME,"lib",str(j)) for j in classpath),javaopts=parameters,redirect_stdout=SysOut(),redirect_stderr=SysErr())
+    print("  Initializing Gateway ...")
+    port = py4j.java_gateway.launch_gateway(classpath=":".join(os.path.join(_FUNZ_HOME,"lib",str(j)) for j in classpath),javaopts=parameters,redirect_stdout=SysOut(),redirect_stderr=SysErr(),die_on_exit=True)
+    print("                       ... port "+str(port))
     global _gateway
     _gateway = py4j.java_gateway.JavaGateway(gateway_parameters= py4j.java_gateway.GatewayParameters(port=port,auto_convert=True))
     global J
     J = _gateway.jvm
+
+    def close_gateway():
+        print("  Closing Gateway")
+        _gateway.close(False,True)
+        _gateway.close_callback_server(False)
+    atexit.register(close_gateway)
 
     locale.setlocale(locale.LC_NUMERIC, "C") # otherwise, the locale may be changed by Java, so LC_NUMERIC is no longer "C"
 
