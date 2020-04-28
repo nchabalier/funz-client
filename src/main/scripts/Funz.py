@@ -162,14 +162,8 @@ def _PFileArrayToJFileArray(files):
         jlist_files.append(jfiles_i)
     return(_JArray(jlist_files))
 
-
 def _jdelete(jo):
     _jclassUtils.delete(jo)
-
-
-import atexit
-
-
 
 
 ###################################### Init ###################################
@@ -227,12 +221,6 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
     _gateway = py4j.java_gateway.JavaGateway(gateway_parameters= py4j.java_gateway.GatewayParameters(port=port,auto_convert=True))
     global J
     J = _gateway.jvm
-
-    def close_gateway():
-        print("  Closing Gateway")
-        _gateway.close(False,True)
-        _gateway.close_callback_server(False)
-    atexit.register(close_gateway)
 
     locale.setlocale(locale.LC_NUMERIC, "C") # otherwise, the locale may be changed by Java, so LC_NUMERIC is no longer "C"
 
