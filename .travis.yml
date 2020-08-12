@@ -320,7 +320,7 @@ install:
   - cd $WD
 
 before_script:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rm -f '/usr/local/include/c++'; rm -rf '/usr/local/bin/f2py'; chmod a+rwx '/usr/local/sbin'; brew install r; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rm -f '/usr/local/include/c++'; export HOMEBREW_NO_AUTO_UPDATE=1;export HOMEBREW_AUTO_UPDATING=0;export HOMEBREW_UPDATE_PREINSTALL=0; brew install r; fi
   - if [[ "$TRAVIS_OSX_IMAGE" == "xcode9.3" ]]; then brew uninstall --ignore-dependencies --force python; brew install python3; fi # to get python3 instead of 2 -> ok.py test working
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9; fi
   - if [[ "$TRAVIS_DIST_NAME" == "trusty" ]]; then echo "deb https://cloud.r-project.org/bin/linux/ubuntu trusty-cran35/" | sudo tee -a /etc/apt/sources.list; fi
