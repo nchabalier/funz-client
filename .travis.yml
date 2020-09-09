@@ -75,11 +75,11 @@ matrix:
         - NO_CALCULATORS=1
         - R_SERVER=R2js
 # Vary R engine               
-    - name: "Linux JDK13 - Renjin - unit"
+    - name: "Linux JDK11 - Renjin - unit"
       os: linux
       dist: xenial
       env:
-        - JDK="openjdk@1.13"
+        - JDK="openjdk@1.11"
         - TRAVIS_DIST_NAME="xenial"
         #- NO_TEST_JAVA=1
         - NO_TEST_ISSUES=1
@@ -89,11 +89,11 @@ matrix:
         - NO_TEST_CMD=1
         - NO_CALCULATORS=1
         - R_SERVER=Renjin  
-    - name: "Linux JDK13 - Rserve - unit"
+    - name: "Linux JDK11 - Rserve - unit"
       os: linux
       dist: xenial
       env:
-        - JDK="openjdk@1.13"
+        - JDK="openjdk@1.11"
         - TRAVIS_DIST_NAME="xenial"
         #- NO_TEST_JAVA=1
         - NO_TEST_ISSUES=1
@@ -195,7 +195,7 @@ before_script:
   - >  
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
     echo "deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/" | sudo tee -a /etc/apt/sources.list;
-    sudo apt-get update -qq; 
+    sudo apt-get update -qq --allow-unauthenticated; 
     sudo apt-get install r --allow-unauthenticated -y;
     fi
   - >
