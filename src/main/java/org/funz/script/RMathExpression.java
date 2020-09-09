@@ -287,7 +287,8 @@ public class RMathExpression extends MathExpression {
             };
             
             try {
-                if (serverConf != null && R_engine.equals("Rserve")) {
+                if (serverConf != null && R_engine.equals("Rserve")) {                    
+                    if (serverConf.isLocal() && serverConf.port<0) serverConf=null; // We reset this conf to let RserveSession startup deamon by itself.
                     R = new RserveSession(streamlogger, env, serverConf);
                     R.setCRANRepository("http://cloud.r-project.org");
                 } else if (R_engine.equals("Renjin")) {

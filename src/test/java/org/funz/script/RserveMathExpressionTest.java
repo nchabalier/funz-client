@@ -21,17 +21,9 @@ public class RserveMathExpressionTest {
 
     RMathExpression engine;
 
-    public static void main(String args[]) {
-        org.junit.runner.JUnitCore.main(RserveMathExpressionTest.class.getName());
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        Configuration.readProperties(null);
-        Configuration.writeUserProperty = false;
-        Configuration.setWWWConnected(true);
-
-        new RserveDaemon(RserverConf.parse("R://localhost"), new RLog() {
+    final static String R_SERVER = "R://localhost:6311";
+    public static void main(String args[]) throws Exception {
+        new RserveDaemon(RserverConf.parse(R_SERVER), new RLog() {
 
             @Override
             public void log(String string, RLog.Level level) {
@@ -42,7 +34,16 @@ public class RserveMathExpressionTest {
             public void closeLog() {
             }
         }).start();
-        Configuration.setProperty("R.server", "R://localhost");
+        org.junit.runner.JUnitCore.main(RserveMathExpressionTest.class.getName());
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        Configuration.readProperties(null);
+        Configuration.writeUserProperty = false;
+        Configuration.setWWWConnected(true);
+
+        Configuration.setProperty("R.server", R_SERVER);
         engine = new RMathExpression("MathExpressionTest");
     }
 
@@ -200,9 +201,9 @@ public class RserveMathExpressionTest {
     @Test
     public void testPrintEval() throws Exception {
         MathExpression.SetDefaultInstance(RMathExpression.class);
-        assert engine.eval("if (1<2) print(\"ok\") else print(\"no!!!\")", null).toString().equals("ok"):engine.eval("if (1<2) print(\"ok\") else print(\"no!!!\")", null);
+        assert engine.eval("if (1<2) print(\"ok\") else print(\"no!!!\")", null).toString().equals("ok") : engine.eval("if (1<2) print(\"ok\") else print(\"no!!!\")", null);
     }
-    
+
     @Test
     public void testls() throws Exception {
         engine.reset();
