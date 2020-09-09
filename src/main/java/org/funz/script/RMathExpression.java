@@ -127,7 +127,6 @@ public class RMathExpression extends MathExpression {
 
         if (serverConf != null && serverConf.isLocal()) {
             env.setProperty("http_proxy", Proxy.http_proxy());
-            serverConf.properties = env;
         }
 
         if (serverConf != null && serverConf.isLocal() && spawnRserve) {
@@ -289,7 +288,7 @@ public class RMathExpression extends MathExpression {
             
             try {
                 if (serverConf != null && R_engine.equals("Rserve")) {
-                    R = new RserveSession(streamlogger, serverConf, spawnRserve);
+                    R = new RserveSession(streamlogger, env, serverConf);
                     R.setCRANRepository("http://cloud.r-project.org");
                 } else if (R_engine.equals("Renjin")) {
                     R = new RenjinSession(streamlogger, env);

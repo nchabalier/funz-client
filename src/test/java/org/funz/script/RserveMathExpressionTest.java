@@ -41,7 +41,7 @@ public class RserveMathExpressionTest {
             @Override
             public void closeLog() {
             }
-        }).start(null);
+        }).start();
         Configuration.setProperty("R.server", "R://localhost");
         engine = new RMathExpression("MathExpressionTest");
     }
