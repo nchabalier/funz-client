@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import org.codehaus.plexus.util.FileUtils;
+import org.apache.commons.io.FileUtils;
 import org.funz.Project;
 import org.funz.conf.Configuration;
 import static org.funz.parameter.VariableMethods.MATHENGINE_SET_MARKER;
@@ -39,7 +39,7 @@ public class VariableMethodsTest {
         Configuration.writeUserProperty = false;
         MathExpression.SetDefaultInstance(RMathExpression.class);
 
-        FileUtils.mkdir("tmp");
+        FileUtils.forceMkdir(new File("tmp"));
         fin = File.createTempFile("VariableMethods", "input", new File("tmp"));
         fout = File.createTempFile("VariableMethods", "target", new File("tmp"));
 
