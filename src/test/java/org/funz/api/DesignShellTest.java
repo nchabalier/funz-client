@@ -56,7 +56,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
     double[] branin_xmin2 = {0.1238946, 0.8166644};
     double[] branin_xmin3 = {0.5427730, 0.15};
 
-    // @Test
+    // //@Test
     public void testDirect() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDirect");
         Funz.setVerbosity(3);
@@ -71,7 +71,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsArrayMap()));
     }
 
-    // @Test
+    // //@Test
     public void testIterative() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testIterative");
         Funz.setVerbosity(3);
@@ -97,7 +97,8 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         variable_bounds.put("x2", "[0,1]");
         DesignShell_v1 shell = new DesignShell_v1(branin, "GradientDescent", variable_bounds, null);
         shell.setArchiveDirectory("tmp");
-        shell.setDesignOption("nmax", "15");
+        shell.setDesignOption("nmax", "50");
+        shell.setDesignOption("delta", "1");
 
         shell.startComputationAndWait();
 
@@ -114,7 +115,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
 
-    @Test
+    //@Test
     public void testOldRGradientDescent() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOldRGradientDescent");
         Funz.setVerbosity(3);
@@ -141,7 +142,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
 
-    @Test
+    //@Test
     public void testOldREGO() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOldREGO");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {System.err.println("Not using Rserve, so skipping test"); return;} // Do not run if using Renjin or R2js...
@@ -171,7 +172,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
 
-    @Test
+    //@Test
     public void testREGO() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testREGO");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {System.err.println("Not using Rserve, so skipping test"); return;} // Do not run if using Renjin or R2js...
@@ -203,7 +204,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.out.println("analysis:\n" + ASCII.cat("\n", res.get("analysis")));
     }
 
-    @Test
+    //@Test
     public void testMoveProject() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testMoveProject");
         Funz.setVerbosity(3);
@@ -252,7 +253,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         }).length == 1 : "Did not built the error stream in the defined archive dir";
     }
 
-    // @Test
+    // //@Test
     /*public void testGradientDescentWithCache() throws Exception {
      Funz.setVerbosity(3);
 
@@ -311,7 +312,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
 //        System.err.println(Utils.ArrayMapToMDString(X) + "------>\n" + ASCII.cat("\n", Y));
 //        return Y;
 //    }
-    @Test
+    //@Test
     public void testError() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testError");
         Funz.setVerbosity(3);

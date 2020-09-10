@@ -51,7 +51,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         public Map f(Object... strings) {
             double[] vals = new double[strings.length];
             for (int i = 0; i < vals.length; i++) {
-                vals[i] = Double.parseDouble(strings[i].toString());
+                vals[i] = Math.pow(Double.parseDouble(strings[i].toString())-0.333,2);
             }
             return newMap(f.fname, DoubleArray.sum(vals));
         }
@@ -112,7 +112,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
                 TestUtils.err(ex, i);
             }
         };
-
+        
         loopDesign.setDesignerOption("nmax", "10");
         loopDesign.update();
         loopDesign.buildDesign(prj.getDesignSession(0));
@@ -131,7 +131,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         System.err.println(loopDesign.getResults().keySet());
         System.err.println(loopDesign.getResults().get("analysis"));
 
-        assert loopDesign.getResults().getOrDefault("analysis.min", "").trim().equals("0") : "Failed to find minimum ! \n" + loopDesign.getResults().keySet();
+        assert loopDesign.getResults().getOrDefault("analysis.min", "").trim().startsWith("0.00") : "Failed to find minimum ! \n" + loopDesign.getResults().keySet();
     }
 
     @Test
@@ -192,7 +192,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         }
         System.err.println(loopDesign.getResults().keySet());
         System.err.println(loopDesign.getResults().getOrDefault("analysis.min", ""));
-        assert loopDesign.getResults().getOrDefault("analysis.min", "").trim().equals("0") : "Failed to find minimum ! \n" + loopDesign.getResults().keySet();
+        assert loopDesign.getResults().getOrDefault("analysis.min", "").trim().startsWith("0.00") : "Failed to find minimum ! \n" + loopDesign.getResults().keySet();
     }
 
     @Test
@@ -237,7 +237,8 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
             }
         };
 
-        loopDesign.setDesignerOption("nmax", "10");
+        loopDesign.setDesignerOption("yminimization", "true");
+        loopDesign.setDesignerOption("iterations", "10");
         loopDesign.setDesignerOption("target", "-10");
         loopDesign.update();
         loopDesign.buildDesign(prj.getDesignSession(0));
@@ -254,7 +255,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
                 Y = f.F(X);
                 if (i++ > 2) {
                     Object[] y = Y.get(f.fname);
-                    y[y.length-1] = Double.NaN;
+                    y[y.length - 1] = Double.NaN;
                     Y.put(f.fname, y);
                 }
                 System.err.println(loopDesign.getResultsTmp());
@@ -310,7 +311,8 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
             }
         };
 
-        loopDesign.setDesignerOption("nmax", "10");
+        loopDesign.setDesignerOption("yminimization", "true");
+        loopDesign.setDesignerOption("iterations", "10");
         loopDesign.setDesignerOption("target", "-10");
         loopDesign.update();
         loopDesign.buildDesign(prj.getDesignSession(0));
