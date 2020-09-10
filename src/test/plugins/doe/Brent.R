@@ -38,7 +38,7 @@ getInitialDesign <- function(brent, input, output) {
 getNextDesign <- function(brent, X, Y) {
     names(X) = names(brent$input)
     X = to01(X,brent$input)
-    Y = matrix(Y,ncol=1) - brent$ytarget
+    Y = as.matrix(Y,ncol=1) - brent$ytarget
 
     if (brent$i >= brent$max_iterations) {
         brent$exit <- 2
@@ -147,22 +147,20 @@ displayResults <- function(brent, X, Y) {
         exit.txt = paste("error code", brent$exit)
     }
     brent$files <- paste("result", brent$i, ".png", sep = "")
-    height <- 500
-    width <- 500
 
-    png(file = brent$files,        height = height,        width = width)
-    plot(X[,1],Y,         pch = 20,         col = "grey70")
+    png(file = brent$files, height = 600, width = 600)
+    plot(X[,1],Y[,1], pch = 20)
     #plot(as.matrix(X[3*i-1,1]),as.matrix(Y[3*i-1,1]),pch=20,col="grey70")
     abline(h = brent$ytarget,           lty = 2,           col = "grey70")
     dev.off()
 
     html <- paste0(' <HTML name="Root">in iteration number ',brent$i,'.<br/>',
-            'the root approximation is ', X[3 * brent$i - 1, 1], '.<br/>',
-            'corresponding to the value ', Y[3 * brent$i - 1, 1],'<br/>',
-            '<img src="',  brent$files,  '" width="', width, '" height="', height, '"/>',
-            '<br/>Exit due to ', exit.txt, '<br/></HTML>',collapse=';')
-    
-    arg <- paste0('<root>',X[3 * brent$i - 1, 1],'</root>')
+            'the root approximation is ', X[nrow(X)-1, 1], '.<br/>',
+            'corresponding to the value ', Y[nrow(X)-1, 1],'<br/>',
+            '<img src="',  brent$files,  '" width="600" height="600"/>',
+            '<br/>Exit due to ', exit.txt, '<br/></HTML>')
+
+    arg <- paste0('<root>',X[nrow(X)-1, 1],'</root>')
 
     return(paste0(html,arg))
 }

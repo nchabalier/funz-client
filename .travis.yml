@@ -196,7 +196,8 @@ before_script:
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
     echo "deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/" | sudo tee -a /etc/apt/sources.list;
     sudo apt-get update -qq --allow-unauthenticated; 
-    sudo apt-get install r-base --allow-unauthenticated -y;
+    sudo apt-get install r-base --allow-unauthenticated -y; 
+    sudo apt-get install libglu1-mesa-dev libglu1-mesa-dev libfreetype6-dev --allow-unauthenticated -y; 
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
