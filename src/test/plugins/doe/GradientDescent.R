@@ -1,6 +1,6 @@
 #help: First-order local optimization algorithm<br/>http://en.wikipedia.org/wiki/Gradient_descent
 #tags: optimization
-#options: yminimization='true'; nmax=100; delta=.1; epsilon=0.01; target=Inf; x0='0.5'
+#options: yminimization='true'; nmax=100; delta=.1; epsilon=0.01; target=Inf; x0=''
 #input: x=list(min=0,max=1)
 #output: y=0.99
 
@@ -13,8 +13,8 @@ GradientDescent <- function(opts) {
   gradientdescent$delta <- as.numeric(opts$delta)
   gradientdescent$epsilon <- as.numeric(opts$epsilon)
   gradientdescent$target <- as.numeric(opts$target)
-  if (opts$x0=='') {
-    gradientdescent$x0 <- NULL
+  if (isTRUE(opts$x0=='' | is.null(opts$x0))) {
+    gradientdescent$x0 <- NaN
   } else {
     gradientdescent$x0 <- as.numeric(opts$x0)
   }
@@ -40,7 +40,7 @@ getInitialDesign <- function(algorithm,input,output) {
   algorithm$i = 0
   algorithm$input <- input
   d = length(input)
-  if (!is.null(algorithm$x0)) {
+  if (isTRUE(!is.null(algorithm$x0) & !is.nan(algorithm$x0))) {
     x0 = rep(algorithm$x0,d)
     if (length(x0)>d) {
         x0 = x0[1:d] #to not let x0 become a scalar for R2js
@@ -102,7 +102,11 @@ getNextDesign <- function(algorithm,X,Y) {
   }
   if (d==1) { prevXn = matrix(prevXn,ncol=1) }
 
-  grad_norm = gradient(prevXn,prevYn) / (max(Y[,1])-min(Y[,1]))
+  if (max(Y[,1])==min(Y[,1])) {
+    grad_norm = runif(d,-1,1)
+  } else {
+    grad_norm = gradient(prevXn,prevYn) / (max(Y[,1])-min(Y[,1]))
+  }
   # grad = grad / sqrt(sum(grad * grad))
 
   if (max(abs(grad_norm)) * algorithm$delta > 1) {
@@ -119,10 +123,10 @@ getNextDesign <- function(algorithm,X,Y) {
   for (t in 1:d) {
     while((xnext[t] > 1.0) | (xnext[t] < 0)){
       if (xnext[t] > 1.0) {
-        xnext[t] = 2.0 - xnext[t];
+        xnext[t] = 1.0 #2.0 - xnext[t];
       }
       if (xnext[t] < 0.0) {
-        xnext[t] = 0.0 - xnext[t];
+        xnext[t] = 0.0 #0.0 - xnext[t];
       }
     }
   }
@@ -282,33 +286,34 @@ to01 = function(X, inp) {
 
 ##############################################################################################
 # @test
-# f <- function(X) matrix(apply(X,1,function (x) {
-#     x1 <- x[1] * 15 - 5
-#     x2 <- x[2] * 15
-#     (x2 - 5/(4 * pi^2) * (x1^2) + 5/pi * x1 - 6)^2 + 10 * (1 - 1/(8 * pi)) * cos(x1) + 10
-# }),ncol=1)
-# f1 = function(x) f(cbind(.5,x))
-#
-# options = list(nmax = 10, delta = 0.1, epsilon = 0.01, target=0)
+# # f <- function(X) matrix(apply(X,1,function (x) {
+# #     x1 <- x[1] * 15 - 5
+# #     x2 <- x[2] * 15
+# #     (x2 - 5/(4 * pi^2) * (x1^2) + 5/pi * x1 - 6)^2 + 10 * (1 - 1/(8 * pi)) * cos(x1) + 10
+# # }),ncol=1)
+# # f1 = function(x) f(cbind(.5,x))
+# f <- function(X) matrix(apply(X,1,function (x) {x[1] * x[2]}))
+# 
+# options = list(yminimization='true',nmax = 3, delta = 1000, epsilon = 0.001, target=-10, x0=-0.1)
 # gd = GradientDescent(options)
-#
+# 
 # # X0 = getInitialDesign(gd, input=list(x1=list(min=0,max=1),x2=list(min=0,max=1)), NULL)
 # # Y0 = f(X0)
-# X0 = getInitialDesign(gd, input=list(x2=list(min=0,max=1)), NULL)
-# Y0 = f1(X0)
+# X0 = getInitialDesign(gd, input=list(x1=list(min=-0.5,max=0.0001),x2=list(min=-0.3,max=0.8)), NULL)
+# Y0 = f(X0)
 # Xi = X0
 # Yi = Y0
-#
+# 
 # finished = FALSE
 # while (!finished) {
 #     Xj = getNextDesign(gd,Xi,Yi)
 #     if (is.null(Xj) | length(Xj) == 0) {
 #         finished = TRUE
 #     } else {
-#         Yj = f1(Xj)
+#         Yj = f(Xj)
 #         Xi = rbind(Xi,Xj)
 #         Yi = rbind(Yi,Yj)
 #     }
 # }
-#
+# 
 # print(displayResults(gd,Xi,Yi))

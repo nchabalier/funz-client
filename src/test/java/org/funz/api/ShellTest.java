@@ -132,9 +132,9 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         File tmp_in = tmp_in();
 
-        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]", "x2", "[0,1]"), newMap("nmax", "5", "delta", "0.1")); // R should be dedected by plugin automatically.
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]", "x2", "[0,1]"), newMap("nmax", "30", "delta", "1","x0","0.5")); // R should be dedected by plugin automatically.
         sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
-        Funz.setVerbosity(verbose);
+        Funz.setVerbosity(10);
 
         //sac.addCacheDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
@@ -150,7 +150,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results != null : "No results";
         assert results.get("analysis.min") != null : "No analysis.min in results:" + results.keySet();
         assert results.get("analysis.min").length > 0 : "No content analysis.min in results";
-        assert results.get("analysis.min")[0].trim().startsWith("0.4") : "Bad convergence to " + results.get("analysis.min")[0];
+        assert results.get("analysis.min")[0].trim().startsWith("0.") : "Bad convergence to " + results.get("analysis.min")[0];
     }
 
     @Test
@@ -183,7 +183,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results != null : "No results";
         assert results.get("analysis.min") != null : "No analysis.min in results:" + results.keySet();
         assert results.get("analysis.min").length > 0 : "No content analysis.min in results";
-        assert results.get("analysis.min")[0].trim().startsWith("0.4") : "Bad convergence to " + results.get("analysis.min")[0];
+        assert results.get("analysis.min")[0].trim().startsWith("0.") : "Bad convergence to " + results.get("analysis.min")[0];
     }
 
     @Test
@@ -215,7 +215,7 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         File tmp_in = tmp_in();
 
-        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]"), newMap("nmax", "5", "delta", "0.1")); // R should be dedected by plugin automatically.
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]"), newMap("nmax", "15", "delta", "1")); // R should be dedected by plugin automatically.
         sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
         Funz.setVerbosity(verbose);
 
