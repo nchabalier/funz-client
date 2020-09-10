@@ -229,6 +229,7 @@ before_script:
   - >
     if [[ "$NO_TEST_R" != "1" ]]; then 
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+    sudo apt-get install libpcre2-8-0 libpcre2-dev --allow-unauthenticated -y;
     sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; 
     sudo R CMD javareconf JAVA_HOME=$JAVA_HOME; 
     sudo R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"; 
