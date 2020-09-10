@@ -285,7 +285,7 @@
                 <echo message="========================================="/>
                 <propertyregex property="test.class" input="@{test.class}" regexp="\.class" replace="" global="true"  override="true"/>
                 <!--echo message="${test.class}"/-->
-                <propertyregex property="test.class.id" input="${test.class}" regexp="/" replace="\." global="true"  override="true"/>
+                <propertyregex property="test.class.id" input="${test.class}" regexp="[/\\]" replace="\." global="true"  override="true"/>
                 <!--echo message="${test.class.id}"/-->
                 
                 <record name="${test.class.id}.txt" action="start" />
