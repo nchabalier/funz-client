@@ -191,11 +191,11 @@ public class ShellTest extends org.funz.api.TestUtils {
     public void testNoDesignOutExpr() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testNoDesignOutExpr");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", null, newMap("x1", new String[]{"0", "1"}, "x2", new String[]{"0", "1"}), null);
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
+        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
         sac.setOutputExpressions("GaussianDensity:cat[1],1");
         //sac.setOutputExpressions("cat[1]");
 

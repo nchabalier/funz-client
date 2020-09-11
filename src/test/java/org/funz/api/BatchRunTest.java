@@ -52,7 +52,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testOutputExpr() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOutputExpr");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -113,7 +113,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testOutputExprGaussian() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOutputExprGaussian");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -177,7 +177,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void test1Case() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1Case");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -237,7 +237,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testBatchTimeout() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testBatchTimeout");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, "CodeNotAvailable", plugin);
@@ -297,7 +297,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void test1CaseLongExec() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1CaseLongExec");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
         // will exceed tcp timeout for readResponse (10 s.)
         ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=15"));
 
@@ -363,7 +363,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void test20Cases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test20Cases");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
         // will exceed tcp timeout for readResponse (10 s.)
         ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=1"));
 
@@ -437,7 +437,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void test20CasesLongExec() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test20CasesLongExec");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
         // will exceed tcp timeout for readResponse (10 s.)
         ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=5"));
 
@@ -512,7 +512,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     public void test1CaseWithBinFile() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1CaseWithBinFile");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         File bigtmp = new File("tmp/big");
         if (bigtmp.isDirectory()) {
@@ -587,7 +587,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testDefinedVarValues() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDefinedVarValues");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
         ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replaceFirst("\\?x1", "\\?\\[x1~{.6}\\]"));
         ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(tmp_in).replaceFirst("\\?[x2~.5]", "\\?\\[x2~{.5}\\]"));
 
@@ -638,7 +638,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void test1FailedCaseOnPrepare() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1FailedCaseOnPrepare");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -695,7 +695,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void test1FailedCaseOnRun() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1FailedCaseOnRun");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -752,7 +752,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testKill() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testKill");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -945,7 +945,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testMultipleCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testMultipleCases");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -1010,7 +1010,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testSomeCasesNotSelected() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testSomeCasesNotSelected");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -1078,7 +1078,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testSomeFailedCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testSomeFailedCases");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -1131,7 +1131,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDuplicateCases");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -1182,7 +1182,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testIterativeDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testIterativeDuplicateCases");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -1250,7 +1250,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testVectorize() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testVectorize");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -1313,7 +1313,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testStopRestart() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testStopRestart");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
         ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=1"));
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
@@ -1488,7 +1488,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!! START 2nd Project !!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
         ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=1"));
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
@@ -1551,7 +1551,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testAddCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testAddCases");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -1621,7 +1621,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void testCodeNoResult() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testCodeError");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);

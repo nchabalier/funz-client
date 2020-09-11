@@ -127,13 +127,13 @@ public class RunShellTest extends org.funz.api.TestUtils {
         Disk.emptyDir(tmp);
         assert tmp.list().length == 0 : "Cannot empty tmp !";
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
         ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(tmp_in).replace("t=0", "t=2"));
 
         Funz.setVerbosity(verbose);
 
         Project prj = new Project("branin", tmp);
-        RunShell_v1 sac = new RunShell_v1(prj);//R, mult_in, (String) null); // R should be dedected by plugin automatically.
+        RunShell_v1 sac = new RunShell_v1(prj);//R, branin_in, (String) null); // R should be dedected by plugin automatically.
         sac.setInputModel(R, tmp_in);
         sac.setArchiveDirectory(sac.prj.getResultsDir());
 
@@ -161,7 +161,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
 
         Project prj2 = new Project("branin", tmp);
-        RunShell_v1 sac2 = new RunShell_v1(prj2);//R, mult_in, (String) null); // R should be dedected by plugin automatically.
+        RunShell_v1 sac2 = new RunShell_v1(prj2);//R, branin_in, (String) null); // R should be dedected by plugin automatically.
         sac2.setInputModel(R, tmp_in);
         sac2.setArchiveDirectory(sac2.prj.getResultsDir());
 
@@ -191,13 +191,13 @@ public class RunShellTest extends org.funz.api.TestUtils {
         Disk.emptyDir(tmp);
         assert tmp.list().length == 0 : "Cannot empty tmp !";
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
         ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=2"));
 
         Funz.setVerbosity(verbose);
 
         Project prj = new Project("branin", tmp);
-        RunShell_v1 sac = new RunShell_v1(prj);//R, mult_in, (String) null); // R should be dedected by plugin automatically.
+        RunShell_v1 sac = new RunShell_v1(prj);//R, branin_in, (String) null); // R should be dedected by plugin automatically.
         sac.setInputModel(R, tmp_in);
         sac.setArchiveDirectory(sac.prj.getResultsDir());
 
@@ -225,7 +225,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
 
         Project prj2 = new Project("branin", tmp);
-        RunShell_v1 sac2 = new RunShell_v1(prj2);//R, mult_in, (String) null); // R should be dedected by plugin automatically.
+        RunShell_v1 sac2 = new RunShell_v1(prj2);//R, branin_in, (String) null); // R should be dedected by plugin automatically.
         sac2.setInputModel(R, tmp_in);
         sac2.setArchiveDirectory(sac2.prj.getResultsDir());
 
@@ -260,7 +260,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         Disk.moveDir(new File("tmp"), cache);
         assert (cache.exists()) : "No cache available !";
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -328,7 +328,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void test1Case() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ test1Case");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -369,7 +369,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testIOPluginMore() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testIOPluginMore");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
         File tmp_plugin = new File("tmp/getZ.ioplugin");
         Disk.copyFile(new File("src/test/samples/getZ.ioplugin"), tmp_plugin);
 
@@ -412,7 +412,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testFailedCase() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testFailedCase");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -446,7 +446,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testArchive() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testArchive");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be detected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -513,10 +513,10 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testKill() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testKill");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         final RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null);
-        //RunShell_v1 sac = new RunShell_v1(R, mult_in); // R should be dedected by plugin automatically.
+        //RunShell_v1 sac = new RunShell_v1(R, branin_in); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
         sac.setArchiveDirectory("tmp");
 
@@ -655,7 +655,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testMultipleCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testMultipleCases");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -688,7 +688,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testMultipleGroupCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testMultipleGroupCases");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -724,7 +724,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testDuplicateCases");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null);
         Funz.setVerbosity(verbose);
@@ -760,7 +760,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testVectorize() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testVectorize");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null);
         Funz.setVerbosity(verbose);
@@ -795,7 +795,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testImplicitCode() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testImplicitCode");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         RunShell_v1 sac = new RunShell_v1(null/*"R"*/, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);

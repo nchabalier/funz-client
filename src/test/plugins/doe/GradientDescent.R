@@ -97,7 +97,7 @@ getNextDesign <- function(algorithm,X,Y) {
     return();
   }
 
-  if (max(abs(g)) * algorithm$gamma > 1) {
+  if (isTRUE(max(abs(g)) * algorithm$gamma > 1)) {
     algorithm$gamma <- algorithm$gamma / max(abs(g))
   }
 

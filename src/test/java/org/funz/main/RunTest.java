@@ -69,7 +69,7 @@ public class RunTest extends org.funz.api.TestUtils {
     @Test
     public void testParseError() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++++ testParseError");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         try {
             Run.main("Run abcdef".split(" "));
@@ -82,7 +82,7 @@ public class RunTest extends org.funz.api.TestUtils {
     public void testRun1() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++++ testRun1");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         try {
             Run.main("Run -m R -if tmp/branin.R -iv x1=.5 x2=0.3 -v 0 -ad tmp".split(" "));
@@ -97,7 +97,7 @@ public class RunTest extends org.funz.api.TestUtils {
     public void testOutputExpression() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++++ testOutputExpression");
 
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         try {
             Run.main("Run -m R -if tmp/branin.R -iv x1=.5 x2=0.3 -v 0 -ad tmp -oe 1+cat".split(" "));
@@ -111,7 +111,7 @@ public class RunTest extends org.funz.api.TestUtils {
     @Test
     public void testRunNoDefinedVarValues() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++++ testRunNoDefinedVarValues");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         try {
             Run.main("Run -m R -if tmp/branin.R -iv x1=.5 -v 0 -ad tmp".split(" "));
@@ -125,7 +125,7 @@ public class RunTest extends org.funz.api.TestUtils {
     @Test
     public void testRun9() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++++ testRun9");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         try {
             Run.main("Run -m R -if tmp/branin.R -iv x1=.5,.6,.7 x2=0.3,.4,.5 -v 0 -ad tmp".split(" "));
@@ -139,7 +139,7 @@ public class RunTest extends org.funz.api.TestUtils {
     @Test
     public void testRun9verb() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++++ testRun9");
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         try {
             Run.main("Run -m R -if tmp/branin.R -iv x1=.5,.6,.7 x2=0.3,.4,.5 -mc sleep=0.1 -v 2 -ad tmp".split(" "));
