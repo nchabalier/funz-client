@@ -84,7 +84,7 @@ public class DesignTest extends org.funz.api.TestUtils {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testDesignFailedResult");
 
         try {
-            Design.main("Design -d GradientDescent -do nmax=3 epsilon=0.001 delta=1000 target=-10 -f ./multtttttttt.sh -fa x1 x2 -iv x1=[-0.5,.0001] x2=[-0.3,.8] -v 10".split(" "));
+            Design.main("Design -d GradientDescent -do nmax=3 epsilon=0.001 delta=1 target=-10 -f ./multtttttttt.sh -fa x1 x2 -iv x1=[-0.5,-0.1] x2=[0.3,.8] -v 10".split(" "));
         } catch (ExitCatcher e) {
             assert e.status != 0 : "Bad 0 exit status";
         }
@@ -100,7 +100,7 @@ public class DesignTest extends org.funz.api.TestUtils {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testDesign");
 
         try {
-            Design.main("Design -d GradientDescent -do nmax=3 epsilon=0.001 delta=1000 target=-10 -f ./mult.sh -fa x1 x2 -iv x1=[-0.5,.0001] x2=[-0.3,.8] -v 10 -ad tmp".split(" "));
+            Design.main("Design -d GradientDescent -do nmax=3 epsilon=0.001 delta=1 target=-10 -f ./mult.sh -fa x1 x2 -iv x1=[-0.5,-0.1] x2=[0.3,.8] -v 10 -ad tmp".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Bad exit status :" + e.status;
         }
@@ -114,7 +114,7 @@ public class DesignTest extends org.funz.api.TestUtils {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testDesignPar");
 
         try {
-            Design.main("Design -d GradientDescent -do nmax=3 epsilon=0.001 delta=1000 target=-10 -f ./mult.sh -fa x1 x2 -fp 3 -iv x1=[-0.5,.0001] x2=[-0.3,.8] -v 10".split(" "));
+            Design.main("Design -d GradientDescent -do nmax=3 epsilon=0.001 delta=1 target=-10 -f ./mult.sh -fa x1 x2 -fp 3 -iv x1=[-0.5,-0.1] x2=[0.3,.8] -v 10".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Bad exit status :" + e.status;
         }
@@ -128,7 +128,7 @@ public class DesignTest extends org.funz.api.TestUtils {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testDesignTooMuchPar");
 
         try {
-            Design.main("Design -d GradientDescent -do nmax=3 epsilon=0.001 delta=1000 target=-10 -f ./mult.sh -fa x1 x2 -fp 5 -iv x1=[-0.5,.0001] x2=[-0.3,.8] -v 10".split(" "));
+            Design.main("Design -d GradientDescent -do nmax=3 epsilon=0.001 delta=1 target=-10 -f ./mult.sh -fa x1 x2 -fp 5 -iv x1=[-0.5,-0.1] x2=[0.3,.8] -v 10".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Bad exit status :" + e.status;
         }

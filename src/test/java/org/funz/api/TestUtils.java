@@ -3,7 +3,9 @@ package org.funz.api;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Map;
 import org.funz.Project;
+import static org.funz.api.DesignShell_v1.DEFAULT_FUNCTION_NAME;
 import org.funz.calculator.Calculator;
 import org.funz.conf.Configuration;
 import org.funz.log.Alert;
@@ -15,9 +17,11 @@ import org.funz.main.MainUtils;
 import org.funz.script.MathExpression;
 import org.funz.util.ASCII;
 import static org.funz.util.Data.asString;
+import static org.funz.util.Data.newMap;
 import org.funz.util.Disk;
 import static org.funz.util.ParserUtils.getASCIIFileContent;
 import org.junit.After;
+import org.math.array.DoubleArray;
 
 /**
  *
@@ -81,17 +85,6 @@ public class TestUtils {
 
     public static final String R = "R";
 
-    public static File tmp_in() throws IOException {
-        File tmp_in = new File("tmp/branin.R");
-        if (tmp_in.exists()) {
-            tmp_in.delete();
-        }
-        Disk.copyFile(new File("src/test/samples/branin.R"), tmp_in);
-        assert tmp_in.exists() : "File " + tmp_in + " does not exist.";
-
-        return tmp_in;
-    }
-
     public static int verbose = 2;
     public static Calculator[] calculators;
     static MathExpression M = null;// = new RenjinMathExpression("Renjin");
@@ -119,7 +112,7 @@ public class TestUtils {
     @After
     public void tearDown() throws InterruptedException {
         Log.setCollector(Log.SystemCollector);
-        
+
         if (Funz_v1.POOL != null) {
             Funz_v1.POOL.shutdown();
         }
@@ -154,8 +147,8 @@ public class TestUtils {
 
     public void setUp(String name) throws Exception {
         MainUtils.init(name, verbose);
-        System.err.println("Test init at: "+HMS());
-        
+        System.err.println("Test init at: " + HMS());
+
         File dir = new File("tmp");
         org.apache.commons.io.FileUtils.deleteDirectory(dir);
         org.apache.commons.io.FileUtils.forceMkdir(dir);
@@ -163,12 +156,12 @@ public class TestUtils {
 
         File fdir = new File(".f");
         org.apache.commons.io.FileUtils.deleteDirectory(fdir);
-        
+
         if (Funz_v1.POOL == null) {
             throw new Exception("POOL is null !!!");
         }
-        Project.DEFAULT_waitingTimeout=10;//10 s. max before hard stopping batch if no calc found.
-        Project.DEFAULT_blacklistTimeout=10;//10 s. max before hard stopping batch if no calc found.
+        Project.DEFAULT_waitingTimeout = 10;//10 s. max before hard stopping batch if no calc found.
+        Project.DEFAULT_blacklistTimeout = 10;//10 s. max before hard stopping batch if no calc found.
     }
 
     public static final String CONF_XML = "./dist/calculator.xml";
@@ -202,15 +195,6 @@ public class TestUtils {
             }
         }
         return true;
-    }
-
-    public static String[] f(String[] x1, String[] x2) {
-        assert x1.length == x2.length;
-        String[] z = new String[x1.length];
-        for (int i = 0; i < z.length; i++) {
-            z[i] = "[" + f(Double.parseDouble(x1[i]), Double.parseDouble(x2[i])) + "]";
-        }
-        return round2(z);
     }
 
     public static String round2(String z) {
@@ -277,9 +261,82 @@ public class TestUtils {
         return newz;
     }
 
-    public static double f(double x1, double x2) {
+    /* @see R::DiceKriging::branin
+    branin <- function(x) {
+	x1 <- x[1]*15-5   
+	x2 <- x[2]*15     
+	(x2 - 5/(4*pi^2)*(x1^2) + 5/pi*x1 - 6)^2 + 10*(1 - 1/(8*pi))*cos(x1) + 10
+    }
+     */
+    public static double branin(double x1, double x2) {
         x1 = x1 * 15 - 5;
         x2 = x2 * 15;
         return Math.pow(x2 - 5 / (4 * Math.PI * Math.PI) * (x1 * x1) + 5 / Math.PI * x1 - 6, 2) + 10 * (1 - 1 / (8 * Math.PI)) * Math.cos(x1) + 10;
     }
+
+    double branin_min = 0.4;
+    double[] branin_xmin1 = {0.9616520, 0.15};
+    double[] branin_xmin2 = {0.1238946, 0.8166644};
+    double[] branin_xmin3 = {0.5427730, 0.15};
+
+    public static String[] branin(String[] x1, String[] x2) {
+        assert x1.length == x2.length;
+        String[] z = new String[x1.length];
+        for (int i = 0; i < z.length; i++) {
+            z[i] = "[" + branin(Double.parseDouble(x1[i]), Double.parseDouble(x2[i])) + "]";
+        }
+        return round2(z);
+    }
+
+    DesignShell_v1.Function branin = new DesignShell_v1.Function(DEFAULT_FUNCTION_NAME, "x1", "x2") {
+        @Override
+        public Map f(Object... strings) {
+            double[] x = new double[strings.length];
+            for (int i = 0; i < x.length; i++) {
+                x[i] = Double.parseDouble(strings[i].toString());
+            }
+            double x1 = x[0] * 15 - 5;
+            double x2 = x[1] * 15;
+            return newMap(DEFAULT_FUNCTION_NAME, branin(x1, x2));
+        }
+    };
+
+    public static File branin_in() throws IOException {
+        File tmp_in = new File("tmp/branin.R");
+        if (tmp_in.exists()) {
+            tmp_in.delete();
+        }
+        Disk.copyFile(new File("src/test/samples/branin.R"), tmp_in);
+        assert tmp_in.exists() : "File " + tmp_in + " does not exist.";
+
+        return tmp_in;
+    }
+
+    static DesignShell_v1.Function mult = new DesignShell_v1.Function(DEFAULT_FUNCTION_NAME, "x1", "x2") {
+        @Override
+        public Map f(Object... strings) {
+            double[] vals = new double[strings.length];
+            for (int i = 0; i < vals.length; i++) {
+                vals[i] = Double.parseDouble(strings[i].toString());
+            }
+            return newMap(mult.fname, DoubleArray.product(vals));
+        }
+    };
+
+    public static File mult_in() throws IOException {
+        File tmp_in = new File("tmp/mult.R");
+        if (tmp_in.exists()) {
+            tmp_in.delete();
+        }
+        Disk.copyFile(new File("src/test/samples/mult.R"), tmp_in);
+        assert tmp_in.exists() : "File " + tmp_in + " does not exist.";
+
+        return tmp_in;
+    }
+
+    public final static double mult_min = -0.4;
+    public final static double mult_x1_min = -0.5;
+    public final static double mult_x1_max = -0.1;
+    public final static double mult_x2_min = 0.3;
+    public final static double mult_x2_max = 0.8;
 }

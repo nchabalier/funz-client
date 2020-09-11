@@ -268,7 +268,7 @@ public abstract class LoopDesign_v1 {
 
     public void buildDesign(DesignSession session) throws Exception {
         this.session = session;
-        setState("Build first iteration");
+        setState("Build first design");
 
         try {
             design = prj.getDesigner().createDesign(session);

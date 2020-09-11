@@ -127,13 +127,13 @@ public class RunShellTest extends org.funz.api.TestUtils {
         Disk.emptyDir(tmp);
         assert tmp.list().length == 0 : "Cannot empty tmp !";
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
         ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(tmp_in).replace("t=0", "t=2"));
 
         Funz.setVerbosity(verbose);
 
         Project prj = new Project("branin", tmp);
-        RunShell_v1 sac = new RunShell_v1(prj);//R, tmp_in, (String) null); // R should be dedected by plugin automatically.
+        RunShell_v1 sac = new RunShell_v1(prj);//R, mult_in, (String) null); // R should be dedected by plugin automatically.
         sac.setInputModel(R, tmp_in);
         sac.setArchiveDirectory(sac.prj.getResultsDir());
 
@@ -152,7 +152,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-        String[] z = f(x1, x2);//new String[]{"136.0767"};
+        String[] z = branin(x1, x2);//new String[]{"136.0767"};
         assert Arrays.deepEquals(round2(results.get("cat")), z) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
 
         assert (double) (results.get("duration")[0]) > 5 : "Too short case run ! (duration was " + results.get("duration")[0] + ")";
@@ -161,7 +161,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
 
         Project prj2 = new Project("branin", tmp);
-        RunShell_v1 sac2 = new RunShell_v1(prj2);//R, tmp_in, (String) null); // R should be dedected by plugin automatically.
+        RunShell_v1 sac2 = new RunShell_v1(prj2);//R, mult_in, (String) null); // R should be dedected by plugin automatically.
         sac2.setInputModel(R, tmp_in);
         sac2.setArchiveDirectory(sac2.prj.getResultsDir());
 
@@ -191,13 +191,13 @@ public class RunShellTest extends org.funz.api.TestUtils {
         Disk.emptyDir(tmp);
         assert tmp.list().length == 0 : "Cannot empty tmp !";
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
         ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=2"));
 
         Funz.setVerbosity(verbose);
 
         Project prj = new Project("branin", tmp);
-        RunShell_v1 sac = new RunShell_v1(prj);//R, tmp_in, (String) null); // R should be dedected by plugin automatically.
+        RunShell_v1 sac = new RunShell_v1(prj);//R, mult_in, (String) null); // R should be dedected by plugin automatically.
         sac.setInputModel(R, tmp_in);
         sac.setArchiveDirectory(sac.prj.getResultsDir());
 
@@ -216,7 +216,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-        String[] z = f(x1, x2);//new String[]{"136.0767"};
+        String[] z = branin(x1, x2);//new String[]{"136.0767"};
         assert Arrays.deepEquals(round2(results.get("cat")), z) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
 
         assert (double) (results.get("duration")[0]) > 5 : "Too short case run ! (duration was " + results.get("duration")[0] + ")";
@@ -225,7 +225,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
 
         Project prj2 = new Project("branin", tmp);
-        RunShell_v1 sac2 = new RunShell_v1(prj2);//R, tmp_in, (String) null); // R should be dedected by plugin automatically.
+        RunShell_v1 sac2 = new RunShell_v1(prj2);//R, mult_in, (String) null); // R should be dedected by plugin automatically.
         sac2.setInputModel(R, tmp_in);
         sac2.setArchiveDirectory(sac2.prj.getResultsDir());
 
@@ -260,7 +260,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         Disk.moveDir(new File("tmp"), cache);
         assert (cache.exists()) : "No cache available !";
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -285,7 +285,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-        String[] z = f(x1, x2);//new String[]{"136.0767"};
+        String[] z = branin(x1, x2);//new String[]{"136.0767"};
         assert Arrays.deepEquals(round2(results.get("cat")), z) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
 
         Thread.sleep(1000);
@@ -328,7 +328,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void test1Case() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ test1Case");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -355,7 +355,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-        String[] z = f(x1, x2);//new String[]{"136.0767"};
+        String[] z = branin(x1, x2);//new String[]{"136.0767"};
         assert Arrays.deepEquals(round2(results.get("cat")), z) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
 
         assert sac.getArchiveDirectory().listFiles().length > 0 : "Empty archive directory: " + sac.getArchiveDirectory();
@@ -369,7 +369,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testIOPluginMore() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testIOPluginMore");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
         File tmp_plugin = new File("tmp/getZ.ioplugin");
         Disk.copyFile(new File("src/test/samples/getZ.ioplugin"), tmp_plugin);
 
@@ -398,7 +398,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-        String[] z = f(x1, x2);//new String[]{"136.0767"};
+        String[] z = branin(x1, x2);//new String[]{"136.0767"};
         assert Arrays.deepEquals(round2(results.get("cat")), z) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
         assert results.get("Z") != null : "No ioplugin more output parsed !";
         assert ("" + round2(results.get("Z")[0]) + "").equals(z[0]) : "" + round2(results.get("Z")[0]) + "" + " != " + z[0];
@@ -412,7 +412,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testFailedCase() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testFailedCase");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -446,7 +446,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testArchive() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testArchive");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be detected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -482,7 +482,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-        String[] z = f(x1, x2);//new String[]{"136.0767"};
+        String[] z = branin(x1, x2);//new String[]{"136.0767"};
         assert Arrays.deepEquals(round2(results.get("cat")), z) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
 
         //sac.archive();
@@ -513,10 +513,10 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testKill() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testKill");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         final RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null);
-        //RunShell_v1 sac = new RunShell_v1(R, tmp_in); // R should be dedected by plugin automatically.
+        //RunShell_v1 sac = new RunShell_v1(R, mult_in); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
         sac.setArchiveDirectory("tmp");
 
@@ -545,7 +545,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
                     //assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
                     //assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-                    String[] z = f(x1, x2);//new String[]{"311.5395", "252.1709", "223.7021", "71.96581", "55.78288"};
+                    String[] z = branin(x1, x2);//new String[]{"311.5395", "252.1709", "223.7021", "71.96581", "55.78288"};
                     assert !Arrays.deepToString(round2(results.get("cat"))).equals(Arrays.deepToString(z)) : Arrays.toString(round2(results.get("cat"))) + " == " + Arrays.toString(z);
 
                     //System.err.println("Computers pool : " + Print.gridStatusInformation());
@@ -611,7 +611,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
                         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
                         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-                        String[] z = f(x1, x2);//new String[]{"75.34526", "19.61803", "18.87899", "17.54458", "5.154316"};
+                        String[] z = branin(x1, x2);//new String[]{"75.34526", "19.61803", "18.87899", "17.54458", "5.154316"};
                         assert Arrays.deepEquals(round2(results.get("cat")), z) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
 
                         Thread.sleep(1000);
@@ -655,7 +655,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testMultipleCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testMultipleCases");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -675,7 +675,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         //assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         //assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-        //String[] z = f(x1, x2);//new String[]{"75.34526", "19.61803", "18.87899", "17.54458", "5.154316"};
+        //String[] z = branin(x1, x2);//new String[]{"75.34526", "19.61803", "18.87899", "17.54458", "5.154316"};
         //assert Arrays.deepToString(round2(results.get("cat"))).equals(Arrays.deepToString(z)) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
         System.err.println("Computers pool : " + Print.gridStatusInformation());
 
@@ -688,7 +688,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testMultipleGroupCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testMultipleGroupCases");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -710,7 +710,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-        String[] z = f(x1, x2);//new String[]{"75.34526", "19.61803", "18.87899", "17.54458", "5.154316"};
+        String[] z = branin(x1, x2);//new String[]{"75.34526", "19.61803", "18.87899", "17.54458", "5.154316"};
         assert Arrays.deepToString(round2(results.get("cat"))).equals(Arrays.deepToString(z)) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
 
         System.err.println("Computers pool : " + Print.gridStatusInformation());
@@ -724,7 +724,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testDuplicateCases");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null);
         Funz.setVerbosity(verbose);
@@ -760,7 +760,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testVectorize() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testVectorize");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null);
         Funz.setVerbosity(verbose);
@@ -784,7 +784,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-        String[] z = f(x1, x2);//new String[]{"214.8081", "167.0327", "146.7375"};
+        String[] z = branin(x1, x2);//new String[]{"214.8081", "167.0327", "146.7375"};
         assert Arrays.deepEquals(round2(results.get("cat")), z) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
 
         Thread.sleep(1000);
@@ -795,7 +795,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testImplicitCode() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testImplicitCode");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         RunShell_v1 sac = new RunShell_v1(null/*"R"*/, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -819,7 +819,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-        String[] z = f(x1, x2);//new String[]{"214.8081"};
+        String[] z = branin(x1, x2);//new String[]{"214.8081"};
         assert Arrays.deepEquals(round2(results.get("cat")), z) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
 
         Thread.sleep(1000);

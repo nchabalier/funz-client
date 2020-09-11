@@ -38,12 +38,12 @@ public class ShellTest extends org.funz.api.TestUtils {
         test1Case1Design();
         System.err.println("==================================================");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]"), newMap("nmax", "5")); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
 
-        sac.addCacheDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        sac.addCacheDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
 
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
@@ -61,7 +61,7 @@ public class ShellTest extends org.funz.api.TestUtils {
     public void testDefaultCase() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testDefaultCase");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         Shell_v1 sac0 = new Shell_v1(R, tmp_in, "cat", null, null, null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -107,13 +107,13 @@ public class ShellTest extends org.funz.api.TestUtils {
     public void test1Case1Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ test1Case1Design");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
-        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]", "x2", new String[]{"0.1"}), newMap("nmax", "10")); // R should be dedected by plugin automatically.
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[-0.5,-0.1]", "x2", new String[]{"0.1"}), newMap("nmax", "15")); // R should be dedected by plugin automatically.
+        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
         Funz.setVerbosity(verbose);
 
-        //sac.addCacheDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
 
@@ -121,7 +121,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.startComputationAndWait();
         Map<String, String[]> results = sac.getResultsStringArrayMap();
 
-        assert Double.parseDouble(results.get("analysis.min")[0].trim()) < 3 : "Bad convergence to " + results.get("analysis.min")[0];
+        assert Double.parseDouble(results.get("analysis.min")[0].trim()) == -0.05 : "Bad convergence to " + results.get("analysis.min")[0];
 
         sac.shutdown();
     }
@@ -130,13 +130,14 @@ public class ShellTest extends org.funz.api.TestUtils {
     public void test1Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ test1Design");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
-        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]", "x2", "[0,1]"), newMap("nmax", "30", "delta", "1","x0","0.5")); // R should be dedected by plugin automatically.
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        System.err.println( newMap("x1", "[-0.5,-0.1]", "x2", "[0.3,0.8]"));
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[-0.5,-0.1]", "x2", "[0.3,0.8]"), newMap("nmax", "3")); // R should be dedected by plugin automatically.
+        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
         Funz.setVerbosity(10);
 
-        //sac.addCacheDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
 
@@ -150,7 +151,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results != null : "No results";
         assert results.get("analysis.min") != null : "No analysis.min in results:" + results.keySet();
         assert results.get("analysis.min").length > 0 : "No content analysis.min in results";
-        assert results.get("analysis.min")[0].trim().startsWith("0.") : "Bad convergence to " + results.get("analysis.min")[0];
+        assert results.get("analysis.min")[0].trim().equals("-0.4") : "Bad convergence to " + results.get("analysis.min")[0];
     }
 
     @Test
@@ -161,15 +162,15 @@ public class ShellTest extends org.funz.api.TestUtils {
             return;
         } // Do not run if using Renjin or R2js...
 
-        File tmp_in = tmp_in();
+        File tmp_in = branin_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", "EGO", newMap("x1", "[0,1]", "x2", "[0,1]"), newMap("iterations", "10"));
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
         Funz.setVerbosity(verbose);
 
         sac.setOutputExpression("GaussianDensity:cat[1],1");
 
-        //sac.addCacheDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
 
@@ -190,15 +191,15 @@ public class ShellTest extends org.funz.api.TestUtils {
     public void testNoDesignOutExpr() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testNoDesignOutExpr");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", null, newMap("x1", new String[]{"0", "1"}, "x2", new String[]{"0", "1"}), null);
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
         sac.setOutputExpressions("GaussianDensity:cat[1],1");
         //sac.setOutputExpressions("cat[1]");
 
-        //sac.addCacheDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
 
@@ -213,17 +214,17 @@ public class ShellTest extends org.funz.api.TestUtils {
     public void testNDesign() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testNDesign");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
-        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]"), newMap("nmax", "15", "delta", "1")); // R should be dedected by plugin automatically.
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[-0.5,-0.1]"), newMap("nmax", "3", "delta", "1")); // R should be dedected by plugin automatically.
+        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
         Funz.setVerbosity(verbose);
 
-        //sac.addCacheDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
 
-        sac.setInputVariable("x2", new String[]{"0", "1"});
+        sac.setInputVariable("x2", new String[]{"0.3", "0.8"});
 
         sac.startComputationAndWait();
         Map<String, String[]> results = sac.getResultsStringArrayMap();
@@ -231,25 +232,25 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
 
         //System.err.println(ASCII.cat(",",results.get("analysis.min")));
-        assert Double.parseDouble(results.get("analysis.min")[0].trim()) < 10 : "0: Bad convergence to " + results.get("analysis.min")[0];
-        assert Double.parseDouble(results.get("analysis.min")[1].trim()) < 10 : "1: Bad convergence to " + results.get("analysis.min")[1];
+        assert Double.parseDouble(results.get("analysis.min")[0].trim()) < 0 : "0: Bad convergence to " + results.get("analysis.min")[0];
+        assert Double.parseDouble(results.get("analysis.min")[1].trim()) < 0 : "1: Bad convergence to " + results.get("analysis.min")[1];
     }
 
     @Test
     public void test1Case0Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ test1Case0Design");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", null, null, null); // R should be dedected by plugin automatically.
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
         Funz.setVerbosity(verbose);
 
-        //sac.addCacheDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
 
-        sac.setInputVariable("x1", new String[]{"0.1"});
+        sac.setInputVariable("x1", new String[]{"-0.1"});
         sac.setInputVariable("x2", new String[]{"0.1"});
 
         sac.startComputationAndWait();
@@ -257,24 +258,24 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         sac.shutdown();
 
-        assert results.get("output.cat")[0].equals("[136.0767]") : "Bad output:" + results.get("output.cat") + "\n" + ArrayMapToMDString(results);
+        assert results.get("output.cat")[0].equals("[-0.01]") : "Bad output:" + results.get("output.cat") + "\n" + ArrayMapToMDString(results);
     }
 
     @Test
     public void testNCasesNoDesign() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testNCasesNoDesign");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", null, null, null); // R should be dedected by plugin automatically.
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
         Funz.setVerbosity(verbose);
 
-        //sac.addCacheDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
 
-        sac.setInputVariable("x1", new double[]{0.1, .2, .3});
+        sac.setInputVariable("x1", new double[]{-0.1, -.2, -.3});
         sac.setInputVariable("x2", new String[]{"0.1", ".2", ".3"});
 
         sac.startComputationAndWait();
@@ -289,18 +290,18 @@ public class ShellTest extends org.funz.api.TestUtils {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testMoveProject");
         Log.setCollector(new LogFile("testMoveProject.log"));
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
-        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]"), newMap("nmax", "2")); // R should be dedected by plugin automatically.
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[-0.5,-0.3]"), newMap("nmax", "3")); // R should be dedected by plugin automatically.
+        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
         Funz.setVerbosity(verbose);
 
-        File bad_res = new File("tmp/branin.R.res");
+        File bad_res = new File("tmp/mult.R.res");
         if (bad_res.exists()) {
             Disk.removeDir(bad_res);
             assert !bad_res.exists() : "Could not delete " + bad_res;
         }
-        File good_res = new File("tmp/good/branin.R.res.good");
+        File good_res = new File("tmp/good/mult.R.res.good");
         if (good_res.exists()) {
             Disk.removeDir(good_res);
             assert !good_res.exists() : "Could not delete " + good_res;
@@ -331,7 +332,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert good_res.listFiles(new FileFilter() {
 
             public boolean accept(File file) {
-                return file.getName().equals("branin.R.out");
+                return file.getName().equals("mult.R.out");
             }
         }).length == 1 : "Did not built the error stream in the defined archive dir";
     }
@@ -339,10 +340,10 @@ public class ShellTest extends org.funz.api.TestUtils {
     public void testKill() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testKill");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
-        final Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]", "x2", "[0,1]"), newMap("nmax", "5"));
-        //RunShell_v1 sac = new RunShell_v1(R, tmp_in); // R should be dedected by plugin automatically.
+        final Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[-0.5,-0.1]", "x2", "[0.3,0.8]"), newMap("nmax", "5"));
+        //RunShell_v1 sac = new RunShell_v1(R, mult_in); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
 
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
@@ -399,7 +400,7 @@ public class ShellTest extends org.funz.api.TestUtils {
                         }
                     }
                     try {
-                        final Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]", "x2", "[0,1]"), newMap("nmax", "5"));
+                        final Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[-0.5,-0.1]", "x2", "[0.3,0.8]"), newMap("nmax", "3"));
 
                         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
                         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
@@ -448,7 +449,7 @@ public class ShellTest extends org.funz.api.TestUtils {
     public void testDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testDuplicateCases");
 
-        File tmp_in = tmp_in();
+        File tmp_in = branin_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", null, null, null);
         Funz.setVerbosity(verbose);
@@ -471,7 +472,7 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-        String[] z = f(x1, x2);//new String[]{"136.0767", "50.75626", "136.0767", "136.0767"};
+        String[] z = branin(x1, x2);//new String[]{"136.0767", "50.75626", "136.0767", "136.0767"};
         assert Arrays.deepEquals(round2(results.get("cat")), z) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
 
         sac.shutdown();
@@ -481,7 +482,7 @@ public class ShellTest extends org.funz.api.TestUtils {
     public void testVectorize() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testVectorize");
 
-        File tmp_in = tmp_in();
+        File tmp_in = branin_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", null, null, null);
         Funz.setVerbosity(verbose);
@@ -504,7 +505,7 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
-        String[] z = f(x1, x2);//new String[]{"214.8081", "167.0327", "146.7375"};
+        String[] z = branin(x1, x2);//new String[]{"214.8081", "167.0327", "146.7375"};
         assert Arrays.deepEquals(round2(results.get("cat")), z) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
 
         sac.shutdown();

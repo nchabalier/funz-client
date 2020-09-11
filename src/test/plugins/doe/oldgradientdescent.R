@@ -1,7 +1,7 @@
 #help=First-order local optimization algorithm<br/>http://en.wikipedia.org/wiki/Gradient_descent
 #type=Optimization
 #output=minimum
-#options=nmax=100,delta=0.1,epsilon=0.01,target=0.001
+#options=nmax=100,delta=1,epsilon=0.01,target=0.001
 
 # iteration index
 i = 0
@@ -67,7 +67,7 @@ nextDesign <- function(X,Y) {
         }
 
 	grad = gradient(prevXn,prevYn)
-	grad = grad / sqrt(sum(grad * grad))
+	#grad = grad / sqrt(sum(grad * grad))
 	xnext = t(prevXn[1,] - (grad * delta))
 	for (t in 1:d) {
 		if (xnext[t] > 1.0) {

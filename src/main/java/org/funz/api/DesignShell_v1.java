@@ -305,7 +305,7 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
 
             Map<String, Object[]> X = loopDesign.initDesign();
             currentresult.put("state", getDesignState());
-
+            
             allX = new LinkedList<Map<String, Object[]>>();
             allX.add(X);
 

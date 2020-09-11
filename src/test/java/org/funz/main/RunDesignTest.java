@@ -71,7 +71,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
     @Test
     public void testParseError() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++ testParseError");
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         try {
             RunDesign.main("RunDesign abcdef".split(" "));
@@ -83,10 +83,10 @@ public class RunDesignTest extends org.funz.api.TestUtils {
     @Test
     public void testRunDesignFailedResult() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRunDesignFailedResult");
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/branin.R -iv x1=[-1.1,1] x2=[0.3,.4] -v 10 -ad tmp -oe x1+min(cat,10,na.rm=F)".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=[0.5,1.0] x2=[0.3,0.8] -v 10 -ad tmp -oe x1+min(cat,10,na.rm=F)".split(" "));
         } catch (ExitCatcher e) {
             assert e.status != 0 : "Bad 0 exit status\n Rundesign.csv:\n" + FileUtils.readFileToString(new File("RunDesign.csv"));
         }
@@ -96,10 +96,10 @@ public class RunDesignTest extends org.funz.api.TestUtils {
     @Test 
     public void testRunDesign1() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRunDesign1");
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/branin.R -iv x1=[0,1] x2=[0.3,.4] -v 10 -ad tmp".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=[-0.5,-0.1] x2=[0.3,0.8] -v 10 -ad tmp".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
@@ -109,10 +109,10 @@ public class RunDesignTest extends org.funz.api.TestUtils {
     @Test
     public void testRun1Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRun1Design");
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/branin.R -iv x1=.3 x2=[0.3,.4] -v 10 -ad tmp".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=-.3 x2=[0.3,0.8] -v 10 -ad tmp".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
@@ -122,10 +122,10 @@ public class RunDesignTest extends org.funz.api.TestUtils {
     @Test
     public void testRun2Designs() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRun2Design");
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/branin.R -iv x1=.2,.3 x2=[0.3,.4] -v 10 -ad tmp".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=-0.5,-0.3 x2=[0.3,0.8] -v 10 -ad tmp".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
@@ -136,10 +136,10 @@ public class RunDesignTest extends org.funz.api.TestUtils {
     public void testOutputExpression() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++++ testOutputExpression");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -oe 1+cat[1] -if tmp/branin.R -iv x1=0.5 x2=[0.3,.4] -v 10 -ad tmp".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -oe 1+cat[1] -if tmp/mult.R -iv x1=-0.5 x2=[0.3,0.8] -v 10 -ad tmp".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
@@ -151,10 +151,10 @@ public class RunDesignTest extends org.funz.api.TestUtils {
     public void testOutputExpressionN() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++++ testOutputExpression");
 
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -oe N(1+cat[1],1) -if tmp/branin.R -iv x1=0.5 x2=[0.3,.4] -v 10 -ad tmp".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -oe N(1+cat[1],1) -if tmp/mult.R -iv x1=-0.5 x2=[0.3,0.8] -v 10 -ad tmp".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
@@ -166,7 +166,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
     public void testRunDesign1EGO() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRunDesign1EGO");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {System.err.println("Not using Rserve, so skipping test");return;} // Do not run if using Renjin or R2js...
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         try {
             RunDesign.main("RunDesign -m R -d EGO -if tmp/branin.R -iv x1=[0,1] x2=[0.3,.4] -v 10 -ad tmp".split(" "));

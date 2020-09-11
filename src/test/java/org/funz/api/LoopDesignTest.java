@@ -3,18 +3,15 @@ package org.funz.api;
 import java.io.File;
 import java.util.Map;
 import org.funz.Project;
-import static org.funz.api.DesignShell_v1.DEFAULT_FUNCTION_NAME;
 import org.funz.doeplugin.Design;
 import org.funz.ioplugin.ExtendedIOPlugin;
 import org.funz.parameter.Case;
 import org.funz.parameter.OutputFunctionExpression;
 import org.funz.parameter.Variable;
 import org.funz.script.RMathExpression;
-import static org.funz.util.Data.newMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.math.R.RLog;
-import org.math.array.DoubleArray;
 
 /**
  *
@@ -40,22 +37,12 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
             public void closeLog() {
             }
         });
+        //((R2jsSession)(((RMathExpression) (RMathExpression.GetDefaultInstance())).R)).debug_js = true;
     }
 
     public static void main(String args[]) {
         org.junit.runner.JUnitCore.main(LoopDesignTest.class.getName());
     }
-
-    DesignShell_v1.Function f = new DesignShell_v1.Function(DEFAULT_FUNCTION_NAME, "x1", "x2") {
-        @Override
-        public Map f(Object... strings) {
-            double[] vals = new double[strings.length];
-            for (int i = 0; i < vals.length; i++) {
-                vals[i] = Math.pow(Double.parseDouble(strings[i].toString())-0.333,2);
-            }
-            return newMap(f.fname, DoubleArray.sum(vals));
-        }
-    };
 
     Case.Observer o = new Case.Observer() {
 
@@ -77,20 +64,20 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         System.err.println("++++++++++++++++++++++++++ testGradientDescent");
         Project prj = new Project("testGradientDescent");
         prj.setPlugin(new ExtendedIOPlugin());
-        prj.setMainOutputFunction(new OutputFunctionExpression.Numeric(f.fname));
+        prj.setMainOutputFunction(new OutputFunctionExpression.Numeric(mult.fname));
         prj.setDesignerId(ALGO);
 
         Variable x1 = new Variable(prj, "x1");
         prj.getVariables().add(x1);
         x1.setType(Variable.TYPE_CONTINUOUS);
-        x1.setLowerBound(0);
-        x1.setUpperBound(1);
+        x1.setLowerBound(mult_x1_min);
+        x1.setUpperBound(mult_x1_max);
 
         Variable x2 = new Variable(prj, "x2");
         prj.getVariables().add(x2);
         x2.setType(Variable.TYPE_CONTINUOUS);
-        x2.setLowerBound(0);
-        x2.setUpperBound(1);
+        x2.setLowerBound(mult_x2_min);
+        x2.setUpperBound(mult_x2_max);
 
         prj.buildParameterList();
         prj.resetDiscreteCases(o);
@@ -112,47 +99,52 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
                 TestUtils.err(ex, i);
             }
         };
-        
-        loopDesign.setDesignerOption("nmax", "10");
+
+        loopDesign.setDesignerOption("nmax", "3");
         loopDesign.update();
         loopDesign.buildDesign(prj.getDesignSession(0));
-
+        //((R2jsSession)(((RDesign)(loopDesign.design)).R)).debug_js = true;
         prj.setDesign(loopDesign.design, 0);
         prj.addDesignCases(loopDesign.initialExperiments, o, 0);
 
         Map<String, Object[]> X = loopDesign.initDesign();
-        Map Y = f.F(X);
+        Map Y = mult.F(X);
 
         while ((X = loopDesign.nextDesign(Y)) != null) {
             prj.addDesignCases(loopDesign.nextExperiments, o, 0);
-            Y = f.F(X);
+            Y = mult.F(X);
             System.err.println(loopDesign.getResultsTmp());
         }
         System.err.println(loopDesign.getResults().keySet());
         System.err.println(loopDesign.getResults().get("analysis"));
 
-        assert loopDesign.getResults().getOrDefault("analysis.min", "").trim().startsWith("0.00") : "Failed to find minimum ! \n" + loopDesign.getResults().keySet();
+        assert loopDesign.getResults().getOrDefault("analysis.min", "").trim().equals("" + mult_min) : "Failed to find minimum ! \n" + loopDesign.getResults().get("analysis.min");
     }
 
     @Test
     public void testOldGradientDescent() throws Exception {
+        if (RMathExpression.GetEngineName().contains("R2js")) {
+            System.err.println("Using R2js, so skipping test");
+            return;
+        } // Do not run if using R2js...
+
         System.err.println("++++++++++++++++++++++++++ testOldGradientDescent");
         Project prj = new Project("testOldGradientDescent");
         prj.setPlugin(new ExtendedIOPlugin());
-        prj.setMainOutputFunction(new OutputFunctionExpression.Numeric(f.fname));
+        prj.setMainOutputFunction(new OutputFunctionExpression.Numeric(mult.fname));
         prj.setDesignerId(OLDALGO);
 
         Variable x1 = new Variable(prj, "x1");
         prj.getVariables().add(x1);
         x1.setType(Variable.TYPE_CONTINUOUS);
-        x1.setLowerBound(0);
-        x1.setUpperBound(1);
+        x1.setLowerBound(mult_x1_min);
+        x1.setUpperBound(mult_x1_max);
 
         Variable x2 = new Variable(prj, "x2");
         prj.getVariables().add(x2);
         x2.setType(Variable.TYPE_CONTINUOUS);
-        x2.setLowerBound(0);
-        x2.setUpperBound(1);
+        x2.setLowerBound(mult_x2_min);
+        x2.setUpperBound(mult_x2_max);
 
         prj.buildParameterList();
         prj.resetDiscreteCases(o);
@@ -178,21 +170,21 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         loopDesign.setDesignerOption("nmax", "10");
         loopDesign.update();
         loopDesign.buildDesign(prj.getDesignSession(0));
-
+        //((R2jsSession) (((OldRDesign) (loopDesign.design)).R)).debug_js = true;
         prj.setDesign(loopDesign.design, 0);
         prj.addDesignCases(loopDesign.initialExperiments, o, 0);
 
         Map<String, Object[]> X = loopDesign.initDesign();
-        Map Y = f.F(X);
+        Map Y = mult.F(X);
 
         while ((X = loopDesign.nextDesign(Y)) != null) {
             prj.addDesignCases(loopDesign.nextExperiments, o, 0);
-            Y = f.F(X);
+            Y = mult.F(X);
             System.err.println(loopDesign.getResultsTmp());
         }
         System.err.println(loopDesign.getResults().keySet());
         System.err.println(loopDesign.getResults().getOrDefault("analysis.min", ""));
-        assert loopDesign.getResults().getOrDefault("analysis.min", "").trim().startsWith("0.00") : "Failed to find minimum ! \n" + loopDesign.getResults().keySet();
+        assert loopDesign.getResults().getOrDefault("analysis.min", "").trim().equals("" + mult_min) : "Failed to find minimum ! \n" + loopDesign.getResults().get("analysis.min");
     }
 
     @Test
@@ -200,21 +192,21 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         System.err.println("++++++++++++++++++++++++++ testCalcError");
         Project prj = new Project("testCalcError");
         prj.setPlugin(new ExtendedIOPlugin());
-        prj.setMainOutputFunction(new OutputFunctionExpression.Numeric(f.fname));
+        prj.setMainOutputFunction(new OutputFunctionExpression.Numeric(mult.fname));
 
         prj.setDesignerId(ALGO);
 
         Variable x1 = new Variable(prj, "x1");
         prj.getVariables().add(x1);
         x1.setType(Variable.TYPE_CONTINUOUS);
-        x1.setLowerBound(0);
-        x1.setUpperBound(1);
+        x1.setLowerBound(mult_x1_min);
+        x1.setUpperBound(mult_x1_max);
 
         Variable x2 = new Variable(prj, "x2");
         prj.getVariables().add(x2);
         x2.setType(Variable.TYPE_CONTINUOUS);
-        x2.setLowerBound(0);
-        x2.setUpperBound(1);
+        x2.setLowerBound(mult_x2_min);
+        x2.setUpperBound(mult_x2_max);
 
         prj.buildParameterList();
         prj.resetDiscreteCases(o);
@@ -237,8 +229,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
             }
         };
 
-        loopDesign.setDesignerOption("yminimization", "true");
-        loopDesign.setDesignerOption("iterations", "10");
+        loopDesign.setDesignerOption("nmax", "10");
         loopDesign.setDesignerOption("target", "-10");
         loopDesign.update();
         loopDesign.buildDesign(prj.getDesignSession(0));
@@ -248,15 +239,15 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
 
         try {
             Map<String, Object[]> X = loopDesign.initDesign();
-            Map<String, Object[]> Y = f.F(X);
+            Map<String, Object[]> Y = mult.F(X);
             int i = 0;
             while ((X = loopDesign.nextDesign(Y)) != null) {
                 prj.addDesignCases(loopDesign.nextExperiments, o, 0);
-                Y = f.F(X);
+                Y = mult.F(X);
                 if (i++ > 2) {
-                    Object[] y = Y.get(f.fname);
+                    Object[] y = Y.get(mult.fname);
                     y[y.length - 1] = Double.NaN;
-                    Y.put(f.fname, y);
+                    Y.put(mult.fname, y);
                 }
                 System.err.println(loopDesign.getResultsTmp());
             }
@@ -274,21 +265,21 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         System.err.println("++++++++++++++++++++++++++ testAlgError");
         Project prj = new Project("testAlgError");
         prj.setPlugin(new ExtendedIOPlugin());
-        prj.setMainOutputFunction(new OutputFunctionExpression.Numeric(f.fname));
+        prj.setMainOutputFunction(new OutputFunctionExpression.Numeric(mult.fname));
 
         prj.setDesignerId(ALGO);
 
         Variable x1 = new Variable(prj, "x1");
         prj.getVariables().add(x1);
         x1.setType(Variable.TYPE_CONTINUOUS);
-        x1.setLowerBound(0);
-        x1.setUpperBound(1);
+        x1.setLowerBound(mult_x1_min);
+        x1.setUpperBound(mult_x1_max);
 
         Variable x2 = new Variable(prj, "x2");
         prj.getVariables().add(x2);
         x2.setType(Variable.TYPE_CONTINUOUS);
-        x2.setLowerBound(0);
-        x2.setUpperBound(1);
+        x2.setLowerBound(mult_x2_min);
+        x2.setUpperBound(mult_x2_max);
 
         prj.buildParameterList();
         prj.resetDiscreteCases(o);
@@ -311,8 +302,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
             }
         };
 
-        loopDesign.setDesignerOption("yminimization", "true");
-        loopDesign.setDesignerOption("iterations", "10");
+        loopDesign.setDesignerOption("nmax", "3");
         loopDesign.setDesignerOption("target", "-10");
         loopDesign.update();
         loopDesign.buildDesign(prj.getDesignSession(0));
@@ -322,14 +312,14 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
 
         try {
             Map<String, Object[]> X = loopDesign.initDesign();
-            Map Y = f.F(X);
+            Map Y = mult.F(X);
             int i = 0;
             while ((X = loopDesign.nextDesign(Y)) != null) {
                 if (i++ > 2) {
                     throw new Exception("Exception in nextDesign: force failed.");
                 }
                 prj.addDesignCases(loopDesign.nextExperiments, o, 0);
-                Y = f.F(X);
+                Y = mult.F(X);
                 System.err.println(loopDesign.getResultsTmp());
             }
         } catch (Exception e) {

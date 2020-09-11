@@ -51,7 +51,7 @@ public class BatchNoRunTest extends org.funz.api.TestUtils {
     @Test
     public void test1Case() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1Case");
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -129,7 +129,7 @@ public class BatchNoRunTest extends org.funz.api.TestUtils {
     @Test
     public void test1FailedCaseOnPrepare() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1FailedCaseOnPrepare");
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -188,7 +188,7 @@ public class BatchNoRunTest extends org.funz.api.TestUtils {
     @Test
     public void testKill() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testKill");
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -262,7 +262,7 @@ public class BatchNoRunTest extends org.funz.api.TestUtils {
     @Test
     public void testMultipleCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testMultipleCases");
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -347,7 +347,7 @@ public class BatchNoRunTest extends org.funz.api.TestUtils {
     @Test
     public void testDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDuplicateCases");
-        File tmp_in = tmp_in();
+        File tmp_in = mult_in();
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);

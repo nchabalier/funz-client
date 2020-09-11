@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.HashMap;
 import java.util.Map;
-import static org.funz.api.DesignShell_v1.DEFAULT_FUNCTION_NAME;
 import org.funz.log.Log;
 import org.funz.log.LogFile;
 import org.funz.script.RMathExpression;
@@ -31,32 +30,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         org.junit.runner.JUnitCore.main(DesignShellTest.class.getName());
     }
 
-    /* @see R::DiceKriging::branin
-    branin <- function(x) {
-	x1 <- x[1]*15-5   
-	x2 <- x[2]*15     
-	(x2 - 5/(4*pi^2)*(x1^2) + 5/pi*x1 - 6)^2 + 10*(1 - 1/(8*pi))*cos(x1) + 10
-}
-     */
-    DesignShell_v1.Function branin = new DesignShell_v1.Function(DEFAULT_FUNCTION_NAME, "x1", "x2") {
-        @Override
-        public Map f(Object... strings) {
-            double[] x = new double[strings.length];
-            for (int i = 0; i < x.length; i++) {
-                x[i] = Double.parseDouble(strings[i].toString());
-            }
-            double x1 = x[0] * 15 - 5;
-            double x2 = x[1] * 15;
-            return newMap(DEFAULT_FUNCTION_NAME, Math.pow(x2 - 5 / (4 * Math.PI * Math.PI) * (x1 * x1) + 5 / Math.PI * x1 - 6, 2) + 10 * (1 - 1 / (8 * Math.PI)) * Math.cos(x1) + 10);
-        }
-    };
-
-    double branin_min = 0.4;
-    double[] branin_xmin1 = {0.9616520, 0.15};
-    double[] branin_xmin2 = {0.1238946, 0.8166644};
-    double[] branin_xmin3 = {0.5427730, 0.15};
-
-    // //@Test
+    // @Test
     public void testDirect() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDirect");
         Funz.setVerbosity(3);
@@ -71,7 +45,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsArrayMap()));
     }
 
-    // //@Test
+    // @Test
     public void testIterative() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testIterative");
         Funz.setVerbosity(3);
@@ -93,12 +67,11 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         Funz.setVerbosity(3);
 
         HashMap<String, String> variable_bounds = new HashMap<String, String>();
-        variable_bounds.put("x1", "[0,1]");
-        variable_bounds.put("x2", "[0,1]");
-        DesignShell_v1 shell = new DesignShell_v1(branin, "GradientDescent", variable_bounds, null);
+        variable_bounds.put("x1", "["+mult_x1_min+","+mult_x1_max+"]");
+        variable_bounds.put("x2", "["+mult_x2_min+","+mult_x2_max+"]");
+        DesignShell_v1 shell = new DesignShell_v1(mult, "GradientDescent", variable_bounds, null);
         shell.setArchiveDirectory("tmp");
-        shell.setDesignOption("nmax", "50");
-        shell.setDesignOption("delta", "1");
+        shell.setDesignOption("nmax", "3");
 
         shell.startComputationAndWait();
 
@@ -109,23 +82,23 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         assert res.get("state")[0].toString().contains("Design over") : "Status: '" + res.get("state")[0] + "'";
 
         assert ASCII.cat("\n", res.get("analysis")).contains("minimum is ") : "No convergence :" + ASCII.cat("\n", res.get("analysis"));
-        double min_found = Double.parseDouble(Parser.after(ASCII.cat("\n", res.get("analysis")),"minimum is ").trim().substring(0,3));
-        assert min_found <= branin_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
+        double min_found = Double.parseDouble(Parser.after(ASCII.cat("\n", res.get("analysis")),"minimum is ").trim().substring(0,4));
+        assert min_found >= mult_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
         
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
 
-    //@Test
+    @Test
     public void testOldRGradientDescent() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOldRGradientDescent");
         Funz.setVerbosity(3);
 
         HashMap<String, String> variable_bounds = new HashMap<String, String>();
-        variable_bounds.put("x1", "[0,1]");
-        variable_bounds.put("x2", "[0,1]");
-        DesignShell_v1 shell = new DesignShell_v1(branin, "oldgradientdescent", variable_bounds, null);
+        variable_bounds.put("x1", "["+mult_x1_min+","+mult_x1_max+"]");
+        variable_bounds.put("x2", "["+mult_x2_min+","+mult_x2_max+"]");
+        DesignShell_v1 shell = new DesignShell_v1(mult, "oldgradientdescent", variable_bounds, null);
         shell.setArchiveDirectory("tmp");
-        shell.setDesignOption("nmax", "15");
+        shell.setDesignOption("nmax", "10");
 
         shell.startComputationAndWait();
 
@@ -136,13 +109,13 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         assert res.get("state")[0].toString().contains("Design over") : "Status: '" + res.get("state")[0] + "'";
 
         assert ASCII.cat("\n", res.get("analysis")).contains("minimum is ") : "No convergence :" + ASCII.cat("\n", res.get("analysis"));
-        double min_found = Double.parseDouble(Parser.after(ASCII.cat("\n", res.get("analysis")),"minimum is ").trim().substring(0,3));
-        assert min_found <= branin_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
+        double min_found = Double.parseDouble(Parser.after(ASCII.cat("\n", res.get("analysis")),"minimum is ").trim().substring(0,4));
+        assert min_found >= mult_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
         
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
 
-    //@Test
+    @Test
     public void testOldREGO() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOldREGO");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {System.err.println("Not using Rserve, so skipping test"); return;} // Do not run if using Renjin or R2js...
@@ -172,7 +145,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
 
-    //@Test
+    @Test
     public void testREGO() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testREGO");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {System.err.println("Not using Rserve, so skipping test"); return;} // Do not run if using Renjin or R2js...
@@ -204,7 +177,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.out.println("analysis:\n" + ASCII.cat("\n", res.get("analysis")));
     }
 
-    //@Test
+    @Test
     public void testMoveProject() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testMoveProject");
         Funz.setVerbosity(3);
@@ -253,7 +226,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         }).length == 1 : "Did not built the error stream in the defined archive dir";
     }
 
-    // //@Test
+    // @Test
     /*public void testGradientDescentWithCache() throws Exception {
      Funz.setVerbosity(3);
 
@@ -261,10 +234,10 @@ public class DesignShellTest extends org.funz.api.TestUtils {
      variable_bounds.put("x1", "[0,1]");
      variable_bounds.put("x2", "[0,1]");
 
-     DesignShell_v1 shell_nocache = new DesignShell_v1(f,"gradientdescent", variable_bounds);
+     DesignShell_v1 shell_nocache = new DesignShell_v1(branin,"gradientdescent", variable_bounds);
      shell_nocache.setDesignOption("nmax", "10");
 
-     DesignShell_v1 shell_cache = new DesignShell_v1(f,"gradientdescent", variable_bounds);
+     DesignShell_v1 shell_cache = new DesignShell_v1(branin,"gradientdescent", variable_bounds);
      shell_cache.setDesignOption("nmax", "10");
      shell_cache.setCacheExperiments(true);
 
@@ -275,8 +248,8 @@ public class DesignShellTest extends org.funz.api.TestUtils {
 
      boolean end = false;
      while (!end) {
-     X_nocache = shell_nocache.nextDesign(f(X_nocache));
-     X_cache = shell_cache.nextDesign(f(X_cache));
+     X_nocache = shell_nocache.nextDesign(branin(X_nocache));
+     X_cache = shell_cache.nextDesign(branin(X_cache));
      if (X_nocache == null && X_cache == null) {
      end = true;
      } else if (X_nocache == null) {
@@ -300,7 +273,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
      assert analyse_cache.get(k).equals(analyse_nocache.get(k)) : "Difference in analyse for key " + k + "\n" + analyse_cache.get(k) + "\n != \n" + analyse_nocache.get(k);
      }
      }*/
-//    static String[] f(Map<String, String[]> X) {
+//    static String[] branin(Map<String, String[]> X) {
 //        String[] Y = new String[X.get("x1").length];
 //        for (int i = 0; i < Y.length; i++) {
 //            double y = 0;
@@ -312,15 +285,15 @@ public class DesignShellTest extends org.funz.api.TestUtils {
 //        System.err.println(Utils.ArrayMapToMDString(X) + "------>\n" + ASCII.cat("\n", Y));
 //        return Y;
 //    }
-    //@Test
+    @Test
     public void testError() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testError");
         Funz.setVerbosity(3);
 
         HashMap<String, String> variable_bounds = new HashMap<String, String>();
-        variable_bounds.put("x1", "[0,1]");
-        variable_bounds.put("x2", "[0,1]");
-        DesignShell_v1 shell = new DesignShell_v1(branin, "GradientDescent", variable_bounds, null);
+        variable_bounds.put("x1", "["+mult_x1_min+","+mult_x1_max+"]");
+        variable_bounds.put("x2", "["+mult_x2_min+","+mult_x2_max+"]");
+        DesignShell_v1 shell = new DesignShell_v1(mult, "GradientDescent", variable_bounds, null);
         shell.setArchiveDirectory("tmp");
         shell.setDesignOption("nmax", "NaN");
         boolean failed = false;
