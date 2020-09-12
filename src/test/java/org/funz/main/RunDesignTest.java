@@ -101,7 +101,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         try {
             RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=[-0.5,-0.1] x2=[0.3,0.8] -v 10 -ad tmp".split(" "));
         } catch (ExitCatcher e) {
-            assert e.status == 0 : "Not 0 exit status :" + e.status;
+            assert e.status == 0 : "Not 0 exit status :" + e.status+FileUtils.readFileToString(new File("RunDesign.md"));
         }
         assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
     }
@@ -166,7 +166,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
     public void testRunDesign1EGO() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRunDesign1EGO");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {System.err.println("Not using Rserve, so skipping test");return;} // Do not run if using Renjin or R2js...
-        File tmp_in = mult_in();
+        File tmp_in = branin_in();
 
         try {
             RunDesign.main("RunDesign -m R -d EGO -if tmp/branin.R -iv x1=[0,1] x2=[0.3,.4] -v 10 -ad tmp".split(" "));

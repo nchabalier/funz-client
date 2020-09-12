@@ -140,7 +140,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
 
         assert ASCII.cat("\n", res.get("analysis")).contains("minimum is ") : "No convergence :" + ASCII.cat("\n", res.get("analysis"));
         double min_found = Double.parseDouble(Parser.after(ASCII.cat("\n", res.get("analysis")),"minimum is ").trim().substring(0,3));
-        assert min_found <= branin_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
+        assert min_found <= branin_min: "Wrong convergence :" + org.apache.commons.io.FileUtils.readFileToString(new File("testOldREGO.log"));
 
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
