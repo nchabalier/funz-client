@@ -205,7 +205,7 @@ before_script:
     cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core; git reset --hard c3a244c627e; git checkout -b r-3.6.3; 
     ls;
     cd $wd;
-    export PATH=$PATH:/usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/r-3.6.3*/bin
+    export PATH=$PATH:/usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/r-3.6.3*/bin;
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
