@@ -12,7 +12,8 @@ GradientDescent <- function(opts) {
   gradientdescent$gamma <- as.numeric(opts$gamma)
   gradientdescent$epsilon <- as.numeric(opts$epsilon)
   gradientdescent$target <- as.numeric(opts$target)
-  if (isTRUE(opts$x0=='' | is.null(opts$x0))) {
+  if ( is.null(opts$x0) ) { opts$x0=''; }
+  if (isTRUE(opts$x0=='')) {
     gradientdescent$x0 <- NaN
   } else {
     gradientdescent$x0 <- as.numeric(unlist(strsplit(as.character(opts$x0),",")))
