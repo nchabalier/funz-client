@@ -198,19 +198,22 @@ before_script:
     sudo apt-get update -qq --allow-unauthenticated; 
     sudo apt-get install r-base --allow-unauthenticated -y; 
     sudo apt-get install libglu1-mesa-dev libglu1-mesa-dev libfreetype6-dev --allow-unauthenticated -y; 
+    R --version;
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
     wd=$PWD; 
     cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core; git reset --hard c3a244c627e; git checkout -b r-3.6.3; 
-    ls;
+    ls *;
     cd $wd;
     export PATH=$PATH:/usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/r-3.6.3*/bin;
+    R --version;
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
     choco install -y r --version 3.6;
     set PATH=%PATH%;C:\Program Files\R\R-3.6.0\bin;
+    R.exe --version;
     fi
 # Install Python if needed
   - >
