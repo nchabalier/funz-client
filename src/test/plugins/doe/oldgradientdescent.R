@@ -1,7 +1,7 @@
 #help=First-order local optimization algorithm<br/>http://en.wikipedia.org/wiki/Gradient_descent
 #type=Optimization
 #output=minimum
-#options=nmax=100,delta=1,epsilon=0.01,target=0.001
+#options=nmax=100,delta=1,epsilon=0.01,target=-Inf
 
 # iteration index
 i = 0

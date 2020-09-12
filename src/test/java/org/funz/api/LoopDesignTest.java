@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Map;
 import org.funz.Project;
 import org.funz.doeplugin.Design;
+import org.funz.doeplugin.RDesigner_V0.OldRDesign;
 import org.funz.ioplugin.ExtendedIOPlugin;
 import org.funz.parameter.Case;
 import org.funz.parameter.OutputFunctionExpression;
@@ -12,6 +13,7 @@ import org.funz.script.RMathExpression;
 import org.junit.Before;
 import org.junit.Test;
 import org.math.R.RLog;
+import org.math.R.RenjinSession;
 
 /**
  *
@@ -59,7 +61,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         }
     };
 
-    @Test
+    //@Test
     public void testGradientDescent() throws Exception {
         System.err.println("++++++++++++++++++++++++++ testGradientDescent");
         Project prj = new Project("testGradientDescent");
@@ -170,7 +172,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         loopDesign.setDesignerOption("nmax", "10");
         loopDesign.update();
         loopDesign.buildDesign(prj.getDesignSession(0));
-        //((R2jsSession) (((OldRDesign) (loopDesign.design)).R)).debug_js = true;
+        //((RSession) (((OldRDesign) (loopDesign.design)).R)).debug = true;
         prj.setDesign(loopDesign.design, 0);
         prj.addDesignCases(loopDesign.initialExperiments, o, 0);
 
@@ -187,7 +189,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         assert loopDesign.getResults().getOrDefault("analysis.min", "").trim().equals("" + mult_min) : "Failed to find minimum ! \n" + loopDesign.getResults().get("analysis.min");
     }
 
-    @Test
+    //@Test
     public void testCalcError() throws Exception {
         System.err.println("++++++++++++++++++++++++++ testCalcError");
         Project prj = new Project("testCalcError");
@@ -260,7 +262,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         System.err.println(loopDesign.getResults());
     }
 
-    @Test
+    //@Test
     public void testAlgError() throws Exception {
         System.err.println("++++++++++++++++++++++++++ testAlgError");
         Project prj = new Project("testAlgError");
