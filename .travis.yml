@@ -211,7 +211,7 @@ before_script:
   - >
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
     choco install -y r --version 3.6;
-    set PATH=%PATH%;C:\Program Files\R\R-3.6.0\bin;
+    export PATH=$PATH:"C:\Program Files\R\R-3.6.0\bin";
     R.exe --version;
     fi
 # Install Python if needed
