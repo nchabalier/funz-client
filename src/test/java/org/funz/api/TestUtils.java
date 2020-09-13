@@ -166,7 +166,7 @@ public class TestUtils {
             throw new Exception("POOL is null !!!");
         }
         Project.DEFAULT_waitingTimeout = 10;//10 s. max before hard stopping batch if no calc found.
-        Project.DEFAULT_blacklistTimeout = 10;//10 s. max before hard stopping batch if no calc found.
+        Project.DEFAULT_blacklistTimeout = 60;//10 s. max before hard stopping batch if no calc found.
     }
 
     public static final String CONF_XML = "./dist/calculator.xml";
