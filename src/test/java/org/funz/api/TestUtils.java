@@ -150,7 +150,12 @@ public class TestUtils {
         System.err.println("Test init at: " + HMS());
 
         File dir = new File("tmp");
+        int n = 5;
+        while (dir.exists() && (n--)>0) {
+        try{
         org.apache.commons.io.FileUtils.deleteDirectory(dir);
+        }catch(Exception e) {}
+        }        
         org.apache.commons.io.FileUtils.forceMkdir(dir);
         org.apache.commons.io.FileUtils.cleanDirectory(dir);
 
