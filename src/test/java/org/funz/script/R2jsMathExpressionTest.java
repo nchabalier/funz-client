@@ -61,7 +61,7 @@ public class R2jsMathExpressionTest {
         //MathExpression.LogFrame.setVisible(false);
     }
 
-    //@Test
+    @Test
     public void test() throws Exception {
         engine.R.eval("(123456789)");
     }
@@ -115,7 +115,7 @@ public class R2jsMathExpressionTest {
         System.err.println(engine.R.print("displayResults(gd,Xi,Yi)"));
     }
 
-    //@Test
+    @Test
     public void testError() throws Exception {
         boolean error = false;
         try {
@@ -126,7 +126,7 @@ public class R2jsMathExpressionTest {
         assert error : "Error not detected";
     }
 
-    //@Test
+    @Test
     public void testSet() throws Exception {
         assert engine.set("a <- 1", null) : "Cannot set a";
         System.err.println(Arrays.asList(engine.R.ls()));
@@ -134,19 +134,19 @@ public class R2jsMathExpressionTest {
         assert engine.eval("a", null) != null : "Cannot eval a in " + engine.listVariables(true, true);
     }
 
-    //@Test
+    @Test
     public void testPrintIn() throws Exception {
         Object s = engine.eval("print('*')", null);
         assert s!= null:"null return";
         assert s.equals("*") : "Bad print: " + s;
     }
 
-    //@Test
+    @Test
     public void testDecimal() throws Exception {
         assert engine.eval("paste(0.123)", null).equals("0.123") : "Bad decimal separator used:" + engine.eval("paste(0.123)", null);
     }
 
-    //@Test
+    @Test
     public void testConcurrentEval() throws Exception {
         engine.set("f <- function(x){Sys.sleep(runif(1,0,4));return(x)}");
         int n = 10;
@@ -206,20 +206,20 @@ public class R2jsMathExpressionTest {
         return true;
     }
 
-    //@Test
+    @Test
     public void testSimpleEval() throws Exception {
         MathExpression.SetDefaultInstance(RMathExpression.class);
         assert Math.abs((Double) engine.eval("1+pi", null) - Math.PI - 1) < 0.00001 : "bad evaluation of 1+pi:" + ((RMathExpression) engine).R.getLastError();
         assert (Double) engine.eval("sum(runif(10))", null) < 10 : "bad evaluation of sum(runif(10))";
     }
 
-    //@Test
+    @Test
     public void testPrintEval() throws Exception {
         MathExpression.SetDefaultInstance(RMathExpression.class);
         assert engine.eval("if (1<2) print(\"ok\") else print(\"no!!!\")", null).toString().equals("ok"):engine.eval("if (1<2) print(\"ok\") else print(\"no!!!\")", null);
     }
     
-    //@Test
+    @Test
     public void testls() throws Exception {
         engine.reset();
         engine.set("a <- 1+pi");
@@ -227,7 +227,7 @@ public class R2jsMathExpressionTest {
         assert list.equals("[a]") : "failed to listVariables: " + list;
     }
 
-    //@Test
+    @Test
     public void testSplitEval() throws Exception {
         engine.set("a <- 1+pi");
         assert Math.abs((Double) engine.eval("a", null) - Math.PI - 1) < 0.00001 : "bad evaluation of 1+pi";
@@ -243,7 +243,7 @@ public class R2jsMathExpressionTest {
         assert Arrays.asList(engine.R.ls()).contains("ff") : "ff not found";
     }
 
-    //@Test
+    @Test
     public void testSimpleFunction() throws MathException {
         engine.set("f <- function(x){-x}");
         assert (Double) engine.eval("f(0.12313265465)", null) == -0.12313265465 : "bad evaluation of f";

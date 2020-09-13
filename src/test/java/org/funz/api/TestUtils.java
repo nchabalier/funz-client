@@ -295,8 +295,8 @@ public class TestUtils {
             for (int i = 0; i < x.length; i++) {
                 x[i] = Double.parseDouble(strings[i].toString());
             }
-            double x1 = x[0] * 15 - 5;
-            double x2 = x[1] * 15;
+            double x1 = x[0];
+            double x2 = x[1];
             return newMap(DEFAULT_FUNCTION_NAME, branin(x1, x2));
         }
     };

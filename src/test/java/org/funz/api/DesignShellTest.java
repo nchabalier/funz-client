@@ -30,7 +30,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         org.junit.runner.JUnitCore.main(DesignShellTest.class.getName());
     }
 
-    // @Test
+    // //@Test
     public void testDirect() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDirect");
         Funz.setVerbosity(3);
@@ -45,7 +45,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsArrayMap()));
     }
 
-    // @Test
+    // //@Test
     public void testIterative() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testIterative");
         Funz.setVerbosity(3);
@@ -61,7 +61,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsArrayMap()));
     }
 
-    @Test
+    //@Test
     public void testRGradientDescent() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testRGradientDescent");
         Funz.setVerbosity(3);
@@ -88,7 +88,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
 
-    @Test
+    //@Test
     public void testOldRGradientDescent() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOldRGradientDescent");
         Funz.setVerbosity(3);
@@ -115,7 +115,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
 
-    @Test
+    //@Test
     public void testOldREGO() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOldREGO");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {System.err.println("Not using Rserve, so skipping test"); return;} // Do not run if using Renjin or R2js...
@@ -172,12 +172,12 @@ public class DesignShellTest extends org.funz.api.TestUtils {
 
         assert ASCII.cat("\n", res.get("analysis")).contains("minimum is ") : "No convergence :" + ASCII.cat("\n", res.get("analysis"));
         double min_found = Double.parseDouble(Parser.after(ASCII.cat("\n", res.get("analysis")),"minimum is ").trim().substring(0,3));
-        assert min_found <= branin_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
+        assert min_found <= branin_min: "Wrong convergence :" + org.apache.commons.io.FileUtils.readFileToString(new File("testREGO.log"));
         
         System.out.println("analysis:\n" + ASCII.cat("\n", res.get("analysis")));
     }
 
-    @Test
+    //@Test
     public void testMoveProject() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testMoveProject");
         Funz.setVerbosity(3);
@@ -226,7 +226,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         }).length == 1 : "Did not built the error stream in the defined archive dir";
     }
 
-    // @Test
+    // //@Test
     /*public void testGradientDescentWithCache() throws Exception {
      Funz.setVerbosity(3);
 
@@ -285,7 +285,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
 //        System.err.println(Utils.ArrayMapToMDString(X) + "------>\n" + ASCII.cat("\n", Y));
 //        return Y;
 //    }
-    @Test
+    //@Test
     public void testError() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testError");
         Funz.setVerbosity(3);

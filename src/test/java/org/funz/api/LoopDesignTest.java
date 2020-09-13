@@ -61,7 +61,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         }
     };
 
-    //@Test
+    @Test
     public void testGradientDescent() throws Exception {
         System.err.println("++++++++++++++++++++++++++ testGradientDescent");
         Project prj = new Project("testGradientDescent");
@@ -189,7 +189,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         assert loopDesign.getResults().getOrDefault("analysis.min", "").trim().equals("" + mult_min) : "Failed to find minimum ! \n" + loopDesign.getResults().get("analysis.min");
     }
 
-    //@Test
+    @Test
     public void testCalcError() throws Exception {
         System.err.println("++++++++++++++++++++++++++ testCalcError");
         Project prj = new Project("testCalcError");
@@ -262,7 +262,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         System.err.println(loopDesign.getResults());
     }
 
-    //@Test
+    @Test
     public void testAlgError() throws Exception {
         System.err.println("++++++++++++++++++++++++++ testAlgError");
         Project prj = new Project("testAlgError");
