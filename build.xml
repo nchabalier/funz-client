@@ -361,8 +361,8 @@
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
                 </script>
-                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
-                <echo level="error" message=" Time: ${elapsedTime} ms"/>
+                <echo message="@{test.file} Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
+                <echo level="error" message="@{test.file} Time: ${elapsedTime} ms"/>
                 
                 <if>
                     <equals arg1="${@{test.file}_issues.failed}" arg2="0" />
@@ -418,8 +418,8 @@
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
                 </script>
-                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
-                <echo level="error" message=" Time: ${elapsedTime} ms"/>
+                <echo message="@{test.file} Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
+                <echo level="error" message="@{test.file} Time: ${elapsedTime} ms"/>
                 
                 <if>
                     <equals arg1="${@{test.file}.failed}" arg2="0" />
@@ -461,8 +461,8 @@
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
                 </script>
-                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
-                <echo level="error" message=" Time: ${elapsedTime} ms"/>
+                <echo message="@{test.file} Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
+                <echo level="error" message="@{test.file} Time: ${elapsedTime} ms"/>
                 
                 <if>
                     <equals arg1="${@{test.file}.failed}" arg2="0" />
@@ -504,8 +504,8 @@
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
                 </script>
-                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
-                <echo level="error" message=" Time: ${elapsedTime} ms"/>
+                <echo message="@{test.file} Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
+                <echo level="error" message="@{test.file} Time: ${elapsedTime} ms"/>
                 
                 <if>
                     <equals arg1="${@{test.file}_python.failed}" arg2="0" />
@@ -551,8 +551,8 @@
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
                 </script>
-                <echo message=" Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
-                <echo level="error" message=" Time: ${elapsedTime} ms"/>
+                <echo message="@{test.file} Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
+                <echo level="error" message="@{test.file} Time: ${elapsedTime} ms"/>
                 
                 <if>
                     <equals arg1="${@{test.file}_R.failed}" arg2="0" />
