@@ -332,7 +332,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert good_res.listFiles(new FileFilter() {
 
             public boolean accept(File file) {
-                return file.getName().equals("mult.R.out");
+                return file.getName().equals(tmp_in.getName());
             }
         }).length == 1 : "Did not built the error stream in the defined archive dir";
     }
