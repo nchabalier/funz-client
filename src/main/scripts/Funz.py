@@ -198,7 +198,7 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
         else:
             parameters.append("-D"+p+"="+java_control[p])
 
-    parameters.append("-Djava.awt.headless=True")
+    parameters.append("-Djava.awt.headless=True","-Dnashorn.args='--no-deprecation-warning'")
     
     classpath = [ f for f in os.listdir(os.path.join(_FUNZ_HOME,"lib")) if (os.path.isfile(os.path.join(os.path.join(_FUNZ_HOME,"lib"), f)) & ((os.path.splitext(f)[1])==".jar")) ]
     
