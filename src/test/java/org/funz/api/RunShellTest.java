@@ -2,9 +2,12 @@ package org.funz.api;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.funz.Project;
 import org.funz.util.ASCII;
 import org.funz.util.Disk;
@@ -32,7 +35,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testExitNot0() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testExitNot0");
 
-        File tmp_in = new File("tmp/exit.dat");
+        File tmp_in = newTmpFile("exit.dat");
         if (tmp_in.exists()) {
             tmp_in.delete();
         }
@@ -40,7 +43,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1("ExitError", tmp_in, (String) null);
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory("tmp");
+        sac.setArchiveDirectory(newTmpDir("testExitNot0"));
 
         assert sac.startComputationAndWait() : "Batch failed !";
         Map<String, Object[]> results = sac.getResultsArrayMap();
@@ -61,7 +64,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testCrash() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testCrash");
 
-        File tmp_in = new File("tmp/crash.dat");
+        File tmp_in = newTmpFile("crash.dat");
         if (tmp_in.exists()) {
             tmp_in.delete();
         }
@@ -69,7 +72,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1("Crash", tmp_in, (String) null);
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory(new File("tmp"));
+        sac.setArchiveDirectory(newTmpDir("testCrash"));
 
         assert sac.startComputationAndWait() : "Batch failed !";
         Map<String, Object[]> results = sac.getResultsArrayMap();
@@ -92,7 +95,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testBadCode() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testBadCode");
 
-        File tmp_in = new File("tmp/branin.nop.R");
+        File tmp_in = newTmpFile("branin.nop.R");
         if (tmp_in.exists()) {
             tmp_in.delete();
         }
@@ -100,7 +103,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1("R Crash", tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory("tmp");
+        sac.setArchiveDirectory(newTmpDir("testBadCode"));
 
         sac.setOutputExpressions("cat");
         assert sac.startComputationAndWait() : "Batch failed !";
@@ -122,9 +125,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testImplicitCache() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testImplicitCache");
 
-        File tmp = new File("tmp", "branin");
-        assert tmp.mkdirs() : "could not ceate dir " + tmp;
-        Disk.emptyDir(tmp);
+        File tmp = newTmpDir("testImplicitCache");
         assert tmp.list().length == 0 : "Cannot empty tmp !";
 
         File tmp_in = branin_in();
@@ -186,9 +187,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testMoreCasesCache() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testMoreCasesCache");
 
-        File tmp = new File("tmp", "branin");
-        assert tmp.mkdirs() : "could not ceate dir " + tmp;
-        Disk.emptyDir(tmp);
+        File tmp = newTmpDir("testMoreCasesCache");
         assert tmp.list().length == 0 : "Cannot empty tmp !";
 
         File tmp_in = branin_in();
@@ -256,15 +255,15 @@ public class RunShellTest extends org.funz.api.TestUtils {
         System.err.println("+++++++++++++++++++++++++++++++++ testCacheCase");
 
         test1Case();
-        File cache = new File("oldtmp");
-        Disk.moveDir(new File("tmp"), cache);
+        File cache = newTmpDir("test1Case.oldtmp");
+        Disk.moveDir(new File("tmp","test1Case.tmp"), cache);
         assert (cache.exists()) : "No cache available !";
 
         File tmp_in = branin_in();
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory("tmp");
+        sac.setArchiveDirectory(newTmpDir("testCacheCase"));
         sac.addCacheDirectory(cache);
 
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
@@ -299,7 +298,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
     public void testNoCase() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testNoCase");
 
-        File tmp_in = new File("tmp/branin.nop.R");
+        File tmp_in = newTmpFile("branin.nop.R");
         if (tmp_in.exists()) {
             tmp_in.delete();
         }
@@ -307,7 +306,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory("tmp");
+        sac.setArchiveDirectory(newTmpDir("testNoCase"));
 
         sac.setOutputExpressions("cat");
         sac.startComputationAndWait();
@@ -332,7 +331,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
-        File archivedir = new File("tmp");
+        File archivedir = new File("tmp","test1Case.tmp");
         Disk.removeDir(archivedir);
         assert !archivedir.exists() : "Cannot cleanup archive dir " + archivedir;
         sac.setArchiveDirectory(archivedir);
@@ -370,7 +369,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         System.err.println("+++++++++++++++++++++++++++++++++ testIOPluginMore");
 
         File tmp_in = branin_in();
-        File tmp_plugin = new File("tmp/getZ.ioplugin");
+        File tmp_plugin = newTmpFile("getZ.ioplugin");
         Disk.copyFile(new File("src/test/samples/getZ.ioplugin"), tmp_plugin);
 
         RunShell_v1 sac = new RunShell_v1(R, new File[]{tmp_in, tmp_plugin}, (String) null); // R should be dedected by plugin automatically.
@@ -416,7 +415,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory("tmp");
+        sac.setArchiveDirectory(newTmpDir("testFailedCase"));
 
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
@@ -451,12 +450,12 @@ public class RunShellTest extends org.funz.api.TestUtils {
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be detected by plugin automatically.
         Funz.setVerbosity(verbose);
 
-        File bad_res = new File("tmp/branin.R.res");
+        File bad_res = newTmpDir("testArchive_branin.R.res");
         if (bad_res.exists()) {
             Disk.removeDir(bad_res);
             assert !bad_res.exists() : "Could not delete " + bad_res;
         }
-        File good_res = new File("tmp/good/branin.R.res.good");
+        File good_res = newTmpDir("testArchive_branin.R.res.good");
         if (good_res.exists()) {
             Disk.removeDir(good_res);
             assert !good_res.exists() : "Could not delete " + good_res;
@@ -501,7 +500,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         assert good_res.listFiles(new FileFilter() {
 
             public boolean accept(File file) {
-                return file.getName().equals("branin.R.out");
+                return file.getName().equals(tmp_in.getName()+".out");
             }
         }).length == 1 : "Did not built the stream in the defined archive dir";
 
@@ -518,7 +517,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         final RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null);
         //RunShell_v1 sac = new RunShell_v1(R, branin_in); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory("tmp");
+        sac.setArchiveDirectory(newTmpDir("testKill"));
 
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
@@ -577,7 +576,12 @@ public class RunShellTest extends org.funz.api.TestUtils {
             new Thread(new Runnable() {
 
                 public void run() {
-                    final File tmp_in = new File("tmp/branin." + I + ".R");
+                    File tmp_in = null;
+                    try {
+                        tmp_in = newTmpFile("branin." + I + ".R");
+                    } catch (IOException ex) {
+                        assert false : ex.getMessage();
+                    }
                     if (tmp_in.exists()) {
                         tmp_in.delete();
                     }
@@ -591,7 +595,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
                     }
                     try {
                         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
-                        sac.setArchiveDirectory("tmp");
+                        sac.setArchiveDirectory(newTmpDir("testConcurrency_"+I));
 
                         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
                         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
@@ -659,7 +663,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory("tmp");
+        sac.setArchiveDirectory(newTmpDir("testMultipleCases"));
 
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
@@ -692,7 +696,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory("tmp");
+        sac.setArchiveDirectory(newTmpDir("testMultipleGroupCases"));
 
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
@@ -728,7 +732,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null);
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory("tmp");
+        sac.setArchiveDirectory(newTmpDir("testDuplicateCases"));
 
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
@@ -764,7 +768,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null);
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory("tmp");
+        sac.setArchiveDirectory(newTmpDir("testVectorize"));
 
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
@@ -799,7 +803,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1(null/*"R"*/, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory("tmp");
+        sac.setArchiveDirectory(newTmpDir("testImplicitCode"));
 
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";

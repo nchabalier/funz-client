@@ -81,7 +81,7 @@ public class BatchNoRunTest extends org.funz.api.TestUtils {
 
         prj.useCache = false;
 
-        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("test1Case")) {
 
             @Override
             public void out(String string, int i) {
@@ -157,7 +157,7 @@ public class BatchNoRunTest extends org.funz.api.TestUtils {
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("test1FailedCaseOnPrepare")) {
 
             @Override
             public void out(String string, int i) {
@@ -211,7 +211,7 @@ public class BatchNoRunTest extends org.funz.api.TestUtils {
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testKill")) {
 
             @Override
             public void out(String string, int i) {
@@ -291,7 +291,7 @@ public class BatchNoRunTest extends org.funz.api.TestUtils {
 
         prj.useCache = false;
 
-        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testMultipleCases")) {
 
             @Override
             public void out(String string, int i) {
@@ -370,7 +370,7 @@ public class BatchNoRunTest extends org.funz.api.TestUtils {
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testDuplicateCases")) {
 
             @Override
             public void out(String string, int i) {

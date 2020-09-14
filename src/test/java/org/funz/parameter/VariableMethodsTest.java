@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import org.apache.commons.io.FileUtils;
 import org.funz.Project;
+import org.funz.api.TestUtils;
 import org.funz.conf.Configuration;
 import static org.funz.parameter.VariableMethods.MATHENGINE_SET_MARKER;
 import org.funz.parameter.VariableMethods.ParseEvalException;
@@ -39,9 +40,9 @@ public class VariableMethodsTest {
         Configuration.writeUserProperty = false;
         MathExpression.SetDefaultInstance(RMathExpression.class);
 
-        FileUtils.forceMkdir(new File("tmp"));
-        fin = File.createTempFile("VariableMethods", "input", new File("tmp"));
-        fout = File.createTempFile("VariableMethods", "target", new File("tmp"));
+        File tmpdir = TestUtils.newTmpDir("VariableMethods");
+        fin = File.createTempFile("VariableMethods", "input", tmpdir);
+        fout = File.createTempFile("VariableMethods", "target", tmpdir);
 
         varSyntax = new SyntaxRules(0, 3);
         formSyntax = new SyntaxRules(3, 2);

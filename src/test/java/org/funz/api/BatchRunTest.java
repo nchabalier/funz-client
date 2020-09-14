@@ -1,10 +1,13 @@
 package org.funz.api;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.funz.Project;
 import org.funz.ProjectController;
@@ -69,13 +72,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testOutputExpr")) {
 
             @Override
             public void out(String string, int i) {
@@ -104,12 +108,12 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         //System.err.println(ASCII.cat("\n",(String[])results.get("info")));
         assert results.containsKey("cat") : "No-expr output not present";
         assert ((String[]) results.get("cat"))[0].equals("[136.0767]") : "Bad evaluation of cat: " + Data.asString(results.get("cat"));
-        assert results.containsKey("cat+1") : "Expr output not present: "+ results.toString();
+        assert results.containsKey("cat+1") : "Expr output not present: " + results.toString();
         assert ((String[]) results.get("cat+1"))[0].contains("137.0767") : "Bad evaluation of cat+1: " + Data.asString(results.get("cat+1"));
 
         batchRun.shutdown();
     }
-    
+
     @Test
     public void testOutputExprGaussian() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOutputExprGaussian");
@@ -130,13 +134,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testOutputExprGaussian")) {
 
             @Override
             public void out(String string, int i) {
@@ -155,7 +160,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         };
 
         //prj.setMainOutputFunction(new OutputFunctionExpression.Numeric("cat+1"));
-        prj.setMainOutputFunction(new OutputFunctionExpression.GaussianDensity("cat[1]+1","1"));
+        prj.setMainOutputFunction(new OutputFunctionExpression.GaussianDensity("cat[1]+1", "1"));
 
         assert batchRun.runBatch() : "Failed to run batch";
 
@@ -163,12 +168,12 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         assert ArrayMapToMDString(results).length() > 0 : "Empty results";
 
         System.err.println(ArrayMapToMDString(results));
-        
+
         //System.err.println(ArrayMapToMDString(results));
         //System.err.println(ASCII.cat("\n",(String[])results.get("info")));
         assert results.containsKey("cat") : "No-expr output not present";
         assert ((String[]) results.get("cat"))[0].equals("[136.0767]") : "Bad evaluation of cat: " + Data.asString(results.get("cat"));
-        assert results.containsKey("N(cat[1]+1,1)") : "Expr output not present: "+ results.toString();
+        assert results.containsKey("N(cat[1]+1,1)") : "Expr output not present: " + results.toString();
         assert ((String[]) results.get("N(cat[1]+1,1)"))[0].contains("137.0767") : "Bad evaluation of N(cat+1,1): " + Data.asString(results.get("cat+1"));
 
         batchRun.shutdown();
@@ -199,7 +204,8 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
@@ -207,7 +213,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         prj.useCache = false;
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("test1Case")) {
 
             @Override
             public void out(String string, int i) {
@@ -241,7 +247,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, "CodeNotAvailable", plugin);
-        prj.setCode( "CodeNotAvailable");// ensure to use an unavailable code
+        prj.setCode("CodeNotAvailable");// ensure to use an unavailable code
 
         assert prj.getVariableByName("x1") != null : "Variable x1 not detected";
         assert prj.getVariableByName("x2") != null : "Variable x2 not detected";
@@ -260,7 +266,8 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
@@ -269,7 +276,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         prj.useCache = false;
         prj.waitingTimeout = 10;
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testBatchTimeout")) {
 
             @Override
             public void out(String string, int i) {
@@ -289,8 +296,8 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert !batchRun.runBatch() : "Run batch (should not !)";
 
-        assert batchRun.getState().contains("CodeNotAvailable") : "no CodeNotAvailable in "+batchRun.getState();
-        
+        assert batchRun.getState().contains("CodeNotAvailable") : "no CodeNotAvailable in " + batchRun.getState();
+
         batchRun.shutdown();
     }
 
@@ -321,7 +328,8 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
@@ -329,7 +337,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         prj.useCache = false;
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("test1CaseLongExec")) {
 
             @Override
             public void out(String string, int i) {
@@ -352,14 +360,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
 
         System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
-        
-        assert batchRun.getResultsStringArrayMap().get("output.cat")!=null:"Null result";
-        assert batchRun.getResultsStringArrayMap().get("output.cat").length==1:"Not 1 result";
-        assert batchRun.getResultsStringArrayMap().get("output.cat")[0].trim().length()>0 : "No output.cat result";
+
+        assert batchRun.getResultsStringArrayMap().get("output.cat") != null : "Null result";
+        assert batchRun.getResultsStringArrayMap().get("output.cat").length == 1 : "Not 1 result";
+        assert batchRun.getResultsStringArrayMap().get("output.cat")[0].trim().length() > 0 : "No output.cat result";
 
         batchRun.shutdown();
     }
-    
+
     @Test
     public void test20Cases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test20Cases");
@@ -382,13 +390,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         Variable x1 = prj.getVariableByName("x1");
         x1.setType(Variable.TYPE_REAL);
-        x1.setValues(VariableMethods.Value.asValueList(".1",".2",".3",".4",".5"));
+        x1.setValues(VariableMethods.Value.asValueList(".1", ".2", ".3", ".4", ".5"));
 
         Variable x2 = prj.getVariableByName("x2");
         x2.setType(Variable.TYPE_REAL);
-        x2.setValues(VariableMethods.Value.asValueList(".1",".2",".3",".4"));
+        x2.setValues(VariableMethods.Value.asValueList(".1", ".2", ".3", ".4"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
@@ -396,7 +405,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         prj.useCache = false;
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("test20Cases")) {
 
             @Override
             public void out(String string, int i) {
@@ -417,23 +426,23 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         assert batchRun.runBatch() : "Failed to run batch";
 
         assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
-        System  .err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
-        
+        System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
+
         System.err.println(Arrays.asList(batchRun.getResultsStringArrayMap().get("output")));
-        
+
         String[] output = batchRun.getResultsStringArrayMap().get("output");
         List<Integer> failed = new LinkedList<>();
         for (int i = 0; i < output.length; i++) {
             if (output[i].contains("null")) {
                 failed.add(i);
-                System.err.println("Some null result: case "+i+"\n"+batchRun.getResultsStringArrayMap().get("info")[i].replace("\\n", "\n"));
+                System.err.println("Some null result: case " + i + "\n" + batchRun.getResultsStringArrayMap().get("info")[i].replace("\\n", "\n"));
             }
         }
-        assert failed.isEmpty() : "Some failed cases : "+failed;
+        assert failed.isEmpty() : "Some failed cases : " + failed;
 
         batchRun.shutdown();
     }
-   
+
     @Test
     public void test20CasesLongExec() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test20CasesLongExec");
@@ -455,13 +464,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         Variable x1 = prj.getVariableByName("x1");
         x1.setType(Variable.TYPE_REAL);
-        x1.setValues(VariableMethods.Value.asValueList(".1",".2",".3",".4",".5"));
+        x1.setValues(VariableMethods.Value.asValueList(".1", ".2", ".3", ".4", ".5"));
 
         Variable x2 = prj.getVariableByName("x2");
         x2.setType(Variable.TYPE_REAL);
-        x2.setValues(VariableMethods.Value.asValueList(".1",".2",".3",".4"));
+        x2.setValues(VariableMethods.Value.asValueList(".1", ".2", ".3", ".4"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
@@ -469,7 +479,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         prj.useCache = false;
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("test20CasesLongExec")) {
 
             @Override
             public void out(String string, int i) {
@@ -490,23 +500,22 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         assert batchRun.runBatch() : "Failed to run batch";
 
         assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
-        System  .err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
-        
+        System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
+
         System.err.println(Arrays.asList(batchRun.getResultsStringArrayMap().get("output")));
-        
+
         String[] output = batchRun.getResultsStringArrayMap().get("output");
         List<Integer> failed = new LinkedList<>();
         for (int i = 0; i < output.length; i++) {
             if (output[i].contains("null")) {
                 failed.add(i);
-                System.err.println("Some null result: case "+i+"\n"+batchRun.getResultsStringArrayMap().get("info")[i].replace("\\n", "\n"));
+                System.err.println("Some null result: case " + i + "\n" + batchRun.getResultsStringArrayMap().get("info")[i].replace("\\n", "\n"));
             }
         }
-        assert failed.isEmpty() : "Some failed cases : "+failed;
+        assert failed.isEmpty() : "Some failed cases : " + failed;
 
         batchRun.shutdown();
     }
-
 
     @Test
     public void test1CaseWithBinFile() throws Exception {
@@ -514,12 +523,11 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         File tmp_in = branin_in();
 
-        File bigtmp = new File("tmp/big");
+        File bigtmp = newTmpDir("big");
         if (bigtmp.isDirectory()) {
             FileUtils.deleteDirectory(bigtmp);
         }
-        assert new File("tmp/big").mkdirs() : "Could not create tmp/big dir";
-        File tmp_in2 = new File("tmp/big/some.bin");
+        File tmp_in2 = new File(bigtmp, "some.bin");
         if (tmp_in2.exists()) {
             tmp_in2.delete();
         }
@@ -546,13 +554,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("test1CaseWithBinFile")) {
 
             @Override
             public void out(String string, int i) {
@@ -570,7 +579,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
             }
         };
 
-        batchRun.setArchiveDirectory(new File("tmp/archivedir"));
+        batchRun.setArchiveDirectory(newTmpDir("archivedir"));
 
         assert batchRun.runBatch() : "Failed to run batch";
 
@@ -603,13 +612,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         prj.setMainOutputFunction(plugin.suggestOutputFunctions().get(0));
         prj.setDesignerId(NODESIGNER_ID);
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testDefinedVarValues")) {
 
             @Override
             public void out(String string, int i) {
@@ -660,13 +670,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_STRING);
         x2.setValues(VariableMethods.Value.asValueList("cde"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("test1FailedCaseOnPrepare")) {
 
             @Override
             public void out(String string, int i) {
@@ -717,13 +728,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_STRING);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("test1FailedCaseOnRun")) {
 
             @Override
             public void out(String string, int i) {
@@ -769,13 +781,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2", ".3", ".4"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testKill")) {
 
             @Override
             public void out(String string, int i) {
@@ -837,7 +850,12 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
                 public void run() {
                     System.err.println("Starting instance " + I);
-                    final File tmp_in = new File("tmp/branin." + I + ".R");
+                    File tmp_in=null;
+                    try {
+                        tmp_in = newTmpFile("branin." + I + ".R");
+                    } catch (IOException ex) {
+                        assert false : ex.getMessage();
+                    }
                     if (tmp_in.exists()) {
                         tmp_in.delete();
                     }
@@ -875,7 +893,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
                         prj.setCases(prj.getDiscreteCases(), o);
                         System.err.println("prj " + prj.getCases());
 
-                        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+                        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testConcurrency")) {
 
                             @Override
                             public void out(String string, int i) {
@@ -892,7 +910,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
                                 TestUtils.err(ex, i);
                             }
                         };
-                        batchRun.setArchiveDirectory( new File(batchRun.getArchiveDirectory(), "" + I));
+                        batchRun.setArchiveDirectory(new File(batchRun.getArchiveDirectory(), "" + I));
 
                         assert batchRun.runBatch() : "Failed to run batch (Computing instance " + I + ")";
 
@@ -966,7 +984,8 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         prj.addGroup("g", "x1", "x2");
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
@@ -974,7 +993,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         prj.useCache = false;
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testMultipleCases")) {
 
             @Override
             public void out(String string, int i) {
@@ -1029,14 +1048,15 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         String[] x2_val = new String[]{"0.1", "0.2"};
         x2.setValues(VariableMethods.Value.asValueList(x2_val));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
         prj.getCases().get(0).setSelected(false);
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testSomeCasesNotSelected")) {
 
             @Override
             public void out(String string, int i) {
@@ -1095,13 +1115,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_STRING);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2", ".3", "abc"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testSomeFailedCases")) {
 
             @Override
             public void out(String string, int i) {
@@ -1148,13 +1169,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2", ".1", ".1"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testDuplicateCases")) {
 
             @Override
             public void out(String string, int i) {
@@ -1199,13 +1221,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testIterativeDuplicateCases")) {
 
             @Override
             public void out(String string, int i) {
@@ -1273,13 +1296,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         System.err.println(prj.getGroupByName("g"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testVectorize")) {
 
             @Override
             public void out(String string, int i) {
@@ -1331,7 +1355,8 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
@@ -1339,7 +1364,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         prj.setMaxCalcs(1);
 
-        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testStopRestart")) {
 
             @Override
             public void out(String string, int i) {
@@ -1374,7 +1399,9 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         });
         t.start();
 
-        while(batchRun.getResultsArrayMap().get("cat") == null) Thread.sleep(1000); // should not exceed too much t=1000*3 used in branin.R
+        while (batchRun.getResultsArrayMap().get("cat") == null) {
+            Thread.sleep(1000); // should not exceed too much t=1000*3 used in branin.R
+        }
         System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!! KILL !!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         assert batchRun.stopBatch() : "Failed to stop batch";
 
@@ -1385,7 +1412,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         //assert results.get("cat")!=null : "null cat results";
         assert results.get("cat") != null : "1st output null : " + ArrayMapToMDString(results);
         String rescat = ASCII.cat(" , ", results.get("cat")).trim();
-        assert rescat.contains("?") | rescat.startsWith(",") | rescat.endsWith(",") : "All cases run before breaking !\n"+ASCII.cat(" , ", results.get("cat"));
+        assert rescat.contains("?") | rescat.startsWith(",") | rescat.endsWith(",") : "All cases run before breaking !\n" + ASCII.cat(" , ", results.get("cat"));
         assert results.get("cat").length >= 0 : "No cases has run before breaking !";
 
         System.err.println(ArrayMapToMDString(results));
@@ -1408,7 +1435,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     @Test
     public void test2StopRestart() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test2StopRestart");
-        File tmp_in0 = new File("tmp/branin0.R");
+        File tmp_in0 = newTmpFile("branin0.R");
         if (tmp_in0.exists()) {
             tmp_in0.delete();
         }
@@ -1434,7 +1461,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         prj0.setCases(prj0.getDiscreteCases(), o);
         prj0.setMaxCalcs(1);
 
-        final BatchRun_v1 batchRun0 = new BatchRun_v1(o, prj0, new File("tmp")) {
+        final BatchRun_v1 batchRun0 = new BatchRun_v1(o, prj0, newTmpDir("test2StopRestart")) {
 
             @Override
             public void out(String string, int i) {
@@ -1469,7 +1496,9 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         });
         t0.start();
 
-        while(batchRun0.getResultsArrayMap().get("cat") == null) Thread.sleep(1000); // should not exceed too much t=1000*3 used in branin.R
+        while (batchRun0.getResultsArrayMap().get("cat") == null) {
+            Thread.sleep(1000); // should not exceed too much t=1000*3 used in branin.R
+        }
         System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!! KILL !!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         assert batchRun0.stopBatch() : "0: Failed to stop batch";
 
@@ -1506,12 +1535,13 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
         prj.resetDiscreteCases(o);
         prj.setCases(prj.getDiscreteCases(), o);
         prj.setMaxCalcs(1);
 
-        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("test2StopRestart_2")) {
 
             @Override
             public void out(String string, int i) {
@@ -1568,13 +1598,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testAddCases")) {
 
             @Override
             public void out(String string, int i) {
@@ -1638,13 +1669,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2"));
 
-        prj.retries = 1; prj.buildParameterList();
+        prj.retries = 1;
+        prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
 
         prj.setCases(prj.getDiscreteCases(), o);
 
-        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, new File("tmp")) {
+        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testCodeError")) {
 
             @Override
             public void out(String string, int i) {

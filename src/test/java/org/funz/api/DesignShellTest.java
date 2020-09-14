@@ -30,7 +30,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         org.junit.runner.JUnitCore.main(DesignShellTest.class.getName());
     }
 
-    // //@Test
+    // @Test
     public void testDirect() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDirect");
         Funz.setVerbosity(3);
@@ -45,7 +45,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsArrayMap()));
     }
 
-    // //@Test
+    // @Test
     public void testIterative() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testIterative");
         Funz.setVerbosity(3);
@@ -61,7 +61,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsArrayMap()));
     }
 
-    //@Test
+    @Test
     public void testRGradientDescent() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testRGradientDescent");
         Funz.setVerbosity(3);
@@ -70,7 +70,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         variable_bounds.put("x1", "["+mult_x1_min+","+mult_x1_max+"]");
         variable_bounds.put("x2", "["+mult_x2_min+","+mult_x2_max+"]");
         DesignShell_v1 shell = new DesignShell_v1(mult, "GradientDescent", variable_bounds, null);
-        shell.setArchiveDirectory("tmp");
+        shell.setArchiveDirectory(newTmpDir("testRGradientDescent"));
         shell.setDesignOption("nmax", "3");
 
         shell.startComputationAndWait();
@@ -88,7 +88,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
 
-    //@Test
+    @Test
     public void testOldRGradientDescent() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOldRGradientDescent");
         Funz.setVerbosity(3);
@@ -97,7 +97,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         variable_bounds.put("x1", "["+mult_x1_min+","+mult_x1_max+"]");
         variable_bounds.put("x2", "["+mult_x2_min+","+mult_x2_max+"]");
         DesignShell_v1 shell = new DesignShell_v1(mult, "oldgradientdescent", variable_bounds, null);
-        shell.setArchiveDirectory("tmp");
+        shell.setArchiveDirectory(newTmpDir("testOldRGradientDescent"));
         shell.setDesignOption("nmax", "10");
 
         shell.startComputationAndWait();
@@ -115,7 +115,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
     }
 
-    //@Test
+    @Test
     public void testOldREGO() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOldREGO");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {System.err.println("Not using Rserve, so skipping test"); return;} // Do not run if using Renjin or R2js...
@@ -127,7 +127,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         variable_bounds.put("x1", "[0,1]");
         variable_bounds.put("x2", "[0,1]");
         DesignShell_v1 shell = new DesignShell_v1(branin, "oldEGO", variable_bounds, newMap("iterations", "15"));
-        shell.setArchiveDirectory("tmp");
+        shell.setArchiveDirectory(newTmpDir("testOldRGradientDescent"));
 
         assert shell.startComputationAndWait();
         assert shell.stopComputation();
@@ -157,7 +157,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         variable_bounds.put("x1", "[0,1]");
         variable_bounds.put("x2", "[0,1]");
         DesignShell_v1 shell = new DesignShell_v1(branin, "EGO", variable_bounds, newMap("iterations", "15"));
-        shell.setArchiveDirectory("tmp");
+        shell.setArchiveDirectory(newTmpDir("testOldRGradientDescent"));
 
         assert shell.startComputationAndWait();
         assert shell.stopComputation();
@@ -177,7 +177,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         System.out.println("analysis:\n" + ASCII.cat("\n", res.get("analysis")));
     }
 
-    //@Test
+    @Test
     public void testMoveProject() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testMoveProject");
         Funz.setVerbosity(3);
@@ -188,12 +188,12 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         variable_bounds.put("x2", "[0,1]");
         DesignShell_v1 shell = new DesignShell_v1(branin, "GradientDescent", variable_bounds, null);
 
-        File bad_res = new File("tmp/gradientdescent.res");
+        File bad_res = newTmpDir("testMoveProject_gradientdescent.res");
         if (bad_res.exists()) {
             Disk.removeDir(bad_res);
             assert !bad_res.exists() : "Could not delete " + bad_res;
         }
-        File good_res = new File("tmp/good/gradientdescent.res.good");
+        File good_res = newTmpDir("testMoveProject_gradientdescent.res.good");
         if (good_res.exists()) {
             Disk.removeDir(good_res);
             assert !good_res.exists() : "Could not delete " + good_res;
@@ -226,7 +226,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         }).length == 1 : "Did not built the error stream in the defined archive dir";
     }
 
-    // //@Test
+    // @Test
     /*public void testGradientDescentWithCache() throws Exception {
      Funz.setVerbosity(3);
 
@@ -285,7 +285,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
 //        System.err.println(Utils.ArrayMapToMDString(X) + "------>\n" + ASCII.cat("\n", Y));
 //        return Y;
 //    }
-    //@Test
+    @Test
     public void testError() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testError");
         Funz.setVerbosity(3);
@@ -294,7 +294,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         variable_bounds.put("x1", "["+mult_x1_min+","+mult_x1_max+"]");
         variable_bounds.put("x2", "["+mult_x2_min+","+mult_x2_max+"]");
         DesignShell_v1 shell = new DesignShell_v1(mult, "GradientDescent", variable_bounds, null);
-        shell.setArchiveDirectory("tmp");
+        shell.setArchiveDirectory(newTmpDir("testOldRGradientDescent"));
         shell.setDesignOption("nmax", "NaN");
         boolean failed = false;
         try {

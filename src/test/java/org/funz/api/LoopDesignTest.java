@@ -84,7 +84,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         prj.buildParameterList();
         prj.resetDiscreteCases(o);
 
-        LoopDesign_v1 loopDesign = new LoopDesign_v1(oo, o, prj, new File("tmp")) {
+        LoopDesign_v1 loopDesign = new LoopDesign_v1(oo, o, prj, newTmpDir("testGradientDescent")) {
 
             @Override
             public void out(String string, int i) {
@@ -151,7 +151,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         prj.buildParameterList();
         prj.resetDiscreteCases(o);
 
-        LoopDesign_v1 loopDesign = new LoopDesign_v1(oo, o, prj, new File("tmp")) {
+        LoopDesign_v1 loopDesign = new LoopDesign_v1(oo, o, prj, newTmpDir("testOldGradientDescent")) {
 
             @Override
             public void out(String string, int i) {
@@ -213,7 +213,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         prj.buildParameterList();
         prj.resetDiscreteCases(o);
 
-        LoopDesign_v1 loopDesign = new LoopDesign_v1(oo, o, prj, new File("tmp")) {
+        LoopDesign_v1 loopDesign = new LoopDesign_v1(oo, o, prj, newTmpDir("testCalcError")) {
 
             @Override
             public void out(String string, int i) {
@@ -286,7 +286,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         prj.buildParameterList();
         prj.resetDiscreteCases(o);
 
-        LoopDesign_v1 loopDesign = new LoopDesign_v1(oo, o, prj, new File("tmp")) {
+        LoopDesign_v1 loopDesign = new LoopDesign_v1(oo, o, prj, newTmpDir("testAlgError")) {
 
             @Override
             public void out(String string, int i) {

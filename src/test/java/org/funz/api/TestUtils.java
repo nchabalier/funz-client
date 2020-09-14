@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 import org.funz.Project;
 import static org.funz.api.DesignShell_v1.DEFAULT_FUNCTION_NAME;
 import org.funz.calculator.Calculator;
@@ -145,19 +148,46 @@ public class TestUtils {
         }
     }
 
+    static File tmp = new File("tmp");
+
+    public static File newTmpDir(String id) throws IOException {
+        if (!tmp.isDirectory()) {
+            FileUtils.forceMkdir(tmp);
+        }
+
+        File tmpdir = new File(tmp, id);
+        while (tmpdir.exists()) {
+            tmpdir = new File(tmp, tmpdir.getName() + "_"); // that should not occur !
+        }
+        int n = 5;
+        while (!tmpdir.isDirectory() && (n--) > 0) {
+            try {
+                org.apache.commons.io.FileUtils.forceMkdir(tmpdir);
+            } catch (Exception e) {
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+            }
+        }
+        return tmpdir;
+    }
+
+    public static File newTmpFile(String id) throws IOException {
+        if (!tmp.isDirectory()) {
+            FileUtils.forceMkdir(tmp);
+        }
+
+        File tmpfile = new File(tmp, id);
+        while (tmpfile.exists()) {
+            tmpfile = new File(tmp, tmpfile.getName() + "_"); // that should not occur !
+        }
+        return tmpfile;
+    }
+
     public void setUp(String name) throws Exception {
         MainUtils.init(name, verbose);
         System.err.println("Test init at: " + HMS());
-
-        File dir = new File("tmp");
-        int n = 5;
-        while (dir.exists() && (n--)>0) {
-        try{
-        org.apache.commons.io.FileUtils.deleteDirectory(dir);
-        }catch(Exception e) {}
-        }        
-        org.apache.commons.io.FileUtils.forceMkdir(dir);
-        org.apache.commons.io.FileUtils.cleanDirectory(dir);
 
         File fdir = new File(".f");
         org.apache.commons.io.FileUtils.deleteDirectory(fdir);
@@ -307,7 +337,7 @@ public class TestUtils {
     };
 
     public static File branin_in() throws IOException {
-        File tmp_in = new File("tmp/branin.R");
+        File tmp_in = newTmpFile("branin.R");
         if (tmp_in.exists()) {
             tmp_in.delete();
         }
@@ -329,7 +359,7 @@ public class TestUtils {
     };
 
     public static File mult_in() throws IOException {
-        File tmp_in = new File("tmp/mult.R");
+        File tmp_in = newTmpFile("mult.R");
         if (tmp_in.exists()) {
             tmp_in.delete();
         }
