@@ -5,5 +5,3 @@ DESIGN="GradientDescent"
 NMAX=4
 DELTA=0.1
 BraninGradientDescent_MIN=0.4781157
-FUN="src/test/samples/mult.sh"
-FUN_MIN=-0.4

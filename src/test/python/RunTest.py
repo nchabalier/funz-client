@@ -4,7 +4,7 @@ failed=0
 
 # @test branin_runshell({'x1':.5,'x2':.3})
 def branin_runshell(X=None) :
-    return(Funz_Run(model=CODE,input_files=SRC,input_variables=X,verbosity=VERBOSITY,archive_dir="/tmp")['cat'])
+    return(Funz_Run(model=CODE,input_files=SRC,input_variables=X,verbosity=VERBOSITY,archive_dir="tmp/branin_runshell.py")['cat'])
 
 
 # this is the reference value for branin evaluation
@@ -65,7 +65,7 @@ def testDuplicateCases() :
 
 
 def testFail1() :
-    r = Funz_Run(model=CODE,input_files=SRC,input_variables={'x1':["0.5","abc"]},verbosity=VERBOSITY,archive_dir="/tmp")
+    r = Funz_Run(model=CODE,input_files=SRC,input_variables={'x1':["0.5","abc"]},verbosity=VERBOSITY,archive_dir="tmp/testFail1.py")
 
     if not (r['state'][0]=="done") & (r['state'][1]=="failed") :
         global failed
@@ -76,7 +76,7 @@ def testFail1() :
 
 
 def testFail2() :
-    r = Funz_Run(model=CODE,input_files=SRC,input_variables={'x1':["def","abc"]},verbosity=VERBOSITY,archive_dir="/tmp")
+    r = Funz_Run(model=CODE,input_files=SRC,input_variables={'x1':["def","abc"]},verbosity=VERBOSITY,archive_dir="tmp/testFail2.py")
 
     if not (r['state'][0]=="failed") & (r['state'][1]=="failed") :
         global failed

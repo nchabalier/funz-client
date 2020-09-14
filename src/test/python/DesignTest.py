@@ -4,7 +4,7 @@ failed=0
 
 # @test branin_runshell({'x1':.5,'x2':.3})
 def branin_runshell_vec(X=None) :
-    return(Funz_Run(model=CODE,input_files=SRC,input_variables=X,verbosity=VERBOSITY,archive_dir="/tmp")['cat'])
+    return(Funz_Run(model=CODE,input_files=SRC,input_variables=X,verbosity=VERBOSITY,archive_dir="tmp/branin_runshell_vec.py")['cat'])
 
 
 # this is the reference value for branin evaluation
@@ -23,7 +23,7 @@ def branin_ref_novec(X) :
 
 def testMatchRef() :
     ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"}, fun = branin_ref_vec,verbosity=VERBOSITY,archive_dir="/tmp")
-    runshell = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"}, fun = branin_runshell_vec,verbosity=VERBOSITY,archive_dir="/tmp")
+    runshell = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"}, fun = branin_runshell_vec,verbosity=VERBOSITY,archive_dir="tmp/testMatchRef.py")
 
     if not (numpy.fabs(numpy.array(float(runshell['analysis.min'])).transpose()-numpy.array(float(ref['analysis.min']))) < 1e-4).all() :
         global failed
@@ -34,7 +34,7 @@ def testMatchRef() :
 
 
 def testVectorizeFun() :
-    ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"},fun=branin_ref_vec,fun_control={'vectorize':"fun"},verbosity=VERBOSITY,archive_dir="/tmp")
+    ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"},fun=branin_ref_vec,fun_control={'vectorize':"fun"},verbosity=VERBOSITY,archive_dir="tmp/testVectorizeFun.py")
 
     if not math.fabs(float(ref['analysis.min'])-BraninGradientDescent_MIN)<1e-5 :
         global failed
@@ -45,7 +45,7 @@ def testVectorizeFun() :
 
 
 def testNoVectorize() :
-    ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"}, fun = branin_ref_novec,verbosity=VERBOSITY,fun_control={'vectorize':None},archive_dir="/tmp")
+    ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"}, fun = branin_ref_novec,verbosity=VERBOSITY,fun_control={'vectorize':None},archive_dir="tmp/testNoVectorize.py")
 
     if not math.fabs(float(ref['analysis.min'])-BraninGradientDescent_MIN)<1e-5 :
         global failed
