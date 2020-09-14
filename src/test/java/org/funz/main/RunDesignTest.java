@@ -70,7 +70,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         }
     }
 
-    //@Test
+    @Test
     public void testParseError() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++ testParseError");
         File tmp_in = mult_in();
@@ -82,7 +82,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         }
     }
 
-    //@Test
+    @Test
     public void testRunDesignFailedResult() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRunDesignFailedResult");
         File tmp_in = mult_in();
@@ -107,10 +107,10 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status + FileUtils.readFileToString(new File("RunDesign1.log"));
         }
-        assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
+        assert new File(RunDesign.name + ".csv").exists() : "No output file RunDesign.csv created";
     }
 
-    //@Test
+    @Test
     public void testRun1Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRun1Design");
         File tmp_in = mult_in();
@@ -123,7 +123,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
     }
 
-    //@Test
+    @Test
     public void testRun2Designs() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRun2Design");
         File tmp_in = mult_in();
@@ -136,7 +136,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
     }
 
-    //@Test
+    @Test
     public void testOutputExpression() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++++ testOutputExpression");
 
@@ -151,7 +151,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         assert new File("RunDesign.csv").exists() : "No output file Run.csv created";
     }
 
-    //@Test
+    @Test
     public void testOutputExpressionN() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++++ testOutputExpression");
 
@@ -166,7 +166,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         assert new File("RunDesign.csv").exists() : "No output file Run.csv created";
     }
 
-    //@Test
+    @Test
     public void testRunDesign1EGO() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRunDesign1EGO");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {
