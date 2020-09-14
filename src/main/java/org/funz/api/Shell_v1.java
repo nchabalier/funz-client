@@ -503,6 +503,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
                         boolean success = startDiscComputationAndWait(ii);
                         synchronized (computations_success) {
                             computations_success[ii] = success;
+                            computations_success.notify();
                         }
                     }
                 });
