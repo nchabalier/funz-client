@@ -1,6 +1,6 @@
 #help: First-order local optimization algorithm<br/>http://en.wikipedia.org/wiki/Gradient_descent
 #tags: optimization
-#options: nmax=100; gamma=1; epsilon=0.01; target=-Inf; x0=''
+#options: nmax=100; delta=1; epsilon=0.01; target=-Inf; x0=''
 #input: x=list(min=0,max=1)
 #output: y=0.99
 
@@ -9,7 +9,7 @@ GradientDescent <- function(opts) {
   gradientdescent = new.env()
 
   gradientdescent$nmax <- as.integer(opts$nmax)
-  gradientdescent$gamma <- as.numeric(opts$gamma)
+  gradientdescent$delta <- as.numeric(opts$delta)
   gradientdescent$epsilon <- as.numeric(opts$epsilon)
   gradientdescent$target <- as.numeric(opts$target)
   if ( is.null(opts$x0) ) { opts$x0=''; }
@@ -85,7 +85,7 @@ getNextDesign <- function(algorithm,X,Y) {
 
   if (algorithm$i > 0) {
     if (Y[n-d,1] >= Y[n-d-1-d,1]) {
-      algorithm$gamma <- algorithm$gamma / 2
+      algorithm$delta <- algorithm$delta / 2
       prevXn = X[(n-d-d-1):(n-d-1),] #as.matrix(X[(n-d-d-1):(n-d-1),])
       prevYn = Y[(n-d-d-1):(n-d-1),1] #as.array(Y[(n-d-d-1):(n-d-1),1])
     }
@@ -94,15 +94,15 @@ getNextDesign <- function(algorithm,X,Y) {
 
   g = gradient(prevXn,prevYn)
   # Early termination if we are on a flat point
-  if (max(abs(g)) * algorithm$gamma < algorithm$epsilon) {
+  if (max(abs(g)) * algorithm$delta < algorithm$epsilon) {
     return();
   }
 
-  if (isTRUE(max(abs(g)) * algorithm$gamma > 1)) {
-    algorithm$gamma <- algorithm$gamma / max(abs(g))
+  if (isTRUE(max(abs(g)) * algorithm$delta > 1)) {
+    algorithm$delta <- algorithm$delta / max(abs(g))
   }
 
-  xnext = prevXn[1,] - g * algorithm$gamma
+  xnext = prevXn[1,] - g * algorithm$delta
   xnext = t(xnext)
 
   for (t in 1:d) {
@@ -256,7 +256,7 @@ to01 = function(X, inp) {
 # # f1 = function(x) f(cbind(.5,x))
 # f <- function(X) matrix(apply(X,1,function (x) {x[1] * x[2]}))
 #
-# options = list(nmax = 3, gamma = 1, epsilon = 0.01, target=-10, x0='')
+# options = list(nmax = 3, delta = 1, epsilon = 0.01, target=-10, x0='')
 # gd = GradientDescent(options)
 #
 # # X0 = getInitialDesign(gd, input=list(x1=list(min=0,max=1),x2=list(min=0,max=1)), NULL)

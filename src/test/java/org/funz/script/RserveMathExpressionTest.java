@@ -104,7 +104,7 @@ public class RserveMathExpressionTest {
 
         assert engine.R.ls("f") != null : "Cannot eval f";
 
-        engine.R.voidEval("options = list(nmax = 10, gamma = 1, epsilon = 0.01, target=0)");
+        engine.R.voidEval("options = list(nmax = 10, delta = 1, epsilon = 0.01, target=0)");
         assert engine.R.print("options") != null : "Cannot eval options";
 
         assert engine.R.voidEval("gd = GradientDescent(options)") : "Failed last voidEval: " + engine.R.notebook();
