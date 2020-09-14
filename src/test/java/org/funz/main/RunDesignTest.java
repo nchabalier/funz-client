@@ -3,6 +3,8 @@ package org.funz.main;
 import java.io.File;
 import java.security.Permission;
 import org.apache.commons.io.FileUtils;
+import org.funz.log.Log;
+import org.funz.log.LogFile;
 import org.funz.script.RMathExpression;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,7 +70,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         }
     }
 
-    @Test
+    //@Test
     public void testParseError() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++ testParseError");
         File tmp_in = mult_in();
@@ -80,7 +82,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         }
     }
 
-    @Test
+    //@Test
     public void testRunDesignFailedResult() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRunDesignFailedResult");
         File tmp_in = mult_in();
@@ -93,20 +95,22 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
     }
 
-    @Test 
+    @Test
     public void testRunDesign1() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRunDesign1");
         File tmp_in = mult_in();
+        RunDesign.name = "RunDesign1.log";
+        Log.setCollector(new LogFile(RunDesign.name));
 
         try {
             RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=[-0.5,-0.1] x2=[0.3,0.8] -v 10 -ad tmp".split(" "));
         } catch (ExitCatcher e) {
-            assert e.status == 0 : "Not 0 exit status :" + e.status+FileUtils.readFileToString(new File("RunDesign.md"));
+            assert e.status == 0 : "Not 0 exit status :" + e.status + FileUtils.readFileToString(new File("RunDesign1.log"));
         }
         assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
     }
 
-    @Test
+    //@Test
     public void testRun1Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRun1Design");
         File tmp_in = mult_in();
@@ -119,7 +123,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
     }
 
-    @Test
+    //@Test
     public void testRun2Designs() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRun2Design");
         File tmp_in = mult_in();
@@ -132,7 +136,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
     }
 
-    @Test
+    //@Test
     public void testOutputExpression() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++++ testOutputExpression");
 
@@ -147,7 +151,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         assert new File("RunDesign.csv").exists() : "No output file Run.csv created";
     }
 
-    @Test
+    //@Test
     public void testOutputExpressionN() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++++++++++++ testOutputExpression");
 
@@ -162,10 +166,13 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         assert new File("RunDesign.csv").exists() : "No output file Run.csv created";
     }
 
-    @Test
+    //@Test
     public void testRunDesign1EGO() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testRunDesign1EGO");
-        if (!RMathExpression.GetEngineName().contains("Rserve")) {System.err.println("Not using Rserve, so skipping test");return;} // Do not run if using Renjin or R2js...
+        if (!RMathExpression.GetEngineName().contains("Rserve")) {
+            System.err.println("Not using Rserve, so skipping test");
+            return;
+        } // Do not run if using Renjin or R2js...
         File tmp_in = branin_in();
 
         try {
