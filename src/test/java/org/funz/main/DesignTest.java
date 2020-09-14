@@ -86,6 +86,7 @@ public class DesignTest extends org.funz.api.TestUtils {
 
         if (!hasBash()) {
             System.err.println("No bash interpeter. Skippig test.");
+            return;
         }
 
         try {
@@ -106,6 +107,7 @@ public class DesignTest extends org.funz.api.TestUtils {
 
         if (!hasBash()) {
             System.err.println("No bash interpeter. Skippig test.");
+            return;
         }
 
         try {
@@ -124,6 +126,7 @@ public class DesignTest extends org.funz.api.TestUtils {
 
         if (!hasBash()) {
             System.err.println("No bash interpeter. Skippig test.");
+            return;
         }
 
         try {
@@ -142,6 +145,7 @@ public class DesignTest extends org.funz.api.TestUtils {
 
         if (!hasBash()) {
             System.err.println("No bash interpeter. Skippig test.");
+            return;
         }
 
         try {
