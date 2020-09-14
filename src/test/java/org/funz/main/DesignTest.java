@@ -3,6 +3,7 @@ package org.funz.main;
 import java.io.File;
 import java.security.Permission;
 import java.util.regex.Pattern;
+import org.apache.ftpserver.util.OS;
 import org.funz.util.ParserUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,6 +84,10 @@ public class DesignTest extends org.funz.api.TestUtils {
     public void testDesignFailedResult() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testDesignFailedResult");
 
+        if (!hasBash()) {
+            System.err.println("No bash interpeter. Skippig test.");
+        }
+
         try {
             Design.main("Design -d GradientDescent -do nmax=3 epsilon=0.001 delta=1 target=-10 -f ./multtttttttt.sh -fa x1 x2 -iv x1=[-0.5,-0.1] x2=[0.3,.8] -v 10".split(" "));
         } catch (ExitCatcher e) {
@@ -92,12 +97,16 @@ public class DesignTest extends org.funz.api.TestUtils {
     }
 
     public static boolean matchesIn(String what, String in) {
-    return Pattern.compile(in).matcher(what).find();
+        return Pattern.compile(in).matcher(what).find();
     }
-    
+
     @Test
     public void testDesign() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testDesign");
+
+        if (!hasBash()) {
+            System.err.println("No bash interpeter. Skippig test.");
+        }
 
         try {
             Design.main("Design -d GradientDescent -do nmax=3 epsilon=0.001 delta=1 target=-10 -f ./mult.sh -fa x1 x2 -iv x1=[-0.5,-0.1] x2=[0.3,.8] -v 10 -ad tmp".split(" "));
@@ -106,12 +115,16 @@ public class DesignTest extends org.funz.api.TestUtils {
         }
         assert new File("Design.csv").exists() : "No output file Design.csv created";
 
-        assert matchesIn(ParserUtils.getASCIIFileContent(new File("Design.csv")),"found at x1 = -0\\.5(.*)x2 = 0\\.8") : "Did not succeded to find min: \n" + ParserUtils.getASCIIFileContent(new File("Design.csv"));
+        assert matchesIn(ParserUtils.getASCIIFileContent(new File("Design.csv")), "found at x1 = -0\\.5(.*)x2 = 0\\.8") : "Did not succeded to find min: \n" + ParserUtils.getASCIIFileContent(new File("Design.csv"));
     }
 
     @Test
     public void testDesignPar() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testDesignPar");
+
+        if (!hasBash()) {
+            System.err.println("No bash interpeter. Skippig test.");
+        }
 
         try {
             Design.main("Design -d GradientDescent -do nmax=3 epsilon=0.001 delta=1 target=-10 -f ./mult.sh -fa x1 x2 -fp 3 -iv x1=[-0.5,-0.1] x2=[0.3,.8] -v 10".split(" "));
@@ -120,12 +133,16 @@ public class DesignTest extends org.funz.api.TestUtils {
         }
         assert new File("Design.csv").exists() : "No output file Design.csv created";
 
-        assert matchesIn(ParserUtils.getASCIIFileContent(new File("Design.csv")),"found at x1 = -0\\.5(.*)x2 = 0\\.8") : "Did not succeded to find min: \n" + ParserUtils.getASCIIFileContent(new File("Design.csv"));
+        assert matchesIn(ParserUtils.getASCIIFileContent(new File("Design.csv")), "found at x1 = -0\\.5(.*)x2 = 0\\.8") : "Did not succeded to find min: \n" + ParserUtils.getASCIIFileContent(new File("Design.csv"));
     }
 
     @Test
     public void testDesignTooMuchPar() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++ testDesignTooMuchPar");
+
+        if (!hasBash()) {
+            System.err.println("No bash interpeter. Skippig test.");
+        }
 
         try {
             Design.main("Design -d GradientDescent -do nmax=3 epsilon=0.001 delta=1 target=-10 -f ./mult.sh -fa x1 x2 -fp 5 -iv x1=[-0.5,-0.1] x2=[0.3,.8] -v 10".split(" "));
@@ -135,8 +152,12 @@ public class DesignTest extends org.funz.api.TestUtils {
         assert new File("Design.csv").exists() : "No output file Design.csv created";
 
         Thread.sleep(2000);
-        
-        assert matchesIn(ParserUtils.getASCIIFileContent(new File("Design.csv")),"found at x1 = -0\\.5(.*)x2 = 0\\.8") : "Did not succeded to find min: \n" + ParserUtils.getASCIIFileContent(new File("Design.csv"));
+
+        assert matchesIn(ParserUtils.getASCIIFileContent(new File("Design.csv")), "found at x1 = -0\\.5(.*)x2 = 0\\.8") : "Did not succeded to find min: \n" + ParserUtils.getASCIIFileContent(new File("Design.csv"));
+    }
+
+    public static boolean hasBash() {
+        return System.getProperty("os.name").toLowerCase().contains("inux") || System.getProperty("os.name").toLowerCase().contains("mac");
     }
 
 }
