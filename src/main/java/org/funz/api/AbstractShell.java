@@ -598,7 +598,7 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
     }
 
     public void saveResults() {
-        if (prj==null) {Log.err("Cannot writ results:  project null",3); return;}
+        if (prj==null) {Log.err("Cannot write results:  project null",3); return;}
         Log.out("Writing results...", 3);
         ProjectController.RendererParamHolder rparams = new ProjectController.RendererParamHolder();
         ProjectController.prepareRenderingDiscreteParams(prj, rparams);
