@@ -24,8 +24,8 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         super.setUp("RunDesignTest");
         System.setSecurityManager(new Exit0SecurityManager());
 
-        if (new File("RunDesign.csv").exists()) {
-            assert new File("RunDesign.csv").delete() : "could not delete RunDesign.csv";
+        if (new File(RunDesign.name+".csv").exists()) {
+            assert new File(RunDesign.name+".csv").delete() : "could not delete RunDesign.csv";
         }
     }
 
@@ -88,11 +88,11 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         File tmp_in = mult_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=[0.5,1.0] x2=[0.3,0.8] -v 10 -ad tmp -oe x1+min(cat,10,na.rm=F)".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=[0.5,1.0] x2=[0.3,0.8] -v 10 -ad tmp/testRunDesignFailedResult -oe x1+min(cat,10,na.rm=F)".split(" "));
         } catch (ExitCatcher e) {
-            assert e.status != 0 : "Bad 0 exit status\n Rundesign.csv:\n" + FileUtils.readFileToString(new File("RunDesign.csv"));
+            assert e.status != 0 : "Bad 0 exit status\n Rundesign.csv:\n" + FileUtils.readFileToString(new File(RunDesign.name+".csv"));
         }
-        assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
+        assert new File(RunDesign.name+".csv").exists() : "No output file RunDesign.csv created";
     }
 
     @Test
@@ -103,7 +103,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         Log.setCollector(new LogFile(RunDesign.name));
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=[-0.5,-0.1] x2=[0.3,0.8] -v 10 -ad tmp".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=[-0.5,-0.1] x2=[0.3,0.8] -v 10 -ad tmp/testRunDesign1".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status + FileUtils.readFileToString(new File("RunDesign1.log"));
         }
@@ -116,11 +116,11 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         File tmp_in = mult_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=-.3 x2=[0.3,0.8] -v 10 -ad tmp".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=-.3 x2=[0.3,0.8] -v 10 -ad tmp/testRun1Design".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
-        assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
+        assert new File(RunDesign.name+".csv").exists() : "No output file RunDesign.csv created";
     }
 
     @Test
@@ -129,11 +129,11 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         File tmp_in = mult_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=-0.5,-0.3 x2=[0.3,0.8] -v 10 -ad tmp".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=-0.5,-0.3 x2=[0.3,0.8] -v 10 -ad tmp/testRun2Design".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
-        assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
+        assert new File(RunDesign.name+".csv").exists() : "No output file RunDesign.csv created";
     }
 
     @Test
@@ -143,12 +143,12 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         File tmp_in = mult_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -oe 1+cat[1] -if tmp/mult.R -iv x1=-0.5 x2=[0.3,0.8] -v 10 -ad tmp".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -oe 1+cat[1] -if tmp/mult.R -iv x1=-0.5 x2=[0.3,0.8] -v 10 -ad tmp/testOutputExpression".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
 
-        assert new File("RunDesign.csv").exists() : "No output file Run.csv created";
+        assert new File(RunDesign.name+".csv").exists() : "No output file RunDesign.csv created";
     }
 
     @Test
@@ -158,12 +158,12 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         File tmp_in = mult_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -oe N(1+cat[1],1) -if tmp/mult.R -iv x1=-0.5 x2=[0.3,0.8] -v 10 -ad tmp".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -oe N(1+cat[1],1) -if tmp/mult.R -iv x1=-0.5 x2=[0.3,0.8] -v 10 -ad tmp/testOutputExpressionN".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
 
-        assert new File("RunDesign.csv").exists() : "No output file Run.csv created";
+        assert new File(RunDesign.name+".csv").exists() : "No output file RunDesign.csv created";
     }
 
     @Test
@@ -176,11 +176,11 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         File tmp_in = branin_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d EGO -if tmp/branin.R -iv x1=[0,1] x2=[0.3,.4] -v 10 -ad tmp".split(" "));
+            RunDesign.main("RunDesign -m R -d EGO -if tmp/branin.R -iv x1=[0,1] x2=[0.3,.4] -v 10 -ad tmp/testRunDesign1EGO".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
-        assert new File("RunDesign.csv").exists() : "No output file RunDesign.csv created";
+        assert new File(RunDesign.name+".csv").exists() : "No output file RunDesign.csv created";
     }
 
 }
