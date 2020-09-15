@@ -242,6 +242,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
                     @Override
                     public void err(Exception ex, int i) {
                         Log.err("#" + jj + " " + ex.getMessage(), i);
+                        ex.printStackTrace();
                     }
 
                     @Override

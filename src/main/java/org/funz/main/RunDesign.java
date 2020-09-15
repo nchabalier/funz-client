@@ -424,7 +424,7 @@ public class RunDesign extends MainUtils {
                     }
                 }
                 if (all) {
-                    System.err.println("[ERROR] failed to complete Funz shell\n" + ArrayMapToMDString(shell.getResultsArrayMap()));
+                    System.err.println("[ERROR] failed to complete Funz shell\n" + Arrays.toString(results.get("error")));
                     System.exit(DESIGN_ERROR);
                 }
             }

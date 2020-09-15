@@ -3,6 +3,7 @@ package org.funz.main;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -473,12 +474,12 @@ public class Design extends MainUtils {
             if (results.containsKey("error")) {
                 boolean all = true;
                 Object e = results.get("error");
-                    if (e == null || e.toString().length() == 0) {
-                        all = false;
-                    }
+                if (e == null || e.toString().length() == 0) {
+                    all = false;
+                }
                 
                 if (all) {
-                    System.err.println("[ERROR] failed to complete Funz shell\n" + ArrayMapToMDString(shell.getResultsArrayMap()));
+                    System.err.println("[ERROR] failed to complete Funz shell\n" + results.get("error"));
                     System.exit(DESIGN_ERROR);
                 }
             }
