@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.funz.Constants;
 import org.funz.Proxy;
@@ -77,7 +78,7 @@ public class RMathExpression extends MathExpression {
     }
 
     String R_engine = null;
-    
+
     public void initConfiguration() {
         if (Configuration.hasProperty("R.source")) {
             toSource = Configuration.getProperty("R.source", null);
@@ -99,7 +100,7 @@ public class RMathExpression extends MathExpression {
                     //System.err.println("R.server = " + Configuration.getProperty("R.server"));
                     try {
                         serverConf = RserverConf.parse(Rserver);
-                        R_engine="Rserve";
+                        R_engine = "Rserve";
                         break;
                     } catch (Exception e) {
                         serverConf = null;
@@ -108,18 +109,18 @@ public class RMathExpression extends MathExpression {
                 } else if (Rserver != null && Rserver.equals("Renjin")) {
                     Log.out("Using Renjin", 2);
                     serverConf = null;
-                    R_engine="Renjin";
+                    R_engine = "Renjin";
                     break;
                 } else if (Rserver != null && Rserver.equals("R2js")) {
                     Log.out("Using R2js", 2);
                     serverConf = null;
-                    R_engine="R2js";
+                    R_engine = "R2js";
                     break;
                 } else {
                     Log.out("Ignoring R server: " + Rserver, 2);
                 }
             }
-        } 
+        }
         if (R_engine == null) {
             R_engine = "R2js";
             Log.out("Using R2js (by default)", 2);
@@ -173,7 +174,7 @@ public class RMathExpression extends MathExpression {
     }
 
     public RMathExpression(Rsession R) {
-        super("Rsession " + (R instanceof RenjinSession ? "(Renjin) " : R instanceof R2jsSession ? "(R2js) " :"(Rserve) ") + R.hashCode());
+        super("Rsession " + (R instanceof RenjinSession ? "(Renjin) " : R instanceof R2jsSession ? "(R2js) " : "(Rserve) ") + R.hashCode());
         this.R = R;
     }
 
@@ -198,7 +199,7 @@ public class RMathExpression extends MathExpression {
     void newR() {
         createR();
 
-        if (R == null || !R.isAvailable()) { 
+        if (R == null || !R.isAvailable()) {
             createR();
 
             if (R == null || !R.isAvailable()) { //still !!!
@@ -210,6 +211,15 @@ public class RMathExpression extends MathExpression {
     }
 
     void initR() {
+        try { // Fix for windows when /cygdrive/c/.. remains in HOME
+            R.voidEval("Sys.setenv(HOME='"
+                    + new File(System.getProperty("user.home")).getAbsolutePath().
+                            replace('\\', '/')
+                    + // Fix path sep
+                    "')");
+        } catch (Rsession.RException ex) {
+            Log.err("Failed to setup user homedir: " + ex.getMessage(), 3);
+        }
         R.log("######################### INFORMATION ###########################", Level.WARNING);
         printInformation(R);
         initLibPath(R);
@@ -285,36 +295,40 @@ public class RMathExpression extends MathExpression {
                     Log.err(string, 2);
                 }
             };
-            
+
             try {
-                if (serverConf != null && R_engine.equals("Rserve")) {                    
-                    if (serverConf.isLocal() && serverConf.port<0) serverConf=null; // We reset this conf to let RserveSession startup deamon by itself.
+                if (serverConf != null && R_engine.equals("Rserve")) {
+                    if (serverConf.isLocal() && serverConf.port < 0) {
+                        serverConf = null; // We reset this conf to let RserveSession startup deamon by itself.
+                    }
                     R = new RserveSession(streamlogger, env, serverConf);
                     R.setCRANRepository("http://cloud.r-project.org");
                 } else if (R_engine.equals("Renjin")) {
                     R = new RenjinSession(streamlogger, env);
                 } else {
                     R = null;
-                }                
+                }
             } catch (Exception e) {
                 Log.out("Could not instanciate Rsession: " + e.getMessage(), 0);
                 R = null;
             }
-            
+
             if (R == null) { //default if (R_engine.equals("R2js")){
                 R = new R2jsSession(streamlogger, env);
-                if (R == null) throw new Exception("Cannot instanciate R2jsSession");
+                if (R == null) {
+                    throw new Exception("Cannot instanciate R2jsSession");
+                }
             }
             if (R instanceof R2jsSession) {
-                ((R2jsSession)R).debug_js = Boolean.parseBoolean(Configuration.getProperty("R2js.debug", "false"));
-                R.voidEval("Sys__info = function() {return("+asRList(Data.newMap(
-                        "nodename",InetAddress.getLocalHost().getHostName(),
-                        "sysname",System.getProperty("os.name"),
-                        "release","?",
-                        "version",System.getProperty("os.version"),
-                        "user",System.getProperty("user.name")                        
-                        ))+")}");
-                 R.voidEval("Sys__getenv = function(v) {env=list('R_HOME'='')\nreturn(env[v])}");//+toRcode(System.getenv())+")\nreturn(env[v])}");
+                ((R2jsSession) R).debug_js = Boolean.parseBoolean(Configuration.getProperty("R2js.debug", "false"));
+                R.voidEval("Sys__info = function() {return(" + asRList(Data.newMap(
+                        "nodename", InetAddress.getLocalHost().getHostName(),
+                        "sysname", System.getProperty("os.name"),
+                        "release", "?",
+                        "version", System.getProperty("os.version"),
+                        "user", System.getProperty("user.name")
+                )) + ")}");
+                R.voidEval("Sys__getenv = function(v) {env=list('R_HOME'='')\nreturn(env[v])}");//+toRcode(System.getenv())+")\nreturn(env[v])}");
                 R.voidEval("options = function() {return(" + asRList(Data.newMap(
                         "OutDec", DecimalFormatSymbols.getInstance().getDecimalSeparator()
                 )) + ")}");
@@ -336,7 +350,7 @@ public class RMathExpression extends MathExpression {
         }
         return l.substring(0, l.length() - 1) + ")";
     }
-        
+
     void endR() {
         if (R != null) {
             R.end();
@@ -370,39 +384,38 @@ public class RMathExpression extends MathExpression {
                     + "  * DecimalSeparator " + dec + "\n"
                     + "  * R.version.string " + vers);
         } catch (Exception r) {
-            r.printStackTrace();
-            System.err.println("R:" + R);
+            Log.err(r, 1);
             try {
-                System.err.println("nodename: "+ R.eval("Sys.info()[['nodename']]"));
+                System.err.println("nodename: " + R.eval("Sys.info()[['nodename']]"));
             } catch (Exception ex) {
-                ex.printStackTrace();
+                Log.err(ex, 1);
             }
             try {
-                System.err.println("sysname: "+R.eval("Sys.info()[['sysname']]"));
+                System.err.println("sysname: " + R.eval("Sys.info()[['sysname']]"));
             } catch (Exception ex) {
-                ex.printStackTrace();
+                Log.err(ex, 1);
             }
             try {
-                System.err.println("release: "+R.eval("Sys.info()[['release']]"));
+                System.err.println("release: " + R.eval("Sys.info()[['release']]"));
             } catch (Exception ex) {
-                ex.printStackTrace();
+                Log.err(ex, 1);
             }
             try {
-                System.err.println("version: "+R.eval("Sys.info()[['version']]"));
+                System.err.println("version: " + R.eval("Sys.info()[['version']]"));
             } catch (Exception ex) {
-                ex.printStackTrace();
+                Log.err(ex, 1);
             }
             try {
-                System.err.println("user: "+R.eval("Sys.info()[['user']]"));
+                System.err.println("user: " + R.eval("Sys.info()[['user']]"));
             } catch (Exception ex) {
-                ex.printStackTrace();
+                Log.err(ex, 1);
             }
         }
     }
 
     public static void initLibPath(Rsession R) {
         if (R instanceof R2jsSession) {
-            R.log("R2js ignore libPath setting $HOME/.Funz/R",Level.WARNING);
+            R.log("R2js ignore libPath setting $HOME/.Funz/R", Level.WARNING);
             return;
         }
         try {
@@ -415,7 +428,8 @@ public class RMathExpression extends MathExpression {
             R.log("libPath " + ASCII.cat("\n            ", R.asStrings(R.eval(".libPaths()"))), Level.WARNING);
             //}
         } catch (Exception r) {
-            r.printStackTrace(System.err);
+            r.printStackTrace();
+            Log.err(r, 1);
         }
     }
 
@@ -560,7 +574,7 @@ public class RMathExpression extends MathExpression {
         } catch (Exception ex) {
             Log.err(ex, 2);
             try {// add a test to check session is available. otherwise restart.
-                if (!((Double) (R.eval("1+1")) == 2)) {
+                if (!((Double) (R.eval("1+41")) == 42)) {
                     restartR = true;
                 }
             } catch (Exception e) {

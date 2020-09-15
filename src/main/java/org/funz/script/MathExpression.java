@@ -3,6 +3,8 @@ package org.funz.script;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.funz.conf.Configuration;
@@ -46,8 +48,17 @@ public abstract class MathExpression {
     public String getName() {
         return name;
     }
-    
+
     public static void SetDefaultInstance(Class MathExpressionClass) {
+        if (defaultInstance != null && MathExpressionClass.isInstance(defaultInstance)) {
+            Log.out("Already used MathExpression.defaultInstance of type " + MathExpressionClass, 3);
+            try {
+                defaultInstance.reset();
+                return;
+            } catch (MathException ex) {
+                Log.err("Could not reset MathExpression. Creating new MathExpression.defaultInstance", 3);
+            }
+        }
         SetDefaultInstance(NewInstance(MathExpressionClass, "Default_" + Configuration.timeDigest()));
     }
 
@@ -86,17 +97,22 @@ public abstract class MathExpression {
     public abstract Object eval(String expression, Map<String, Object> vars) throws MathException;
 
     public static synchronized Object Eval(String expression, Map<String, Object> vars) throws Exception {
-        if (GetDefaultInstance()==null) throw new Exception("No default instance available.");
+        if (GetDefaultInstance() == null) {
+            throw new Exception("No default instance available.");
+        }
         return GetDefaultInstance().eval(expression, vars);
     }
 
     /**
      * Set objects.
      */
-    public synchronized boolean set(String... expression) throws MathException {
+    public boolean set(String... expression) throws MathException {
         boolean done = true;
-        for (String e : expression) {
-            done = done & set(e);
+        for (int i = 0; i < expression.length; i++) {
+            String e = expression[i];
+            if (e != null) {
+                done = done & set(e);
+            }
         }
         return done;
     }
