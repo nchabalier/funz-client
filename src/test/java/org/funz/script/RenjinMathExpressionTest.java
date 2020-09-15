@@ -113,7 +113,8 @@ public class RenjinMathExpressionTest {
 
     @Test
     public void testSet() throws Exception {
-        assert engine.set("a <- 1", null) : "Cannot set a";
+        boolean ok = engine.set("a <- 1",null);
+        assert ok : "Cannot set a";
         System.err.println(Arrays.asList(engine.R.ls()));
         engine.eval("a", null);
         assert engine.eval("a", null) != null : "Cannot eval a in " + engine.listVariables(true, true);

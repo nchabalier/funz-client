@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.math.R.RLog;
+import org.math.R.RLogPrintStream;
 import org.math.R.RserveDaemon;
 import org.math.R.RserverConf;
 
@@ -19,9 +20,10 @@ import org.math.R.RserverConf;
  */
 public class RserveMathExpressionTest {
 
-    RMathExpression engine;
+    static RMathExpression engine;
 
     final static String R_SERVER = "R://localhost:6311";
+
     public static void main(String args[]) throws Exception {
         new RserveDaemon(RserverConf.parse(R_SERVER), new RLog() {
 
@@ -34,17 +36,18 @@ public class RserveMathExpressionTest {
             public void closeLog() {
             }
         }).start();
-        org.junit.runner.JUnitCore.main(RserveMathExpressionTest.class.getName());
-    }
 
-    @Before
-    public void setUp() throws Exception {
         Configuration.readProperties(null);
         Configuration.writeUserProperty = false;
         Configuration.setWWWConnected(true);
 
         Configuration.setProperty("R.server", R_SERVER);
         engine = new RMathExpression("MathExpressionTest");
+
+        org.junit.runner.JUnitCore.main(RserveMathExpressionTest.class.getName());
+
+        ((RMathExpression) engine).endR();
+        ((RMathExpression) engine).finalizeRsession();
     }
 
     @After
@@ -55,14 +58,13 @@ public class RserveMathExpressionTest {
                 + engine.getLastResult()
                 + "\n    ! "
                 + engine.getLastError());
-        ((RMathExpression) engine).endR();
-        ((RMathExpression) engine).finalizeRsession();
-
         //MathExpression.LogFrame.setVisible(false);
     }
 
     @Test
     public void testError() throws Exception {
+        System.err.println("+++++++++++++++++ testError");
+
         boolean error = false;
         try {
             engine.eval("stop('!!!')", null);
@@ -74,25 +76,33 @@ public class RserveMathExpressionTest {
 
     @Test
     public void testSet() throws Exception {
-        assert engine.set("a <- 1", null) : "Cannot set a";
-        System.err.println(Arrays.asList(engine.R.ls()));
+        System.err.println("+++++++++++++++++ testSet");
+
+        boolean ok = engine.set("a <- 1", null);
+        assert ok : "Cannot set a";
+        System.err.println("ls: " + Arrays.asList(engine.R.ls()));
         engine.eval("a", null);
         assert engine.eval("a", null) != null : "Cannot eval a in " + engine.listVariables(true, true);
     }
 
     @Test
     public void testPrintIn() throws Exception {
+        System.err.println("+++++++++++++++++ testPrintIn");
+
         String s = engine.eval("print('*')", null).toString();
         assert s.equals("*") : "Bad print: " + s;
     }
 
     @Test
     public void testDecimal() throws Exception {
+        System.err.println("+++++++++++++++++ testDecimal");
+
         assert engine.eval("paste(0.123)", null).equals("0.123") : "Bad decimal separator used:" + engine.eval("paste(0.123)", null);
     }
 
     @Test
     public void testGradientDescent() throws Exception {
+        System.err.println("+++++++++++++++++ testGradientDescent");
 
         engine.R.source(new File("src/test/plugins/doe/GradientDescent.R"));
 
@@ -133,6 +143,8 @@ public class RserveMathExpressionTest {
 
     @Test
     public void testConcurrentEval() throws Exception {
+        System.err.println("+++++++++++++++++ testConcurrentEval");
+
         engine.set("f <- function(x){Sys.sleep(rpois(1,4));return(x)}");
         int n = 10;
         final boolean[] test = new boolean[n];
@@ -193,19 +205,26 @@ public class RserveMathExpressionTest {
 
     @Test
     public void testSimpleEval() throws Exception {
-        MathExpression.SetDefaultInstance(RMathExpression.class);
+        System.err.println("+++++++++++++++++ testSimpleEval");
+
+        // MathExpression.SetDefaultInstance(RMathExpression.class);
         assert Math.abs((Double) engine.eval("1+pi", null) - Math.PI - 1) < 0.00001 : "bad evaluation of 1+pi";
         assert (Double) engine.eval("sum(runif(10))", null) < 10 : "bad evaluation of sum(runif(10))";
     }
 
     @Test
     public void testPrintEval() throws Exception {
-        MathExpression.SetDefaultInstance(RMathExpression.class);
+        System.err.println("+++++++++++++++++ testPrintEval");
+
+        // reseting the MathExpression.defaultInstance will disconnect local Rserver !
+        //MathExpression.SetDefaultInstance(RMathExpression.class);
         assert engine.eval("if (1<2) print(\"ok\") else print(\"no!!!\")", null).toString().equals("ok") : engine.eval("if (1<2) print(\"ok\") else print(\"no!!!\")", null);
     }
 
     @Test
     public void testls() throws Exception {
+        System.err.println("+++++++++++++++++ testls");
+
         engine.reset();
         engine.set("a <- 1+pi");
         String list = (engine.listVariables(true, true)).toString();
@@ -214,6 +233,8 @@ public class RserveMathExpressionTest {
 
     @Test
     public void testSplitEval() throws Exception {
+        System.err.println("+++++++++++++++++ testSplitEval");
+
         engine.set("a <- 1+pi");
         assert Math.abs((Double) engine.eval("a", null) - Math.PI - 1) < 0.00001 : "bad evaluation of 1+pi";
 
@@ -230,6 +251,8 @@ public class RserveMathExpressionTest {
 
     @Test
     public void testSimpleFunction() throws MathException {
+        System.err.println("+++++++++++++++++ testSimpleFunction");
+
         engine.set("f <- function(x){-x}");
         assert (Double) engine.eval("f(0.12313265465)", null) == -0.12313265465 : "bad evaluation of f";
     }
