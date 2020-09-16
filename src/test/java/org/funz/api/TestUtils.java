@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.funz.Project;
 import static org.funz.api.DesignShell_v1.DEFAULT_FUNCTION_NAME;
@@ -196,7 +194,7 @@ public class TestUtils {
             throw new Exception("POOL is null !!!");
         }
         Project.DEFAULT_waitingTimeout = 10;//10 s. max before hard stopping batch if no calc found.
-        Project.DEFAULT_blacklistTimeout = 60;//10 s. max before hard stopping batch if no calc found.
+        Project.DEFAULT_blacklistTimeout = 600;//10 s. max before hard stopping batch if no calc found.
     }
 
     public static final String CONF_XML = "./dist/calculator.xml";
