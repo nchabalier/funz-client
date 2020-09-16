@@ -811,7 +811,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
             public void run() {
                 try {
-                    assert !batchRun.runBatch() : "Failed to stop batch";
+                    assert !batchRun.runBatch() : "Failed to stop batch: "+batchRun.getState();
 
                     Map<String, String[]> results = batchRun.getResultsStringArrayMap();
                     assert ArrayMapToMDString(results).trim().length() > 0 : "Empty results";

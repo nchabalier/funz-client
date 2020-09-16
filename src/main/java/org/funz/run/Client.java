@@ -124,7 +124,7 @@ public class Client implements Protocol {
                         }
                     } catch (InterruptedException ex) {
                     }
-                    if (Calendar.getInstance().getTimeInMillis() - tstamp_reader > PING_PERIOD*10) { 
+                    if (Calendar.getInstance().getTimeInMillis() - tstamp_reader > PING_PERIOD * 10) {
                         break;
                     }
                 }
@@ -140,8 +140,8 @@ public class Client implements Protocol {
 
     public synchronized boolean archiveResults() throws IOException {
         log("#" + METHOD_ARCH_RES);
-        _writer.println(METHOD_ARCH_RES);                                    
-        _writer.println(END_OF_REQ);    
+        _writer.println(METHOD_ARCH_RES);
+        _writer.println(END_OF_REQ);
         _writer.flush();
         return readResponse() && _return.equals(RET_YES);
     }
@@ -167,7 +167,7 @@ public class Client implements Protocol {
                 _socket = new Socket(_host, _port);
                 _socket.setTcpNoDelay(true);
                 _socket.setTrafficClass(0x04);
-                _socket.setSoTimeout(PING_PERIOD*5); // this will avoid blocking operation on client side, like unreserve when network failure
+                _socket.setSoTimeout(PING_PERIOD * 5); // this will avoid blocking operation on client side, like unreserve when network failure
 
                 if (_reader != null) {
                     try {
@@ -175,7 +175,7 @@ public class Client implements Protocol {
                     } catch (Exception e) {
                     }
                 }
-                _reader = new BufferedReader(new InputStreamReader(_socket.getInputStream(), ASCII.CHARSET),128) {
+                _reader = new BufferedReader(new InputStreamReader(_socket.getInputStream(), ASCII.CHARSET), 128) {
                     @Override
                     public String readLine() throws IOException {
                         String s = super.readLine();
@@ -539,7 +539,7 @@ public class Client implements Protocol {
                 t.interrupt();
             }
         }
-        super.finalize(); 
+        super.finalize();
     }
 
     String readLineTimeOut(long timeout) {
@@ -564,13 +564,17 @@ public class Client implements Protocol {
         } catch (TimeOut.TimeOutException e) {
             log(e.getLocalizedMessage());
         }
-        if (to.getResult()==null) return null;
+        if (to.getResult() == null) {
+            return null;
+        }
         return to.getResult().toString();
     }
 
     String readLineTimeout() throws IOException {
         tstamp_reader = Calendar.getInstance().getTimeInMillis();
-        if (_reader==null) return null;
+        if (_reader == null) {
+            return null;
+        }
         return _reader.readLine();
     }
 
@@ -633,19 +637,19 @@ public class Client implements Protocol {
 
             if (line == null) {
                 _reason = "no stream";
-                log(":NULL");
+                log(":NULL STREAM");
                 throw new IOException("no stream");
             }
 
             if (!_socket.isConnected()) {
-                log(":DISCONNECT");
+                log(":DISCONNECTED");
                 _reason = "connection lost";
                 throw new IOException("connection lost");
             }
 
             if (_response == null || _response.size() == 0) {
-                log(":0");
-                _reason = "empty response";
+                log(":EMPTY RESPONSE");
+                _reason = "return empty";
                 return false;
             } else {                
                 log(":readResponse: " + _response);
@@ -700,7 +704,7 @@ public class Client implements Protocol {
                 force_disconnect();
                 return true;
             }
-            
+
         };
         try {
             reserveTimeOut.execute(timeout);
@@ -716,7 +720,7 @@ public class Client implements Protocol {
     synchronized boolean reserve(Project prj, StringBuffer ip, StringBuffer secretCode) throws Exception {
         return reserveAsync(prj, ip, secretCode);
     }
-    
+
     boolean reserveAsync(Project prj, StringBuffer ip, StringBuffer secretCode) throws Exception {
         log("#" + METHOD_RESERVE + " " + prj.getName() + " ip=" + ip + " (" + secretCode + ")");
         _writer.println(METHOD_RESERVE);
