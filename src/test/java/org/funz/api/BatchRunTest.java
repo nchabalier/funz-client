@@ -102,7 +102,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         assert batchRun.runBatch() : "Failed to run batch";
 
         Map results = batchRun.getResultsStringArrayMap();
-        assert ArrayMapToMDString(results).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(results).trim().length() > 0 : "Empty results";
 
         //System.err.println(ArrayMapToMDString(results));
         //System.err.println(ASCII.cat("\n",(String[])results.get("info")));
@@ -165,7 +165,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         assert batchRun.runBatch() : "Failed to run batch";
 
         Map results = batchRun.getResultsStringArrayMap();
-        assert ArrayMapToMDString(results).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(results).trim().length() > 0 : "Empty results";
 
         System.err.println(ArrayMapToMDString(results));
 
@@ -233,9 +233,10 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert batchRun.runBatch() : "Failed to run batch";
 
-        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
-
-        System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
+        System.err.println("getResultsStringArrayMap: " + batchRun.getResultsStringArrayMap().keySet().contains("cat"));
+        System.err.println("getResultsStringArrayMap: " + (batchRun.getResultsStringArrayMap().get("cat")[0]));
+        assert batchRun.getResultsStringArrayMap().keySet().contains("cat") : "No results";
+        assert batchRun.getResultsStringArrayMap().get("cat")[0] != null : "Empty results";
 
         batchRun.shutdown();
     }
@@ -357,13 +358,13 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert batchRun.runBatch() : "Failed to run batch";
 
-        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
 
         System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
 
         assert batchRun.getResultsStringArrayMap().get("output.cat") != null : "Null result";
         assert batchRun.getResultsStringArrayMap().get("output.cat").length == 1 : "Not 1 result";
-        assert batchRun.getResultsStringArrayMap().get("output.cat")[0].trim().length() > 0 : "No output.cat result";
+        assert batchRun.getResultsStringArrayMap().get("output.cat")[0].trim().trim().length() > 0 : "No output.cat result";
 
         batchRun.shutdown();
     }
@@ -425,7 +426,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert batchRun.runBatch() : "Failed to run batch";
 
-        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
         System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
 
         System.err.println(Arrays.asList(batchRun.getResultsStringArrayMap().get("output")));
@@ -499,8 +500,8 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert batchRun.runBatch() : "Failed to run batch";
 
-        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
-        System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
+        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
+        System.err.println("getResultsStringArrayMap: " + ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
 
         System.err.println(Arrays.asList(batchRun.getResultsStringArrayMap().get("output")));
 
@@ -583,7 +584,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert batchRun.runBatch() : "Failed to run batch";
 
-        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
 
         assert new File(batchRun.getArchiveDirectory(), "x2=0.1/x1=0.1/input/big/some.bin_md5").exists() : "Could not find md5 file";
         assert !new File(batchRun.getArchiveDirectory(), "x2=0.1/x1=0.1/input/big/some.bin").exists() : "Found binary file (not only md5 !)";
@@ -639,7 +640,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert batchRun.runBatch() : "Failed to run batch";
 
-        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
 
         //System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
         batchRun.shutdown();
@@ -697,7 +698,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert batchRun.runBatch() : "Failed to run batch";
 
-        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
 
         System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
         batchRun.shutdown();
@@ -755,7 +756,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert batchRun.runBatch() : "Failed to run batch";
 
-        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
 
         System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
         batchRun.shutdown();
@@ -813,7 +814,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
                     assert !batchRun.runBatch() : "Failed to stop batch: "+batchRun.getState();
 
                     Map<String, String[]> results = batchRun.getResultsStringArrayMap();
-                    assert ArrayMapToMDString(results).length() > 0 : "Empty results";
+                    assert ArrayMapToMDString(results).trim().length() > 0 : "Empty results";
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -821,8 +822,11 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         });
         t.start();
 
-        Thread.sleep(1000);
-
+        int i = 10;
+        while ((i--) > 0 && !batchRun.getState().contains("Running")) {
+            Thread.sleep(1000);
+        }
+        
         System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!! STOP !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         batchRun.stopBatch();
 
@@ -831,6 +835,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         System.err.println(Format.ArrayMapToMDString(batchRun.getResultsArrayMap()));
 
         assert batchRun.getArchiveDirectory().exists() : "Did not created archive dir " + batchRun.getArchiveDirectory();
+        assert Arrays.deepToString(batchRun.getResultsArrayMap().get("error")).contains("Asked batch to stop");
 
         batchRun.shutdown();
     }
@@ -850,7 +855,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
                 public void run() {
                     System.err.println("Starting instance " + I);
-                    File tmp_in=null;
+                    File tmp_in = null;
                     try {
                         tmp_in = newTmpFile("branin." + I + ".R");
                     } catch (IOException ex) {
@@ -893,7 +898,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
                         prj.setCases(prj.getDiscreteCases(), o);
                         System.err.println("prj " + prj.getCases());
 
-                        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testConcurrency")) {
+                        BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testConcurrency_"+I)) {
 
                             @Override
                             public void out(String string, int i) {
@@ -1016,7 +1021,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         Map<String, Object[]> results = batchRun.getResultsArrayMap();
         System.err.println("results: " + ASCII.cat(results));
 
-        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
 
         assert Arrays.deepEquals(asStringArray(results.get("x1")), x1_val) : "x1: " + Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1_val);
         assert Arrays.deepEquals(asStringArray(results.get("x2")), x2_val) : "x2: " + Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2_val);
@@ -1079,7 +1084,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         Map<String, Object[]> results = batchRun.getResultsArrayMap();
         System.err.println("results: " + ASCII.cat(results));
 
-        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
 
         assert asStringArray(results.get("cat")).length == 3 : "length: " + round2(asStringArray(results.get("cat"))) + " != 3";
         assert round2(asStringArray(results.get("cat"))[0]).equals("73.0") : "cat: " + round2(asStringArray(results.get("cat"))[1]) + " != " + "73.0";
@@ -1142,7 +1147,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert batchRun.runBatch() : "Failed to run batch";
 
-        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
 
         System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
 
@@ -1196,7 +1201,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         assert batchRun.runBatch() : "Failed to run batch";
 
-        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
 
         batchRun.shutdown();
     }
@@ -1250,7 +1255,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         Map<String, Object[]> results = batchRun.getResultsArrayMap();
 
-        assert ArrayMapToMDString(results).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(results).trim().length() > 0 : "Empty results";
 
         List<String[]> newExps = new LinkedList<>();
         newExps.add(new String[]{"x1=0.1", "x2=0.1"});
@@ -1324,7 +1329,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         assert batchRun.runBatch() : "Failed to run batch";
 
         Map<String, Object[]> results = batchRun.getResultsArrayMap();
-        assert ArrayMapToMDString(results).length() > 0 : "Empty results";
+        assert ArrayMapToMDString(results).trim().length() > 0 : "Empty results";
 
         assert Arrays.deepEquals(asStringArray(results.get("x1")), x1_val) : "x1: " + Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1_val);
         assert Arrays.deepEquals(asStringArray(results.get("x2")), x2_val) : "x2: " + Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2_val);
@@ -1391,7 +1396,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
                     Map<String, String[]> results = batchRun.getResultsStringArrayMap();
                     assert results != null : "Null results";
-                    assert ArrayMapToMDString(results).length() > 0 : "Empty results";
+                    assert ArrayMapToMDString(results).trim().length() > 0 : "Empty results";
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -1424,7 +1429,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         System.err.println(ArrayMapToMDString(results2));
 
-        assert ArrayMapToMDString(results2).length() > 0 : "Empty 2nd results";
+        assert ArrayMapToMDString(results2).trim().length() > 0 : "Empty 2nd results";
 
         //assert results2.get("cat").length < 9 : "All cases run in 2nd batch !\n"+ArrayMapToMDString(results2);
         assert results2.get("cat").length + results.get("cat").length >= 4 : "Not all cases run in 2 batches ! (" + (results2.get("cat").length + results.get("cat").length) + "/4)\n" + batchRun.prj.getCases();
@@ -1488,7 +1493,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
                     Map<String, String[]> results = batchRun0.getResultsStringArrayMap();
                     assert results != null : "0: Null results";
-                    assert ArrayMapToMDString(results).length() > 0 : "0: Empty results";
+                    assert ArrayMapToMDString(results).trim().length() > 0 : "0: Empty results";
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

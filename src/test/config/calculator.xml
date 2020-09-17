@@ -1,5 +1,5 @@
 
-<CALCULATOR trace="true" spool="/tmp" timeout="0">
+<CALCULATOR trace="true" timeout="0">
     <!-- localhost -->
     <HOST name="127.0.0.1"  port="19001" />
     <HOST name="127.0.0.1"  port="19002" />

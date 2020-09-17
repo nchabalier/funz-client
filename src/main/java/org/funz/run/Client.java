@@ -66,7 +66,7 @@ public class Client implements Protocol {
     protected DataListener _listener;
     private int _port;
     protected BufferedReader _reader;
-    protected String _reason, _error, _secretCode = "";
+    protected String _reason, _return, _secretCode = "";
     private volatile boolean _reserved = false;
     private boolean _isSecure = false;
     protected ArrayList _response = new ArrayList(1);
@@ -143,7 +143,7 @@ public class Client implements Protocol {
         _writer.println(METHOD_ARCH_RES);
         _writer.println(END_OF_REQ);
         _writer.flush();
-        return readResponse();
+        return readResponse() && _return.equals(RET_YES);
     }
 
     private class SocketBuilder extends Thread {
@@ -173,7 +173,6 @@ public class Client implements Protocol {
                     try {
                         _reader.close();
                     } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }
                 _reader = new BufferedReader(new InputStreamReader(_socket.getInputStream(), ASCII.CHARSET), 128) {
@@ -195,7 +194,6 @@ public class Client implements Protocol {
                     try {
                         _writer.close();
                     } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }
                 _writer = new PrintWriter(_socket.getOutputStream(), false) {
@@ -208,6 +206,12 @@ public class Client implements Protocol {
 
                     @Override
                     public void println(String i) {
+                        log("Client.writer > " + i);
+                        super.println(i);
+                    }                    
+                    
+                    @Override
+                    public void println(int i) {
                         log("Client.writer > " + i);
                         super.println(i);
                     }
@@ -304,7 +308,6 @@ public class Client implements Protocol {
                 _socket = null;
             }
         } catch (Exception e) {
-            e.printStackTrace(System.err);
         }
         try {
             if (_reader != null) {
@@ -313,7 +316,6 @@ public class Client implements Protocol {
                 _reader = null;
             }
         } catch (Exception e) {
-            e.printStackTrace(System.err);
         }
         try {
             if (_writer != null) {
@@ -322,7 +324,6 @@ public class Client implements Protocol {
                 _writer = null;
             }
         } catch (Exception e) {
-            e.printStackTrace(System.err);
         }
         try {
             if (_dis != null) {
@@ -331,7 +332,6 @@ public class Client implements Protocol {
                 _dis = null;
             }
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
         }
         try {
             if (_dos != null) {
@@ -340,7 +340,6 @@ public class Client implements Protocol {
                 _dos = null;
             }
         } catch (IOException ex) {
-            ex.printStackTrace(System.err);
         }
         readWatcher.interrupt();
     }
@@ -362,11 +361,11 @@ public class Client implements Protocol {
             _listener = null;
             executing = false;
             log("..." + METHOD_EXECUTE + " " + codeName + " readResponse:" + ret);
-            return ret && _error.equals(RET_YES);
+            return ret && _return.equals(RET_YES);
         } else {
             _listener = null;
             executing = false;
-            log("..." + METHOD_EXECUTE + " " + codeName + " FALSE (no readResponse)");
+            log("..." + METHOD_EXECUTE + " " + codeName + " !readResponse: "+_reason);
             return false;
         }
     }
@@ -471,7 +470,7 @@ public class Client implements Protocol {
         boolean res = readResponse();
         _reason = "killed by user";
         log("#" + METHOD_KILL + " " + (res ? "DONE" : "FAILED"));
-        return res;
+        return res && _return.equals(RET_YES);
     }
 
     public synchronized boolean newCase(Map vars) throws Exception {
@@ -479,10 +478,10 @@ public class Client implements Protocol {
         _writer.println(METHOD_NEW_CASE);
         _writer.println(END_OF_REQ);
         _writer.flush();
+        
         if (vars == null) {
             vars = new HashMap();
         }
-
         vars.put("USERNAME", System.getProperty("user.name"));
 
         _writer.println(vars.size());
@@ -497,9 +496,9 @@ public class Client implements Protocol {
             }
             _writer.println(firstlinevalue);
         }
-
         _writer.flush();
-        return readResponse();
+        
+        return readResponse() && _return.equals(RET_YES);
     }
 
     public synchronized boolean putFile(File file, File root) throws Exception {
@@ -524,7 +523,7 @@ public class Client implements Protocol {
         _writer.println(file.length());
         _writer.println(END_OF_REQ);
         _writer.flush();
-        if (!readResponse()) {
+        if (!readResponse() || !_return.equals(RET_YES)) {
             return false;
         }
         if (!_isSecure) {
@@ -532,7 +531,7 @@ public class Client implements Protocol {
         } else {
             Disk.serializeEncryptedFile(_dos, file, file.length(), _key, null);
         }
-        return readResponse();
+        return readResponse() && _return.equals(RET_YES);
     }
     List<TimeOut> timeouts = new LinkedList<>();
 
@@ -606,10 +605,11 @@ public class Client implements Protocol {
                 return false;
             }
             if (sleep>=1000) {      
-                _error = "unknown error";
+                _return = "unknown error";
                 _reason = "no response";
                 return false;
             }*/
+
             String line;
             int counter = 0;
             while ((line = readLineTimeout()) != null) {
@@ -635,8 +635,8 @@ public class Client implements Protocol {
                 _response.add(line);
                 counter++;
             }
-            _error = "unknown error";
-            //_reason = "unknown reason";
+            _return = "unknown error";
+            _reason = "unknown reason";
 
             if (line == null) {
                 _reason = "no stream";
@@ -654,18 +654,19 @@ public class Client implements Protocol {
                 log(":EMPTY RESPONSE");
                 _reason = "return empty";
                 return false;
-            } else {
+            } else {                
                 log(":readResponse: " + _response);
-                _error = (String) _response.get(0);
-                if (!_error.equals(RET_YES)) {
+                _return = (String) _response.get(0);
+                if (!_return.equals(RET_YES)) {
                     _reason = (String) _response.get(1);
-                    log(" << ERROR ret=" + _error + " reason=" + _reason);
+                    log(" << ERROR ret=" + _return + " reason=" + _reason);
                     return true;
-                }
+                } else 
+                    _reason = "-";
                 return true;
             }
         } catch (IOException e) {
-            log(":IOException " + e.getLocalizedMessage());
+            log(":IOException: " + e.getMessage());
             log(":reason: " + _reason);
             return false;
         }
@@ -732,11 +733,11 @@ public class Client implements Protocol {
         readWatcher.start();
 
         if (!readResponse()) {
-            log("reserve: !readResponse 1");
+            log("reserve: !readResponse 1 "+_reason);
             return false;
         } else {
             log("reserve: readResponse 1 " + _response);
-            if (!((String) _response.get(0)).equals("Y")) {
+            if (! _return.equals(RET_YES)) {
                 return false;
             }
         }
@@ -750,7 +751,7 @@ public class Client implements Protocol {
         _writer.flush();
 
         if (!readResponse()) {
-            log("reserve: !readResponse 2");
+            log("reserve: !readResponse 2 "+_reason);
             return false;
         } else {
             log("reserve: readResponse 2 " + _response);
@@ -772,7 +773,7 @@ public class Client implements Protocol {
             }
         }
 
-        _reserved = _error.equals(RET_YES);
+        _reserved = _return.equals(RET_YES);
         log(" ! _reserved = " + _reserved);
         //to test auto unreserve on server-side : Thread.sleep(NetworkClient.RESERVE_TIMEOUT*2);
         return _reserved;
@@ -784,7 +785,7 @@ public class Client implements Protocol {
         _writer.println(END_OF_REQ);
         _writer.flush();
 
-        if (readResponse()) {
+        if (readResponse() && _return.equals(RET_YES)) {
             try {
                 long size = Long.parseLong(readLineTimeout());
                 _writer.println(RET_SYNC);
@@ -811,7 +812,7 @@ public class Client implements Protocol {
         _writer.println(METHOD_UNRESERVE);
         _writer.println(END_OF_REQ);
         _writer.flush();
-        boolean ok = readResponse() && _error.equals(RET_YES);
+        boolean ok = readResponse() && _return.equals(RET_YES);
         _reserved = !ok;
         log(" ! unreserved = " + ok + " response=" + _response);
         return ok;
