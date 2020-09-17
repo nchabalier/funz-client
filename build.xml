@@ -308,7 +308,8 @@
                     <then>
                     </then>
                     <else>
-                        <property name="failed" value="1" />
+                        <property name="failed" value="1" /> 
+                        <echo message="Failures: ${test.class.id}" />
                     </else>
                 </if>
             </sequential>
@@ -373,6 +374,7 @@
                     </then>
                     <else>
                         <property name="failed_issues" value="1" />
+                        <echo message="Failures: ${test.class.id}" />
                     </else>
                 </if>
             </sequential>
@@ -431,6 +433,7 @@
                     </then>
                     <else>
                         <property name="failed_cmd" value="1" />
+                        <echo message="Failures: ${test.class.id}" />
                     </else>
                 </if>
             </sequential>
@@ -474,6 +477,7 @@
                     </then>
                     <else>
                         <property name="failed_bash" value="1" />
+                        <echo message="Failures: ${test.class.id}" />
                     </else>
                 </if>
             </sequential>
@@ -517,6 +521,7 @@
                     </then>
                     <else>
                         <property name="failed_python" value="1" />
+                        <echo message="Failures: ${test.class.id}" />
                     </else>
                 </if>
             </sequential>
@@ -564,6 +569,7 @@
                     </then>
                     <else>
                         <property name="failed_R" value="1" />
+                        <echo message="Failures: ${test.class.id}" />
                     </else>
                 </if>
             </sequential>
