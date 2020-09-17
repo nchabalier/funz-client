@@ -506,6 +506,9 @@ public class Client implements Protocol {
         if (!file.exists()) {
             throw new IOException("File " + file + " does not exists, so cannot putFile");
         }
+        if (!file.getCanonicalPath().contains(root.getCanonicalPath())) {
+            throw new IOException("File " + file.getCanonicalPath() + " is not child of root directory " + root.getCanonicalPath());
+        }
 
         log("#" + METHOD_PUT_FILE + " " + root + " / " + file);
         if (file == null || !file.exists()) {
@@ -516,7 +519,7 @@ public class Client implements Protocol {
         }
 
         _writer.println(METHOD_PUT_FILE);
-        String relpath = file.getAbsolutePath().replace(root.getAbsolutePath(), "").replace(File.separatorChar, '/');
+        String relpath = file.getCanonicalPath().replace(root.getCanonicalPath(), "").replace(File.separatorChar, '/');
         _writer.println(relpath);
         _writer.println(file.length());
         _writer.println(END_OF_REQ);
