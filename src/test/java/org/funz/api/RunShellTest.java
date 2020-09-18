@@ -408,6 +408,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         sac.startComputationAndWait();
         Map<String, Object[]> results = sac.getResultsArrayMap();
         for (String r : results.keySet()) {
+            if (results.get(r)!=null)
             System.out.println(r + " (" + results.get(r).getClass() + ")((" + results.get(r)[0].getClass() + "))\n  " + ASCII.cat(",", results.get(r)));
         }
 
