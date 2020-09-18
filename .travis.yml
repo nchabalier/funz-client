@@ -179,14 +179,14 @@ install:
   - git clone https://github.com/Funz/funz-profile
   - git clone https://github.com/Funz/funz-core
   - cd funz-core
-  - ant dist
+  - ant clean dist
   - cd ..
   - cd $WD
   - ant dist-test # required by funz-calculator/dist-test
   - cd ..
   - git clone https://github.com/Funz/funz-calculator
   - cd funz-calculator
-  - ant dist-test
+  - ant clean dist-test
   - cd ..
   - cd $WD
 
