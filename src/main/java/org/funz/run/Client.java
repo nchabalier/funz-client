@@ -208,8 +208,8 @@ public class Client implements Protocol {
                     public void println(String i) {
                         log("Client.writer > " + i);
                         super.println(i);
-                    }                    
-                    
+                    }
+
                     @Override
                     public void println(int i) {
                         log("Client.writer > " + i);
@@ -365,7 +365,7 @@ public class Client implements Protocol {
         } else {
             _listener = null;
             executing = false;
-            log("..." + METHOD_EXECUTE + " " + codeName + " !readResponse: "+_reason);
+            log("..." + METHOD_EXECUTE + " " + codeName + " !readResponse: " + _reason);
             return false;
         }
     }
@@ -478,7 +478,7 @@ public class Client implements Protocol {
         _writer.println(METHOD_NEW_CASE);
         _writer.println(END_OF_REQ);
         _writer.flush();
-        
+
         if (vars == null) {
             vars = new HashMap();
         }
@@ -497,7 +497,7 @@ public class Client implements Protocol {
             _writer.println(firstlinevalue);
         }
         _writer.flush();
-        
+
         return readResponse() && _return.equals(RET_YES);
     }
 
@@ -509,7 +509,7 @@ public class Client implements Protocol {
             throw new IOException("File " + file.getCanonicalPath() + " is not child of root directory " + root.getCanonicalPath());
         }
 
-        log("#" + METHOD_PUT_FILE + " " + root + " / " + file);
+        log("#" + METHOD_PUT_FILE + " " + root + "(" + root.getCanonicalPath() + ") / " + file + "(" + file.getCanonicalPath() + ")");
         if (file == null || !file.exists()) {
             return false;
         }
@@ -609,7 +609,6 @@ public class Client implements Protocol {
                 _reason = "no response";
                 return false;
             }*/
-
             String line;
             int counter = 0;
             while ((line = readLineTimeout()) != null) {
@@ -654,15 +653,16 @@ public class Client implements Protocol {
                 log(":EMPTY RESPONSE");
                 _reason = "return empty";
                 return false;
-            } else {                
+            } else {
                 log(":readResponse: " + _response);
                 _return = (String) _response.get(0);
                 if (!_return.equals(RET_YES)) {
                     _reason = (String) _response.get(1);
                     log(" << ERROR ret=" + _return + " reason=" + _reason);
                     return true;
-                } else 
+                } else {
                     _reason = "-";
+                }
                 return true;
             }
         } catch (IOException e) {
@@ -733,11 +733,11 @@ public class Client implements Protocol {
         readWatcher.start();
 
         if (!readResponse()) {
-            log("reserve: !readResponse 1 "+_reason);
+            log("reserve: !readResponse 1 " + _reason);
             return false;
         } else {
             log("reserve: readResponse 1 " + _response);
-            if (! _return.equals(RET_YES)) {
+            if (!_return.equals(RET_YES)) {
                 return false;
             }
         }
@@ -751,7 +751,7 @@ public class Client implements Protocol {
         _writer.flush();
 
         if (!readResponse()) {
-            log("reserve: !readResponse 2 "+_reason);
+            log("reserve: !readResponse 2 " + _reason);
             return false;
         } else {
             log("reserve: readResponse 2 " + _response);
