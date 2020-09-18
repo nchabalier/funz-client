@@ -328,7 +328,7 @@ public class RMathExpression extends MathExpression {
                         "version", System.getProperty("os.version"),
                         "user", System.getProperty("user.name")
                 )) + ")}");
-                R.voidEval("Sys__getenv = function(v) {env=list('R_HOME'='')\nreturn(env[v])}");//+toRcode(System.getenv())+")\nreturn(env[v])}");
+                R.voidEval("Sys.setenv(R_HOME'='')");//+toRcode(System.getenv())+")\nreturn(env[v])}");
                 R.voidEval("options = function() {return(" + asRList(Data.newMap(
                         "OutDec", DecimalFormatSymbols.getInstance().getDecimalSeparator()
                 )) + ")}");
