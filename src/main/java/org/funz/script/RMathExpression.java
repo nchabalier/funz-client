@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.funz.Constants;
 import org.funz.Proxy;
@@ -92,12 +91,12 @@ public class RMathExpression extends MathExpression {
             verbose = Configuration.getBoolProperty("R.verbose");
         }
 
+        //System.err.println("R.server = " + Configuration.getProperty("R.server"));
         String[] Rservers = Configuration.getProperty("R.server", "").split(",");
         if (Rservers != null && Rservers.length > 0) {
             for (String Rserver : Rservers) {
                 if (Rserver != null && Rserver.startsWith(RserverConf.RURL_START)) {
                     Log.out("Using Rserve: " + Rserver, 2);
-                    //System.err.println("R.server = " + Configuration.getProperty("R.server"));
                     try {
                         serverConf = RserverConf.parse(Rserver);
                         R_engine = "Rserve";
@@ -214,9 +213,8 @@ public class RMathExpression extends MathExpression {
         try { // Fix for windows when /cygdrive/c/.. remains in HOME
             R.voidEval("Sys.setenv(HOME='"
                     + new File(System.getProperty("user.home")).getAbsolutePath().
-                            replace('\\', '/')
-                    + // Fix path sep
-                    "')");
+                            replace('\\', '/') // Fix path sep
+                    + "')");
         } catch (Rsession.RException ex) {
             Log.err("Failed to setup user homedir: " + ex.getMessage(), 3);
         }
@@ -262,11 +260,11 @@ public class RMathExpression extends MathExpression {
             streamlogger = (log == null ? new RLog() {
 
                 public void log(String string, Level level) {
-                    //System.err.println("R> " + string);
+                    Log.logMessage(this, SeverityLevel.valueOf(level.toString()), true, string);
                 }
 
                 public void closeLog() {
-                    //System.err.println("R> END");
+                    Log.logMessage(this, SeverityLevel.INFO, true, "close log.");
                 }
             } : new LoggerCollector(new LogFile(log)));
 
@@ -328,7 +326,7 @@ public class RMathExpression extends MathExpression {
                         "version", System.getProperty("os.version"),
                         "user", System.getProperty("user.name")
                 )) + ")}");
-                R.voidEval("Sys.setenv(R_HOME'='')");//+toRcode(System.getenv())+")\nreturn(env[v])}");
+                R.voidEval("Sys.setenv(R_HOME='')");//+toRcode(System.getenv())+")\nreturn(env[v])}");
                 R.voidEval("options = function() {return(" + asRList(Data.newMap(
                         "OutDec", DecimalFormatSymbols.getInstance().getDecimalSeparator()
                 )) + ")}");

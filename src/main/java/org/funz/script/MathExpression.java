@@ -3,8 +3,6 @@ package org.funz.script;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.funz.conf.Configuration;
@@ -33,10 +31,11 @@ public abstract class MathExpression {
     static {
         //Automated instanciation of class MathExpression using -DMathExpression.class=org.comp.math.myengine setting
         if (System.getProperty("MathExpression.class") != null) {
-            try {
+            try {                
+                System.out.println("Class " + System.getProperty("MathExpression.class") + " will be used as default MathExpression.");
                 SetDefaultInstance((Class) Class.forName(System.getProperty("MathExpression.class"), true, MathExpression.class.getClassLoader()));
             } catch (ClassNotFoundException c) {
-                System.out.println("Class " + System.getProperty("MathExpression.class") + " not found. No MathExpression class set.");
+                System.err.println("Class " + System.getProperty("MathExpression.class") + " not found. No MathExpression class set.");
             }
         }
     }

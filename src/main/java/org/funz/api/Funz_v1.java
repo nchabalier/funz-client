@@ -120,10 +120,10 @@ public class Funz_v1 extends Funz {
             //toc("properties");
             
             //tic("math");
-            if (math == null) {
-                Log.out("Initializing math. engine...", 1);
+            if (math == null) {   
                 String Rname = "Funz_" + Configuration.timeDigest();
-                MATH = new RMathExpression(Rname, File.createTempFile(Rname, ".log"));
+                Log.out("Initializing math. engine "+Rname, 1);
+                MATH = new RMathExpression(Rname, null);//File.createTempFile(Rname, ".log"));
             } else {
                 MATH = math;
             }
