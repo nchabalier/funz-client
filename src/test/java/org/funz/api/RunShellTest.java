@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.exec.OS;
+import org.apache.commons.io.FileUtils;
 import org.funz.Project;
 import org.funz.util.ASCII;
 import org.funz.util.Disk;
@@ -34,6 +36,13 @@ public class RunShellTest extends org.funz.api.TestUtils {
     @Test
     public void testExitNot0() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testExitNot0");
+
+        if (OS.isFamilyWindows()) {
+            File calc = new File("dist", "calculator.xml");
+            ASCII.saveFile(calc, FileUtils.readFileToString(calc).replace("exit-1.sh", "exit-1.bat"));
+            File calcfail = new File("dist", "calculator.fail.xml");
+            ASCII.saveFile(calcfail, FileUtils.readFileToString(calcfail).replace("exit-1.sh", "exit-1.bat"));
+        }
 
         File tmp_in = newTmpFile("exit.dat");
         if (tmp_in.exists()) {
@@ -63,6 +72,13 @@ public class RunShellTest extends org.funz.api.TestUtils {
     @Test
     public void testCrash() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testCrash");
+
+        if (OS.isFamilyWindows()) {
+            File calc = new File("dist", "calculator.xml");
+            ASCII.saveFile(calc, FileUtils.readFileToString(calc).replace("crash.sh", "crash.bat"));
+            File calcfail = new File("dist", "calculator.fail.xml");
+            ASCII.saveFile(calcfail, FileUtils.readFileToString(calcfail).replace("crash.sh", "crash.bat"));
+        }
 
         File tmp_in = newTmpFile("crash.dat");
         if (tmp_in.exists()) {
@@ -256,7 +272,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         test1Case();
         File cache = newTmpDir("test1Case.oldtmp");
-        Disk.moveDir(new File("tmp","test1Case.tmp"), cache);
+        Disk.moveDir(new File("tmp", "test1Case.tmp"), cache);
         assert (cache.exists()) : "No cache available !";
 
         File tmp_in = branin_in();
@@ -331,7 +347,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
-        File archivedir = new File("tmp","test1Case.tmp");
+        File archivedir = new File("tmp", "test1Case.tmp");
         Disk.removeDir(archivedir);
         assert !archivedir.exists() : "Cannot cleanup archive dir " + archivedir;
         sac.setArchiveDirectory(archivedir);
@@ -500,7 +516,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         assert good_res.listFiles(new FileFilter() {
 
             public boolean accept(File file) {
-                return file.getName().equals(tmp_in.getName()+".out");
+                return file.getName().equals(tmp_in.getName() + ".out");
             }
         }).length == 1 : "Did not built the stream in the defined archive dir";
 
@@ -595,7 +611,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
                     }
                     try {
                         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
-                        sac.setArchiveDirectory(newTmpDir("testConcurrency_"+I));
+                        sac.setArchiveDirectory(newTmpDir("testConcurrency_" + I));
 
                         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
                         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
