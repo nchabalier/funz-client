@@ -390,7 +390,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         RunShell_v1 sac = new RunShell_v1(R, new File[]{tmp_in, tmp_plugin}, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
-        File archivedir = new File("tmp");
+        File archivedir = new File("tmp","testIOPluginMore");
         Disk.removeDir(archivedir);
         assert !archivedir.exists() : "Cannot cleanup archive dir " + archivedir;
         sac.setArchiveDirectory(archivedir);
