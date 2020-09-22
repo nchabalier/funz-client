@@ -1290,8 +1290,7 @@ public abstract class BatchRun_v1 {
 
             int numToRun = torun.size();
             for (int i = 0; i < numToRun; i++) {
-
-                final Case c = getPendingCases().get(i);
+                final Case c = torun.get(i);
                 c.setObserver(observer);
                 boolean already_launched = false;
                 boolean cloned = false;
@@ -1461,6 +1460,7 @@ public abstract class BatchRun_v1 {
             setArchiveDirectory(archiveDirectory);
         } catch (Exception ex) {
             err(ex, 0);
+            ex.printStackTrace();
             //LogUtils.tic("merged_results.putAll(Utils.mergeStringArrayMap");
             merged_results.putAll(mergeStringArrayMap(newMap("error", ex.getMessage(), "trace", ex.fillInStackTrace())));
             //LogUtils.toc("merged_results.putAll(Utils.mergeStringArrayMap");
