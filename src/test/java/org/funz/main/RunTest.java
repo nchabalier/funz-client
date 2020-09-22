@@ -85,7 +85,7 @@ public class RunTest extends org.funz.api.TestUtils {
         File tmp_in = branin_in();
 
         try {
-            Run.main("Run -m R -if tmp/branin.R -iv x1=.5 x2=0.3 -v 0 -ad tmp".split(" "));
+            Run.main("Run -m R -if tmp/branin.R -iv x1=.5 x2=0.3 -v 10 -ad tmp/testRun1".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
@@ -100,7 +100,7 @@ public class RunTest extends org.funz.api.TestUtils {
         File tmp_in = branin_in();
 
         try {
-            Run.main("Run -m R -if tmp/branin.R -iv x1=.5 x2=0.3 -v 0 -ad tmp -oe 1+cat".split(" "));
+            Run.main("Run -m R -if tmp/branin.R -iv x1=.5 x2=0.3 -v 0 -ad tmp/testOutputExpression -oe 1+cat".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
@@ -114,7 +114,7 @@ public class RunTest extends org.funz.api.TestUtils {
         File tmp_in = branin_in();
 
         try {
-            Run.main("Run -m R -if tmp/branin.R -iv x1=.5 -v 0 -ad tmp".split(" "));
+            Run.main("Run -m R -if tmp/branin.R -iv x1=.5 -v 0 -ad tmp/testRunNoDefinedVarValues".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Wrong exit status :" + e.status;
         }
@@ -128,7 +128,7 @@ public class RunTest extends org.funz.api.TestUtils {
         File tmp_in = branin_in();
 
         try {
-            Run.main("Run -m R -if tmp/branin.R -iv x1=.5,.6,.7 x2=0.3,.4,.5 -v 0 -ad tmp".split(" "));
+            Run.main("Run -m R -if tmp/branin.R -iv x1=.5,.6,.7 x2=0.3,.4,.5 -v 0 -ad tmp/testRun9".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }
@@ -138,11 +138,11 @@ public class RunTest extends org.funz.api.TestUtils {
     
     @Test
     public void testRun9verb() throws Exception {
-        System.err.println("++++++++++++++++++++++++++++++++++++++++++ testRun9");
+        System.err.println("++++++++++++++++++++++++++++++++++++++++++ testRun9verb");
         File tmp_in = branin_in();
 
         try {
-            Run.main("Run -m R -if tmp/branin.R -iv x1=.5,.6,.7 x2=0.3,.4,.5 -mc sleep=0.1 -v 2 -ad tmp".split(" "));
+            Run.main("Run -m R -if tmp/branin.R -iv x1=.5,.6,.7 x2=0.3,.4,.5 -mc sleep=0.1 -v 2 -ad tmp/testRun9verb".split(" "));
         } catch (ExitCatcher e) {
             assert e.status == 0 : "Not 0 exit status :" + e.status;
         }

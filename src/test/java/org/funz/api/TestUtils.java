@@ -16,6 +16,7 @@ import org.funz.log.LogFile;
 import static org.funz.log.LogTicToc.HMS;
 import org.funz.main.MainUtils;
 import org.funz.script.MathExpression;
+import org.funz.script.RMathExpression;
 import org.funz.util.ASCII;
 import static org.funz.util.Data.asString;
 import static org.funz.util.Data.newMap;
@@ -88,7 +89,7 @@ public class TestUtils {
 
     public static int verbose = 2;
     public static Calculator[] calculators;
-    static MathExpression M = null;// = new RenjinMathExpression("Renjin");
+    static MathExpression M = null; //new RMathExpression("R://localhost", new File("R.log"));
 
     public static void test(String arg) throws Exception {
         Configuration.setVerboseLevel(verbose);
