@@ -1,45 +1,95 @@
-#!/bin/bash
-## @Before Run funz daemon to launch 'runshell' calculations
+@echo on
+setlocal enableDelayedExpansion
+REM @Before Run funz daemon to launch 'runshell' calculations
 
-failed="0"
+set failed=0
 
-function testRunParseError {
-    $FUNZ_HOME/Funz.sh Run abcdef > testRunParseError.out 2>&1
-    ok=`grep "Unknown option: abcdef" testRunParseError.out | wc -l`
-    if [ $ok = "1" ]; then rm testRunParseError.out; echo "OK";return 0;  else echo "FAILED:"; cat testRunParseError.out; return 1; fi
-}
+set FUNZ_HOME="dist"
 
-function testRun1 {
-    $FUNZ_HOME/Funz.sh Run -m $CODE -if $TMP_IN -iv x1=.5 x2=0.3 -v $VERBOSITY -ad tmp > testRun1.out 2>&1
-    ok=`grep "done" testRun1.out | wc -l`
-    if [ $ok = "2" ]; then rm testRun1.out; echo "OK";return 0;  else echo "FAILED:"; cat testRun1.out; return 1; fi
-}
+for /f "delims=" %%p in (src\test\RunTest.prop) do set %%p
+:: for /f "delims=" %p in (src\test\RunTest.prop) do set %p
 
-
-function testOutputExpression {
-    $FUNZ_HOME/Funz.sh Run -m $CODE -if $TMP_IN -iv x1=.5 x2=0.3 -v $VERBOSITY -ad tmp -oe 1+cat > testOutputExpression.out 2>&1
-    ok=`grep "6.154316" testOutputExpression.out | wc -l`
-    if [ $ok = "1" ]; then rm testOutputExpression.out; echo "OK";return 0;  else echo "FAILED:"; cat testOutputExpression.out; return 1; fi
-}
-
-function testRun9 {
-    $FUNZ_HOME/Funz.sh Run -m $CODE -if $TMP_IN -all -iv x1=.5,.6,.7 x2=0.3,.4,.5 -v $VERBOSITY -ad tmp > testRun9.out 2>&1
-    ok=`grep "done" testRun9.out | wc -l`
-    if [ $ok = "10" ]; then rm testRun9.out; echo "OK"; return 0; else echo "FAILED:"; cat testRun9.out; return 1; fi
-}
-
-FUNZ_HOME="dist"
-
-source src/test/RunTest.prop
-
-TMP_IN=tmp/branin.R
+set TMP_IN=tmp\branin.R
 mkdir tmp
-cp $SRC $TMP_IN
+copy %SRC% %TMP_IN%
 
-for t in testRunParseError testRun1 testOutputExpression testRun9; do
-    res=`$t`
-    if [ $? = "1" ]; then failed="1"; fi
-    echo "Test "$t": "$res
-done
+for %%t in (testRunParseError testRun1 testOutputExpression testRun9) do (
+    @echo off
+    call :%%t > res.txt
+    @echo on
+    set e=!errorlevel!
+    (
+        set "res1="
+        set /p "res1="
+        set "res2="
+        set /p "res2="
+    )<res.txt
+    del res.txt
+    if not "!e!"=="0" (
+        set /a failed+=1
+    )
+    echo Test %%t: !res1!!res2!
+)
 
-exit $failed
+echo failed: %failed%
+exit %failed%
+
+:testRunParseError
+    del /q testRunParseError.out
+    call %FUNZ_HOME%\Funz.bat Run abcdef > testRunParseError.out 2>&1
+    set ok=0
+    for /f %%i in ('find /C "Unknown option: abcdef" ^< "testRunParseError.out"') do set ok=%%i
+    if "%ok%"=="1" (
+        del testRunParseError.out
+        echo OK
+        exit /b 0
+    ) else (
+        echo FAILED:
+        more testRunParseError.out
+        exit /b 1
+    )
+
+:testRun1
+    del /q testRun1.out
+    call %FUNZ_HOME%\Funz.bat Run -m %CODE% -if %TMP_IN% -iv x1=.5 x2=0.3 -v %VERBOSITY% -ad tmp > testRun1.out 2>&1
+    set ok=0
+    for /f %%i in ('find /C "done" ^< "testRun1.out"') do set ok=%%i
+    if "%ok%"=="2" (
+        del testRun1.out
+        echo OK
+        exit /b 0
+    ) else (
+        echo FAILED:
+        more testRun1.out
+        exit /b 1
+    )
+
+:testOutputExpression
+    del /q testOutputExpression.out
+    call %FUNZ_HOME%\Funz.bat Run -m %CODE% -if %TMP_IN% -iv x1=.5 x2=0.3 -v %VERBOSITY% -ad tmp -oe 1+cat > testOutputExpression.out 2>&1
+    set ok=0
+    for /f %%i in ('find /C "6.154316" ^< "testOutputExpression.out"') do set ok=%%i
+    if "%ok%"=="1" (
+        del testOutputExpression.out
+        echo OK
+        exit /b 0
+    ) else (
+        echo FAILED:
+        more testRun1.out
+        exit /b 1
+    )
+
+:testRun9
+    del /q testRun9.out
+    call %FUNZ_HOME%\Funz.bat Run -m %CODE% -if %TMP_IN% -all -iv x1=.5,.6,.7 x2=0.3,.4,.5 -v %VERBOSITY% -ad tmp > testRun9.out 2>&1
+    set ok=0
+    for /f %%i in ('find /C "done" ^< "testRun9.out"') do set ok=%%i
+    if "%ok%"=="10" (
+        del testOutputExpression.out
+        echo OK
+        exit /b 0
+    ) else (
+        echo FAILED:
+        more testRun1.out
+        exit /b 1
+    )
