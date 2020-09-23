@@ -374,7 +374,7 @@
                     </then>
                     <else>
                         <property name="failed_issues" value="1" />
-                        <echo message="Failures: @{test.class}" />
+                        <echo message="Failures: @{test.file}" />
                     </else>
                 </if>
             </sequential>
@@ -418,7 +418,7 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="cmd" osfamily="unix" failonerror="false" timeout="2400000" resultproperty="@{test.file}.failed">
+                <exec executable="cmd.exe" osfamily="windows" failonerror="false" timeout="2400000" resultproperty="@{test.file}.failed">
                     <arg line="/c ${root.dir}/src/test/cmd/@{test.file}"/>
                 </exec>
                 <script language="javascript">
@@ -433,7 +433,7 @@
                     </then>
                     <else>
                         <property name="failed_cmd" value="1" />
-                        <echo message="Failures: @{test.class}" />
+                        <echo message="Failures: @{test.file}" />
                     </else>
                 </if>
             </sequential>
@@ -521,7 +521,7 @@
                     </then>
                     <else>
                         <property name="failed_python" value="1" />
-                        <echo message="Failures: @{test.class}" />
+                        <echo message="Failures: @{test.file}" />
                     </else>
                 </if>
             </sequential>
@@ -569,7 +569,7 @@
                     </then>
                     <else>
                         <property name="failed_R" value="1" />
-                        <echo message="Failures: @{test.class}" />
+                        <echo message="Failures: @{test.file}" />
                     </else>
                 </if>
             </sequential>
