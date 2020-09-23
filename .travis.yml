@@ -1,7 +1,12 @@
 language: minimal
+before_cache:
+  - brew cleanup
 cache:
   directories:
     - $HOME/.jabba/
+    - $HOME/AppData/Local/Temp/chocolatey
+    - $HOME/Library/Caches/Homebrew
+
 matrix:
   include:
     - name: "Linux JDK11 - R2js - unit"
