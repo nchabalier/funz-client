@@ -75,7 +75,7 @@ exit %failed%
         exit /b 0
     ) else (
         echo FAILED:
-        more testRun1.out
+        more testOutputExpression.out
         exit /b 1
     )
 
@@ -85,11 +85,11 @@ exit %failed%
     set ok=0
     for /f %%i in ('find /C "done" ^< "testRun9.out"') do set ok=%%i
     if "%ok%"=="10" (
-        del testOutputExpression.out
+        del testRun9.out
         echo OK
         exit /b 0
     ) else (
         echo FAILED:
-        more testRun1.out
+        more testRun9.out
         exit /b 1
     )
