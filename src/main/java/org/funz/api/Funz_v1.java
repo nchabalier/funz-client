@@ -50,10 +50,9 @@ public class Funz_v1 extends Funz {
                     setVerbosity(10);
                 }
             }
-            
             Log.out("Verbose level set to " + Log.level, 1);
             //toc("Verbose");
-            
+
             //tic("APP_USER_DIR");
             if (Constants.APP_USER_DIR.exists()) {
                 if (!Constants.APP_USER_DIR.canWrite()) {
@@ -70,6 +69,7 @@ public class Funz_v1 extends Funz {
                     System.exit(-1);
                 }
             }
+            Log.out("Funz user directory:" + Constants.APP_USER_DIR, 1);
             //toc("APP_USER_DIR");
 
             //tic("USER_TMP_DIR");
@@ -93,7 +93,7 @@ public class Funz_v1 extends Funz {
                 } else {
                     CONF = conf;
                 }
-                Log.out("Funz configuration: "+CONF.toString(), 1);
+                Log.out("Funz configuration: " + CONF.toString(), 1);
             } catch (Exception e) {
                 Log.err("Funz configuration exception: " + e.getMessage(), 0);
             }
@@ -112,17 +112,17 @@ public class Funz_v1 extends Funz {
             //tic("properties");
             try {
                 Log.out("Reading properties", 1);
-                Configuration.readProperties("file:" + Constants.APP_INSTALL_DIR +"/"+ Configuration.properties);
-                Log.out("  file:" + Constants.APP_INSTALL_DIR +"/"+ Configuration.properties, 2);
+                Configuration.readProperties("file:" + Constants.APP_INSTALL_DIR + "/" + Configuration.properties);
+                Log.out("  file:" + Constants.APP_INSTALL_DIR + "/" + Configuration.properties, 2);
             } catch (Exception e) {
                 Log.err("Exception: " + e.getMessage(), 0);
             }
             //toc("properties");
-            
+
             //tic("math");
-            if (math == null) {   
+            if (math == null) {
                 String Rname = "Funz_" + Configuration.timeDigest();
-                Log.out("Initializing math. engine "+Rname, 1);
+                Log.out("Initializing math. engine " + Rname, 1);
                 MATH = new RMathExpression(Rname, null);//File.createTempFile(Rname, ".log"));
             } else {
                 MATH = math;
@@ -149,10 +149,10 @@ public class Funz_v1 extends Funz {
             //tic("Headless");
             Log.out("Headless mode: " + GraphicsEnvironment.isHeadless(), 1);
             //toc("Headless");
-            
-            Log.out("  Funz models (port "+POOL.getPort()+"): "+ASCII.cat(" ", MODELS), 0);
-            Log.out("  Funz designs (engine "+MATH.getEngineName()+"): "+ASCII.cat(" ", DESIGNS), 0);
-            
+
+            Log.out("  Funz models (port " + POOL.getPort() + "): " + ASCII.cat(" ", MODELS), 0);
+            Log.out("  Funz designs (engine " + MATH.getEngineName() + "): " + ASCII.cat(" ", DESIGNS), 0);
+
             //Log.out("  Funz initialized at "+HMS(), 0);       
         } catch (Exception e) {
             e.printStackTrace();
