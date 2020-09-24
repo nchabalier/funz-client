@@ -179,27 +179,28 @@ public class ClientTest {
         assert Client.getProtocol().equals(Session.getProtocol()) : "Protocol Mismatch !";
     }
 
-    
-    
     @Test
     public void testCaseFast() throws Exception {
+        System.err.println("++++++++++++++++++++++++++++++++ testCaseFast ");
+
         File f = File.createTempFile("fast", "tmp");
-        ASCII.saveFile(f, ParserUtils.getASCIIFileContent(new File("src/test/samples/novar.R")).replace("t=0", "t="+Session.REQUEST_TIMEOUT/10/1000));
-    
+        ASCII.saveFile(f, ParserUtils.getASCIIFileContent(new File("src/test/samples/novar.R")).replace("t=0", "t=" + Session.REQUEST_TIMEOUT / 10 / 1000));
+
         testCase(f);
     }
-    
+
     @Test
     public void testCaseLong() throws Exception {
+        System.err.println("++++++++++++++++++++++++++++++++ testCaseLong ");
+
         File f = File.createTempFile("long", "tmp");
-        ASCII.saveFile(f, ParserUtils.getASCIIFileContent(new File("src/test/samples/novar.R")).replace("t=0", "t="+Session.REQUEST_TIMEOUT*2/1000));
-    
+        ASCII.saveFile(f, ParserUtils.getASCIIFileContent(new File("src/test/samples/novar.R")).replace("t=0", "t=" + Session.REQUEST_TIMEOUT * 2 / 1000));
+
         testCase(f);
     }
-    
-    
+
     public void testCase(File f) throws Exception {
-        System.err.println("++++++++++++++++++++++++++++++++ testCase "+f);
+        System.err.println("++++++++++++++++++++++++++++++++ testCase " + f);
 
         Client gui = new Client("127.0.0.1", port) {
             public void log(String m) {
@@ -249,8 +250,7 @@ public class ClientTest {
 
         assert !gui.isConnected() : "Client still connected !";
     }
-     
-    
+
     @Test
     public void testCaseBreakClient() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++ testCaseBreakClient");
@@ -271,11 +271,11 @@ public class ClientTest {
 
         System.err.println("------------------------------------------------[CLIENT]>newCase " + gui.newCase(new HashMap()));
         //Nothing then, check that server will auto-unreserve soon...
-        
-        assert calc.getActivity().startsWith("already reserved"): "Bad activity: "+calc.getActivity();
-        
-        Thread.sleep(Session.REQUEST_TIMEOUT*2);
-        
+
+        assert calc.getActivity().startsWith("already reserved") : "Bad activity: " + calc.getActivity();
+
+        Thread.sleep(Session.REQUEST_TIMEOUT * 2);
+
         assert calc.getActivity().startsWith("idle") : "Bad activity: " + calc.getActivity();
 
         try {
@@ -394,7 +394,6 @@ public class ClientTest {
         assert !gui.isConnected() : "Client still connected !";
     }
 
-    
     @Test
     public void testReserveUnreserve() throws Exception {
         System.err.println("++++++++++++++++++++++++++++++++ testReserveUnreserve");
@@ -416,7 +415,7 @@ public class ClientTest {
         Thread.sleep(Session.RESERVE_TIMEOUT / 2);
 
         assert gui.unreserve() : "Impossible to unreserve";
-        
+
         gui.disconnect();
     }
 
