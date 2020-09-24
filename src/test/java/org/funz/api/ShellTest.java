@@ -31,7 +31,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         super.setUp(ShellTest.class.getName());
     }
 
-    //@Test
+    @Test
     public void testCacheCase() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testCacheCase");
 
@@ -57,7 +57,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
     }
 
-    //@Test
+    @Test
     public void testDefaultCase() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testDefaultCase");
 
@@ -103,7 +103,7 @@ public class ShellTest extends org.funz.api.TestUtils {
 
     private static final String ALGORITHM = "GradientDescent";
 
-    //@Test
+    @Test
     public void test1Case1Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ test1Case1Design");
 
@@ -126,7 +126,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
     }
 
-    //@Test
+    @Test
     public void test1Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ test1Design");
 
@@ -154,7 +154,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results.get("analysis.min")[0].trim().equals("-0.4") : "Bad convergence to " + results.get("analysis.min")[0];
     }
 
-    //@Test
+    @Test
     public void test1DesignOutExpr() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ test1DesignOutExpr");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {
@@ -187,7 +187,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results.get("analysis.min")[0].trim().startsWith("0.") : "Bad convergence to " + results.get("analysis.min")[0];
     }
 
-    //@Test
+    @Test
     public void testNoDesignOutExpr() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testNoDesignOutExpr");
 
@@ -210,7 +210,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results.get("N(cat[1],1)")[0].contains("[305.9563,1") : "Bad eval for N(cat[1],1) : \n" + ArrayMapToMDString(results);
     }
 
-    //@Test
+    @Test
     public void testNDesign() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testNDesign");
 
@@ -236,7 +236,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert Double.parseDouble(results.get("analysis.min")[1].trim()) < 0 : "1: Bad convergence to " + results.get("analysis.min")[1];
     }
 
-    //@Test
+    @Test
     public void test1Case0Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ test1Case0Design");
 
@@ -261,7 +261,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results.get("output.cat")[0].equals("[-0.01]") : "Bad output:" + results.get("output.cat") + "\n" + ArrayMapToMDString(results);
     }
 
-    //@Test
+    @Test
     public void testNCasesNoDesign() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testNCasesNoDesign");
 
@@ -367,7 +367,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
     }
 
-    //@Test
+    @Test
     public void testConcurrency() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testConcurrency");
         final boolean[] tests = new boolean[]{false, false, false, false};
@@ -439,7 +439,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert alltrue(tests) : "One concurency run failed !";
     }
 
-    //@Test
+    @Test
     public void testDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testDuplicateCases");
 
@@ -472,7 +472,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
     }
 
-    //@Test
+    @Test
     public void testVectorize() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testVectorize");
 
