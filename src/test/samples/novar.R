@@ -7,14 +7,14 @@ branin <- function(x) {
 t=0
 
 Sys.sleep(t);
-cat("1/3");
+cat('1/3');
 Sys.sleep(t);
-cat("2/3");
+cat('2/3');
 Sys.sleep(t);
-cat("3/3");
+cat('3/3');
 Sys.sleep(t);
 
 
-cat("z = ",branin(c( .3 , .5 )),"\n");
+cat('z = ',branin(c( .3 , .5 )),'\n');
 
 

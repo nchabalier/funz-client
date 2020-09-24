@@ -14,6 +14,6 @@ Sys.sleep(t);
 cat("3/3");
 Sys.sleep(t);
 
-cat("z = ",branin(c( .1 , .1 )),"\n");
+cat('z = ',branin(c( .1 , .1 )),'\n');
 
 

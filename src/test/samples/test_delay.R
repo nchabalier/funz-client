@@ -6,4 +6,4 @@ branin <- function(x) {
 
 Sys.sleep(rpois(lambda=5,n=1))
 
-cat("z = ",branin(c( !x1 , !x2 )),"\n");
+cat('z = ',branin(c( !x1 , !x2 )),'\n');

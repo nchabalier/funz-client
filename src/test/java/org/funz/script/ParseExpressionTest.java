@@ -27,7 +27,7 @@ public class ParseExpressionTest {
         LinkedList<Object> results;
 
         params = new HashMap<String, Object>();
-        params.put(ParseExpression.FILES, new File("./src/test/resources/").listFiles(new FilenameFilter() {
+        params.put(ParseExpression.FILES, new File("./src/test/samples/").listFiles(new FilenameFilter() {
 
             public boolean accept(File dir, String name) {
                 return !name.startsWith(".");
@@ -46,10 +46,10 @@ public class ParseExpressionTest {
         expressions.add("`grep(\"(.*)vbs\",\"WScript\\.StdOut\\.WriteLine\\(\\\"(.*)=\")>>before(\"=\")>>after(\"\"\")`");
         results.add("z");
 
-        expressions.add("`grep(\"(.*)R\",\"cat\\(\\'(.*)=\")>>before(\"=\")>>after(\"'\")`");
+        expressions.add("`grep(\"branin\\.R\",\"cat\\(\\'(.*)=\")>>before(\"=\")>>after(\"'\")>>trim()>>get(0)`");
         results.add("z");
 
-        expressions.add("`grep(\"(.*)R\",\"cat\\(\\'(.*)=\")>>after(\"'\")>>before(\"=\")`");
+        expressions.add("`grep(\"branin\\.R\",\"cat\\(\\'(.*)=\")>>after(\"'\")>>before(\"=\")>>trim()>>get(0)`");
         results.add("z");
 
         expressions.add("grep(\"(.*).listing\",\"         Le test du Khi2\") >> get(1) >> between(\"dans\",\", teste\") >> trim()");

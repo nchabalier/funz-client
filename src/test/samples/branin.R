@@ -19,7 +19,7 @@ Sys.sleep(t);
 cat("X = ",c( ?x1 , ?[x2~.5]),"\n");
 
 if ( ?x1 >= 0 ) {
-  cat("z = ",branin(c( ?x1 , !{f(?x2)+0.5+1-1.5} )),"\n")
+  cat('z = ',branin(c( ?x1 , !{f(?x2)+0.5+1-1.5} )),'\n')
 } else {
-  cat("z = ?","\n")
+  cat('z = ?','\n')
 }
