@@ -110,7 +110,7 @@ exit %failed%
 
 :testBraninGradientDescentx2
     del /q testBraninGradientDescentx2.out
-    call %FUNZ_HOME%\Funz.bat RunDesign -m %CODE% -d %DESIGN% -do nmax=%NMAX% delta=%DELTA% -if %TMP_IN% -iv x1=[0,1] x2=[0,1] -v %VERBOSITY% -ad tmp/testBraninGradientDescentx2.bat > testBraninGradientDescentx2.out 2>&1
+    call %FUNZ_HOME%\Funz.bat RunDesign -m %CODE% -d %DESIGN% -do nmax=%NMAX% delta=%DELTA% -if %TMP_IN% -iv x1=0,1 x2=[0,1] -v %VERBOSITY% -ad tmp/testBraninGradientDescentx2.bat > testBraninGradientDescentx2.out 2>&1
     set ok1=0
     for /f %%i in ('find /C "%BraninGradientDescentx2_x1_0_MIN%" ^< "testBraninGradientDescentx2.out"') do set ok1=%%i   
     set ok2=0
