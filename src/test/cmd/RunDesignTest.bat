@@ -64,7 +64,7 @@ exit %failed%
     )
 
 :testRun2Design
-    del /q testRun1Design.out
+    del /q testRun2Design.out
     call %FUNZ_HOME%\Funz.bat RunDesign -m %CODE% -d %DESIGN% -do nmax=%NMAX% delta=%DELTA% -if %TMP_IN% -iv x1=.3,.5 x2=[0.3,.4] -v %VERBOSITY% -ad tmp/testRun2Design.bat > testRun2Design.out 2>&1
     set ok=0
     for /f %%i in ('find /C "done" ^< "testRun2Design.out"') do set ok=%%i
