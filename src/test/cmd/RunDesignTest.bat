@@ -6,8 +6,7 @@ set failed=0
 
 set FUNZ_HOME="dist"
 
-for /f "delims=" %%p in (src\test\RunTest.prop) do set %%p
-:: for /f "delims=" %p in (src\test\RunTest.prop) do set %p
+for /f "delims=" %%p in (src\test\RunDesignTest.prop) do set %%p
 
 set TMP_IN=tmp\branin.R
 mkdir tmp
