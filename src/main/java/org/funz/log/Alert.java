@@ -35,22 +35,23 @@ public class Alert {
 
         @Override
         public String askInformation(String question) {
-            System.out.println(question);
+            System.out.print("[Ask] " + question);
             Scanner reader = new Scanner(System.in);  // Reading from System.in
             String a = reader.next();
             reader.close();
             Log.logMessage("Alert", LogCollector.SeverityLevel.INFO, true, question + " >> " + a);
+            System.out.println("    >> " + a);
             return a;
         }
 
         @Override
         public boolean askYesNo(String question) {
-            System.out.println(question + " [y/n]");
+            System.out.print("[Ask] " + question + " [y/n]");
             Scanner reader = new Scanner(System.in);  // Reading from System.in
             boolean a = reader.next().equals("y");
             reader.close();
-
             Log.logMessage("Alert", LogCollector.SeverityLevel.INFO, true, question + " >> " + a);
+            System.out.println("    >> " + a);
             return a;
         }
 
@@ -65,11 +66,12 @@ public class Alert {
 //                        return fc.getSelectedFile();
 //                    } else return null;
 //                } else {
-            System.out.println(question);
+            System.out.println("[Ask] " + question);
             Scanner reader = new Scanner(System.in);  // Reading from System.in
             File f = new File(reader.next());
             reader.close();
             Log.logMessage("Alert", LogCollector.SeverityLevel.INFO, true, question + " >> " + f);
+            System.out.println("    >> " + f);
             return f;
 //                }
         }
@@ -86,7 +88,7 @@ public class Alert {
     public static void showException(Exception i) {
         Collector.showException(i);
     }
-    
+
     public static String askInformation(String q) {
         return Collector.askInformation(q);
     }
@@ -94,7 +96,7 @@ public class Alert {
     public static boolean askYesNo(String q) {
         return Collector.askYesNo(q);
     }
-    
+
     public static File askPath(String q) {
         return Collector.askPath(q);
     }
