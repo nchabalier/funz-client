@@ -1,4 +1,7 @@
 @echo on
+
+java -version
+
 setlocal enableDelayedExpansion
 REM @Before Run funz daemon to launch 'runshell' calculations
 
@@ -7,11 +10,10 @@ set failed=0
 set FUNZ_HOME="dist"
 
 for /f "delims=" %%p in (src\test\RunTest.prop) do set %%p
-:: for /f "delims=" %p in (src\test\RunTest.prop) do set %p
 
 set TMP_IN=tmp\branin.R
 mkdir tmp
-copy %SRC% %TMP_IN%
+copy %SRC:/=\% %TMP_IN%
 
 for %%t in (testRunParseError testRun1 testOutputExpression testRun9) do (
     @echo off

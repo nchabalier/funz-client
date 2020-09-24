@@ -10,7 +10,7 @@ for /f "delims=" %%p in (src\test\RunDesignTest.prop) do set %%p
 
 set TMP_IN=tmp\branin.R
 mkdir tmp
-copy %SRC% %TMP_IN%
+copy %SRC:/=\% %TMP_IN%
 
 for %%t in (testRunDesignParseError testRun1Design testRun2Design testRunDesignFailed testBraninGradientDescent testBraninGradientDescentx2) do (
     @echo off
