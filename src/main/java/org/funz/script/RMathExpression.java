@@ -91,7 +91,7 @@ public class RMathExpression extends MathExpression {
             verbose = Configuration.getBoolProperty("R.verbose");
         }
 
-        //System.err.println("R.server = " + Configuration.getProperty("R.server"));
+        Log.out("R.server: " + Configuration.getProperty("R.server", "?"), 2);
         String[] Rservers = Configuration.getProperty("R.server", "").split(",");
         if (Rservers != null && Rservers.length > 0) {
             for (String Rserver : Rservers) {
@@ -189,24 +189,10 @@ public class RMathExpression extends MathExpression {
         initConfiguration();
 
         if (R == null) {
-            newR();
+            createR();
         }
 
         initR();
-    }
-
-    void newR() {
-        createR();
-
-        if (R == null || !R.isAvailable()) {
-            createR();
-
-            if (R == null || !R.isAvailable()) { //still !!!
-                Log.err("R not available.\nPlease check your R/Rserve/Renjin installation manually.", 2);
-                Alert.showError("R not available.\nPlease check your R/Rserve/Renjin installation manually.");
-                System.exit(-1);
-            }
-        }
     }
 
     void initR() {
@@ -334,7 +320,10 @@ public class RMathExpression extends MathExpression {
 
             R.TRY_MODE = true;
         } catch (Exception e) {
-            Log.logException(true, e);
+            Log.err("R not available.\nPlease check your R/Rserve/Renjin installation manually.", 2);
+            Alert.showError("R not available.\nPlease check your R/Rserve/Renjin installation manually.");
+            e.printStackTrace(System.err);
+            //System.exit(-1);
         }
     }
 
@@ -585,7 +574,7 @@ public class RMathExpression extends MathExpression {
             if (restartR) {
                 finalizeRsession();
                 name = name + ".";
-                newR();
+                createR();
                 R.log("Restarting R session...", Level.ERROR);
                 initR();
             }
