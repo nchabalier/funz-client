@@ -97,7 +97,7 @@ exit %failed%
     del /q testBraninGradientDescent.out
     call %FUNZ_HOME%\Funz.bat RunDesign -m %CODE% -d %DESIGN% -do nmax=%NMAX% delta=%DELTA% -if %TMP_IN% -iv x1=[0,1] x2=[0,1] -v %VERBOSITY% -ad tmp/testBraninGradientDescent.bat > testBraninGradientDescent.out 2>&1
     set ok=0
-    for /f %%i in ('find /C "%BraninGradientDescent_MIN%" ^< "testBraninGradientDescent"') do set ok=%%i
+    for /f %%i in ('find /C "%BraninGradientDescent_MIN%" ^< "testBraninGradientDescent.out"') do set ok=%%i
     if %ok% gtr 0 (
         del testBraninGradientDescent.out
         echo OK
