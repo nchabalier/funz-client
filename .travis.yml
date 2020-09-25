@@ -181,7 +181,7 @@ before_install:
   # Check out the script set
   - travis_retry git clone --depth 1 $GRAVIS_REPO $GRAVIS
   - source $GRAVIS/install-jdk
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export HOMEBREW_NO_AUTO_UPDATE=1; travis_wait brew update >/dev/null; brew install ant; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export HOMEBREW_NO_AUTO_UPDATE=1; travis_wait brew update >/dev/null; brew install ant; brew link ant; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install ant -y; fi
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install ant -y; fi
 install:
@@ -222,7 +222,7 @@ before_script:
   - >
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
     choco install -y r --version 3.6;
-    export PATH=$PATH:"C:\Program Files\R\R-3.6.0\bin";
+    export PATH=$PATH:"C:\\Program Files\\R\\R-3.6.0\\bin";
     R.exe --version;
     fi
 # Install Python if needed
