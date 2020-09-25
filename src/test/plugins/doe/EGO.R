@@ -172,20 +172,20 @@ displayResults <- function(algorithm, X, Y) {
   #if (algorithm$i == algorithm$iterations) {
   html = paste0(html,"<data_json>",toJSON(as.data.frame(cbind(X,Y)),dataframe = "columns"),"</data_json>")
 
-  lower = sapply(algorithm$input, "[[", "min")
-  upper = sapply(algorithm$input, "[[", "max")
-  n = 1000
-  set.seed(123) # to get the same points for evaluating model
-  Xm = matrix(lower,nrow=n,ncol=length(lower),byrow = T) + matrix(upper-lower,nrow=n,ncol=length(lower),byrow = T) * matrix(runif(n*length(lower)),nrow=n,ncol=length(lower))
-  colnames(Xm) <- colnames(X)
-  Ym = list(mean=rep(NA,n),sd=rep(NA,n))
-  try(Ym <- predict(algorithm$model,newdata = Xm,type = "UK",cov.compute = F, low.memory = T,checkNames=F))
-  Ym = cbind(Ym$mean,Ym$sd)
-  colnames(Ym) <- c(colnames(Y),paste0("sd_",colnames(Y)))[1:2]
-
-  html = paste0(html,"<model_json>",toJSON(as.data.frame(cbind(Xm,Ym)),dataframe = "columns"),"</model_json>")
-
-  html = paste0(html,"<kriging_json>",toJSON(algorithm$model,force=TRUE,auto_unbox=TRUE,pretty=TRUE,dataframe = "columns"),"</kriging_json>")
+  #lower = sapply(algorithm$input, "[[", "min")
+  #upper = sapply(algorithm$input, "[[", "max")
+  #n = 1000
+  #set.seed(123) # to get the same points for evaluating model
+  #Xm = matrix(lower,nrow=n,ncol=length(lower),byrow = T) + matrix(upper-lower,nrow=n,ncol=length(lower),byrow = T) * matrix(runif(n*length(lower)),nrow=n,ncol=length(lower))
+  #colnames(Xm) <- colnames(X)
+  #Ym = list(mean=rep(NA,n),sd=rep(NA,n))
+  #try(Ym <- predict(algorithm$model,newdata = Xm,type = "UK",cov.compute = F, low.memory = T,checkNames=F))
+  #Ym = cbind(Ym$mean,Ym$sd)
+  #colnames(Ym) <- c(colnames(Y),paste0("sd_",colnames(Y)))[1:2]
+  #
+  #html = paste0(html,"<model_json>",toJSON(as.data.frame(cbind(Xm,Ym)),dataframe = "columns"),"</model_json>")
+  #
+  #html = paste0(html,"<kriging_json>",toJSON(algorithm$model,force=TRUE,auto_unbox=TRUE,pretty=TRUE,dataframe = "columns"),"</kriging_json>")
   #}
 
   return(paste0(html,collapse=';'))
