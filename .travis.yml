@@ -227,7 +227,7 @@ before_script:
     if [ ! -d "C:/Program\ Files/R/R-3.6.0" ]; then 
     choco install -y r --version 3.6;
     fi;
-    ls "C:/Program Files/R/R-3.6.0/bin"
+    ls "C:/Program Files/R/R-3.6.0/bin";
     export PATH=$PATH:"C:/Program Files/R/R-3.6.0/bin";
     R --version;
     fi
