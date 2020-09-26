@@ -213,16 +213,20 @@ before_script:
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-    wd=$PWD; 
+    if [ ! -d "/usr/local/Cellar/r/3.6.3_2" ]; then 
+    wd=$PWD;
     cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core; git reset --hard c3a244c627e; git checkout -b r-3.6.3;
     cd $wd;
     brew reinstall r;
+    fi;
     R --version;
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+    if [ ! -d "C:\\Program\ Files\\R\\R-3.6.0" ]; then 
     choco install -y r --version 3.6;
-    export PATH=$PATH:"C:\\Program Files\\R\\R-3.6.0\\bin";
+    fi;
+    export PATH=$PATH:"C:\\Program\ Files\\R\\R-3.6.0\\bin";
     R.exe --version;
     fi
 # Install Python if needed
