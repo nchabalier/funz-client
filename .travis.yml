@@ -9,6 +9,7 @@ cache:
     - $HOME/.jabba/
     - $HOME/AppData/Local/Temp/chocolatey
     - C:/ProgramData/chocolatey
+    - "C:/Program Files/R"
     - $HOME/Library/Caches/Homebrew
     - /usr/local/Homebrew
     - /usr/local/Cellar
@@ -229,7 +230,7 @@ before_script:
     fi;
     ls "C:/Program Files";
     ls "C:/ProgramData/chocolatey";
-    export PATH=$PATH:"C:/ProgramData/chocolatey/R/R-3.6.0/bin";
+    export PATH=$PATH:"C:/Program Files/R/R-3.6.0/bin";
     R --version;
     fi
 # Install Python if needed
