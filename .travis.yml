@@ -239,7 +239,8 @@ before_script:
     travis_wait choco install r --version 3.6 -y;
     fi;
     ls "C:/Program Files/R/R-3.6.0/bin";
-    export PATH=$PATH:"C:/Program Files/R/R-3.6.0/bin";
+    export PATH=$PATH:"C:/Program Files/R/R-3.6.0/bin";        
+    export PATH=$PATH:"/C/Program Files/R/R-3.6.0/bin";
     cmd.exe //C 'setx //M path "%PATH%;C:\Program Files\R\R-3.6.0\bin"';
     R --version;
     fi
