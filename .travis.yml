@@ -13,7 +13,7 @@ cache:
     - $HOME/Library/Caches/Homebrew
     - /usr/local/Homebrew
     - /usr/local/Cellar
-    
+
 matrix:
   include:
     - name: "Linux JDK11 - R2js - unit"
@@ -182,7 +182,16 @@ before_install:
   # Check out the script set
   - travis_retry git clone --depth 1 $GRAVIS_REPO $GRAVIS
   - source $GRAVIS/install-jdk
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export HOMEBREW_NO_AUTO_UPDATE=1; brew update >/dev/null; if [ ! -d "/usr/local/Cellar/ant" ]; then brew install ant; else brew link ant; fi; fi
+  - > if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+      export HOMEBREW_NO_AUTO_UPDATE=1; 
+      brew update; 
+      test -d /usr/local/opt/openssl/lib  || { rmdir /usr/local/opt/openssl; brew install openssl; };
+      test -d /usr/local/opt/libevent/lib || { rmdir /usr/local/opt/libevent; brew install libevent; };
+      test -d /usr/local/opt/check/lib    || { rmdir /usr/local/opt/check; brew install check; };
+      if [ ! -d "/usr/local/Cellar/ant" ]; then 
+      brew install ant; else brew link ant; 
+      fi; 
+      fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install ant -y; fi
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install ant -y; fi
 install:
@@ -230,7 +239,7 @@ before_script:
     fi;
     ls "C:/Program Files/R/R-3.6.0/bin";
     export PATH=$PATH:"C:/Program Files/R/R-3.6.0/bin";
-    R.exe --version;
+    "C:/Program Files/R/R-3.6.0/bin/R.exe" --version;
     fi
 # Install Python if needed
   - >
