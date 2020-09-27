@@ -216,6 +216,7 @@ before_script:
 # Install R anyway
   - >  
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
+    R --version;
     echo "deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/" | sudo tee -a /etc/apt/sources.list;
     sudo apt-get update -qq --allow-unauthenticated; 
     sudo apt-get install r-base --allow-unauthenticated -y; 
@@ -230,6 +231,7 @@ before_script:
     cd $wd;
     brew reinstall r;
     fi;
+    R --version; 
     export PATH=$PATH:"/usr/local/Cellar/r/3.6.3_2/bin";
     R --version;
     fi
@@ -238,10 +240,11 @@ before_script:
     if [ ! -d "C:/Program Files/R/R-3.6.0" ]; then 
     travis_wait choco install r --version 3.6 -y;
     fi;
+    R --version;
     ls "C:/Program Files/R/R-3.6.0/bin";
     export PATH=$PATH:"C:/Program Files/R/R-3.6.0/bin";        
     export PATH=$PATH:"/C/Program Files/R/R-3.6.0/bin";
-    cmd.exe //C 'setx //M path "%PATH%;C:\Program Files\R\R-3.6.0\bin"';
+    cmd.exe //C 'setx path "%PATH%;C:\Program Files\R\R-3.6.0\bin"';
     R --version;
     fi
 # Install Python if needed
@@ -280,6 +283,7 @@ before_script:
     fi;
     fi
 script:
+  - R --version
   - echo "R.server="$R_SERVER > Funz.conf
   - cd dist; echo "R.server="$R_SERVER > Funz.conf; cd ..
   #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
