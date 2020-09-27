@@ -239,7 +239,8 @@ before_script:
     fi;
     ls "C:/Program Files/R/R-3.6.0/bin";
     export PATH=$PATH:"C:/Program Files/R/R-3.6.0/bin";
-    "C:/Program Files/R/R-3.6.0/bin/R.exe" --version;
+    cmd.exe /C "setx /M path '%PATH%;C:\Program Files\R\R-3.6.0\bin'";
+    R --version;
     fi
 # Install Python if needed
   - >
