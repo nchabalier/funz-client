@@ -10,7 +10,10 @@ cache:
     - $HOME/AppData/Local/Temp/chocolatey
     - C:/ProgramData/chocolatey
     - "C:/Program Files/R"
+    - C:/Program Files/R
+    - /c/ProgramData/chocolatey
     - "/c/Program Files/R"
+    - /c/Program Files/R
     - $HOME/Library/Caches/Homebrew
     - /usr/local/Homebrew
     - /usr/local/Cellar
@@ -243,11 +246,10 @@ before_script:
     R --version;
     ls "C:/Program Files/R/R-3.6.0/bin";
     ls "/c/Program Files/R/R-3.6.0/bin";
-    ls "/c/Program\ Files/R/R-3.6.0/bin";
-    if [ ! -d "/c/Program\ Files/R/R-3.6.0/bin" ]; then 
+    if [ ! -d "/c/Program Files/R/R-3.6.0/bin" ]; then 
     travis_wait choco install r --force --version 3.6 -y;
     fi;
-    export PATH=$PATH:"/c/Program\ Files/R/R-3.6.0/bin";
+    export PATH=$PATH:"/c/Program Files/R/R-3.6.0/bin";
     echo $PATH;
     cmd.exe //C 'echo %PATH%';
     R --version;
