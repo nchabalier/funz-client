@@ -256,6 +256,7 @@
         <antcall target="clean-tests"/>
 
         <antcall target="test-java"/>
+        <antcall target="test-main"/>
         <antcall target="test-issues"/>
 
         <antcall target="test-R"/>
@@ -277,40 +278,47 @@
         
         <for list="${tests.list}" param="test.class" delimiter="${line.separator}">
             <sequential>
-                <echo message="========================================="/>
-                <echo message="============= @{test.class} ============="/>
-                <local name="current.time"/>
-                <tstamp>
-                    <format property="current.time" pattern="hh:mm:ss" />
-                </tstamp>
-                <echo message="============ ${current.time} ============"/> 
-                <echo message="========================================="/>
-                <propertyregex property="test.class" input="@{test.class}" regexp="\.class" replace="" global="true"  override="true"/>
-                <!--echo message="${test.class}"/-->
-                <propertyregex property="test.class.id" input="${test.class}" regexp="[/\\]" replace="\." global="true"  override="true"/>
-                <!--echo message="${test.class.id}"/-->
-                
-                <record name="${test.class.id}.txt" action="start" />
-                <jacoco:coverage> 
-                    <java classname="${test.class.id}" fork="true" timeout="1200000" failonerror="false" resultproperty="@{test.class}.failed">
-                        <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
-                        <classpath refid="test.classpath" />
-                        <classpath path="${build.dir}" />
-                        <classpath path="${unit.test.jar}" />
-                        <assertions>
-                            <enable/>
-                        </assertions>
-                    </java>        
-                </jacoco:coverage>
-                <record name="${test.class.id}.txt" action="stop"/>
-                <if>
-                    <equals arg1="${@{test.class}.failed}" arg2="0" />
+                <if>                        
+                    <not>
+                        <contains string="@{test.class}" substring="main" />
+                    </not>
                     <then>
+                        <echo message="========================================="/>
+                        <echo message="============= @{test.class} ============="/>
+                        <local name="current.time"/>
+                        <tstamp>
+                            <format property="current.time" pattern="hh:mm:ss" />
+                        </tstamp>
+                        <echo message="============ ${current.time} ============"/> 
+                        <echo message="========================================="/>
+                        <propertyregex property="test.class" input="@{test.class}" regexp="\.class" replace="" global="true"  override="true"/>
+                        <!--echo message="${test.class}"/-->
+                        <propertyregex property="test.class.id" input="${test.class}" regexp="[/\\]" replace="\." global="true"  override="true"/>
+                        <!--echo message="${test.class.id}"/-->
+                
+                        <record name="${test.class.id}.txt" action="start" />
+                        <jacoco:coverage> 
+                            <java classname="${test.class.id}" fork="true" timeout="1200000" failonerror="false" resultproperty="@{test.class}.failed">
+                                <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+                                <classpath refid="test.classpath" />
+                                <classpath path="${build.dir}" />
+                                <classpath path="${unit.test.jar}" />
+                                <assertions>
+                                    <enable/>
+                                </assertions>
+                            </java>        
+                        </jacoco:coverage>
+                        <record name="${test.class.id}.txt" action="stop"/>
+                        <if>
+                            <equals arg1="${@{test.class}.failed}" arg2="0" />
+                            <then>
+                            </then>
+                            <else>
+                                <property name="failed" value="1" /> 
+                                <echo message="Failures: @{test.class}" />
+                            </else>
+                        </if>
                     </then>
-                    <else>
-                        <property name="failed" value="1" /> 
-                        <echo message="Failures: @{test.class}" />
-                    </else>
                 </if>
             </sequential>
         </for>
@@ -337,6 +345,64 @@
             <xml destfile="jacoco.xml"/>
                         
         </jacoco:report>
+    </target>
+
+    <target name="test-main" depends="dist-test, compile-test" unless="env.NO_TEST_MAIN">
+        <fileset id="tests" dir="${build.dir}" includes="**/*Test.class" excludes="**/doe/**" />
+        <!--property name="tests.p" refid="tests"/>
+        <echo message="${tests.p}"/-->
+
+        <pathconvert pathsep="${line.separator}" property="tests.list" refid="tests">
+            <map from="${build.dir}/" to=""/>
+        </pathconvert>
+        <!--echo message="${tests.list}"/>
+        <echo message="================"/-->
+        
+        <for list="${tests.list}" param="test.class" delimiter="${line.separator}">
+            <sequential>
+                <if>                        
+                    <contains string="@{test.class}" substring="main" />
+                    <then>
+                        <echo message="========================================="/>
+                        <echo message="============= @{test.class} ============="/>
+                        <local name="current.time"/>
+                        <tstamp>
+                            <format property="current.time" pattern="hh:mm:ss" />
+                        </tstamp>
+                        <echo message="============ ${current.time} ============"/> 
+                        <echo message="========================================="/>
+                        <propertyregex property="test.class" input="@{test.class}" regexp="\.class" replace="" global="true"  override="true"/>
+                        <!--echo message="${test.class}"/-->
+                        <propertyregex property="test.class.id" input="${test.class}" regexp="[/\\]" replace="\." global="true"  override="true"/>
+                        <!--echo message="${test.class.id}"/-->
+                
+                        <record name="${test.class.id}.txt" action="start" />
+                        <jacoco:coverage> 
+                            <java classname="${test.class.id}" fork="true" timeout="1200000" failonerror="false" resultproperty="@{test.class}.failed">
+                                <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+                                <classpath refid="test.classpath" />
+                                <classpath path="${build.dir}" />
+                                <classpath path="${unit.test.jar}" />
+                                <assertions>
+                                    <enable/>
+                                </assertions>
+                            </java>        
+                        </jacoco:coverage>
+                        <record name="${test.class.id}.txt" action="stop"/>
+                        <if>
+                            <equals arg1="${@{test.class}.failed}" arg2="0" />
+                            <then>
+                            </then>
+                            <else>
+                                <property name="failed" value="1" /> 
+                                <echo message="Failures: @{test.class}" />
+                            </else>
+                        </if>
+                    </then>
+                </if>
+            </sequential>
+        </for>
+        <fail message="Test failure detected, check test results." if="failed" />
     </target>
 
     <target name="test-issues" depends="dist-test"  unless="env.NO_TEST_ISSUES">
