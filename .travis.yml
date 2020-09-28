@@ -223,6 +223,7 @@ before_script:
     sudo apt-get install r-base --allow-unauthenticated -y; 
     sudo apt-get install libglu1-mesa-dev libglu1-mesa-dev libfreetype6-dev --allow-unauthenticated -y; 
     R --version;
+    /bin/bash -c "R --version";
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
@@ -235,21 +236,19 @@ before_script:
     fi;
     export PATH=$PATH:"/usr/local/Cellar/r/3.6.3_2/bin";
     R --version;
+    /bin/bash -c "R --version";
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
     R --version;
-    if [ ! -d "C:/Program Files/R/R-3.6.0" ]; then 
+    if [ ! -d "/c/Program Files/R/R-3.6.0/bin" ]; then 
     travis_wait choco install r --force --version 3.6 -y;
     fi;
     ls "C:/Program Files/R/R-3.6.0/bin";
     ls "/c/Program Files/R/R-3.6.0/bin";
-    export PATH=$PATH:"C:/Program Files/R/R-3.6.0/bin";        
     export PATH=$PATH:"/c/Program Files/R/R-3.6.0/bin";
-    echo 'setx path "%PATH%";"C:\Program Files\R\R-3.6.0\bin"';
-    cmd.exe //C 'echo "%PATH%";"C:\Program Files\R\R-3.6.0\bin"';
-    cmd.exe //C 'setx path "%PATH%";"C:\Program Files\R\R-3.6.0\bin"';
     R --version;
+    cmd.exe //C "R --version";
     fi
 # Install Python if needed
   - >
