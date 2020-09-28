@@ -3,7 +3,6 @@ package org.funz.main;
 import java.io.File;
 import java.security.Permission;
 import java.util.regex.Pattern;
-import org.apache.ftpserver.util.OS;
 import org.funz.util.ParserUtils;
 import org.junit.Before;
 import org.junit.Test;

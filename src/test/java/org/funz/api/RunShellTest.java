@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.funz.Project;

@@ -13,16 +13,20 @@ import org.funz.log.Alert;
 import org.funz.log.AlertCollector;
 import org.funz.log.Log;
 import org.funz.log.LogFile;
+import org.funz.log.LogTicToc;
 import static org.funz.log.LogTicToc.HMS;
 import org.funz.main.MainUtils;
 import org.funz.script.MathExpression;
-import org.funz.script.RMathExpression;
 import org.funz.util.ASCII;
 import static org.funz.util.Data.asString;
 import static org.funz.util.Data.newMap;
 import org.funz.util.Disk;
 import static org.funz.util.ParserUtils.getASCIIFileContent;
 import org.junit.After;
+import org.junit.Rule;
+import org.junit.rules.MethodRule;
+import org.junit.rules.TestWatchman;
+import org.junit.runners.model.FrameworkMethod;
 import org.math.array.DoubleArray;
 
 /**
@@ -108,6 +112,21 @@ public class TestUtils {
             calculators[i].askToStop("end test " + arg);
         }
     }
+
+    @Rule
+    public MethodRule watchman = new TestWatchman() {
+        @Override
+        public void starting(FrameworkMethod method) {
+            super.starting(method);
+            LogTicToc.tic(method.getName());
+        }
+
+        @Override
+        public void finished(FrameworkMethod method) {
+            LogTicToc.toc(method.getName());
+            super.finished(method);
+        }
+    };
 
     String[] CLEANUP_FILES = {"(.*)\\.Rdata", "(.*)\\.png", "x(.*)"};
 

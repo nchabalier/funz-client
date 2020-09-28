@@ -1,10 +1,8 @@
 package org.funz.api;
 
-import java.io.File;
 import java.util.Map;
 import org.funz.Project;
 import org.funz.doeplugin.Design;
-import org.funz.doeplugin.RDesigner_V0.OldRDesign;
 import org.funz.ioplugin.ExtendedIOPlugin;
 import org.funz.parameter.Case;
 import org.funz.parameter.OutputFunctionExpression;
@@ -13,7 +11,6 @@ import org.funz.script.RMathExpression;
 import org.junit.Before;
 import org.junit.Test;
 import org.math.R.RLog;
-import org.math.R.RenjinSession;
 
 /**
  *
