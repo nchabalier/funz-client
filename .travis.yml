@@ -8,12 +8,9 @@ cache:
   directories:
     - $HOME/.jabba/
     - $HOME/AppData/Local/Temp/chocolatey
-    - C:/ProgramData/chocolatey
     - "C:/Program Files/R"
-    - /c/ProgramData/chocolatey
     - "/c/Program Files/R"
     - $HOME/Library/Caches/Homebrew
-    - /usr/local/Homebrew
     - /usr/local/Cellar
     - /usr/local/opt
 
@@ -239,14 +236,13 @@ before_script:
     echo "ls C:/Program Files/R/R-3.6.0/bin:"; ls "C:/Program Files/R/R-3.6.0/bin";
     echo "ls /c/Program Files/R/R-3.6.0/bin:"; ls "/c/Program Files/R/R-3.6.0/bin";
     if [ ! -d "/c/Program Files/R/R-3.6.0/bin" ]; then 
-    travis_wait choco install r --force --version 3.6 -y;
+    travis_wait choco install r --version 3.6 -y;
     tail -100 /c/ProgramData/chocolatey/logs/chocolatey.log;
     fi;
     echo "ls /c/Program Files/R/R-3.6.0/bin:"; ls "/c/Program Files/R/R-3.6.0/bin";
     export PATH=$PATH:"/c/Program Files/R/R-3.6.0/bin";
     echo "PATH/bash : "$PATH;
-    cmd.exe //C 'echo %PATH%';
-    echo "PATH/cmd : "$PATH;
+    echo "PATH/cmd : "`cmd.exe //C 'echo %PATH%'`;
     cmd.exe //C "R --version";
     fi
 # Install Python if needed
