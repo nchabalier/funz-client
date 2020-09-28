@@ -232,19 +232,21 @@ before_script:
     brew reinstall r;
     fi;
     export PATH=$PATH:/usr/local/Cellar/r/3.6.3_2/bin;
+    echo "" >> ~/.bashrc; echo "export PATH=$PATH:/usr/local/Cellar/r/3.6.3_2/bin;" >> ~/.bashrc;
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-    ls "C:/Program Files/R/R-3.6.0/bin";
-    ls "/c/Program Files/R/R-3.6.0/bin";
+    echo "ls C:/Program Files/R/R-3.6.0/bin:"; ls "C:/Program Files/R/R-3.6.0/bin";
+    echo "ls /c/Program Files/R/R-3.6.0/bin:"; ls "/c/Program Files/R/R-3.6.0/bin";
     if [ ! -d "/c/Program Files/R/R-3.6.0/bin" ]; then 
     travis_wait choco install r --force --version 3.6 -y;
-    tail /c/ProgramData/chocolatey/logs/chocolatey.log;
+    tail -100 /c/ProgramData/chocolatey/logs/chocolatey.log;
     fi;
-    ls "/c/Program Files/R/R-3.6.0/bin";
+    echo "ls /c/Program Files/R/R-3.6.0/bin:"; ls "/c/Program Files/R/R-3.6.0/bin";
     export PATH=$PATH:"/c/Program Files/R/R-3.6.0/bin";
-    echo $PATH;
+    echo "PATH/bash : "$PATH;
     cmd.exe //C 'echo %PATH%';
+    echo "PATH/cmd : "$PATH;
     cmd.exe //C "R --version";
     fi
 # Install Python if needed
