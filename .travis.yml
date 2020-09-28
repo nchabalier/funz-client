@@ -234,19 +234,22 @@ before_script:
     cd $wd;
     brew reinstall r;
     fi;
-    export PATH=$PATH:"/usr/local/Cellar/r/3.6.3_2/bin";
+    export PATH=$PATH:/usr/local/Cellar/r/3.6.3_2/bin;
     R --version;
     /bin/bash -c "R --version";
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
     R --version;
-    if [ ! -d "/c/Program Files/R/R-3.6.0/bin" ]; then 
-    travis_wait choco install r --force --version 3.6 -y;
-    fi;
     ls "C:/Program Files/R/R-3.6.0/bin";
     ls "/c/Program Files/R/R-3.6.0/bin";
-    export PATH=$PATH:"/c/Program Files/R/R-3.6.0/bin";
+    ls "/c/Program\ Files/R/R-3.6.0/bin";
+    if [ ! -d "/c/Program\ Files/R/R-3.6.0/bin" ]; then 
+    travis_wait choco install r --force --version 3.6 -y;
+    fi;
+    export PATH=$PATH:"/c/Program\ Files/R/R-3.6.0/bin";
+    echo $PATH;
+    cmd.exe //C 'echo %PATH%';
     R --version;
     cmd.exe //C "R --version";
     fi
@@ -286,6 +289,7 @@ before_script:
     fi;
     fi
 script:
+  - echo $PATH
   - R --version
   - echo "R.server="$R_SERVER > Funz.conf
   - cd dist; echo "R.server="$R_SERVER > Funz.conf; cd ..
