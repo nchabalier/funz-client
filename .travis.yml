@@ -10,7 +10,8 @@ cache:
     - $HOME/AppData/Local/Temp/chocolatey
     - C:/ProgramData/chocolatey
     - "C:/Program Files/R"
-    - $HOME/Library/Caches/Homebrewi
+    - "/c/Program Files/R"
+    - $HOME/Library/Caches/Homebrew
     - /usr/local/Homebrew
     - /usr/local/Cellar
     - /usr/local/opt
@@ -225,26 +226,27 @@ before_script:
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+    R --version; 
     if [ ! -d "/usr/local/Cellar/r/3.6.3_2" ]; then 
     wd=$PWD;
     cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core; git reset --hard c3a244c627e; git checkout -b r-3.6.3;
     cd $wd;
     brew reinstall r;
     fi;
-    R --version; 
     export PATH=$PATH:"/usr/local/Cellar/r/3.6.3_2/bin";
     R --version;
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+    R --version;
     if [ ! -d "C:/Program Files/R/R-3.6.0" ]; then 
     travis_wait choco install r --version 3.6 -y;
     fi;
-    R --version;
     ls "C:/Program Files/R/R-3.6.0/bin";
+    ls "/c/Program Files/R/R-3.6.0/bin";
     export PATH=$PATH:"C:/Program Files/R/R-3.6.0/bin";        
-    export PATH=$PATH:"/C/Program Files/R/R-3.6.0/bin";
-    cmd.exe //C 'setx path "%PATH%;C:\Program Files\R\R-3.6.0\bin"';
+    export PATH=$PATH:"/c/Program Files/R/R-3.6.0/bin";
+    cmd.exe //C 'setx path "%PATH%";"C:\Program Files\R\R-3.6.0\bin"';
     R --version;
     fi
 # Install Python if needed
