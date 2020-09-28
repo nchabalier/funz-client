@@ -240,12 +240,14 @@ before_script:
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
     R --version;
     if [ ! -d "C:/Program Files/R/R-3.6.0" ]; then 
-    travis_wait choco install r --version 3.6 -y;
+    travis_wait choco install r --force --version 3.6 -y;
     fi;
     ls "C:/Program Files/R/R-3.6.0/bin";
     ls "/c/Program Files/R/R-3.6.0/bin";
     export PATH=$PATH:"C:/Program Files/R/R-3.6.0/bin";        
     export PATH=$PATH:"/c/Program Files/R/R-3.6.0/bin";
+    echo 'setx path "%PATH%";"C:\Program Files\R\R-3.6.0\bin"';
+    cmd.exe //C 'echo "%PATH%";"C:\Program Files\R\R-3.6.0\bin"';
     cmd.exe //C 'setx path "%PATH%";"C:\Program Files\R\R-3.6.0\bin"';
     R --version;
     fi
