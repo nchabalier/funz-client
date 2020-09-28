@@ -218,17 +218,13 @@ before_script:
 # Install R anyway
   - >  
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
-    R --version;
     echo "deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/" | sudo tee -a /etc/apt/sources.list;
     sudo apt-get update -qq --allow-unauthenticated; 
     sudo apt-get install r-base --allow-unauthenticated -y; 
     sudo apt-get install libglu1-mesa-dev libglu1-mesa-dev libfreetype6-dev --allow-unauthenticated -y; 
-    R --version;
-    /bin/bash -c "R --version";
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
-    R --version; 
     if [ ! -d "/usr/local/Cellar/r/3.6.3_2" ]; then 
     wd=$PWD;
     cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core; git reset --hard c3a244c627e; git checkout -b r-3.6.3;
@@ -236,21 +232,19 @@ before_script:
     brew reinstall r;
     fi;
     export PATH=$PATH:/usr/local/Cellar/r/3.6.3_2/bin;
-    R --version;
-    /bin/bash -c "R --version";
     fi
   - >
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-    R --version;
     ls "C:/Program Files/R/R-3.6.0/bin";
     ls "/c/Program Files/R/R-3.6.0/bin";
     if [ ! -d "/c/Program Files/R/R-3.6.0/bin" ]; then 
     travis_wait choco install r --force --version 3.6 -y;
+    tail /c/ProgramData/chocolatey/logs/chocolatey.log;
     fi;
+    ls "/c/Program Files/R/R-3.6.0/bin";
     export PATH=$PATH:"/c/Program Files/R/R-3.6.0/bin";
     echo $PATH;
     cmd.exe //C 'echo %PATH%';
-    R --version;
     cmd.exe //C "R --version";
     fi
 # Install Python if needed
@@ -291,6 +285,8 @@ before_script:
 script:
   - echo $PATH
   - R --version
+  - /bin/bash -c "R --version"
+  - /bin/bash -c "R CMD BATCH src/test/samples/branin.nop.R"; cat branin.nop.Rout
   - echo "R.server="$R_SERVER > Funz.conf
   - cd dist; echo "R.server="$R_SERVER > Funz.conf; cd ..
   #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
