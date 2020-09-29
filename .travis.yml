@@ -210,8 +210,9 @@ before_install:
   - travis_retry git clone --depth 1 $GRAVIS_REPO $GRAVIS
   - source $GRAVIS/install-jdk
   - > 
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     export HOMEBREW_NO_AUTO_UPDATE=1; 
+    brew update;
     test -d /usr/local/opt/openssl/lib  || { rmdir /usr/local/opt/openssl; brew install openssl; };
     test -d /usr/local/opt/libevent/lib || { rmdir /usr/local/opt/libevent; brew install libevent; };
     test -d /usr/local/opt/check/lib    || { rmdir /usr/local/opt/check; brew install check; };
@@ -290,7 +291,7 @@ before_script:
     fi
 # Install rJava if needed
   - >
-    if [[ "$NO_TEST_R" != "1" ]]; then 
+    if [[ "$NO_TEST_R" != "1" || "$NO_TEST_ISSUES" != "1" ]]; then 
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
     sudo apt-get install libpcre2-8-0 libpcre2-dev --allow-unauthenticated -y;
     sudo ln -s /usr/lib/jvm/default-java $JAVA_HOME; 
@@ -303,8 +304,8 @@ before_script:
     R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"; 
     fi; 
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then 
-    R.exe CMD javareconf JAVA_HOME=$JAVA_HOME; 
-    R.exe -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"; 
+    R CMD javareconf JAVA_HOME=$JAVA_HOME; 
+    R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"; 
     fi;
     fi
 script:
