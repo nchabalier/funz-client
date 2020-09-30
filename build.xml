@@ -485,7 +485,8 @@
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
                 <exec executable="cmd.exe" osfamily="windows" failonerror="false" timeout="2400000" resultproperty="@{test.file}.failed">
-                    <arg line="/c ${root.dir}/src/test/cmd/@{test.file}"/>
+                    <arg line="/c"/>
+                    <arg line="${root.dir}/src/test/cmd/@{test.file}"/>
                 </exec>
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
