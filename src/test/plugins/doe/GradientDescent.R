@@ -1,6 +1,6 @@
 #help: First-order local optimization algorithm<br/>http://en.wikipedia.org/wiki/Gradient_descent
 #tags: optimization
-#options: nmax=100; delta=1; epsilon=0.01; target=-Inf; x0=''
+#options: minimization='true'; nmax=100; delta=1; epsilon=0.01; target=-Inf; x0=''
 #input: x=list(min=0,max=1)
 #output: y=0.99
 
@@ -8,6 +8,7 @@
 GradientDescent <- function(opts) {
   gradientdescent = new.env()
 
+  gradientdescent$yminimization <- isTRUE(as.logical(opts$yminimization))
   gradientdescent$nmax <- as.integer(opts$nmax)
   gradientdescent$delta <- as.numeric(opts$delta)
   gradientdescent$epsilon <- as.numeric(opts$epsilon)
@@ -18,7 +19,16 @@ GradientDescent <- function(opts) {
   } else {
     gradientdescent$x0 <- as.numeric(unlist(strsplit(as.character(opts$x0),",")))
   }
-
+  if (!gradientdescent$yminimization){
+    if (isTRUE(gradientdescent$target == -Inf)) {
+      gradientdescent$target = Inf
+    }
+  }
+  if (gradientdescent$yminimization){
+    if (isTRUE(gradientdescent$target == Inf)){
+      gradientdescent$target = -Inf
+    }
+  }
   gradientdescent$i = 0
 
   return(gradientdescent)
@@ -60,7 +70,11 @@ getInitialDesign <- function(algorithm,input,output) {
 getNextDesign <- function(algorithm,X,Y) {
   if (algorithm$i > algorithm$nmax) { return(); }
 
-  if (min(Y[,1]) < algorithm$target) { return(); }
+  if (algorithm$yminimization) {
+    if (min(Y[,1]) < algorithm$target) { return(); }
+  } else {
+    if (max(Y[,1]) > algorithm$target) { return(); }
+  }
 
   # seems we are on a flat point. So try to extend finite-differences step to find a trend
   if (max(Y[,1])==min(Y[,1])) {
@@ -84,10 +98,18 @@ getNextDesign <- function(algorithm,X,Y) {
   prevYn = Y[(n-d):n,1]
 
   if (algorithm$i > 0) {
-    if (Y[n-d,1] >= Y[n-d-1-d,1]) {
-      algorithm$delta <- algorithm$delta / 2
-      prevXn = X[(n-d-d-1):(n-d-1),] #as.matrix(X[(n-d-d-1):(n-d-1),])
-      prevYn = Y[(n-d-d-1):(n-d-1),1] #as.array(Y[(n-d-d-1):(n-d-1),1])
+    if (algorithm$yminimization) {
+      if (Y[n-d,1] >= Y[n-d-1-d,1]) {
+        algorithm$delta <- algorithm$delta / 2
+        prevXn = X[(n-d-d-1):(n-d-1),] #as.matrix(X[(n-d-d-1):(n-d-1),])
+        prevYn = Y[(n-d-d-1):(n-d-1),1] #as.array(Y[(n-d-d-1):(n-d-1),1])
+      }
+    } else {
+      if (Y[n-d,1] <= Y[n-d-1-d,1]) {
+        algorithm$delta <- algorithm$delta / 2
+        prevXn = X[(n-d-d-1):(n-d-1),] #as.matrix(X[(n-d-d-1):(n-d-1),])
+        prevYn = Y[(n-d-d-1):(n-d-1),1] #as.array(Y[(n-d-d-1):(n-d-1),1])
+      }
     }
   }
   if (d==1) { prevXn = matrix(prevXn,ncol=1) }
@@ -102,7 +124,11 @@ getNextDesign <- function(algorithm,X,Y) {
     algorithm$delta <- algorithm$delta / max(abs(g))
   }
 
-  xnext = prevXn[1,] - g * algorithm$delta
+  if (algorithm$yminimization) {
+    xnext = prevXn[1,] - g * algorithm$delta
+  } else {
+    xnext = prevXn[1,] + g * algorithm$delta
+  }
   xnext = t(xnext)
 
   for (t in 1:d) {
@@ -130,14 +156,23 @@ getNextDesign <- function(algorithm,X,Y) {
 #' @return HTML string of analysis
 displayResults <- function(algorithm,X,Y) {
   Y = Y[,1]
-  m = min(Y)
-  m.ix = which.min(Y)
+  if (isTRUE(algorithm$yminimization)) {
+    m = min(Y)
+    m.ix = which.min(Y)
+  } else {
+    m = max(Y)
+    m.ix = which.max(Y)
+  }
   m.ix = m.ix[1]
   x = X[m.ix,]
 
   d = dim(X)[2]
 
-  red = (as.matrix(Y)-min(Y))/(max(Y)-min(Y))
+  if (algorithm$yminimization) {
+    red = (as.matrix(Y)-min(Y))/(max(Y)-min(Y))
+  } else {
+    red = (max(Y)-as.matrix(Y))/(max(Y)-min(Y))
+  }
   if(d>1) {
     algorithm$files <- paste0("pairs_",algorithm$i-1,".png",sep="")
     png(file=algorithm$files,bg="transparent",height=600,width = 600)
@@ -150,15 +185,27 @@ displayResults <- function(algorithm,X,Y) {
     dev.off()
   }
 
-  html=paste0("<HTML name='minimum'>minimum is ",m,
+  if (isTRUE(algorithm$yminimization)) {
+    html=paste0("<HTML name='minimum'>minimum is ",m,
               " found at ",
               paste0(paste(names(X),'=',x, collapse=';')),
               "<br/><img src='",
               algorithm$files,
               "' width='600' height='600'/></HTML>")
 
-  m=paste("<min>",m,"</min>")
-  argmin=paste("<argmin>[",paste(collapse=',',x),"]</argmin>")
+    m=paste("<min>",m,"</min>")
+    argmin=paste("<argmin>[",paste(collapse=',',x),"]</argmin>")
+  } else {
+    html=paste0("<HTML name='maximum'>maximum is ",m,
+              " found at ",
+              paste0(paste(names(X),'=',x, collapse=';')),
+              "<br/><img src='",
+              algorithm$files,
+              "' width='600' height='600'/></HTML>")
+
+    m=paste("<max>",m,"</max>")
+    argmin=paste("<argmax>[",paste(collapse=',',x),"]</argmax>")
+  }
 
   return(paste(html,m,argmin,collapse=';'))
 }
