@@ -8,7 +8,7 @@
 GradientDescent <- function(opts) {
   gradientdescent = new.env()
 
-  gradientdescent$yminimization <- isTRUE(as.logical(opts$yminimization))
+  gradientdescent$yminimization <- isTRUE(as.logical(opts$minimization))
   gradientdescent$nmax <- as.integer(opts$nmax)
   gradientdescent$delta <- as.numeric(opts$delta)
   gradientdescent$epsilon <- as.numeric(opts$epsilon)
