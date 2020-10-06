@@ -23,8 +23,7 @@ GradientDescent <- function(opts) {
     if (isTRUE(gradientdescent$target == -Inf)) {
       gradientdescent$target = Inf
     }
-  }
-  if (gradientdescent$yminimization){
+  } else {
     if (isTRUE(gradientdescent$target == Inf)){
       gradientdescent$target = -Inf
     }
