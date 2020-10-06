@@ -88,7 +88,7 @@ public class R2jsMathExpressionTest {
                 + "}");
 
         assert engine.R.ls("f") != null : "Cannot eval f";
-        engine.R.voidEval("options = list(nmax = 10, delta = 1, epsilon = 0.01, target=0)");
+        engine.R.voidEval("options = list(minimization='true', nmax = 10, delta = 1, epsilon = 0.01, target=0)");
         assert engine.R.print("options") != null : "Cannot eval options";
 
         assert engine.R.voidEval("gd = GradientDescent(options)") : "Failed last voidEval: " + engine.R.notebook();
@@ -96,6 +96,7 @@ public class R2jsMathExpressionTest {
 
         assert engine.R.voidEval("X0 = getInitialDesign(gd,input=list(x1=list(min=0,max=1),x2=list(min=0,max=1)),NULL)") : "Failed last voidEval: " + engine.R.notebook();
         assert engine.R.voidEval("Y0 = f(X0); Xi = X0; Yi = Y0") : "Failed last voidEval: " + engine.R.notebook();
+        assert engine.listVariables(true, true).contains("Yi") : "Cannot get Yi in envir: " + engine.listVariables(true, true);
 
         assert engine.R.voidEval("finished = FALSE");
         assert engine.R.voidEval("while (!finished) {\n"
@@ -109,10 +110,10 @@ public class R2jsMathExpressionTest {
                 + "     }\n"
                 + "}\n") : "Failed last voidEval: " + engine.R.notebook();
 
-        assert engine.listVariables(true, true).contains("Yi") : "Cannot get gd in envir: " + engine.listVariables(true, true);
-        assert engine.R.asDouble(engine.R.eval("min(Yi)")) < 10.0 : "Failed to get minimum value of f: " + engine.R.eval("min(Yi)");
-
+        System.err.println(engine.R.print("Xj"));
+        System.err.println(engine.R.print("Yj"));
         System.err.println(engine.R.print("displayResults(gd,Xi,Yi)"));
+        assert engine.R.asDouble(engine.R.eval("min(Yi)")) < 10.0 : "Failed to get minimum value of f: " + engine.R.eval("min(Yi)");
     }
 
     @Test
