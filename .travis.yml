@@ -206,6 +206,7 @@ env:
     - GRAVIS="$HOME/gravis"        
         
 before_install:
+  - echo "========== before_install"; STARTTIME=$(date +%s)
   # Check out the script set
   - travis_retry git clone --depth 1 $GRAVIS_REPO $GRAVIS
   - source $GRAVIS/install-jdk
@@ -222,7 +223,9 @@ before_install:
     fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install ant -y; fi
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install ant -y; fi
+  - ENDTIME=$(date +%s); echo "Time: "$(($ENDTIME - $STARTTIME))
 install:
+  - echo "========== install"; STARTTIME=$(date +%s)
   - WD=$PWD
   - cd ..
   - git clone https://github.com/Funz/funz-profile
@@ -238,8 +241,10 @@ install:
   - ant clean dist-test
   - cd ..
   - cd $WD
+  - ENDTIME=$(date +%s); echo "Time: "$(($ENDTIME - $STARTTIME))
 
 before_script:
+  - echo "========== before_script"; STARTTIME=$(date +%s)
 # Install R anyway
   - >  
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
@@ -308,18 +313,23 @@ before_script:
     R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"; 
     fi;
     fi
+  - ENDTIME=$(date +%s); echo "Time: "$(($ENDTIME - $STARTTIME))
 script:
-  - echo $PATH
-  - R --version
-  - /bin/bash -c "R --version"
-  - /bin/bash -c "R CMD BATCH src/test/samples/branin.nop.R"; cat branin.nop.Rout
+  - echo "========== script"; STARTTIME=$(date +%s)
+  - echo "check R:
+  - echo "PATH="$PATH
+  - echo "R --version="; R --version
+  - echo "/bin/bash -c R --version"; /bin/bash -c "R --version"
+  - echo "/bin/bash -c R CMD BATCH src/test/samples/branin.nop.R"; /bin/bash -c "R CMD BATCH src/test/samples/branin.nop.R"; cat branin.nop.Rout
   - echo "R.server="$R_SERVER > Funz.conf
   - cd dist; echo "R.server="$R_SERVER > Funz.conf; cd ..
   #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
   - if [[ "$NO_TEST_JAVA" == "1" ]]; then travis_wait 40 ant test; else ant test; fi
   #-; fi
+  - ENDTIME=$(date +%s); echo "Time: "$(($ENDTIME - $STARTTIME))
 
 after_success:
+  - echo "========== after_success"; STARTTIME=$(date +%s)
 # Coverage for reference conf
   - >
     if [[ "$NO_TEST_JAVA" != "1" ]]; then 
@@ -329,6 +339,7 @@ after_success:
     ant coverage;
     bash <(curl -s https://codecov.io/bash);
     fi; fi; fi; fi
+  - ENDTIME=$(date +%s); echo "Time: "$(($ENDTIME - $STARTTIME))
 
 before_deploy:
   - ant clean dist
