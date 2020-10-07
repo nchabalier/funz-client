@@ -223,7 +223,7 @@ before_install:
     fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install ant -y; fi
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install ant -y; fi
-  - ENDTIME=$(date +%s); echo "Time: $(($ENDTIME - $STARTTIME))"
+  - ENDTIME=$(date +%s); echo "Time:$(($ENDTIME - $STARTTIME))"
 install:
   - echo "========== install"; STARTTIME=$(date +%s);
   - WD=$PWD
@@ -241,7 +241,7 @@ install:
   - ant clean dist-test
   - cd ..
   - cd $WD
-  - ENDTIME=$(date +%s); echo "Time: $(($ENDTIME - $STARTTIME))"
+  - ENDTIME=$(date +%s); echo "Time:$(($ENDTIME - $STARTTIME))"
 
 before_script:
   - echo "========== before_script"; STARTTIME=$(date +%s);
@@ -274,8 +274,8 @@ before_script:
     fi;
     echo "ls /c/Program Files/R/R-3.6.0/bin:"; ls "/c/Program Files/R/R-3.6.0/bin";
     export PATH=$PATH:"/c/Program Files/R/R-3.6.0/bin";
-    echo "PATH/bash : "$PATH;
-    echo "PATH/cmd : "`cmd.exe //C 'echo %PATH%'`;
+    echo "PATH/bash:"$PATH;
+    echo "PATH/cmd:"`cmd.exe //C 'echo %PATH%'`;
     cmd.exe //C "R --version";
     fi
 # Install Python if needed
@@ -313,7 +313,7 @@ before_script:
     R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"; 
     fi;
     fi
-  - ENDTIME=$(date +%s); echo "Time: $(($ENDTIME - $STARTTIME))"
+  - ENDTIME=$(date +%s); echo "Time:$(($ENDTIME - $STARTTIME))"
 
 script:
   - echo "========== script"; STARTTIME=$(date +%s);
@@ -327,7 +327,7 @@ script:
   #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then 
   - if [[ "$NO_TEST_JAVA" == "1" ]]; then travis_wait 40 ant test; else ant test; fi
   #-; fi
-  - ENDTIME=$(date +%s); echo "Time: $(($ENDTIME - $STARTTIME))"
+  - ENDTIME=$(date +%s); echo "Time:$(($ENDTIME - $STARTTIME))"
 
 after_success:
   - echo "========== after_success"; STARTTIME=$(date +%s);
@@ -340,7 +340,7 @@ after_success:
     ant coverage;
     bash <(curl -s https://codecov.io/bash);
     fi; fi; fi; fi
-  - ENDTIME=$(date +%s); echo "Time: $(($ENDTIME - $STARTTIME))"
+  - ENDTIME=$(date +%s); echo "Time:$(($ENDTIME - $STARTTIME))"
 
 before_deploy:
   - ant clean dist
