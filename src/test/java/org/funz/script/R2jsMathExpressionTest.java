@@ -67,6 +67,47 @@ public class R2jsMathExpressionTest {
     }
     
     @Test
+    public void testBrent() throws Exception {
+        //((R2jsSession)(engine.R)).debug_js = true;
+
+        engine.R.source(new File("src/test/plugins/doe/Brent.R"));
+        
+        engine.R.voidEval("f <- function(X) { return( matrix(  X^2-0.5  ,ncol=1 )) }");
+
+        assert engine.R.ls("f") != null : "Cannot eval f";
+        engine.R.voidEval("options = list(ytarget='0',ytol='0.1',xtol='0.01',max_iterations='100')");
+        assert engine.R.print("options") != null : "Cannot eval options";
+
+        assert engine.R.voidEval("b = Brent(options)") : "Failed last voidEval: " + engine.R.notebook();
+        assert engine.listVariables(true, true).contains("b") : "Cannot get b in envir";
+
+        assert engine.R.voidEval("X0 = getInitialDesign(b,input=list(x=list(min=0,max=1)),NULL)") : "Failed last voidEval: " + engine.R.notebook();
+        assert engine.R.voidEval("print(X0)") : "Failed last voidEval: " + engine.R.notebook();
+        assert engine.R.voidEval("Y0 = f(X0); Xi = X0; Yi = Y0") : "Failed last voidEval: " + engine.R.notebook();
+        assert engine.R.voidEval("print(Y0)") : "Failed last voidEval: " + engine.R.notebook();
+        assert engine.listVariables(true, true).contains("Yi") : "Cannot get Yi in envir: " + engine.listVariables(true, true);
+
+        assert engine.R.voidEval("finished = FALSE");
+        assert engine.R.voidEval("while (!finished) {\n"
+                +"print(Xi)\n"
+                +"print(Yi)\n"
+                + "     Xj = getNextDesign(b,Xi,Yi)\n"
+                + "     if (is.null(Xj) || (length(Xj) == 0)) {\n"
+                + "         finished = TRUE\n"
+                + "     } else {\n"
+                + "         Yj = f(Xj)\n"
+                + "         Xi = rbind(Xi,Xj)\n"
+                + "         Yi = rbind(Yi,Yj)\n"
+                + "     }\n"
+                + "}\n") : "Failed last voidEval: " + engine.R.notebook();
+
+        System.err.println(engine.R.print("Xj"));
+        System.err.println(engine.R.print("Yj"));
+        System.err.println(engine.R.print("displayResults(b,Xi,Yi)"));
+        assert engine.R.asDouble(engine.R.eval("min(abs(Yi))")) < 0.1 : "Failed to get root value of f: " + engine.R.eval("min(abs(Yi))");
+    }
+
+    @Test
     public void testGradientDescent() throws Exception {
         //((R2jsSession)(engine.R)).debug_js = true;
 
