@@ -81,7 +81,7 @@ public class R2jsMathExpressionTest {
         assert engine.R.voidEval("b = Brent(options)") : "Failed last voidEval: " + engine.R.notebook();
         assert engine.listVariables(true, true).contains("b") : "Cannot get b in envir";
 
-        assert engine.R.voidEval("X0 = getInitialDesign(b,input=list(x=list(min=0,max=1)),NULL)") : "Failed last voidEval: " + engine.R.notebook();
+        assert engine.R.voidEval("X0 = getInitialDesign(b,input=list(xx=list(min=0,max=1)),NULL)") : "Failed last voidEval: " + engine.R.notebook();
         assert engine.R.voidEval("print(X0)") : "Failed last voidEval: " + engine.R.notebook();
         assert engine.R.voidEval("Y0 = f(X0); Xi = X0; Yi = Y0") : "Failed last voidEval: " + engine.R.notebook();
         assert engine.R.voidEval("print(Y0)") : "Failed last voidEval: " + engine.R.notebook();

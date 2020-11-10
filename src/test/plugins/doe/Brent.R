@@ -31,7 +31,7 @@ getInitialDesign <- function(brent, input, output) {
     Xname = names(brent$input)[1]
     xminptol = brent$input[[ Xname ]]$min + brent$xtol
     xminptol = matrix(c(xminptol),ncol=1)
-    names(xminptol) <- Xname
+    names(xminptol) <- names(brent$input)
     brent$xtol01 = to01(xminptol,brent$input) # Rescale xtol
 
     brent$exit <- -1    # Reason end of algo
@@ -178,33 +178,33 @@ displayResults <- function(brent, X, Y) {
 displayResultsTmp <- displayResults
 
 from01 = function(X, inp) {
-    for (i in 1:ncol(X)) {
-        namei = names(X)[i]
-        X[,i] = X[,i] * (inp[[ namei ]]$max-inp[[ namei ]]$min) + inp[[ namei ]]$min
-    }
-    return(X)
+  for (i in 1:ncol(X)) {
+    namei = names(X)[i]
+    X[,i] = X[,i] * (inp[[ namei ]]$max-inp[[ namei ]]$min) + inp[[ namei ]]$min
+  }
+  return(X)
 }
 
 to01 = function(X, inp) {
-    for (i in 1:ncol(X)) {
-        namei = names(X)[i]
-        X[,i] = (X[,i] - inp[[ namei ]]$min) / (inp[[ namei ]]$max-inp[[ namei ]]$min)
-    }
-    return(X)
+  for (i in 1:ncol(X)) {
+    namei = names(X)[i]
+    X[,i] = (X[,i] - inp[[ namei ]]$min) / (inp[[ namei ]]$max-inp[[ namei ]]$min)
+  }
+  return(X)
 }
 
 ##############################################################################################
 # @test
 # f <- function(X) matrix(Vectorize(function(x) {((x+5)/15)^3})(X),ncol=1)
-# 
+#
 # options = list(ytarget=0.3,ytol=3.e-8,xtol=1.e-8,max_iterations=100)
 # b = Brent(options)
-# 
+#
 # X0 = getInitialDesign(b, input=list(x=list(min=-5,max=10)), NULL)
 # Y0 = f(X0)
 # Xi = X0
 # Yi = Y0
-# 
+#
 # finished = FALSE
 # while (!finished) {
 #     Xj = getNextDesign(b,Xi,Yi)
@@ -216,5 +216,5 @@ to01 = function(X, inp) {
 #         Yi = rbind(Yi,Yj)
 #     }
 # }
-# 
+#
 # print(displayResults(b,Xi,Yi))
