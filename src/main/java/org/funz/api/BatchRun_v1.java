@@ -1281,11 +1281,11 @@ public abstract class BatchRun_v1 {
             Alert.showInformation("Bypass Funz grid checking for code '"+prj.getCode()+"'");
         
         try {
-            torun = new ArrayList<>();
             runCases.clear();
 
             //LogUtils.tic("getPendingCases");
-            torun = getPendingCases();
+            torun = new ArrayList<>(getPendingCases());
+            List<CloneCase> cloneCases = new ArrayList<CloneCase>();
             //LogUtils.toc("getPendingCases");
 
             int numToRun = torun.size();
@@ -1301,7 +1301,7 @@ public abstract class BatchRun_v1 {
                         if (c.getName().equals(cprev.getName())) {
                             already_launched = true;
                             out("Case " + c.getName() + " already finished...", 1);
-                            new CloneCase(c, cprev).start();
+                            cloneCases.add(new CloneCase(c, cprev));
                             cloned = true;
                             break;
                         }
@@ -1316,7 +1316,7 @@ public abstract class BatchRun_v1 {
                             if (c.getName().equals(cprev.getName())) {
                                 already_launched = true;
                                 out("Case " + c.getName() + " already launched...", 1);
-                                new CloneCase(c, cprev).start();
+                                cloneCases.add(new CloneCase(c, cprev));
                                 cloned = true;
                                 break;
                             }
@@ -1331,6 +1331,10 @@ public abstract class BatchRun_v1 {
                     //LogUtils.toc("new RunCase");
                     //rc.start(); Do NOT start all threads at the same time...
                 }
+            }
+
+            for(CloneCase cloneCase: cloneCases) {
+                cloneCase.start();
             }
 
             if (numToRun > 0) {
