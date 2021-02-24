@@ -2494,7 +2494,6 @@ public class Project {
                 ps.println("\t<" + ELEM_PARAM + " " + ATTR_NAME + "=\"" + p.getName() + "\" " + ATTR_TYPE + "=\"" + p.getParameterType() + "\" />");
             }
 
-            org.funz.log.Alert.showInformation("DOE="+_doeOptions.toString());
             for (String designerId : _doeOptions.keySet()) {
                 Map<String, String> op = _doeOptions.get(designerId);
                 if (op != null && op.size() > 0) {
