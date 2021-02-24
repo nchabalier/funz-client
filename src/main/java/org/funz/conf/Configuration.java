@@ -654,12 +654,12 @@ public class Configuration {
                     for (File plugin : local_ioplugins) {
                         out("Trying to load plugin " + plugin, 10);
                         try {
-                            String code = plugin.getName().substring(0, plugin.getName().lastIndexOf(IOPluginsLoader.BASIC_EXTENSION));
-                            String model = code;//.replaceAll("_", " ");
+                            String model = plugin.getName().substring(0, plugin.getName().lastIndexOf(IOPluginsLoader.BASIC_EXTENSION));
                             String urlplugin = cleanURL(plugin.toURI().toURL().toString());
+                            String code = model;
                             if (_model_plugin.containsValue(urlplugin)) {
                                 err("Already defined plugin source " + urlplugin + " in quotas.", 1);
-                            } else if (justry || IOPluginsLoader.loadURL(urlplugin, null)) {
+                            } else if (justry || IOPluginsLoader.loadURL(urlplugin, model)) {
                                 _models.add(model);
                                 _model_code.put(model, code);
                                 _model_plugin.put(model, urlplugin);

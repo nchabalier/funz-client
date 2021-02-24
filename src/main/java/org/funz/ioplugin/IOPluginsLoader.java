@@ -109,7 +109,8 @@ public class IOPluginsLoader {
             if (urlstr.endsWith(EXT_EXTENSION)) {
                 IOPluginInterface iop = (IOPluginInterface) URLMethods.scanURLJar(urlstr, "org.funz.ioplugin.IOPluginInterface");
                 if (iop != null) {
-                    if (id!=null) iop.setID(id);
+                    if (id != null)
+                        iop.setID(id);
                     Log.out(iop + " + Found plugin " + iop.getID() + " (class " + iop.getClass().getName() + ")", 3);
                     url_ioplugins.add(iop);
                     return true;
@@ -121,7 +122,8 @@ public class IOPluginsLoader {
             } else if (urlstr.endsWith(BASIC_EXTENSION)) {
                 IOPluginInterface iop = new BasicIOPlugin(urlstr);
                 if (iop != null) {
-                    if (id!=null) iop.setID(id);
+                    if (id != null)
+                        iop.setID(id);
                     Log.out(iop + " + Found basic plugin " + iop.getID() + " (file " + iop.getSource() + ")", 3);
                     url_ioplugins.add(iop);
                     return true;
