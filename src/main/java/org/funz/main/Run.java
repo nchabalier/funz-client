@@ -309,6 +309,8 @@ public class Run extends MainUtils {
                 if (!prop.equals("cache"))
                     shell.setProjectProperty(prop, _runControl.get(prop));
             }
+
+            shell.prj.saveInSpool();
         } catch (Exception e) {
             System.err.println("[ERROR] failed to CREATE Funz shell: " + e.getMessage() + "\n" + (shell != null ? ArrayMapToMDString(shell.getResultsArrayMap()) : "?"));
             //e.printStackTrace();

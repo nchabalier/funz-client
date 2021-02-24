@@ -40,6 +40,8 @@ import org.funz.parameter.VariableMethods.ParseEvalException;
 import org.funz.script.MathExpression;
 import org.funz.util.ASCII;
 import org.funz.util.Disk;
+import org.funz.util.Format;
+
 import static org.funz.util.Format.fromHTML;
 import static org.funz.util.Format.toHTML;
 import static org.funz.util.ParserUtils.ASCIIFilesAreIdentical;
@@ -1800,7 +1802,7 @@ public class Project {
         NodeList tvalues = e.getElementsByTagName(ELEM_TVALUE);
         for (int i = 0; i < tvalues.getLength(); i++) {
             Element tv = (Element) tvalues.item(i);
-            _tvalues.put(tv.getAttribute(ATTR_KEY), tv.getAttribute(ATTR_VALUE));
+            _tvalues.put(tv.getAttribute(ATTR_KEY), fromHTML(tv.getAttribute(ATTR_VALUE)));
         }
 
         NodeList files = e.getElementsByTagName(ELEM_FILE);
@@ -1877,7 +1879,7 @@ public class Project {
             for (int j = 0; j < options.getLength(); j++) {
                 Element o = (Element) options.item(j);
                 String key = o.getAttribute(ATTR_KEY);
-                String val = o.getAttribute(ATTR_VALUE);
+                String val = fromHTML(o.getAttribute(ATTR_VALUE));
                 opts.put(key, val);
             }
             _doeOptions.put(name, opts);
@@ -2473,7 +2475,7 @@ public class Project {
                     + ATTR_FRM_LIM + "=\"" + SyntaxRules.LIMITS[getFormulaSyntax().getLimitsIdx()].NAME + "\"\n\t" + ">");
 
             for (String k : _tvalues.keySet()) {
-                ps.println("\t<" + ELEM_TVALUE + " " + ATTR_KEY + "=\"" + k + "\" " + ATTR_VALUE + "=\"" + _tvalues.get(k) + "\"/>\n\t");
+                ps.println("\t<" + ELEM_TVALUE + " " + ATTR_KEY + "=\"" + k + "\" " + ATTR_VALUE + "=\"" + toHTML(_tvalues.get(k)) + "\"/>\n\t");
             }
 
             for (Iterator<InputFile> it = _inputfiles.iterator(); it.hasNext();) {
@@ -2492,12 +2494,13 @@ public class Project {
                 ps.println("\t<" + ELEM_PARAM + " " + ATTR_NAME + "=\"" + p.getName() + "\" " + ATTR_TYPE + "=\"" + p.getParameterType() + "\" />");
             }
 
+            org.funz.log.Alert.showInformation("DOE="+_doeOptions.toString());
             for (String designerId : _doeOptions.keySet()) {
                 Map<String, String> op = _doeOptions.get(designerId);
                 if (op != null && op.size() > 0) {
                     ps.print("\t<" + ELEM_DESIGNER_ID + " " + ATTR_NAME + "=\"" + designerId + "\">\n\t");
                     for (String key : op.keySet()) {
-                        ps.print("\t\t<" + ELEM_OPTION + " " + ATTR_KEY + "=\"" + key + "\" " + ATTR_VALUE + "=\"" + op.get(key) + "\"/>\n\t");
+                        ps.print("\t\t<" + ELEM_OPTION + " " + ATTR_KEY + "=\"" + key + "\" " + ATTR_VALUE + "=\"" + toHTML(op.get(key)) + "\"/>\n\t");
                     }
                     ps.print("\t</" + ELEM_DESIGNER_ID + ">\n");
                 }

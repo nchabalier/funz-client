@@ -540,8 +540,8 @@ public class RDesigner_V1 extends Designer {
                         out = R.asString(R.eval("displayResultsTmp(DesignEnv,X" + suffix + ",Y" + suffix + ")"));
                                         
                         try {
-                            if (Arrays.asList(R.ls()).contains("files")) {
-                                String[] analyse_files = R.asStrings(R.eval("files"));
+                            if (Arrays.asList(R.asStrings(R.eval("names(DesignEnv)"))).contains("files")) {
+                                String[] analyse_files = R.asStrings(R.eval("DesignEnv$files"));
                                 for (int i = 0; i < analyse_files.length; i++) {
                                     String analyse_file = analyse_files[i];
                                     boolean exists = (boolean) R.eval("file.exists('" + analyse_file + "')");
@@ -602,8 +602,8 @@ public class RDesigner_V1 extends Designer {
                 out = R.asString(R.eval("displayResults(DesignEnv,Xanalyse" + currentiteration + ",Yanalyse" + currentiteration + ")"));
 
                 try {
-                    if (Arrays.asList(R.ls()).contains("files")) {
-                        String[] analyse_files = R.asStrings(R.eval("files"));
+                    if (Arrays.asList(R.asStrings(R.eval("names(DesignEnv)"))).contains("files")) {
+                        String[] analyse_files = R.asStrings(R.eval("DesignEnv$files"));
                         for (int i = 0; i < analyse_files.length; i++) {
                             String analyse_file = analyse_files[i];
                             if ((boolean) R.eval("file.exists('" + analyse_file + "')")) {
