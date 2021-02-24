@@ -267,6 +267,7 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
     @Override
     public void setDesignOption(String key, String val) {
         this._designOptions.put(key, val);
+        if (prj.getDesignOptions(prj.getDesignerId()) == null) prj.setDesignOptions(prj.getDesignerId(),new HashMap());
         prj.getDesignOptions(prj.getDesignerId()).put(key, val);
     }
 
