@@ -91,6 +91,7 @@
 
     <target name="clean-tests">
         <delete dir="${dist.dir}" failonerror="false"/>
+        <delete dir="tmp" failonerror="true"/>
         <delete>
             <fileset dir="." includes="*.err"/>
             <fileset dir="." includes="*.out"/>

@@ -382,6 +382,8 @@ public class Design extends MainUtils {
             for (String prop : _runControl.keySet()) {
                 shell.setProjectProperty(prop, _runControl.get(prop));
             }
+
+            shell.prj.saveInSpool();
         } catch (Exception e) {
             System.err.println("[ERROR] failed to CREATE Funz shell: " + e.getMessage() + "\n" + ArrayMapToMDString(shell.getResultsArrayMap()));
             //e.printStackTrace();
