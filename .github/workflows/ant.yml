@@ -13,7 +13,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
         java: [ 8, 11, 13 ]
-        Rserver: [ R2js, Renjin, R://localhost ]
+        Rserver: [ 'R2js', 'Renjin', 'R://localhost' ]
     env:
       #NO_TEST_JAVA: 1
       NO_TEST_MAIN: 1
