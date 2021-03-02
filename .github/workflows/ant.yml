@@ -13,7 +13,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
         java: [ 11 ] #[ 8, 11, 13 ]
-        Rserver: [ 'R2js', 'Renjin', 'R://localhost' ]
+        Rserver: [ 'R2js' ] #, 'Renjin', 'R://localhost' ]
     env:
       #NO_TEST_JAVA: 1
       NO_TEST_MAIN: 1
@@ -194,9 +194,11 @@ jobs:
         pip install numpy
       if: env.NO_TEST_PYTHON != 1
     - run: |
-        export SUDO="sudo"; if [ '${{ matrix.os}}' == 'windows-latest' ]; then export SUDO=""; fi
-        $SUDO R CMD javareconf JAVA_HOME=$JAVA_HOME
-        $SUDO R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
+        echo $JAVA_HOME
+        #export SUDO="sudo"; if [ '${{ matrix.os}}' == 'windows-latest' ]; then export SUDO=""; fi
+        #$SUDO R CMD javareconf JAVA_HOME=$JAVA_HOME
+        #$SUDO
+        R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
       shell: bash
       if: env.NO_TEST_R != 1
     - run: |
