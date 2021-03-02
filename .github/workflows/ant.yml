@@ -194,8 +194,9 @@ jobs:
         pip install numpy
       if: env.NO_TEST_PYTHON != 1
     - run: |
-        R CMD javareconf JAVA_HOME=$JAVA_HOME
-        R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
+        export SUDO="sudo"; if [ '${{ matrix.os}}' == 'windows-latest' ]; then export SUDO=""; fi
+        $SUDO R CMD javareconf JAVA_HOME=$JAVA_HOME
+        $SUDO R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
       shell: bash
       if: env.NO_TEST_R != 1
     - run: |
