@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
-        java: [ 8, 11, 13 ]
-        Rserver: [ R2js, Renjin, R://localhost ]
+        java: [ 11 ] #[ 8, 11, 13 ]
+        Rserver: [ R2js ] #, Renjin, R://localhost ]
     env:
       #NO_TEST_JAVA: 1
       NO_TEST_MAIN: 1
@@ -185,17 +185,17 @@ jobs:
     - uses: actions/setup-python@v2
       with:
         python-version: 3.6
-      if: env.NO_TEST_PYTHON != '1'
+      if: env.NO_TEST_PYTHON != 1
     - run: |
         python -m pip install --upgrade pip
         pip install py4j==0.10.8.1
         pip install numpy
-      if: env.NO_TEST_PYTHON != '1'
+      if: env.NO_TEST_PYTHON != 1
     - run: |
         R CMD javareconf JAVA_HOME=$JAVA_HOME
         R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
       shell: bash
-      if: env.NO_TEST_R != '1'
+      if: env.NO_TEST_R != 1
     - run: |
         WD=$PWD
         cd ..
