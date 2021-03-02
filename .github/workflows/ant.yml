@@ -1,0 +1,254 @@
+name: Java CI
+
+on:
+  push:
+    branches: [ master ]
+    tags: [ 'v*.*' ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test-unit:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macOS-latest ]
+        java: [ 8, 11, 13 ]
+        Rserver: [ R2js, Renjin, R://localhost ]
+    env:
+      #NO_TEST_JAVA: 1
+      NO_TEST_MAIN: 1
+      NO_TEST_ISSUES: 1
+      NO_TEST_R: 1
+      NO_TEST_PYTHON: 1
+      NO_TEST_BASH: 1
+      NO_TEST_CMD: 1
+      NO_CALCULATORS: 1
+      R_SERVER: ${{ matrix.Rserver }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+        java-package: jdk
+    - uses: r-lib/actions/setup-r@v1
+      with:
+        r-version: 3.6
+    - run: ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
+      if: matrix.os == 'macos-latest'
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+    - run: |
+        python -m pip install --upgrade pip
+        pip install py4j==0.10.8.1
+        pip install numpy
+    - run: |
+        WD=$PWD
+        cd ..
+        git clone https://github.com/Funz/funz-profile
+        git clone https://github.com/Funz/funz-core
+        cd funz-core
+        ant clean dist
+        cd ..
+        cd $WD
+        ant dist-test # required by funz-calculator/dist-test
+        cd ..
+        git clone https://github.com/Funz/funz-calculator
+        cd funz-calculator
+        ant clean dist-test
+        cd ..
+        cd $WD
+      shell: bash
+    - run: ant -noinput -buildfile build.xml test
+    - run: ant -noinput -buildfile build.xml coverage
+      if: matrix.os == 'ubuntu-latest'
+    - uses: codecov/codecov-action@v1
+      if: matrix.os == 'ubuntu-latest'
+
+  test-Main:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macOS-latest ]
+        java: [ 11 ]
+        Rserver: [ R2js ]
+    env:
+      NO_TEST_JAVA: 1
+      #NO_TEST_MAIN: 1
+      #NO_TEST_ISSUES: 1
+      NO_TEST_R: 1
+      NO_TEST_PYTHON: 1
+      NO_TEST_BASH: 1
+      NO_TEST_CMD: 1
+      #NO_CALCULATORS: 1
+      R_SERVER: ${{ matrix.Rserver }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+        java-package: jdk
+    - uses: r-lib/actions/setup-r@v1
+      with:
+        r-version: 3.6
+    - run: ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
+      if: matrix.os == 'macos-latest'
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+    - run: |
+        python -m pip install --upgrade pip
+        pip install py4j==0.10.8.1
+        pip install numpy
+    - run: |
+        WD=$PWD
+        cd ..
+        git clone https://github.com/Funz/funz-profile
+        git clone https://github.com/Funz/funz-core
+        cd funz-core
+        ant clean dist
+        cd ..
+        cd $WD
+        ant dist-test # required by funz-calculator/dist-test
+        cd ..
+        git clone https://github.com/Funz/funz-calculator
+        cd funz-calculator
+        ant clean dist-test
+        cd ..
+        cd $WD
+      shell: bash
+    - run: ant -noinput -buildfile build.xml test
+
+  test-FunzCLI:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        java: [ 11 ]
+        Rserver: [ R2js ]
+        CLI: [ R, Python, Bash, Cmd ]
+        exclude: 
+        - os: [ ubuntu-latest, macos-latest ]
+          CLI: Cmd
+        - os: windows-latest
+          CLI: Bash
+    env:
+      NO_TEST_JAVA: 1
+      NO_TEST_MAIN: 1
+      NO_TEST_ISSUES: 1
+      #NO_TEST_R: 1
+      #NO_TEST_PYTHON: 1
+      #NO_TEST_BASH: 1
+      #NO_TEST_CMD: 1
+      #NO_CALCULATORS: 1
+      R_SERVER: ${{ matrix.Rserver }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - run: |
+        #export NO_TEST_R=1
+        export NO_TEST_PYTHON=1
+        export NO_TEST_BASH=1
+        export NO_TEST_CMD=1
+      shell: bash
+      if: matrix.CLI == 'R'
+    - run: |
+        export NO_TEST_R=1
+        #export NO_TEST_PYTHON=1
+        export NO_TEST_BASH=1
+        export NO_TEST_CMD=1
+      shell: bash
+      if: matrix.CLI == 'Python'
+    - run: |
+        export NO_TEST_R=1
+        export NO_TEST_PYTHON=1
+        #export NO_TEST_BASH=1
+        export NO_TEST_CMD=1
+      shell: bash
+      if: matrix.CLI == 'Bash'
+    - run: |
+        export NO_TEST_R=1
+        export NO_TEST_PYTHON=1
+        export NO_TEST_BASH=1
+        #export NO_TEST_CMD=1
+      shell: bash
+      if: matrix.CLI == 'Cmd'            
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+        java-package: jdk
+    - uses: r-lib/actions/setup-r@v1
+      with:
+        r-version: 3.6
+    - run: ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
+      if: matrix.os == 'macos-latest'
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+      if: env.NO_TEST_PYTHON != '1'
+    - run: |
+        python -m pip install --upgrade pip
+        pip install py4j==0.10.8.1
+        pip install numpy
+      if: env.NO_TEST_PYTHON != '1'
+    - run: |
+        R CMD javareconf JAVA_HOME=$JAVA_HOME
+        R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
+      shell: bash
+      if: env.NO_TEST_R != '1'
+    - run: |
+        WD=$PWD
+        cd ..
+        git clone https://github.com/Funz/funz-profile
+        git clone https://github.com/Funz/funz-core
+        cd funz-core
+        ant clean dist
+        cd ..
+        cd $WD
+        ant dist-test # required by funz-calculator/dist-test
+        cd ..
+        git clone https://github.com/Funz/funz-calculator
+        cd funz-calculator
+        ant clean dist-test
+        cd ..
+        cd $WD
+      shell: bash
+    - run: ant -noinput -buildfile build.xml test
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+        java-package: jdk
+    - run: |
+        WD=$PWD
+        cd ..
+        git clone https://github.com/Funz/funz-profile
+        git clone https://github.com/Funz/funz-core
+        cd funz-core
+        ant clean dist
+        cd ..
+        cd $WD
+        ant dist-test # required by funz-calculator/dist-test
+        cd ..
+        git clone https://github.com/Funz/funz-calculator
+        cd funz-calculator
+        ant clean dist-test
+        cd ..
+        cd $WD
+    - run: ant clean dist
+    - uses: actions/upload-artifact@v2
+      with:
+        path: dist
+    - uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: dist/lib/funz-client*.jar
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+        
+        
