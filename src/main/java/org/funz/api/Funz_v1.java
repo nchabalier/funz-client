@@ -150,8 +150,8 @@ public class Funz_v1 extends Funz {
             Log.out("Headless mode: " + GraphicsEnvironment.isHeadless(), 1);
             //toc("Headless");
 
-            Log.out("  Funz models (port " + POOL.getPort() + "): " + ASCII.cat(" ", MODELS), 0);
-            Log.out("  Funz designs (engine " + MATH.getEngineName() + "): " + ASCII.cat(" ", DESIGNS), 0);
+            Log.out("  Funz models (port " + POOL.getPort() + "): " + ASCII.cat(",", MODELS), 0);
+            Log.out("  Funz designs (engine " + MATH.getEngineName() + "): " + ASCII.cat(",", DESIGNS), 0);
 
             //Log.out("  Funz initialized at "+HMS(), 0);       
         } catch (Exception e) {
