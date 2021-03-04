@@ -22,7 +22,8 @@ jobs:
       NO_TEST_PYTHON: 1
       NO_TEST_BASH: 1
       NO_TEST_CMD: 1
-      NO_CALCULATORS: 1
+      NO_CALCULATORS: 1- run: sudo apt-get install imagemagick
+      if: matrix.os == 'ubuntu-latest' && steps.mvntest.outcome != 'success'
       R_SERVER: ${{ matrix.Rserver }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -124,6 +125,8 @@ jobs:
       id: anttest
       continue-on-error: true
       timeout-minutes: 60
+    - run: sudo apt-get -y install imagemagick
+      if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
     - uses: OrbitalOwen/desktop-screenshot-action@0.1
       if: steps.anttest.outcome != 'success'
       with:
@@ -235,6 +238,8 @@ jobs:
       id: anttest
       continue-on-error: true
       timeout-minutes: 60
+    - run: sudo apt-get -y install imagemagick
+      if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
     - uses: OrbitalOwen/desktop-screenshot-action@0.1
       if: steps.anttest.outcome != 'success'
       with:
