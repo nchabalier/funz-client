@@ -22,8 +22,7 @@ jobs:
       NO_TEST_PYTHON: 1
       NO_TEST_BASH: 1
       NO_TEST_CMD: 1
-      NO_CALCULATORS: 1- run: sudo apt-get install imagemagick
-      if: matrix.os == 'ubuntu-latest' && steps.mvntest.outcome != 'success'
+      NO_CALCULATORS: 1
       R_SERVER: ${{ matrix.Rserver }}
     runs-on: ${{ matrix.os }}
     steps:
