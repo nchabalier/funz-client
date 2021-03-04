@@ -62,11 +62,11 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
         prj.setMainOutputFunction(OutputFunctionExpression.read(output));
         prj.setCode("Function: `" + f + "`");
 
+        setInputVariables(_variableBounds);
+
         setDesigner(_designer);
 
         setDesignOptions(_designOptions);
-
-        setInputVariables(_variableBounds);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
         }
 
         prj.setCases(new CaseList(0), this);
-// split discrete and continous parameters
+        // split discrete and continous parameters
         CaseList discases = prj.getDiscreteCases();
         assert discases.size() == 1 : "More than one discrete case not supported";
 
@@ -302,6 +302,8 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
             currentresult.put("state", SHELL_RUNNING);
 
             List<Case> news = buildDesign();
+            if (news == null)
+                throw new Exception("No variable suitable to apply design");
 
             Map<String, Object[]> X = loopDesign.initDesign();
             currentresult.put("state", getDesignState());
