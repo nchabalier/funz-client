@@ -60,11 +60,25 @@ jobs:
         cd ..
         cd $WD
       shell: bash
-    - run: ant -noinput -buildfile build.xml test
+    - uses: GabrielBB/xvfb-action@v1
+      with: 
+        run: ant -noinput -buildfile build.xml test
+      id: anttest
+      continue-on-error: true
+      timeout-minutes: 60
+    - if: steps.anttest.outcome != 'success'
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifacts-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-unit
+        path: |
+          *.txt
+          *.log
     - run: ant -noinput -buildfile build.xml coverage
       if: matrix.os == 'ubuntu-latest'
     - uses: codecov/codecov-action@v1
       if: matrix.os == 'ubuntu-latest'
+    - if: steps.anttest.outcome != 'success'
+      run: exit 1
 
   test-Main:
     strategy:
@@ -124,12 +138,19 @@ jobs:
       id: anttest
       continue-on-error: true
       timeout-minutes: 60
-    - run: sudo apt-get -y install imagemagick
-      if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
-    - uses: OrbitalOwen/desktop-screenshot-action@0.1
-      if: steps.anttest.outcome != 'success'
+    - if: steps.anttest.outcome != 'success'
+      uses: actions/upload-artifact@v2
       with:
-        file-name: 'test-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}.jpg'
+        name: artifacts-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-Main
+        path: |
+          *.txt
+          *.log
+    - if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
+      run: sudo apt-get -y install imagemagick
+    - if: steps.anttest.outcome != 'success'
+      uses: OrbitalOwen/desktop-screenshot-action@0.1
+      with:
+        file-name: 'test-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-Main.jpg'
     - if: steps.anttest.outcome != 'success'
       run: exit 1
         
@@ -237,10 +258,17 @@ jobs:
       id: anttest
       continue-on-error: true
       timeout-minutes: 60
-    - run: sudo apt-get -y install imagemagick
-      if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
-    - uses: OrbitalOwen/desktop-screenshot-action@0.1
-      if: steps.anttest.outcome != 'success'
+    - if: steps.anttest.outcome != 'success'
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifacts-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-${{ matrix.CLI }}
+        path: |
+          *.txt
+          *.log
+    - if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
+      run: sudo apt-get -y install imagemagick
+    - if: steps.anttest.outcome != 'success'
+      uses: OrbitalOwen/desktop-screenshot-action@0.1
       with:
         file-name: 'test-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-${{ matrix.CLI }}.jpg'
     - if: steps.anttest.outcome != 'success'
