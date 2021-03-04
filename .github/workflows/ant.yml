@@ -127,7 +127,7 @@ jobs:
     - uses: OrbitalOwen/desktop-screenshot-action@0.1
       if: steps.anttest.outcome != 'success'
       with:
-        file-name: 'test.jpg'
+        file-name: 'test-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}.jpg'
     - if: steps.anttest.outcome != 'success'
       run: exit 1
         
@@ -238,7 +238,7 @@ jobs:
     - uses: OrbitalOwen/desktop-screenshot-action@0.1
       if: steps.anttest.outcome != 'success'
       with:
-        file-name: 'test.jpg'
+        file-name: 'test-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-${{ matrix.CLI }}.jpg'
     - if: steps.anttest.outcome != 'success'
       run: exit 1
       
