@@ -383,7 +383,8 @@ public class Design extends MainUtils {
                 shell.setProjectProperty(prop, _runControl.get(prop));
             }
 
-            shell.prj.saveInSpool();
+            //shell.prj.saveInSpool(); No: as it will call prj.cleanParameters, which deletes variables without file assignment (there is no file in present 'Design' class). So we direclty call:
+            shell.prj.saveProject(shell.prj.getDirectory(), null);
         } catch (Exception e) {
             System.err.println("[ERROR] failed to CREATE Funz shell: " + e.getMessage() + "\n" + ArrayMapToMDString(shell.getResultsArrayMap()));
             //e.printStackTrace();
