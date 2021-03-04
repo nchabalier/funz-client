@@ -118,13 +118,18 @@ jobs:
         cd ..
         cd $WD
       shell: bash
-    - run: ant -noinput -buildfile build.xml test
+    - uses: GabrielBB/xvfb-action@v1
+      with: 
+        run: ant -noinput -buildfile build.xml test
+      id: anttest
       continue-on-error: true
       timeout-minutes: 60
     - uses: OrbitalOwen/desktop-screenshot-action@0.1
       if: steps.anttest.outcome != 'success'
       with:
         file-name: 'test.jpg'
+    - if: steps.anttest.outcome != 'success'
+      run: exit 1
         
   test-FunzCLI:
     strategy:
@@ -224,14 +229,19 @@ jobs:
         cd ..
         cd $WD
       shell: bash
-    - run: ant -noinput -buildfile build.xml test
+    - uses: GabrielBB/xvfb-action@v1
+      with: 
+        run: ant -noinput -buildfile build.xml test
+      id: anttest
       continue-on-error: true
       timeout-minutes: 60
     - uses: OrbitalOwen/desktop-screenshot-action@0.1
       if: steps.anttest.outcome != 'success'
       with:
         file-name: 'test.jpg'
-        
+    - if: steps.anttest.outcome != 'success'
+      run: exit 1
+      
   release:
     runs-on: ubuntu-latest
     steps:
