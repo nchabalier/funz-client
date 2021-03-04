@@ -570,7 +570,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         });
         t.start();
 
-        Thread.sleep(3000);
+        Thread.sleep(2000);
         sac.shutdown();
 
         t.join();
