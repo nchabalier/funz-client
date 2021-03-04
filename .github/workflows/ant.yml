@@ -118,8 +118,21 @@ jobs:
         cd ..
         cd $WD
       shell: bash
-    - run: ant -noinput -buildfile build.xml test
-
+    - uses: GabrielBB/xvfb-action@v1
+      with: 
+        run: ant -noinput -buildfile build.xml test
+      id: anttest
+      continue-on-error: true
+      timeout-minutes: 60
+    - run: sudo apt-get -y install imagemagick
+      if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
+    - uses: OrbitalOwen/desktop-screenshot-action@0.1
+      if: steps.anttest.outcome != 'success'
+      with:
+        file-name: 'test-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}.jpg'
+    - if: steps.anttest.outcome != 'success'
+      run: exit 1
+        
   test-FunzCLI:
     strategy:
       matrix:
@@ -218,8 +231,21 @@ jobs:
         cd ..
         cd $WD
       shell: bash
-    - run: ant -noinput -buildfile build.xml test
-
+    - uses: GabrielBB/xvfb-action@v1
+      with: 
+        run: ant -noinput -buildfile build.xml test
+      id: anttest
+      continue-on-error: true
+      timeout-minutes: 60
+    - run: sudo apt-get -y install imagemagick
+      if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
+    - uses: OrbitalOwen/desktop-screenshot-action@0.1
+      if: steps.anttest.outcome != 'success'
+      with:
+        file-name: 'test-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-${{ matrix.CLI }}.jpg'
+    - if: steps.anttest.outcome != 'success'
+      run: exit 1
+      
   release:
     runs-on: ubuntu-latest
     steps:
