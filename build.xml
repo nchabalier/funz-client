@@ -161,7 +161,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </classpath>
-            <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+            <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
             <jvmarg value="-Dcharset=ISO-8859-1" />
             <jvmarg value="-Dapp.home=${dist.dir}" />
             <arg value="${config.dir}/${quotas.xml}" />
@@ -190,7 +190,7 @@
         </copy>
         <java classname="org.funz.conf.Configuration" fork="true" >
             <classpath refid="dist.classpath" />
-            <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+            <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
             <jvmarg value="-Dcharset=ISO-8859-1" />
             <jvmarg value="-Dapp.home=${dist.dir}" />
             <arg value="${test.config.dir}/${quotas.xml}" />
@@ -300,7 +300,7 @@
                         <record name="${test.class.id}.txt" action="start" />
                         <jacoco:coverage> 
                             <java classname="${test.class.id}" fork="true" timeout="1200000" failonerror="false" resultproperty="@{test.class}.failed">
-                                <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+                                <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
                                 <classpath refid="test.classpath" />
                                 <classpath path="${build.dir}" />
                                 <classpath path="${unit.test.jar}" />
@@ -380,7 +380,7 @@
                         <record name="${test.class.id}.txt" action="start" />
                         <jacoco:coverage> 
                             <java classname="${test.class.id}" fork="true" timeout="1200000" failonerror="false" resultproperty="@{test.class}.failed">
-                                <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+                                <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
                                 <classpath refid="test.classpath" />
                                 <classpath path="${build.dir}" />
                                 <classpath path="${unit.test.jar}" />
@@ -451,7 +451,7 @@
 
     <target name="start-calculators" depends="compile, compile-test, stop-calculators" unless="env.NO_CALCULATORS">
         <java classname="org.funz.main.RunCalculators" fork="true" spawn="true">
-            <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+            <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
             <classpath refid="calculator.classpath" />
             <classpath path="${build.dir}" />
             <classpath path="${unit.test.jar}" />
@@ -656,7 +656,7 @@
                     <file name="${dist.dir}/${client.jar}"/>
                 </filelist>
             </classpath>
-            <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+            <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
             <jvmarg value="-Dcharset=ISO-8859-1" />
             <jvmarg value="-Dapp.home=${dist.dir}" />
             <arg value="-dump" />
