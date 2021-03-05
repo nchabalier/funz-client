@@ -108,9 +108,7 @@ jobs:
         r-version: 3.6
     - run: ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
       if: matrix.os == 'macos-latest'
-    - run: |
-        echo $JAVA_HOME
-        R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
+    - run: R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
       shell: bash
     - run: |
         WD=$PWD
@@ -224,13 +222,7 @@ jobs:
         pip install py4j==0.10.8.1
         pip install numpy
       if: env.NO_TEST_PYTHON != 1
-    - run: |
-        echo $JAVA_HOME
-        #export SUDO="sudo"; if [ '${{ matrix.os}}' == 'windows-latest' ]; then export SUDO=""; fi
-        #$SUDO R CMD javareconf JAVA_HOME=$JAVA_HOME
-        #$SUDO
-        R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
-      shell: bash
+    - run: R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
       if: env.NO_TEST_R != 1
     - run: |
         WD=$PWD
