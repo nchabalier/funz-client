@@ -507,7 +507,7 @@ public class RDesigner_V0 extends Designer {
                     try {
                         out = R.asString(R.eval("analyseDesignTmp(X" + suffix + ",Y" + suffix + ")"));
                         try {
-                            if (Arrays.asList(R.ls()).contains("analyse.files")) {
+                            if (R.asLogical(R.eval("'analyse.files' %in% ls()"))) {
                                 String[] analyse_files = R.asStrings(R.eval("analyse.files"));
                                 for (int i = 0; i < analyse_files.length; i++) {
                                     String analyse_file = analyse_files[i];
@@ -567,7 +567,7 @@ public class RDesigner_V0 extends Designer {
                 out = R.asString(R.eval("analyseDesign(Xanalyse" + currentiteration + ",Yanalyse" + currentiteration + ")"));
 
                 try {
-                    if (Arrays.asList(R.ls()).contains("analyse.files")) {
+                    if (R.asLogical(R.eval("'analyse.files' %in% ls()"))) {
                         String[] analyse_files = R.asStrings(R.eval("analyse.files"));
                         for (int i = 0; i < analyse_files.length; i++) {
                             String analyse_file = analyse_files[i];
