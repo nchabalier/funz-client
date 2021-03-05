@@ -182,8 +182,8 @@ public abstract class BatchRun_v1 {
                                     out("  " + computer.host + ":" + computer.port + " reserved by same provider. Skipping...", 8);
                                     continue;
                                 }
-                                try {
-                                    synchronized (client_lock) {
+                                synchronized (client_lock) {
+                                    try {
                                         if (computer.use && computer.getUser() == prj) { //check again not blacklisted
                                             int t = 5; // retry on "Socket creation failed" 5 times
                                             IOException ee = null;
@@ -218,20 +218,18 @@ public abstract class BatchRun_v1 {
                                         }
 
                                         out("  " + computer.host + ":" + computer.port + " provided.", 7);
-                                        //   waitingNextClient = false;
-
                                         out(provideNewClient_HEAD + "Fire new client found", 7);
+                                        break;
+                                    } catch (Exception ex) {
+                                        err("<new ReserverClient> failed to provide " + computer.host + ":" + computer.port + ":" + ex.getMessage(), 6);
+                                        nextClient = null;
+                                        computer.freeUser();
+                                        continue;
+                                    } finally {
                                         //client_lock.notify();//
                                         client_lock.notifyAll();
-
                                         client_lock.wait();
                                     }
-                                    break;
-                                } catch (Exception ex) {
-                                    err("<new ReserverClient> failed to provide " + computer.host + ":" + computer.port + ":" + ex.getMessage(), 6);
-                                    nextClient = null;
-                                    computer.freeUser();
-                                    continue;
                                 }
                             } else {
                                 out(computer.toString(), 6);
