@@ -35,7 +35,7 @@ jobs:
       with:
         r-version: 3.6
     - run: ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
-      if: matrix.os == 'macos-latest'
+      if: ${{ matrix.os }} == 'macos-latest'
     - uses: actions/setup-python@v2
       with:
         python-version: 3.6
@@ -74,9 +74,9 @@ jobs:
           *.txt
           *.log
     - run: ant -noinput -buildfile build.xml coverage
-      if: matrix.os == 'ubuntu-latest'
+      if: ${{ matrix.os }} == 'ubuntu-latest'
     - uses: codecov/codecov-action@v1
-      if: matrix.os == 'ubuntu-latest'
+      if: ${{ matrix.os }} == 'ubuntu-latest'
     - if: steps.anttest.outcome != 'success'
       run: exit 1
 
@@ -107,7 +107,9 @@ jobs:
       with:
         r-version: 3.6
     - run: ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
-      if: matrix.os == 'macos-latest'
+      if: ${{ matrix.os }} == 'macos-latest'
+    - run: sudo R CMD javareconf
+      if: ${{ matrix.os }} == 'ubuntu-latest' || ${{ matrix.os }} == 'macos-latest'
     - run: R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
       shell: bash
     - run: |
@@ -140,7 +142,7 @@ jobs:
         path: |
           *.txt
           *.log
-    - if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
+    - if: ${{ matrix.os }} == 'ubuntu-latest' && steps.anttest.outcome != 'success'
       run: sudo apt-get -y install imagemagick
     - if: steps.anttest.outcome != 'success'
       uses: OrbitalOwen/desktop-screenshot-action@0.1
@@ -212,7 +214,9 @@ jobs:
       with:
         r-version: 3.6
     - run: ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
-      if: matrix.os == 'macos-latest'
+      if: ${{ matrix.os }} == 'macos-latest'
+    - run: sudo R CMD javareconf
+      if: ${{ matrix.os }} == 'ubuntu-latest' || ${{ matrix.os }} == 'macos-latest'
     - uses: actions/setup-python@v2
       with:
         python-version: 3.6
@@ -254,7 +258,7 @@ jobs:
         path: |
           *.txt
           *.log
-    - if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
+    - if: ${{ matrix.os }} == 'ubuntu-latest' && steps.anttest.outcome != 'success'
       run: sudo apt-get -y install imagemagick
     - if: steps.anttest.outcome != 'success'
       uses: OrbitalOwen/desktop-screenshot-action@0.1
