@@ -117,9 +117,12 @@ jobs:
         cd funz-core
         ant clean dist
         cd ..
+        cd $WD
+        ant dist # required by funz-calculator/dist-test
+        cd ..
         git clone https://github.com/Funz/funz-calculator
         cd funz-calculator
-        ant clean dist
+        ant clean dist-test
         cd ..
         cd $WD
       shell: bash
@@ -230,9 +233,12 @@ jobs:
         cd funz-core
         ant clean dist
         cd ..
+        cd $WD
+        ant dist # required by funz-calculator/dist-test
+        cd ..
         git clone https://github.com/Funz/funz-calculator
         cd funz-calculator
-        ant clean dist
+        ant clean dist-test
         cd ..
         cd $WD
       shell: bash
