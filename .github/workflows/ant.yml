@@ -110,7 +110,7 @@ jobs:
       if: matrix.os == 'macos-latest'
     - run: sudo R CMD javareconf
       if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
-    - run: R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
+    - run: Rscript -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
       shell: bash
     - run: |
         WD=$PWD
@@ -226,7 +226,7 @@ jobs:
         pip install py4j==0.10.8.1
         pip install numpy
       if: env.NO_TEST_PYTHON != 1
-    - run: R -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
+    - run: Rscript -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
       if: env.NO_TEST_R != 1
     - run: |
         WD=$PWD
