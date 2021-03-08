@@ -176,29 +176,33 @@ jobs:
       R_SERVER: ${{ matrix.Rserver }}
     runs-on: ${{ matrix.os }}
     steps:
-    - env:
-        #NO_TEST_R: 1
-        NO_TEST_PYTHON: 1
-        NO_TEST_BASH: 1
-        NO_TEST_CMD: 1
+    - run: |
+        #echo '::set-env NO_TEST_R=1'
+        echo '::set-env NO_TEST_PYTHON=1'
+        echo '::set-env NO_TEST_BASH=1'
+        echo '::set-env NO_TEST_CMD=1'
+      shell: bash
       if: matrix.CLI == 'R'
-    - env:
-        NO_TEST_R: 1
-        #NO_TEST_PYTHON: 1
-        NO_TEST_BASH: 1
-        NO_TEST_CMD: 1
+    - run: |
+        echo '::set-env NO_TEST_R=1'
+        #echo '::set-env NO_TEST_PYTHON=1'
+        echo '::set-env NO_TEST_BASH=1'
+        echo '::set-env NO_TEST_CMD=1'
+      shell: bash
       if: matrix.CLI == 'Python'
-    - env:
-        NO_TEST_R: 1
-        NO_TEST_PYTHON: 1
-        #NO_TEST_BASH: 1
-        NO_TEST_CMD: 1
+    - run: |
+        echo '::set-env NO_TEST_R=1'
+        echo '::set-env NO_TEST_PYTHON=1'
+        #echo '::set-env NO_TEST_BASH=1'
+        echo '::set-env NO_TEST_CMD=1'
+      shell: bash
       if: matrix.CLI == 'Bash'
-    - env:
-        NO_TEST_R: 1
-        NO_TEST_PYTHON: 1
-        NO_TEST_BASH: 1
-        #NO_TEST_CMD: 1
+    - run: |
+        echo '::set-env NO_TEST_R=1'
+        echo '::set-env NO_TEST_PYTHON=1'
+        echo '::set-env NO_TEST_BASH=1'
+        #echo '::set-env NO_TEST_CMD=1'
+      shell: bash
       if: matrix.CLI == 'Cmd'            
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1
