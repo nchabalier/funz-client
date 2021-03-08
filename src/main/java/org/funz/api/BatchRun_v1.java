@@ -246,7 +246,6 @@ public abstract class BatchRun_v1 {
                                     out("<!computer.isReady> not available: activity=" + computer.activity, 6);
                                 }
                             }
-
                             //}
                         } else {
                             break;
@@ -256,7 +255,7 @@ public abstract class BatchRun_v1 {
                         out("No suitable computer found. Force reset pool.", 6);
                         Alert.showInformation("No suitable computer found. Force reset pool.");
                         Funz_v1.POOL.forceResetComputers();
-                        wait(org.funz.Protocol.PING_PERIOD);
+                        sleep(org.funz.Protocol.PING_PERIOD);
                         //synchronized (POOL) {
                         //Funz_v1.POOL.setRefreshing(true, provider_lock, "waitingNextClient");
                         //}
