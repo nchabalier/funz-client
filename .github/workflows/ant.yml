@@ -177,31 +177,31 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - run: |
-        #echo '::set-env NO_TEST_R=1'
-        echo '::set-env NO_TEST_PYTHON=1'
-        echo '::set-env NO_TEST_BASH=1'
-        echo '::set-env NO_TEST_CMD=1'
+        #echo '::set-env name=NO_TEST_R::1'
+        echo '::set-env name=NO_TEST_PYTHON::1'
+        echo '::set-env name=NO_TEST_BASH::1'
+        echo '::set-env name=NO_TEST_CMD::1'
       shell: bash
       if: matrix.CLI == 'R'
     - run: |
-        echo '::set-env NO_TEST_R=1'
-        #echo '::set-env NO_TEST_PYTHON=1'
-        echo '::set-env NO_TEST_BASH=1'
-        echo '::set-env NO_TEST_CMD=1'
+        echo '::set-env name=NO_TEST_R::1'
+        #echo '::set-env name=NO_TEST_PYTHON::1'
+        echo '::set-env name=NO_TEST_BASH::1'
+        echo '::set-env name=NO_TEST_CMD::1'
       shell: bash
       if: matrix.CLI == 'Python'
     - run: |
-        echo '::set-env NO_TEST_R=1'
-        echo '::set-env NO_TEST_PYTHON=1'
-        #echo '::set-env NO_TEST_BASH=1'
-        echo '::set-env NO_TEST_CMD=1'
+        echo '::set-env name=NO_TEST_R::1'
+        echo '::set-env name=NO_TEST_PYTHON::1'
+        #echo '::set-env name=NO_TEST_BASH::1'
+        echo '::set-env name=NO_TEST_CMD::1'
       shell: bash
       if: matrix.CLI == 'Bash'
     - run: |
-        echo '::set-env NO_TEST_R=1'
-        echo '::set-env NO_TEST_PYTHON=1'
-        echo '::set-env NO_TEST_BASH=1'
-        #echo '::set-env NO_TEST_CMD=1'
+        echo '::set-env name=NO_TEST_R::1'
+        echo '::set-env name=NO_TEST_PYTHON::1'
+        echo '::set-env name=NO_TEST_BASH::1'
+        #echo '::set-env name=NO_TEST_CMD::1'
       shell: bash
       if: matrix.CLI == 'Cmd'            
     - uses: actions/checkout@v2
