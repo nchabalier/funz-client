@@ -226,7 +226,6 @@ public abstract class BatchRun_v1 {
                                         computer.freeUser();
                                         continue;
                                     } finally {
-                                        //client_lock.notify();//
                                         client_lock.notifyAll();
                                         client_lock.wait();
                                     }
@@ -251,7 +250,7 @@ public abstract class BatchRun_v1 {
                             break;
                         }
                     }
-                    if (waitingNextClient && nextClient==null) {//means that no free computer found, so wait few seconds that POOL is updated
+                    if (waitingNextClient && nextClient==null && !Funz_v1.POOL.blackList.isEmpty()) {//means that no free computer found, so wait few seconds that POOL is updated
                         out("No suitable computer found. Force reset pool.", 6);
                         Alert.showInformation("No suitable computer found. Force reset pool.");
                         Funz_v1.POOL.forceResetComputers();

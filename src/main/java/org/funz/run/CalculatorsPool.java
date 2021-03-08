@@ -194,7 +194,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
         //}
     }
 
-    final List<Thread> blackList = new ArrayList<>();
+    public final List<Thread> blackList = new ArrayList<>();
 
     public void blacklistComputer(final String host, final int port, final long time) {
         //synchronized (_comps) {
