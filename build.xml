@@ -313,6 +313,7 @@
                         <if>
                             <equals arg1="${@{test.class}.failed}" arg2="0" />
                             <then>
+                                <echo message="Success: @{test.class}" />
                             </then>
                             <else>
                                 <property name="failed" value="1" /> 
@@ -393,6 +394,7 @@
                         <if>
                             <equals arg1="${@{test.class}.failed}" arg2="0" />
                             <then>
+                                <echo message="Success: @{test.class}" />
                             </then>
                             <else>
                                 <property name="failed" value="1" /> 
@@ -425,25 +427,31 @@
                     project.setProperty('startTime', new Date().getTime());
                     project.setProperty('startDate', new Date());
                 </script>
-                <echo level="error">Start: ${startDate}</echo>
-                <exec executable="/bin/bash" osfamily="unix" failonerror="false" timeout="1200000" resultproperty="@{test.file}_issues.failed">
-                    <arg value="${root.dir}/src/test/issues/@{test.file}"/>
-                </exec>
-                <script language="javascript">
-                    project.setProperty('elapsedTime', new Date().getTime() - startTime)
-                </script>
-                <echo message="@{test.file} Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
-                <echo level="error" message="@{test.file} Time: ${elapsedTime} ms"/>
-                
-                <if>
-                    <equals arg1="${@{test.file}_issues.failed}" arg2="0" />
-                    <then>
-                    </then>
-                    <else>
-                        <property name="failed_issues" value="1" />
-                        <echo message="Failures: @{test.file}" />
-                    </else>
-                </if>
+                <if><os family="unix"/>
+                <then>
+                    <echo level="error">Start: ${startDate}</echo>
+                    <exec executable="/bin/bash" osfamily="unix" failonerror="false" timeout="1200000" resultproperty="@{test.file}_issues.failed">
+                        <arg value="${root.dir}/src/test/issues/@{test.file}"/>
+                    </exec>
+                    <script language="javascript">
+                        project.setProperty('elapsedTime', new Date().getTime() - startTime)
+                    </script>
+                    <echo message="@{test.file} Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
+                    <echo level="error" message="@{test.file} Time: ${elapsedTime} ms"/>
+
+                    <if>
+                        <equals arg1="${@{test.file}_issues.failed}" arg2="0" />
+                        <then>
+                            <echo message="Success: @{test.file}" />
+                        </then>
+                        <else>
+                            <property name="failed_issues" value="1" />
+                            <echo message="Failures: @{test.file}" />
+                        </else>
+                    </if>
+                </then><else>
+                    <echo message="Ignored: @{test.file}" />
+                </else></if>
             </sequential>
         </for>
         <fail message="Test failure detected for issues, check test results." if="failed_issues" />
@@ -498,6 +506,7 @@
                 <if>
                     <equals arg1="${@{test.file}.failed}" arg2="0" />
                     <then>
+                        <echo message="Success: @{test.file}" />
                     </then>
                     <else>
                         <property name="failed_cmd" value="1" />
@@ -542,10 +551,11 @@
                 <if>
                     <equals arg1="${@{test.file}.failed}" arg2="0" />
                     <then>
+                        <echo message="Success: @{test.file}" />
                     </then>
                     <else>
                         <property name="failed_bash" value="1" />
-                        <echo message="Failures: @{test.class}" />
+                        <echo message="Failures: @{test.file}" />
                     </else>
                 </if>
             </sequential>
@@ -586,6 +596,7 @@
                 <if>
                     <equals arg1="${@{test.file}_python.failed}" arg2="0" />
                     <then>
+                        <echo message="Success: @{test.file}" />
                     </then>
                     <else>
                         <property name="failed_python" value="1" />
@@ -634,6 +645,7 @@
                 <if>
                     <equals arg1="${@{test.file}_R.failed}" arg2="0" />
                     <then>
+                        <echo message="Success: @{test.file}" />
                     </then>
                     <else>
                         <property name="failed_R" value="1" />
