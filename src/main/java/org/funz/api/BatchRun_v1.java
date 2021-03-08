@@ -254,6 +254,7 @@ public abstract class BatchRun_v1 {
                     }
                     if (waitingNextClient && nextClient==null) {//means that no free computer found, so wait few seconds that POOL is updated
                         out("No suitable computer found. Force reset pool.", 6);
+                        Alert.showInformation("No suitable computer found. Force reset pool.");
                         Funz_v1.POOL.forceResetComputers();
                         wait(org.funz.Protocol.PING_PERIOD);
                         //synchronized (POOL) {
