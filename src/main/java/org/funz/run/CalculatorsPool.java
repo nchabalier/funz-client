@@ -22,6 +22,8 @@ import org.funz.log.Log;
 import org.funz.log.LogCollector.SeverityLevel;
 import org.funz.run.Computer.ComputerGuard;
 import org.funz.run.Computer.ComputerStatusListener;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Collections;
 
 /**
  *
@@ -30,7 +32,7 @@ import org.funz.run.Computer.ComputerStatusListener;
 public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
 
     private int sleeping_period = 2000;
-    private final List<Computer> _comps = new LinkedList<Computer>();
+    private final List<Computer> _comps = new CopyOnWriteArrayList<Computer>();
     private List<String> _codes = new ArrayList<String>();
     private final int _port;
     protected volatile boolean refreshing = false;
@@ -157,31 +159,31 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
     }
 
     public Computer getComputer(String ip, String name, String host, int port) {
-        synchronized (_comps) {
+        //synchronized (_comps) {
             for (Iterator it = getComputers().iterator(); it.hasNext();) {
                 Computer comp = (Computer) it.next();
                 if ((ip == null || comp.ip.equals(ip)) && (name == null || comp.name.equals(name)) && (host == null || comp.host.equals(host)) && comp.port == port) {
                     return comp;
                 }
             }
-        }
+        //}
         return null;
     }
 
     public void addComputer(Computer comp) {
-        synchronized (_comps) {
+        //synchronized (_comps) {
             getComputers().add(comp);
-        }
+        //}
     }
 
     public void removeComputer(Computer comp) {
-        synchronized (_comps) {
+        //synchronized (_comps) {
             getComputers().remove(comp);
-        }
+        //}
     }
 
     public void removeComputer(String host, int port) {
-        synchronized (_comps) {
+        //synchronized (_comps) {
             for (Iterator it = getComputers().iterator(); it.hasNext();) {
                 Computer comp = (Computer) it.next();
                 if (comp.host.equals(host) && comp.port == port) {
@@ -189,13 +191,13 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                     return;
                 }
             }
-        }
+        //}
     }
 
     final List<Thread> blackList = new ArrayList<>();
 
     public void blacklistComputer(final String host, final int port, final long time) {
-        synchronized (_comps) {
+        //synchronized (_comps) {
             for (Iterator it = getComputers().iterator(); it.hasNext();) {
                 final Computer comp = (Computer) it.next();
                 if (comp.host.equals(host) && comp.port == port) {
@@ -205,7 +207,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                     return;
                 }
             }
-        }
+        //}
     }
 
     class BlackLister extends Thread {
@@ -253,7 +255,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
         return refreshing;
     }
 
-    final List<Object> needForPool = new LinkedList<>();
+    final List<Object> needForPool = Collections.synchronizedList(new ArrayList<>());
 
     public /*synchronized*/ void setRefreshing(final boolean refresh, final Object needer, final String cause) {
         new Thread(new Runnable() {
@@ -618,7 +620,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                     } catch (Exception e) {
                     }
                 } else {
-                    synchronized (_comps) {
+                    //synchronized (_comps) {
                         long now = System.currentTimeMillis();
                         int row = 0;
                         for (Iterator it = getComputers().iterator(); it.hasNext(); row++) {
@@ -633,7 +635,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                                 fireComputerStatusUnknown(comp, row);
                             }
                         }
-                    }
+                    //}
 
                     synchronized (this) {
                         try {
@@ -648,14 +650,18 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
 
     // Hard shortcut to force reset of computers list. Should not be used in general, as DyingComputerDetector should do it automatically & softly.
     public void forceResetComputers() {
-        synchronized (_comps) {
+        //synchronized (_comps) {
+            long now = System.currentTimeMillis();
             int row = 0;
             for (Iterator it = getComputers().iterator(); it.hasNext(); row++) {
                 final Computer comp = (Computer) it.next();
-                fireComputerDied(comp, row);
-                row--;
-                it.remove();
+                long diff = now - comp.lastPing;
+                if (diff > PING_PERIOD*2) {
+                    fireComputerDied(comp, row);
+                    row--;
+                    it.remove();
+                }
             }
-        }
+        //}
     }
 }
