@@ -636,6 +636,23 @@
                     <arg value="BATCH"/>
                     <arg value="${root.dir}/src/test/R/@{test.file}"/>
                 </exec>
+                <if><os family="unix"/>
+                <then>
+                    <exec executable="/bin/bash" osfamily="unix" failonerror="false" timeout="1200000" resultproperty="@{test.file}_R.failed">
+                        <arg value="R"/> 
+                        <arg value="CMD"/> 
+                        <arg value="BATCH"/>
+                        <arg value="${root.dir}/src/test/R/@{test.file}"/>
+                    </exec>
+                </then><else>
+                    <exec executable="cmd.exe" osfamily="windows" failonerror="false" timeout="1200000" resultproperty="@{test.file}_R.failed">
+                        <arg line="/c"/>
+                        <arg value="R"/> 
+                        <arg value="CMD"/> 
+                        <arg value="BATCH"/>
+                        <arg value="${root.dir}/src/test/R/@{test.file}"/>
+                    </exec>
+                </else></if>
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
                 </script>
