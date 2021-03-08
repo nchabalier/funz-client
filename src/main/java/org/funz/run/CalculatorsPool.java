@@ -663,5 +663,6 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                 }
             }
         //}
+        setRefreshing(true,this,"forceResetComputers");
     }
 }
