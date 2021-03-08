@@ -645,4 +645,17 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
             }
         }
     };
+
+    // Hard shortcut to force reset of computers list. Should not be used in general, as DyingComputerDetector should do it automatically & softly.
+    public void forceResetComputers() {
+        synchronized (_comps) {
+            int row = 0;
+            for (Iterator it = getComputers().iterator(); it.hasNext(); row++) {
+                final Computer comp = (Computer) it.next();
+                fireComputerDied(comp, row);
+                row--;
+                it.remove();
+            }
+        }
+    }
 }
