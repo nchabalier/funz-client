@@ -3,6 +3,7 @@ FUNZ_HOME="dist"
 \$FUNZ_HOME/Funz.sh Run -m R -if src/test/samples/branin.R -iv x1=.1,.2,.3,.4,.5,.6,.7,.8,.9 x2=.1,.2,.3,.4,.5,.6,.7,.8,.9 -rc blacklistTimeout=1 -v 5
 EOF
 
+rm Run.log
 rm run.out
 sh run.sh 2>&1 > run.out &
 PID_RUN=$!

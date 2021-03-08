@@ -7,6 +7,7 @@ print(unlist(res[['cat']]))
 q(save="no")
 EOF
 
+rm Run.log
 rm run.Rout
 R CMD BATCH run.R 2>&1 > run.Rout &
 PID_R=$!
