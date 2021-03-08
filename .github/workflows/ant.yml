@@ -165,6 +165,7 @@ jobs:
         - os: windows-latest
           CLI: Bash
     env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       NO_TEST_JAVA: 1
       NO_TEST_MAIN: 1
       NO_TEST_ISSUES: 1
