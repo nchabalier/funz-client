@@ -8,7 +8,7 @@ sh run.sh 2>&1 > run.out &
 PID_RUN=$!
 
 ok1=`ps | grep $PID_RUN | grep sh | wc -l`
-if [ ! $ok1 = "1" ]; then echo "FAILED to start client: $ok1"; kill -9 $PID_RUN; echo "* run.out"; cat run.out; echo "* Run.log"; cat Run.log; exit 1; fi
+if [ ! $ok1 = "1" ]; then echo "FAILED to start client: $ok1"; ps > ps.out; echo "* ps.out"; cat ps.out; echo "* run.out"; cat run.out; echo "* Run.log"; cat Run.log; exit 1; fi
 echo "OK started client"
 
 rm calc.out
@@ -20,7 +20,7 @@ PID_CALCULATOR=$!
 sleep 2
 
 ok2=`ps | grep $PID_CALCULATOR | grep java | wc -l`
-if [ ! $ok2 = "0" ]; then echo "FAILED to start calculator: $ok2"; kill -9 $PID_RUN $PID_CALCULATOR; cat calc.out; exit 2; fi
+if [ ! $ok2 = "1" ]; then echo "FAILED to start calculator: $ok2"; ps > ps.out; echo "* ps.out"; cat ps.out; kill -9 $PID_RUN; echo "* calc.out"; cat calc.out; exit 2; fi
 echo "OK started calculator"
 
 ## for loop testing of previous Run only. Comment otherwise
