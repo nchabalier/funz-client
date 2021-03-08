@@ -180,28 +180,28 @@ jobs:
         export NO_TEST_BASH=1
         export NO_TEST_CMD=1
       shell: bash
-      if: ${{ matrix.CLI }} == 'R'
+      if: matrix.CLI == 'R'
     - run: |
         export NO_TEST_R=1
         #export NO_TEST_PYTHON=1
         export NO_TEST_BASH=1
         export NO_TEST_CMD=1
       shell: bash
-      if: ${{ matrix.CLI }} == 'Python'
+      if: matrix.CLI == 'Python'
     - run: |
         export NO_TEST_R=1
         export NO_TEST_PYTHON=1
         #export NO_TEST_BASH=1
         export NO_TEST_CMD=1
       shell: bash
-      if: ${{ matrix.CLI }} == 'Bash'
+      if: matrix.CLI == 'Bash'
     - run: |
         export NO_TEST_R=1
         export NO_TEST_PYTHON=1
         export NO_TEST_BASH=1
         #export NO_TEST_CMD=1
       shell: bash
-      if: ${{ matrix.CLI }} == 'Cmd'            
+      if: matrix.CLI == 'Cmd'            
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1
       with:
