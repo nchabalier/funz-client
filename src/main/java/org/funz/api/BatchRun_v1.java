@@ -213,25 +213,25 @@ public abstract class BatchRun_v1 {
                                                 throw ee;
                                             }
                                         } else {
-                                            out("<new ReserverClient> rejected " + computer.host + ":" + computer.port + ": already used or blacklisted", 2);
+                                            out("<new ReserverClient> rejected " + computer.host + ":" + computer.port + ": usable: "+computer.use+" and used by "+computer.getUser(), 2);
                                             continue;
                                         }
 
                                         out("  " + computer.host + ":" + computer.port + " provided.", 7);
                                         out(provideNewClient_HEAD + "Fire new client found", 7);
+                                                                                
+                                        client_lock.notifyAll(); // Say provideNewClient that we got a nextClient
+                                        client_lock.wait(org.funz.Protocol.PING_PERIOD); // Wait that provideNewClient gets nextClient before continuing 
+
                                         break;
                                     } catch (Exception ex) {
                                         err("<new ReserverClient> failed to provide " + computer.host + ":" + computer.port + ":" + ex.getMessage(), 6);
                                         nextClient = null;
                                         computer.freeUser();
                                         continue;
-                                    } finally {
-                                        client_lock.notifyAll();
-                                        client_lock.wait();
                                     }
-                                }
-                            } else {
-                                out(computer.toString(), 6);
+                                } // END synchronized (client_lock)
+                            } else { // NOT if (computer.isReady(prj.getCode(), prj.getMinCPU(), prj.getMinMEM(), prj.getMinDISK(), prj.getRegexpCalculators()))
                                 if (computer.getUser() != null) {
                                     out("<!computer.isReady> not available: user=" + computer.getUser(), 6);
                                 }
@@ -246,20 +246,17 @@ public abstract class BatchRun_v1 {
                                 }
                             }
                             //}
-                        } else {
-                            break;
+                        } else { // NOT if ((waitForCalculator && waitingNextClient) && (prj.getMaxCalcs() < 0 || getNumOfCompsUsed() < prj.getMaxCalcs()))
+                            break; // Shortcut to break loop, as we don not need next client anymore...
                         }
-                    }
-                    if (waitingNextClient && nextClient==null && !Funz_v1.POOL.blackList.isEmpty()) {//means that no free computer found, so wait few seconds that POOL is updated
-                        out("No suitable computer found. Force reset pool.", 6);
-                        Alert.showInformation("No suitable computer found. Force reset pool.");
+                    } // END: for (final Computer computer : Funz_v1.POOL.getComputers())
+                    if (waitingNextClient && nextClient==null) { // means that no suitable computer found, so wait few seconds that POOL is updated
+                        out("No suitable computer found. Force reset pool. (blacklisted: "+Funz_v1.POOL.blackList.size()+")", 6);
+                        Alert.showInformation("No suitable computer found. Force reset pool. (blacklisted: "+Funz_v1.POOL.blackList.size()+")");
                         Funz_v1.POOL.forceResetComputers();
                         sleep(org.funz.Protocol.PING_PERIOD);
-                        //synchronized (POOL) {
-                        //Funz_v1.POOL.setRefreshing(true, provider_lock, "waitingNextClient");
-                        //}
-                    }
-                } catch (Exception cme) {
+                    }                        
+                } catch (Exception cme) { // Some exception coming from "for computers" loop...
                     if (!(cme instanceof IllegalAccessException)) {
                         err(cme, 1);
                     }
@@ -290,28 +287,26 @@ public abstract class BatchRun_v1 {
                 out(provideNewClient_HEAD + "Fire waiting new client ... ", 8);
 
                 //client_lock.notify();//
-                client_lock.notifyAll();
+                client_lock.notifyAll(); // Notify ReserverClient loop that we want a nextClient
 
                 try {
-                    client_lock.wait();
+                    client_lock.wait(); // Wait for ReserverClient to provide a nextClient...
 
                     out(provideNewClient_HEAD + "Got notify: nextClient: " + nextClient, 8);
                 } catch (InterruptedException ex) {
                 }
-                waitingNextClient = false; //
-                //client_lock.notify();//
-                client_lock.notifyAll();
+                waitingNextClient = false; // ... We got the nextClient, so don't wait for another one
+                client_lock.notifyAll(); // Say that to ReserverClient loop
 
                 out(provideNewClient_HEAD + "Client returned: " + nextClient, 8);
                 if (waitingNextClient) {
                     err(provideNewClient_HEAD + "!!! Still waiting next client !", 8);
                 }
-                if (nextClient == null) {
+                if (nextClient == null) { // That should never occur
                     err(provideNewClient_HEAD + "!!! Returned null client !", 8);
                 }
             }
             return nextClient;
-
         }
 
         private void pause() {
@@ -1463,7 +1458,6 @@ public abstract class BatchRun_v1 {
             setArchiveDirectory(archiveDirectory);
         } catch (Exception ex) {
             err(ex, 0);
-            ex.printStackTrace();
             //LogUtils.tic("merged_results.putAll(Utils.mergeStringArrayMap");
             merged_results.putAll(mergeStringArrayMap(newMap("error", ex.getMessage(), "trace", ex.fillInStackTrace())));
             //LogUtils.toc("merged_results.putAll(Utils.mergeStringArrayMap");
