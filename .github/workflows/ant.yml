@@ -70,6 +70,7 @@ jobs:
         path: |
           *.txt
           *.log
+          *.out
     - run: ant -noinput -buildfile build.xml coverage
       if: matrix.os == 'ubuntu-latest'
     - uses: codecov/codecov-action@v1
@@ -139,6 +140,7 @@ jobs:
         path: |
           *.txt
           *.log
+          *.out
     - if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
       run: sudo apt-get -y install imagemagick
     - if: steps.anttest.outcome != 'success'
@@ -251,6 +253,7 @@ jobs:
         path: |
           *.txt
           *.log
+          *.out
     - if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
       run: sudo apt-get -y install imagemagick
     - if: steps.anttest.outcome != 'success'

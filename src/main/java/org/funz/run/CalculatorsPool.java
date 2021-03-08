@@ -656,7 +656,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
             for (Iterator it = getComputers().iterator(); it.hasNext(); row++) {
                 final Computer comp = (Computer) it.next();
                 long diff = now - comp.lastPing;
-                if (diff > PING_PERIOD*2) {
+                if (diff > PING_PERIOD) {
                     fireComputerDied(comp, row);
                     row--;
                     it.remove();
