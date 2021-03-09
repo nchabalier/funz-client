@@ -147,7 +147,7 @@ public abstract class BatchRun_v1 {
                         synchronized (client_lock) {
                             out(provideNewClient_HEAD + "o", 8);
                             while (!waitingNextClient) {
-                                client_lock.wait();//SLEEP_PERIOD);
+                                client_lock.wait(); // Wait for provideNewClient to ask for nextClient
                                 if (!waitForCalculator) {
                                     out(provideNewClient_HEAD + "no longer waiting calculator. STOPPED.", 7);
                                     return;
@@ -165,7 +165,7 @@ public abstract class BatchRun_v1 {
                 while (waitForCalculator && (Funz_v1.POOL.getComputers().size() <= 0 || (prj.getMaxCalcs() > 0 && getNumOfCompsUsed() >= prj.getMaxCalcs()))) {
                     try {
                         out(provideNewClient_HEAD + "p", 8);
-                        out("waitForCalculator:"+waitForCalculator+" POOL.getComputers().size():" + Funz_v1.POOL.getComputers().size() + "<=0 || prj.getMaxCalcs():" + prj.getMaxCalcs() + ">0 && getNumOfCompsUsed():" + getNumOfCompsUsed() + ">=" + prj.getMaxCalcs() + ":prj.getMaxCalcs()", 9);
+                        out("waitForCalculator:"+waitForCalculator+" waitingNextClient: "+waitingNextClient+" POOL.getComputers().size():" + Funz_v1.POOL.getComputers().size() + "<=0 || prj.getMaxCalcs():" + prj.getMaxCalcs() + ">0 && getNumOfCompsUsed():" + getNumOfCompsUsed() + ">=" + prj.getMaxCalcs() + ":prj.getMaxCalcs()", 9);
                         sleep(SLEEP_PERIOD);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace(System.err);
@@ -186,7 +186,7 @@ public abstract class BatchRun_v1 {
                                 synchronized (client_lock) {
                                     try {
                                         if (computer.use && computer.getUser() == prj) { //check again not blacklisted
-                                            int t = 5; // retry on "Socket creation failed" 5 times
+                                            int t = 5; // retry when "Socket creation failed" 5 times
                                             IOException ee = null;
                                             while (t-- >= 0) {
                                                 try {
@@ -248,7 +248,7 @@ public abstract class BatchRun_v1 {
                             }
                             //}
                         } else { // NOT if ((waitForCalculator && waitingNextClient) && (prj.getMaxCalcs() < 0 || getNumOfCompsUsed() < prj.getMaxCalcs()))
-                            break; // Shortcut to break loop, as we don not need next client anymore...
+                            break; // Shortcut to break loop, as we dont need nextClient anymore...
                         }
                     } // END: for (final Computer computer : Funz_v1.POOL.getComputers())
                     if (waitingNextClient) { // means that no suitable computer found, so wait few seconds that POOL is updated
@@ -257,12 +257,12 @@ public abstract class BatchRun_v1 {
                         Funz_v1.POOL.forceResetComputers();
                         sleep(org.funz.Protocol.PING_PERIOD);
                     }                        
-                } catch (Exception cme) { // Some exception coming from "for computers" loop...
-                    if (!(cme instanceof IllegalAccessException)) {
+                } catch (Exception cme) { // Some exception maybe coming from "for computers" loop...
+                    //if (!(cme instanceof IllegalAccessException)) {
                         err(cme, 1);
-                    }
+                    //} else cme.printStackTrace(); // Avoid ignoring exotic exception...
                 }
-            }
+            } // END while (waitForCalculator)
             out(provideNewClient_HEAD + "Provider STOPPED.", 10);
         }
 
@@ -292,7 +292,6 @@ public abstract class BatchRun_v1 {
 
                 try {
                     client_lock.wait(); // Wait for ReserverClient to provide a nextClient...
-
                     out(provideNewClient_HEAD + "Got notify: nextClient: " + nextClient, 8);
                 } catch (InterruptedException ex) {
                 }
@@ -430,6 +429,7 @@ public abstract class BatchRun_v1 {
         }
 
         waitForCalculator = true;
+
         if (!provider.waitingNextClient && !provider.isAlive()) {
             provider.start();
         }

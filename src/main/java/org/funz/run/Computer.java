@@ -155,9 +155,9 @@ public class Computer {
 
     public static interface ComputerStatusListener {
 
-        void fireComputerDied(Computer comp, int row);
+        void fireComputerDied(Computer comp);
 
-        void fireComputerStatusUnknown(Computer comp, int row);
+        void fireComputerStatusUnknown(Computer comp);
 
         void fireUpdateComputerInfo(Computer comp);
     }
