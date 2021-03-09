@@ -404,23 +404,23 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                 } else {
                     synchronized (comp) {
                         boolean changed = false;
-                        if (!changed && comp.port != port) {
+                        if (comp.port != port) {
                             comp.port = port;
                             changed = true;
                         }
-                        if (!changed && comp.since != since) {
+                        if (comp.since != since) {
                             comp.since = since;
                             changed = true;
                         }
-                        if (!changed && !comp.os.equals(os)) {
+                        if (!comp.os.equals(os)) {
                             comp.os = os;
                             changed = true;
                         }
-                        if (!changed && !comp.activity.equals(activity)) {
+                        if (!comp.activity.equals(activity)) {
                             comp.activity = activity;
                             changed = true;
                         }
-                        if (!changed && !comp.getCodes().toString().equals(codes.toString())) {
+                        if (!comp.getCodes().toString().equals(codes.toString())) {
                             comp.setCodes(codes);
                             changed = true;
                         }
@@ -430,7 +430,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                                 getCodes().add(code);
                             }
                         }
-                        if (!changed && !comp.codeList.equals(clist.toString())) {
+                        if (!comp.codeList.equals(clist.toString())) {
                             comp.codeList = clist.toString();
                             changed = true;
                         }
@@ -602,7 +602,6 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
             return s;
         }
 
-    
     public class DyingComputerDetector extends Thread {
 
         public DyingComputerDetector() {
@@ -664,5 +663,13 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
             }
         //}
         setRefreshing(true,this,"forceResetComputers");
+    }
+
+    public String toString() {
+        String s = Computer.toStringTitle();
+        for (Computer c : getComputers()) {
+            s += "\n" + c.toString();
+        }
+        return s;
     }
 }
