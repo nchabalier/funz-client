@@ -1517,7 +1517,7 @@ public abstract class BatchRun_v1 {
             if (t.hasRun()) {
                 //System.err.print("x");
                 n++;
-                SLEEP_PERIOD = Math.min(SLEEP_PERIOD,t.getDuration());
+                if (t.getDuration()>0) SLEEP_PERIOD = Math.min(SLEEP_PERIOD,t.getDuration());
             }//else                 System.err.print("-");
 
         }
