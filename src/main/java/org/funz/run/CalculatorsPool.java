@@ -160,15 +160,12 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
 
         if (_computerListKeeper == null) {
             _computerListKeeper = new ComputerListKeeper(this);
-        }
-        if (!_computerListKeeper.isAlive())
             _computerListKeeper.start();
-
+        }
         if (_dyingComputerDetector == null) {
             _dyingComputerDetector = new DyingComputerDetector();
-        }
-        if (!_dyingComputerDetector.isAlive())
             _dyingComputerDetector.start();
+        }
 
         Log.logMessage(this, SeverityLevel.INFO, true, "     ...started");
     }
