@@ -33,6 +33,7 @@ import org.funz.util.Disk;
 import static org.funz.util.Format.repeat;
 import org.funz.util.ZipTool;
 import org.math.array.IntegerArray;
+import org.funz.log.LogTicToc;
 
 /**
  * @author richet
@@ -160,7 +161,7 @@ public abstract class BatchRun_v1 {
                     }
                 }
                 out(provideNewClient_HEAD + "... client waited.", 7);
-                out(provideNewClient_HEAD + "Wait for filling pool:", 7);
+                out(provideNewClient_HEAD + "Wait for filling pool...", 7);
                 while (waitForCalculator && (Funz_v1.POOL.getComputers().size() <= 0 || (prj.getMaxCalcs() > 0 && getNumOfCompsUsed() >= prj.getMaxCalcs()))) {
                     try {
                         out(provideNewClient_HEAD + "p", 8);
@@ -170,7 +171,7 @@ public abstract class BatchRun_v1 {
                         ex.printStackTrace(System.err);
                     }
                 }
-                out(provideNewClient_HEAD + " Pool filled.", 7);
+                out(provideNewClient_HEAD + "                     ...Pool filled:\n"+Funz_v1.POOL, 7);
                 try {
                     for (final Computer computer : Funz_v1.POOL.getComputers()) {
                         if ((waitForCalculator && waitingNextClient) && (prj.getMaxCalcs() < 0 || getNumOfCompsUsed() < prj.getMaxCalcs())) {//Add this because following synchronized could add a lag so the limit of computers should be exceeded.
@@ -1259,9 +1260,9 @@ public abstract class BatchRun_v1 {
             while (waited_time< prj.waitingTimeout*1000 && !Funz_v1.POOL.getCodes().contains(prj.getCode())) {
                 setState(BATCH_WAITINGCOMPUTERS+StringUtils.repeat(".",waited_time/1000));
                 //synchronized (this) {
-                sleep(SLEEP_PERIOD);
+                sleep(org.funz.Protocol.PING_PERIOD);
                 //}
-                waited_time += SLEEP_PERIOD;
+                waited_time += org.funz.Protocol.PING_PERIOD;
             }
             if (!Funz_v1.POOL.getCodes().contains(prj.getCode())) {
                 setState(BATCH_ERROR+": '"+ prj.getCode() + "' is missing in Funz grid.");
@@ -1371,32 +1372,24 @@ public abstract class BatchRun_v1 {
                 }
                 int[][] states = new int[getSelectedCases().size()][Case.STATE_STRINGS.length];
                 while (f < numToRun && !askToStop) {
-                    try {
-                        out(f + "<" + numToRun + " ... " + waitForCalculator + " " + (provider == null ? "null provider" : "provider.waitingNextClient=" + provider.waitingNextClient), 8);
-                        synchronized (this) {
-                            wait(SLEEP_PERIOD);
-                        }
-                    } catch (InterruptedException ex) {
-                        err("trap InterruptedException: " + ex.getMessage(), 0);
-                    }
                     //out_noln(" ? ", 5);
                     int f_old = f;
-                    //LogUtils.tic("filled");
+                    //LogTicToc.tic("filled");
                     f = filled(torun);
-                    //LogUtils.toc("filled");
+                    //LogTicToc.toc("filled");
 
                     // let's start only some cases (to limit concurrent RunCase threads)
                     for (int i = 0; i < /*f - f_old*/ Math.min(prj.getMaxCalcs(), numToRun - f); i++) {
                         for (int j = 0; j < runCases.size(); j++) {
-                            //LogUtils.tic("runCases.get(j)");
+                            //LogTicToc.tic("runCases.get(j)");
                             RunCase rc = runCases.get(j);
-                            //LogUtils.toc("runCases.get(j)");
+                            //LogTicToc.toc("runCases.get(j)");
                             if (!rc.isAlive()) {
                                 if (rc.c != null && rc.c.getState() == Case.STATE_INTACT) {
                                     out("Starting case " + rc.c.getName(), 3);
-                                    //LogUtils.tic("rc.start()");
+                                    //LogTicToc.tic("rc.start()");
                                     rc.start();
-                                    //LogUtils.toc("rc.start()");
+                                    //LogTicToc.toc("rc.start()");
                                     //System.err.println("+");
                                     break;
                                 }//else System.err.println(rc.c.getStatusInformation());
@@ -1434,7 +1427,18 @@ public abstract class BatchRun_v1 {
                             setState(state_name + ":\t" + state_value);
                         }
                     }
-                }
+
+                    // Let some time before updating cases state and wakeup some new one
+                    try {
+                        out(f + "<" + numToRun + " ... " + waitForCalculator + " " + (provider == null ? "null provider" : "provider.waitingNextClient=" + provider.waitingNextClient), 8);
+                        synchronized (this) {
+                            wait(SLEEP_PERIOD);
+                        }
+                    } catch (InterruptedException ex) {
+                        err("trap InterruptedException: " + ex.getMessage(), 0);
+                    }
+                } // END while (f < numToRun && !askToStop)
+
                 if (askToStop) {
                     throw new Exception("Asked batch to stop");
                 }
@@ -1506,13 +1510,14 @@ public abstract class BatchRun_v1 {
         return state;
     }
 
-    static int filled(List<Case> cases) {
+    int filled(List<Case> cases) {
         int n = 0;
         for (int i = 0; i < cases.size(); i++) {        //for (Case t : cases) {
             Case t = cases.get(i);
             if (t.hasRun()) {
                 //System.err.print("x");
                 n++;
+                SLEEP_PERIOD = Math.min(SLEEP_PERIOD,t.getDuration());
             }//else                 System.err.print("-");
 
         }
