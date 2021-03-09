@@ -82,6 +82,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
         }
         blackList.clear();
 
+        stop = true;
         stop();
     }
 
