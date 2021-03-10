@@ -91,13 +91,11 @@ public class TestUtils {
 
     public static final String R = "R";
 
-    public static int verbose = 12;
+    public static int verbose = 2;
     public static Calculator[] calculators;
     static MathExpression M = null; //new RMathExpression("R://localhost", new File("R.log"));
 
     public static void test(String arg) throws Exception {
-        Configuration.setVerboseLevel(verbose);
-
         calculators = new Calculator[8];
         for (int i = 0; i < calculators.length - 1; i++) {
             calculators[i] = startCalculator(i, CONF_XML);
@@ -105,6 +103,7 @@ public class TestUtils {
         calculators[calculators.length - 1] = startCalculator(calculators.length - 1, CONF_XML_FAILING);
 
         Funz_v1.init(null, null, M);
+        Configuration.setVerboseLevel(verbose);
 
         org.junit.runner.JUnitCore.main(arg);
 
@@ -215,6 +214,8 @@ public class TestUtils {
         } else 
             Funz_v1.POOL.wakeup();
 
+        System.err.println(Funz_v1.POOL.toString());
+
         Project.DEFAULT_waitingTimeout = 10;//10 s. max before hard stopping batch if no calc found.
         Project.DEFAULT_blacklistTimeout = 600;//10 s. max before hard stopping batch if no calc found.
     }
@@ -236,7 +237,7 @@ public class TestUtils {
 
             @Override
             public void run() {
-                calc.run();
+                calc.runloop();
             }
         }.start();
         Thread.sleep(100);
