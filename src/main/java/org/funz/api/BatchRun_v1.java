@@ -139,8 +139,7 @@ public abstract class BatchRun_v1 {
         public void run() {
 
             while (waitForCalculator) {
-                out(provideNewClient_HEAD + "Waiting client: " + waitingNextClient, 7);
-                out(provideNewClient_HEAD + "Waiting calculator: " + waitForCalculator, 7);
+                out(provideNewClient_HEAD + "Waiting client:" + waitingNextClient+" Waiting calculator:" + waitForCalculator, 7);
                 while (waitForCalculator && !waitingNextClient) {
                     try {
                         out(provideNewClient_HEAD + "O", 8);
@@ -149,7 +148,7 @@ public abstract class BatchRun_v1 {
                             while (!waitingNextClient) {
                                 client_lock.wait(); // Wait for provideNewClient to ask for nextClient
                                 if (!waitForCalculator) {
-                                    out(provideNewClient_HEAD + "no longer waiting calculator. STOPPED.", 7);
+                                    out(provideNewClient_HEAD + "no longer waiting calculator. Stop NewClientProvider.", 7);
                                     return;
                                 }
                             }
@@ -160,18 +159,18 @@ public abstract class BatchRun_v1 {
                         continue;
                     }
                 }
-                out(provideNewClient_HEAD + "... client waited.", 7);
-                out(provideNewClient_HEAD + "Wait for filling pool...", 7);
+                out(provideNewClient_HEAD + "... client waited. Wait for filling pool...", 7);
                 while (waitForCalculator && (Funz_v1.POOL.getComputers().size() <= 0 || (prj.getMaxCalcs() > 0 && getNumOfCompsUsed() >= prj.getMaxCalcs()))) {
                     try {
                         out(provideNewClient_HEAD + "p", 8);
-                        out("waitForCalculator:"+waitForCalculator+" waitingNextClient: "+waitingNextClient+" POOL.getComputers().size():" + Funz_v1.POOL.getComputers().size() + "<=0 || prj.getMaxCalcs():" + prj.getMaxCalcs() + ">0 && getNumOfCompsUsed():" + getNumOfCompsUsed() + ">=" + prj.getMaxCalcs() + ":prj.getMaxCalcs()", 9);
-                        sleep(SLEEP_PERIOD);
+                        out("waitForCalculator:"+waitForCalculator+" waitingNextClient:"+waitingNextClient+" POOL.getComputers().size():" + Funz_v1.POOL.getComputers().size() + "<=0 || prj.getMaxCalcs():" + prj.getMaxCalcs() + ">0 && getNumOfCompsUsed():" + getNumOfCompsUsed() + ">=" + prj.getMaxCalcs() + ":prj.getMaxCalcs()", 9);
+                        Funz_v1.POOL.setRefreshing(true, this, "WaitForCalculator:"+waitForCalculator+" Pool size:"+Funz_v1.POOL.getComputers().size()+" Computers used:"+getNumOfCompsUsed());
+                        sleep(Protocol.PING_PERIOD);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace(System.err);
                     }
                 }
-                out(provideNewClient_HEAD + "                     ...Pool filled:\n"+Funz_v1.POOL, 7);
+                out(provideNewClient_HEAD + "                     ... Pool filled:\n"+Funz_v1.POOL, 7);
                 try {
                     for (final Computer computer : Funz_v1.POOL.getComputers()) {
                         if ((waitForCalculator && waitingNextClient) && (prj.getMaxCalcs() < 0 || getNumOfCompsUsed() < prj.getMaxCalcs())) {//Add this because following synchronized could add a lag so the limit of computers should be exceeded.
@@ -253,7 +252,6 @@ public abstract class BatchRun_v1 {
                     } // END: for (final Computer computer : Funz_v1.POOL.getComputers())
                     if (waitingNextClient) { // means that no suitable computer found, so wait few seconds that POOL is updated
                         out("No suitable computer found. Force reset pool. (blacklisted: "+Funz_v1.POOL.blackList.size()+")", 6);
-                        Alert.showInformation("No suitable computer found. Force reset pool. (blacklisted: "+Funz_v1.POOL.blackList.size()+")");
                         Funz_v1.POOL.forceResetComputers();
                         sleep(org.funz.Protocol.PING_PERIOD);
                     }                        
@@ -1582,7 +1580,7 @@ public abstract class BatchRun_v1 {
         }
         //provider = null;
 
-        out("Break runing cases", 3);
+        out("Break running cases", 3);
         synchronized (running_cleaner) {
             for (Thread clean : running_cleaner.values()) {
                 clean.start();

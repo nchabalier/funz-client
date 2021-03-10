@@ -37,7 +37,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
     protected volatile boolean refreshing = false;
     ComputerListKeeper _computerListKeeper;
     DyingComputerDetector _dyingComputerDetector;
-    private volatile boolean stop = true;
+    private volatile boolean shutdown = false;
     public DatagramSocket UDP_socket;
 
 //    public static void main(String[] args) throws InterruptedException {
@@ -72,21 +72,26 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
         return _port;
     }
 
+    public synchronized void wakeup() {
+        shutdown = false;
+        start();
+    }
+
     public synchronized void shutdown() {
         for (Thread b : blackList) {
             b.interrupt();
-            try {
-                b.join();
+            try {           
+                b.join();            
             } catch (InterruptedException ex) {
             }
         }
         blackList.clear();
 
-        stop = true;
+        shutdown = true;
         stop();
     }
 
-    void stop() {
+    void stop() {            
         Log.logMessage(this, SeverityLevel.INFO, true, "stop...");
 
         refreshing = false;
@@ -106,7 +111,9 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
             }
         }
 
-        if (stop) {
+        if (shutdown) {            
+            force_close(UDP_socket);
+
         if (_computerListKeeper != null) {
             _computerListKeeper.interrupt();
         }
@@ -115,9 +122,8 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
         }
 
         if (_computerListKeeper != null) {
-            try {
+            try {        
                 _computerListKeeper.join();
-                //System.err.println("computerListKeeper joined");
             } catch (InterruptedException ex) {
                 ex.printStackTrace(System.err);
             }
@@ -125,7 +131,6 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
         if (_dyingComputerDetector != null) {
             try {
                 _dyingComputerDetector.join();
-                //System.err.println("dyingComputerDetector joined");
             } catch (InterruptedException ex) {
                 ex.printStackTrace(System.err);
             }
@@ -133,15 +138,15 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
 
         _computerListKeeper = null;
         _dyingComputerDetector = null;
-    }
+        }
 
         Log.logMessage(this, SeverityLevel.INFO, true, "    ...stopped");
     }
 
     void start() {
-        Log.logMessage(this, SeverityLevel.INFO, true, "start...");
+        if (shutdown) return;
 
-        stop = false;
+        Log.logMessage(this, SeverityLevel.INFO, true, "start...");
 
         if (_computerListKeeper != null) {
             synchronized (_computerListKeeper) {
@@ -238,17 +243,14 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
             comp.use = false;
             comp.freeUser();
             comp.freeActivity(); // otherwise, will stay in already reserved state...
-            synchronized (this) {
                 try {
                     //System.err.println("[POOL] blackList + " + host + ":" + port);
-                    wait(time);
-                    Alert.showInformation("Blacklisted computer " + comp.host + ":" + comp.port + " coming back...");
+                    sleep(time);
                     Log.out("Blacklisted computer " + comp.host + ":" + comp.port + " coming back...", 1);
                     //System.err.println("[POOL] blackList - " + host + ":" + port);
                 } catch (InterruptedException ex) {
                     Log.out("Interrupt blacklisting of computer " + comp.host + ":" + comp.port, 3);
                 }
-            }
             comp.use = true;
         }
     }
@@ -289,7 +291,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                         refreshing = !needForPool.isEmpty();
                     //}
                 } else {
-                    refreshing = true; // in case of startup, to avoid necessary calling setRefreshing(true, ...)
+                    refreshing = refresh; // in case of startup, to avoid necessary calling setRefreshing(true, ...)
                 }
 
                 if (refreshing && !was_refreshing) {
@@ -325,6 +327,16 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
         return _comps;
     }
 
+    void force_close(DatagramSocket s) {
+        try {
+            if (s != null) {
+                s.close();
+                s = null;
+            }
+        } catch (Exception e) {
+        }
+    }
+
     public class ComputerListKeeper extends Thread {
 
         ComputerGuard guard;
@@ -340,14 +352,15 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
             for (int i = 0; i < buf.length; i++) {
                 buf[i] = 0;
             }
-            try{            
+            try {            
                 s.receive(p); // blocking as long as a packet not received / or SoTimeout exceeded
-            }catch(SocketTimeoutException t) {
+            } catch (SocketTimeoutException t) {
                 force_close(s);
-                s = getSocket(_port);
+                if (!shutdown) s = getSocket(_port); // Do not rebuild socket if shutdown
                 return;
-            }catch(Exception t) {
-                Log.err(t,2);
+            } catch (Exception t) {
+                Log.err(t,2); 
+                if (shutdown) return;
             }
             String data = new String(p.getData());
             buf = null;
@@ -373,15 +386,6 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                         clist.append(", ");
                     }
                 }
-                if (reader != null) {
-                    reader.close();
-                    reader = null;
-                }
-                if (sreader != null) {
-                    sreader.close();
-                    sreader = null;
-                }
-
                 //this last test may be usefull to release mass update on _compModel
                 /*if ((_prj == null || _prj.getCode() == null) || codes.contains(_prj.getCode())) {// in order to skip update of this calculator if no good code found
                  //System.out.println(" +");
@@ -410,7 +414,6 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                     comp.lastPing = System.currentTimeMillis();
                     addComputer(comp);
                 } else {
-                    synchronized (comp) {
                         boolean changed = false;
                         if (comp.port != port) {
                             comp.port = port;
@@ -446,27 +449,26 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                         if (changed) {
                             fireUpdateComputerInfo(comp);
                         }
-                    }
                 }
             } catch (Exception e) {
                 Log.err(e, 1);
-            }
-        }
-        
-        void force_close(DatagramSocket s) {
-            try {
-                if (s != null) {
-                    s.close();
-                    s = null;
+            } finally {
+                if (reader != null) {
+                    reader.close();
+                    reader = null;
                 }
-            } catch (Exception e) {
+                if (sreader != null) {
+                    sreader.close();
+                    sreader = null;
+                }
             }
         }
 
         @Override
         public void run() {
             try {
-                while (!stop) {
+                while (!shutdown) {
+                    //System.err.println("K");
                     if (!isRefreshing()) {
                         synchronized (_computerListKeeper) {
                             try {
@@ -525,7 +527,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
 //                            //seems a bit laggy, but still loop. Not blocking anyway
 //                        }
                     }
-                }
+                } // END while (!stop)
 //                runtout.interrupt();
                 force_close(UDP_socket);
             } catch (Exception e) {
@@ -605,7 +607,8 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
 
         @Override
         public void run() {
-            while (!stop) {
+            while (!shutdown) {
+                //System.err.println("D");
                 if (!isRefreshing()) {
                     try {
                         synchronized (_dyingComputerDetector) {
@@ -629,9 +632,9 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                         }
                     //}
 
-                    synchronized (this) {
+                    synchronized (_dyingComputerDetector) {
                         try {
-                            wait(PING_PERIOD);
+                            _dyingComputerDetector.wait(PING_PERIOD);
                         } catch (Exception e) {
                         }
                     }

@@ -91,7 +91,7 @@ public class TestUtils {
 
     public static final String R = "R";
 
-    public static int verbose = 2;
+    public static int verbose = 12;
     public static Calculator[] calculators;
     static MathExpression M = null; //new RMathExpression("R://localhost", new File("R.log"));
 
@@ -212,7 +212,9 @@ public class TestUtils {
 
         if (Funz_v1.POOL == null) {
             throw new Exception("POOL is null !!!");
-        }
+        } else 
+            Funz_v1.POOL.wakeup();
+
         Project.DEFAULT_waitingTimeout = 10;//10 s. max before hard stopping batch if no calc found.
         Project.DEFAULT_blacklistTimeout = 600;//10 s. max before hard stopping batch if no calc found.
     }
