@@ -37,7 +37,7 @@ public class ClientTest {
         r = new Thread() {
             @Override
             public void run() {
-                calc.run();
+                calc.runloop();
             }
         };
         r.start();
