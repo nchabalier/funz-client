@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
-        java: [ 11 ] #[ 8, 11, 13 ]
+        java: [ 8, 11, 13 ]
         Rserver: [ 'R2js' ] #, 'Renjin', 'R://localhost' ]
     env:
       #NO_TEST_JAVA: 1
@@ -81,7 +81,7 @@ jobs:
   test-Main:
     strategy:
       matrix:
-        os: [ ubuntu-latest ] #, windows-latest, macOS-latest ]
+        os: [ ubuntu-latest , windows-latest, macOS-latest ]
         java: [ 11 ]
         Rserver: [ R2js ]
     env:
@@ -153,7 +153,7 @@ jobs:
   test-FunzCLI:
     strategy:
       matrix:
-        os: [ ubuntu-latest ] #, windows-latest, macos-latest ]
+        os: [ ubuntu-latest , windows-latest, macos-latest ]
         java: [ 11 ]
         Rserver: [ R2js ]
         CLI: [ R, Python, Bash, Cmd ]
