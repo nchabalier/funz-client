@@ -584,7 +584,7 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="python3" osfamily="unix" failonerror="false" timeout="2400000" resultproperty="@{test.file}_python.failed">
+                <exec executable="python3" failonerror="false" timeout="2400000" resultproperty="@{test.file}_python.failed">
                     <arg value="${root.dir}/src/test/python/@{test.file}"/>
                 </exec>
                 <script language="javascript">
