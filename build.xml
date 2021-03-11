@@ -478,7 +478,8 @@
             <arg line="/c"/>
             <arg line="${root.dir}\src\test\cmd\check.bat"/>
         </exec>
-        <fail message="check failed">
+        <loadfile property="check.bat.out" srcFile="check.bat.out"/>
+        <fail message="check failed: ${check.bat.out">
             <condition>
                 <not><resourcecontains resource="check.bat.out" substring="ok"/></not>
             </condition>
@@ -533,7 +534,8 @@
         <exec executable="/bin/bash" osfamily="unix" failonerror="true" output="check.sh.out">
             <arg value="${root.dir}/src/test/bash/check.sh"/>
         </exec>
-        <fail message="check failed">
+        <loadfile property="check.sh.out" srcFile="check.sh.out"/>
+        <fail message="check failed: ${check.sh.out}">
             <condition>
                 <not><resourcecontains resource="check.sh.out" substring="ok"/></not>
             </condition>
@@ -587,7 +589,8 @@
         <exec executable="python3" failonerror="true" output="check.py.out">
             <arg line="${root.dir}/src/test/python/check.py" />
         </exec>
-        <fail message="check failed">
+        <loadfile property="check.py.out" srcFile="check.py.out"/>
+        <fail message="check failed: ${check.py.out}">
             <condition>
                 <not><resourcecontains resource="check.py.out" substring="ok"/></not>
             </condition>
@@ -655,8 +658,9 @@
                     <arg value="${root.dir}\src\test\R\check.R"/>
                 </exec>
             </else>
-        </if>
-        <fail message="check failed">
+        </if>     
+        <loadfile property="check.R.out" srcFile="check.R.out"/>
+        <fail message="check failed: ${check.R.out}">
             <condition>
                 <not><resourcecontains resource="check.R.out" substring="ok"/></not>
             </condition>
