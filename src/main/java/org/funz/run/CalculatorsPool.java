@@ -204,7 +204,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
             }
     }
 
-    public final List<Thread> blackList = Collections.synchronizedList(new ArrayList<>());
+    final List<Thread> blackList = Collections.synchronizedList(new ArrayList<>());
 
     public void blacklistComputer(final String host, final int port, final long time) {
             for (Iterator it = getComputers().iterator(); it.hasNext();) {
@@ -243,6 +243,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                     Log.out("Interrupt blacklisting of computer " + comp.host + ":" + comp.port, 3);
                 }
             comp.use = true;
+            blackList.remove(this);
         }
     }
 

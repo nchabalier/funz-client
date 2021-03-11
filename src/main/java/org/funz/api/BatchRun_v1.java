@@ -251,7 +251,7 @@ public abstract class BatchRun_v1 {
                         }
                     } // END: for (final Computer computer : Funz_v1.POOL.getComputers())
                     if (waitingNextClient) { // means that no suitable computer found, so wait few seconds that POOL is updated
-                        out("No suitable computer found. Force reset pool. (blacklisted: "+Funz_v1.POOL.blackList.size()+")", 6);
+                        out("No suitable computer found. Force reset pool.", 6);
                         Funz_v1.POOL.forceResetComputers();
                         sleep(org.funz.Protocol.PING_PERIOD);
                     }                        
