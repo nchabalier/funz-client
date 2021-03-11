@@ -40,7 +40,7 @@ exit %failed%
     del /q testRunParseError.out
     call %FUNZ_HOME%\Funz.bat Run abcdef > testRunParseError.out 2>&1
     set ok=0
-    for /f %%i in ('find /C "Unknown option: abcdef" ^< "testRunParseError.out"') do set ok=%%i
+    for /f %%i in ('%windir%\System32\find /C "Unknown option: abcdef" ^< "testRunParseError.out"') do set ok=%%i
     if "%ok%"=="1" (
         del testRunParseError.out
         echo OK
@@ -55,7 +55,7 @@ exit %failed%
     del /q testRun1.out
     call %FUNZ_HOME%\Funz.bat Run -m %CODE% -if %TMP_IN% -iv x1=.5 x2=0.3 -v %VERBOSITY% -ad tmp > testRun1.out 2>&1
     set ok=0
-    for /f %%i in ('find /C "done" ^< "testRun1.out"') do set ok=%%i
+    for /f %%i in ('%windir%\System32\find /C "done" ^< "testRun1.out"') do set ok=%%i
     if "%ok%"=="2" (
         del testRun1.out
         echo OK
@@ -70,7 +70,7 @@ exit %failed%
     del /q testOutputExpression.out
     call %FUNZ_HOME%\Funz.bat Run -m %CODE% -if %TMP_IN% -iv x1=.5 x2=0.3 -v %VERBOSITY% -ad tmp -oe 1+cat > testOutputExpression.out 2>&1
     set ok=0
-    for /f %%i in ('find /C "6.154316" ^< "testOutputExpression.out"') do set ok=%%i
+    for /f %%i in ('%windir%\System32\find /C "6.154316" ^< "testOutputExpression.out"') do set ok=%%i
     if "%ok%"=="1" (
         del testOutputExpression.out
         echo OK
@@ -85,7 +85,7 @@ exit %failed%
     del /q testRun9.out
     call %FUNZ_HOME%\Funz.bat Run -m %CODE% -if %TMP_IN% -all -iv x1=.5,.6,.7 x2=0.3,.4,.5 -v %VERBOSITY% -ad tmp > testRun9.out 2>&1
     set ok=0
-    for /f %%i in ('find /C "done" ^< "testRun9.out"') do set ok=%%i
+    for /f %%i in ('%windir%\System32\find /C "done" ^< "testRun9.out"') do set ok=%%i
     if "%ok%"=="10" (
         del testRun9.out
         echo OK
