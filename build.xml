@@ -590,7 +590,7 @@
             <exec executable="python3" failonerror="true" output="check.py.out">
                 <arg line="${root.dir}/src/test/python/check.py" />
             </exec>
-            </then><else>
+        </then><else>
             <exec executable="python3" failonerror="true" output="check.py.out">
                 <arg line="${root.dir}\src\test\python\check.py" />
             </exec>
@@ -653,24 +653,22 @@
     </target>
     
     <target name="test-R" depends="dist-test, start-calculators" unless="env.NO_TEST_R">  
-        <if><os family="unix"/>
-            <then>
-                <exec executable="/bin/bash" failonerror="true" output="check.R.out">
-                    <arg value="R"/> 
-                    <arg value="CMD"/> 
-                    <arg value="BATCH"/>
-                    <arg value="${root.dir}/src/test/R/check.R"/>
-                </exec>
-            </then><else>
-                <exec executable="cmd.exe" failonerror="true" output="check.R.out">
-                    <arg line="/c"/>
-                    <arg value="R"/> 
-                    <arg value="CMD"/> 
-                    <arg value="BATCH"/>
-                    <arg value="${root.dir}\src\test\R\check.R"/>
-                </exec>
-            </else>
-        </if>     
+        <if><os family="unix"/><then>
+            <exec executable="/bin/bash" failonerror="true" output="check.R.out">
+                <arg value="R"/> 
+                <arg value="CMD"/> 
+                <arg value="BATCH"/>
+                <arg value="${root.dir}/src/test/R/check.R"/>
+            </exec>
+        </then><else>
+            <exec executable="cmd.exe" failonerror="true" output="check.R.out">
+                <arg line="/c"/>
+                <arg value="R"/> 
+                <arg value="CMD"/> 
+                <arg value="BATCH"/>
+                <arg value="${root.dir}\src\test\R\check.R"/>
+            </exec>
+        </else></if>     
         <loadfile property="check.R.out" srcFile="check.R.out"/>
         <fail message="check failed: ${check.R.out}">
             <condition>
