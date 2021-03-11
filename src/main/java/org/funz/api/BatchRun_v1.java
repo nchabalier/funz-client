@@ -1569,14 +1569,13 @@ public abstract class BatchRun_v1 {
                     provider.client_lock.notifyAll();
                 }
             }
+            provider.interrupt();
             try {
                 provider.join();
             } catch (InterruptedException ex) {
                 ex.printStackTrace(System.err);
             }
-            if (provider != null) {
-                provider.nextClient = null;
-            }
+            provider.nextClient = null;
         }
         //provider = null;
 
