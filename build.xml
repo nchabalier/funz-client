@@ -654,14 +654,14 @@
     
     <target name="test-R" depends="dist-test, start-calculators" unless="env.NO_TEST_R">  
         <if><os family="unix"/><then>
-            <exec executable="/bin/bash" failonerror="true" output="check.R.out">
+            <exec executable="/bin/bash" failonerror="true"><!-- output="check.R.out"-->
                 <arg value="R"/> 
                 <arg value="CMD"/> 
                 <arg value="BATCH"/>
                 <arg value="${root.dir}/src/test/R/check.R"/>
             </exec>
         </then><else>
-            <exec executable="cmd.exe" failonerror="true" output="check.R.out">
+            <exec executable="cmd.exe" failonerror="true"><!-- output="check.R.out"-->
                 <arg line="/c"/>
                 <arg value="R"/> 
                 <arg value="CMD"/> 
@@ -669,10 +669,10 @@
                 <arg value="${root.dir}\src\test\R\check.R"/>
             </exec>
         </else></if>     
-        <loadfile property="check.R.out" srcFile="check.R.out"/>
+        <loadfile property="check.R.out" srcFile="check.Rout"/>
         <fail message="check failed: ${check.R.out}">
             <condition>
-                <not><resourcecontains resource="check.R.out" substring="ok"/></not>
+                <not><resourcecontains resource="check.Rout" substring="ok"/></not>
             </condition>
         </fail>
 
