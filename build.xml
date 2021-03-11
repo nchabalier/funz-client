@@ -430,7 +430,7 @@
                 <if><os family="unix"/>
                 <then>
                     <echo level="error">Start: ${startDate}</echo>
-                    <exec executable="/bin/bash" osfamily="unix" failonerror="false" timeout="600000" resultproperty="@{test.file}_issues.failed">
+                    <exec executable="/bin/bash" failonerror="false" timeout="600000" resultproperty="@{test.file}_issues.failed">
                         <arg value="${root.dir}/src/test/issues/@{test.file}"/>
                     </exec>
                     <script language="javascript">
@@ -474,7 +474,7 @@
     </target>
 
     <target name="test-cmd" depends="dist-test, start-calculators" unless="env.NO_TEST_CMD">
-        <exec executable="cmd.exe" osfamily="windows" failonerror="true" output="check.bat.out">
+        <exec executable="cmd.exe" failonerror="true" output="check.bat.out">
             <arg line="/c"/>
             <arg line="${root.dir}\src\test\cmd\check.bat"/>
         </exec>
@@ -504,7 +504,7 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="cmd.exe" osfamily="windows" failonerror="false" timeout="600000" resultproperty="@{test.file}.failed">
+                <exec executable="cmd.exe" failonerror="false" timeout="600000" resultproperty="@{test.file}.failed">
                     <arg line="/c"/>
                     <arg line="${root.dir}\src\test\cmd\@{test.file}"/>
                 </exec>
@@ -531,7 +531,7 @@
     </target>
 
     <target name="test-bash" depends="dist-test, start-calculators"  unless="env.NO_TEST_BASH">
-        <exec executable="/bin/bash" osfamily="unix" failonerror="true" output="check.sh.out">
+        <exec executable="/bin/bash" failonerror="true" output="check.sh.out">
             <arg value="${root.dir}/src/test/bash/check.sh"/>
         </exec>
         <loadfile property="check.sh.out" srcFile="check.sh.out"/>
@@ -560,7 +560,7 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="/bin/bash" osfamily="unix" failonerror="false" timeout="600000" resultproperty="@{test.file}.failed">
+                <exec executable="/bin/bash" failonerror="false" timeout="600000" resultproperty="@{test.file}.failed">
                     <arg value="${root.dir}/src/test/bash/@{test.file}"/>
                 </exec>
                 <script language="javascript">
@@ -643,14 +643,14 @@
     <target name="test-R" depends="dist-test, start-calculators" unless="env.NO_TEST_R">  
         <if><os family="unix"/>
             <then>
-                <exec executable="/bin/bash" osfamily="unix" failonerror="true" output="check.R.out">
+                <exec executable="/bin/bash" failonerror="true" output="check.R.out">
                     <arg value="R"/> 
                     <arg value="CMD"/> 
                     <arg value="BATCH"/>
                     <arg value="${root.dir}/src/test/R/check.R"/>
                 </exec>
             </then><else>
-                <exec executable="cmd.exe" osfamily="windows" failonerror="true" output="check.R.out">
+                <exec executable="cmd.exe" failonerror="true" output="check.R.out">
                     <arg line="/c"/>
                     <arg value="R"/> 
                     <arg value="CMD"/> 
@@ -687,14 +687,14 @@
                 <echo level="error">Start: ${startDate}</echo>
                 <if><os family="unix"/>
                 <then>
-                    <exec executable="/bin/bash" osfamily="unix" failonerror="false" timeout="600000" resultproperty="@{test.file}_R.failed">
+                    <exec executable="/bin/bash" failonerror="false" timeout="600000" resultproperty="@{test.file}_R.failed">
                         <arg value="R"/> 
                         <arg value="CMD"/> 
                         <arg value="BATCH"/>
                         <arg value="${root.dir}/src/test/R/@{test.file}"/>
                     </exec>
                 </then><else>
-                    <exec executable="cmd.exe" osfamily="windows" failonerror="false" timeout="600000" resultproperty="@{test.file}_R.failed">
+                    <exec executable="cmd.exe" failonerror="false" timeout="600000" resultproperty="@{test.file}_R.failed">
                         <arg line="/c"/>
                         <arg value="R"/> 
                         <arg value="CMD"/> 
