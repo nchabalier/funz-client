@@ -37,7 +37,7 @@ exit %failed%
     del /q testRunDesignParseError.out
     call %FUNZ_HOME%\Funz.bat Run abcdef > testRunDesignParseError.out 2>&1
     set ok=0
-    for /f %%i in ('find /C "Unknown option: abcdef" ^< "testRunDesignParseError.out"') do set ok=%%i
+    for /f %%i in ('%windir%\System32\find /C "Unknown option: abcdef" ^< "testRunDesignParseError.out"') do set ok=%%i
     if %ok% gtr 0 (
         del testRunDesignParseError.out
         echo OK
@@ -52,7 +52,7 @@ exit %failed%
     del /q testRun1Design.out
     call %FUNZ_HOME%\Funz.bat RunDesign -m %CODE% -d %DESIGN% -do nmax=%NMAX% delta=%DELTA% -if %TMP_IN% -iv x1=.3 x2=[0.3,.4] -v %VERBOSITY% -ad tmp/testRun1Design.bat > testRun1Design.out 2>&1
     set ok=0
-    for /f %%i in ('find /C "done" ^< "testRun1Design.out"') do set ok=%%i
+    for /f %%i in ('%windir%\System32\find /C "done" ^< "testRun1Design.out"') do set ok=%%i
     if %ok% gtr 0 (
         del testRun1Design.out
         echo OK
@@ -67,7 +67,7 @@ exit %failed%
     del /q testRun2Design.out
     call %FUNZ_HOME%\Funz.bat RunDesign -m %CODE% -d %DESIGN% -do nmax=%NMAX% delta=%DELTA% -if %TMP_IN% -iv x1=.3,.5 x2=[0.3,.4] -v %VERBOSITY% -ad tmp/testRun2Design.bat > testRun2Design.out 2>&1
     set ok=0
-    for /f %%i in ('find /C "done" ^< "testRun2Design.out"') do set ok=%%i
+    for /f %%i in ('%windir%\System32\find /C "done" ^< "testRun2Design.out"') do set ok=%%i
     if %ok% gtr 0 (
         del testRun2Design.out
         echo OK
@@ -82,7 +82,7 @@ exit %failed%
     del /q testRunDesignFailed.out
     call %FUNZ_HOME%\Funz.bat RunDesign -m %CODE% -d %DESIGN% -do nmax=%NMAX% delta=%DELTA% -if %TMP_IN% -iv x1=[-1.1,1] x2=[0.3,.4] -v %VERBOSITY% -ad tmp/testRunDesignFailed.bat -oe x1+min\(cat,10,na.rm=F\) > testRunDesignFailed.out 2>&1
     set ok=0
-    for /f %%i in ('find /C "RunDesign failed" ^< "testRunDesignFailed.out"') do set ok=%%i
+    for /f %%i in ('%windir%\System32\find /C "RunDesign failed" ^< "testRunDesignFailed.out"') do set ok=%%i
     if %ok% gtr 0 (
         del testRunDesignFailed.out
         echo OK
@@ -97,7 +97,7 @@ exit %failed%
     del /q testBraninGradientDescent.out
     call %FUNZ_HOME%\Funz.bat RunDesign -m %CODE% -d %DESIGN% -do nmax=%NMAX% delta=%DELTA% -if %TMP_IN% -iv x1=[0,1] x2=[0,1] -v %VERBOSITY% -ad tmp/testBraninGradientDescent.bat > testBraninGradientDescent.out 2>&1
     set ok=0
-    for /f %%i in ('find /C "%BraninGradientDescent_MIN%" ^< "testBraninGradientDescent.out"') do set ok=%%i
+    for /f %%i in ('%windir%\System32\find /C "%BraninGradientDescent_MIN%" ^< "testBraninGradientDescent.out"') do set ok=%%i
     if %ok% gtr 0 (
         del testBraninGradientDescent.out
         echo OK
@@ -112,9 +112,9 @@ exit %failed%
     del /q testBraninGradientDescentx2.out
     call %FUNZ_HOME%\Funz.bat RunDesign -m %CODE% -d %DESIGN% -do nmax=%NMAX% delta=%DELTA% -if %TMP_IN% -iv x1=0,1 x2=[0,1] -v %VERBOSITY% -ad tmp/testBraninGradientDescentx2.bat > testBraninGradientDescentx2.out 2>&1
     set ok1=0
-    for /f %%i in ('find /C "%BraninGradientDescentx2_x1_0_MIN%" ^< "testBraninGradientDescentx2.out"') do set ok1=%%i   
+    for /f %%i in ('%windir%\System32\find /C "%BraninGradientDescentx2_x1_0_MIN%" ^< "testBraninGradientDescentx2.out"') do set ok1=%%i   
     set ok2=0
-    for /f %%j in ('find /C "%BraninGradientDescentx2_x1_1_MIN%" ^< "testBraninGradientDescentx2.out"') do set ok2=%%j
+    for /f %%j in ('%windir%\System32\find /C "%BraninGradientDescentx2_x1_1_MIN%" ^< "testBraninGradientDescentx2.out"') do set ok2=%%j
     if %ok1% gtr 0 ( if %ok2% gtr 0 (
         del testBraninGradientDescentx2.out
         echo OK
