@@ -60,7 +60,10 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert results.containsKey("info") : "No 'info' in results";
         assert results.get("info").length == 1 : "Bad length of 'info'";
-        assert results.get("info")[0].toString().contains("failed") : "Did not failed properly !";
+        assert results.get("info")[0].toString().contains("failed") : "Did not failed properly !\n"
+        + " * out.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","out.txt"))
+        + " * err.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","err.txt"))
+        + " * log.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","log.txt"));
 
         Thread.sleep(1000);
 
@@ -96,7 +99,10 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert results.containsKey("info") : "No 'info' in results";
         assert results.get("info").length == 1 : "Bad length of 'info'";
-        assert results.get("info")[0].toString().contains("failed") : "Did not failed properly !";
+        assert results.get("info")[0].toString().contains("failed") : "Did not failed properly !\n"
+        + " * out.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","out.txt"))
+        + " * err.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","err.txt"))
+        + " * log.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","log.txt"));
 
         assert Arrays.asList(sac.getArchiveDirectory().list()).contains("output") : "No output dir in " + Arrays.asList(sac.getArchiveDirectory().list()) + "\n info:\n" + results.get("info")[0];
 
@@ -128,7 +134,10 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert results.containsKey("info") : "No 'info' in results";
         assert results.get("info").length == 1 : "Bad length of 'info'";
-        assert results.get("info")[0].toString().contains("failed") : "Did not failed properly !";
+        assert results.get("info")[0].toString().contains("failed") : "Did not failed properly !\n"
+        + " * out.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","out.txt"))
+        + " * err.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","err.txt"))
+        + " * log.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","log.txt"));
 
         Thread.sleep(1000);
 
