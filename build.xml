@@ -479,7 +479,7 @@
             <arg line="${root.dir}\src\test\cmd\check.bat"/>
         </exec>
         <loadfile property="check.bat.out" srcFile="check.bat.out"/>
-        <fail message="check failed: ${check.bat.out">
+        <fail message="check failed: ${check.bat.out}">
             <condition>
                 <not><resourcecontains resource="check.bat.out" substring="ok"/></not>
             </condition>
@@ -586,9 +586,15 @@
     </target>
 
     <target name="test-python" depends="dist-test, start-calculators" unless="env.NO_TEST_PYTHON">
-        <exec executable="python3" failonerror="true" output="check.py.out">
-            <arg line="${root.dir}/src/test/python/check.py" />
-        </exec>
+        <if><os family="unix"/><then>
+            <exec executable="python3" failonerror="true" output="check.py.out">
+                <arg line="${root.dir}/src/test/python/check.py" />
+            </exec>
+            </then><else>
+            <exec executable="python3" failonerror="true" output="check.py.out">
+                <arg line="${root.dir}\src\test\python\check.py" />
+            </exec>
+        </else></if>
         <loadfile property="check.py.out" srcFile="check.py.out"/>
         <fail message="check failed: ${check.py.out}">
             <condition>
@@ -615,9 +621,15 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="python3" failonerror="false" timeout="600000" resultproperty="@{test.file}_python.failed">
-                    <arg value="${root.dir}/src/test/python/@{test.file}"/>
-                </exec>
+                <if><os family="unix"/><then>
+                    <exec executable="python3" failonerror="false" timeout="600000" resultproperty="@{test.file}_python.failed">
+                        <arg value="${root.dir}/src/test/python/@{test.file}"/>
+                    </exec>
+                </then><else>
+                    <exec executable="python3" failonerror="false" timeout="600000" resultproperty="@{test.file}_python.failed">
+                        <arg value="${root.dir}\src\test\python\@{test.file}"/>
+                    </exec>
+                </else></if>
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
                 </script>
@@ -685,8 +697,7 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <if><os family="unix"/>
-                <then>
+                <if><os family="unix"/><then>
                     <exec executable="/bin/bash" failonerror="false" timeout="600000" resultproperty="@{test.file}_R.failed">
                         <arg value="R"/> 
                         <arg value="CMD"/> 
