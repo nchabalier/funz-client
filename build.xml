@@ -629,13 +629,6 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="/bin/bash" osfamily="unix" failonerror="false" timeout="1200000" resultproperty="@{test.file}_R.failed">
-                    <!--env key="JAVA_HOME" value=""/-->
-                    <arg value="R"/> 
-                    <arg value="CMD"/> 
-                    <arg value="BATCH"/>
-                    <arg value="${root.dir}/src/test/R/@{test.file}"/>
-                </exec>
                 <if><os family="unix"/>
                 <then>
                     <exec executable="/bin/bash" osfamily="unix" failonerror="false" timeout="1200000" resultproperty="@{test.file}_R.failed">
