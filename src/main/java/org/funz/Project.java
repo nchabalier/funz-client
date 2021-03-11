@@ -1627,7 +1627,7 @@ public class Project {
                 return v;
             }
         }
-        Log.err("Could not find variable " + vname, 1);
+        //Log.err("Could not find variable " + vname, 1);
         return null;
     }
 
