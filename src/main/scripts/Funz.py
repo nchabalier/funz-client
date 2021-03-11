@@ -238,7 +238,7 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
     _jclassConstants = J.org.funz.Constants
 
     if verbosity>0:
-        print("Funz "+_jclassConstants.APP_VERSION+" <build "+_jclassConstants.APP_BUILD_DATE+">")
+        print("Funz "+_jclassConstants.APP_VERSION+" <build "+str(_jclassConstants.APP_BUILD_DATE)+">")
 
     if verbosity>3:
         print("  Loading org/funz/api/Funz_v1 ...")
