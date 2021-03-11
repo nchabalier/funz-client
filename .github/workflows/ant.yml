@@ -44,8 +44,9 @@ jobs:
         pip install py4j==0.10.8.1
         pip install numpy
     - if: matrix.os == 'windows-latest'
-      shell: cmd
-      run: mklink "%pythonLocation%\python3.exe" "%pythonLocation%\python.exe"
+      run: |
+        python -m venv venv3
+        venv3/Scripts/Activate.ps1
     - run: |
         WD=$PWD
         cd ..
@@ -232,8 +233,9 @@ jobs:
         pip install numpy
       if: env.NO_TEST_PYTHON != 1
     - if: matrix.os == 'windows-latest' && env.NO_TEST_PYTHON != 1
-      shell: cmd
-      run: mklink "%pythonLocation%\python3.exe" "%pythonLocation%\python.exe"
+      run: |
+        python -m venv venv3
+        venv3/Scripts/Activate.ps1
     - run: |
         WD=$PWD
         cd ..
