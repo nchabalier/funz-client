@@ -661,7 +661,7 @@
                 <arg value="${root.dir}/src/test/R/check.R"/>
             </exec>
         </then><else>
-            <exec executable="cmd.exe" failonerror="true"><!-- output="check.R.out"-->
+            <exec executable="cmd.exe" failonerror="true" output="check.Rout">
                 <arg line="/c"/>
                 <arg value="R"/> 
                 <arg value="CMD"/> 
