@@ -34,6 +34,8 @@ import org.junit.Test;
  */
 public class BatchRunTest extends org.funz.api.TestUtils {
 
+    int TEST_RETRIES = Project.DEFAULT_retries;
+
     public static void main(String args[]) throws Exception {
         test(BatchRunTest.class.getName());
     }
@@ -70,7 +72,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -132,7 +134,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -202,7 +204,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -265,7 +267,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -327,7 +329,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -395,7 +397,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2", ".3", ".4"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -469,7 +471,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2", ".3", ".4"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -553,7 +555,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -611,7 +613,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         prj.setMainOutputFunction(plugin.suggestOutputFunctions().get(0));
         prj.setDesignerId(NODESIGNER_ID);
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -669,7 +671,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_STRING);
         x2.setValues(VariableMethods.Value.asValueList("cde"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -727,7 +729,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_STRING);
         x2.setValues(VariableMethods.Value.asValueList(".1"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -780,7 +782,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2", ".3", ".4"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -987,7 +989,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         prj.addGroup("g", "x1", "x2");
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -1051,7 +1053,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         String[] x2_val = new String[]{"0.1", "0.2"};
         x2.setValues(VariableMethods.Value.asValueList(x2_val));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -1118,7 +1120,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_STRING);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2", ".3", "abc"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -1172,7 +1174,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2", ".1", ".1"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -1224,7 +1226,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -1299,7 +1301,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         System.err.println(prj.getGroupByName("g"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -1358,7 +1360,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -1538,7 +1540,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
         prj.resetDiscreteCases(o);
         prj.setCases(prj.getDiscreteCases(), o);
@@ -1601,7 +1603,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
@@ -1672,7 +1674,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         x2.setType(Variable.TYPE_REAL);
         x2.setValues(VariableMethods.Value.asValueList(".1", ".2"));
 
-        prj.retries = 1;
+        prj.retries = TEST_RETRIES;
         prj.buildParameterList();
 
         prj.resetDiscreteCases(o);
