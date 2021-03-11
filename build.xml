@@ -474,6 +474,12 @@
     </target>
 
     <target name="test-cmd" depends="dist-test, start-calculators" unless="env.NO_TEST_CMD">
+        <exec executable="cmd.exe" osfamily="windows" failonerror="true">
+            <arg line="/c"/>
+            <arg line="${root.dir}/src/test/cmd/check.bat"/>
+            <redirector output="check.bat.out" alwayslog="true"/>           
+        </exec>
+        
         <fileset id="tests" dir="${root.dir}/src/test/cmd/" includes="**/*Test.bat" />
         
         <pathconvert pathsep="${line.separator}" property="tests-cmd.list" refid="tests">
@@ -520,6 +526,11 @@
     </target>
 
     <target name="test-bash" depends="dist-test, start-calculators"  unless="env.NO_TEST_BASH">
+        <exec executable="/bin/bash" osfamily="unix" failonerror="true">
+            <arg value="${root.dir}/src/test/bash/check.sh"/>
+            <redirector output="check.sh.out" alwayslog="true"/>           
+        </exec>
+            
         <fileset id="tests" dir="${root.dir}/src/test/bash/" includes="**/*Test.sh" />
         
         <pathconvert pathsep="${line.separator}" property="tests-bash.list" refid="tests">
@@ -565,6 +576,11 @@
     </target>
 
     <target name="test-python" depends="dist-test, start-calculators" unless="env.NO_TEST_PYTHON">
+        <exec executable="python3" failonerror="true">
+            <arg line="${root.dir}/src/test/python/check.py" />
+            <redirector output="check.py.out" alwayslog="true"/>           
+        </exec>
+
         <fileset id="tests" dir="${root.dir}/src/test/python/" includes="**/*Test.py" />
         
         <pathconvert pathsep="${line.separator}" property="tests-python.list" refid="tests">
@@ -610,6 +626,27 @@
     </target>
     
     <target name="test-R" depends="dist-test, start-calculators" unless="env.NO_TEST_R">  
+        <if><os family="unix"/>
+            <then>
+                <exec executable="/bin/bash" osfamily="unix" failonerror="true">
+                    <arg value="R"/> 
+                    <arg value="CMD"/> 
+                    <arg value="BATCH"/>
+                    <arg value="${root.dir}/src/test/R/check.R"/>
+                    <redirector output="check.R.out" alwayslog="true"/>           
+                </exec>
+            </then><else>
+                <exec executable="cmd.exe" osfamily="windows" failonerror="true">
+                    <arg line="/c"/>
+                    <arg value="R"/> 
+                    <arg value="CMD"/> 
+                    <arg value="BATCH"/>
+                    <arg value="${root.dir}/src/test/R/check.R"/>
+                    <redirector output="check.R.out" alwayslog="true"/>
+                </exec>
+            </else>
+        </if>
+        
         <fileset id="tests" dir="${root.dir}/src/test/R/" includes="**/*Test.R" />
         
         <pathconvert pathsep="${line.separator}" property="tests-R.list" refid="tests">
