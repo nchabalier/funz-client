@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.funz.Project;
+import org.funz.calculator.Calculator;
 import org.funz.util.ASCII;
 import org.funz.util.Disk;
 import static org.funz.util.Format.ArrayMapToMDString;
@@ -40,6 +41,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
             ASCII.saveFile(calc, FileUtils.readFileToString(calc).replace("exit-1.sh", "exit-1.bat"));
             File calcfail = new File("dist", "calculator.fail.xml");
             ASCII.saveFile(calcfail, FileUtils.readFileToString(calcfail).replace("exit-1.sh", "exit-1.bat"));
+            Thread.sleep(Calculator.PING_PERIOD * 2);
         }
 
         File tmp_in = newTmpFile("exit.dat");
@@ -79,6 +81,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
             ASCII.saveFile(calc, FileUtils.readFileToString(calc).replace("crash.sh", "crash.bat"));
             File calcfail = new File("dist", "calculator.fail.xml");
             ASCII.saveFile(calcfail, FileUtils.readFileToString(calcfail).replace("crash.sh", "crash.bat"));
+            Thread.sleep(Calculator.PING_PERIOD * 2);
         }
 
         File tmp_in = newTmpFile("crash.dat");
