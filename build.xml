@@ -264,6 +264,8 @@
         <antcall target="test-bash"/>
         <antcall target="test-cmd"/>
         <antcall target="test-python"/>
+
+        <antcall target="stop-calculators"/>
     </target>
         
     <target name="test-java" depends="dist-test, compile-test" unless="env.NO_TEST_JAVA">
