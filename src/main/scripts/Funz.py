@@ -215,6 +215,7 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
     if verbosity>3:
         print("  Initializing JVM ...\n    " + "\n    ".join(parameters))
     print("  Initializing Gateway ...")
+    print("                       ... classpath "+str(classpath))
     port = py4j.java_gateway.launch_gateway(classpath=(";" if sys.platform=="Windows" else ":").join(os.path.join(_FUNZ_HOME,"lib",str(j)) for j in classpath),javaopts=parameters,redirect_stdout=SysOut(),redirect_stderr=SysErr(),die_on_exit=True)
     print("                       ... port "+str(port))
     global _gateway
