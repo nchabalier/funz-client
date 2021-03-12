@@ -321,7 +321,8 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
 
     .jclassFile <<- J("java/io/File")
 
-    .jSIGPIPE <<- J("org/funz/util/SignalCatcher")$install("PIPE",FALSE) # because R has problems to support SIGPIPE raised by java (may occur when some socket are closed not gracefully)
+    if (Sys.info()[['sysname']]!="Windows")
+        .jSIGPIPE <<- J("org/funz/util/SignalCatcher")$install("PIPE",FALSE) # because R has problems to support SIGPIPE raised by java (may occur when some socket are closed not gracefully) on unix.
 }
 
 
