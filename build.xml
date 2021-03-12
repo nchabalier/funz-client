@@ -657,17 +657,13 @@
     <target name="test-R" depends="dist-test, start-calculators" unless="env.NO_TEST_R">  
         <if><os family="unix"/><then>
             <exec executable="/bin/bash" failonerror="true"><!-- output="check.R.out"-->
-                <arg value="R"/> 
-                <arg value="CMD"/> 
-                <arg value="BATCH"/>
+                <arg value="Rscript"/> 
                 <arg value="${root.dir}/src/test/R/check.R"/>
             </exec>
         </then><else>
             <exec executable="cmd.exe" failonerror="true" output="check.Rout">
                 <arg line="/c"/>
-                <arg value="R"/> 
-                <arg value="CMD"/> 
-                <arg value="BATCH"/>
+                <arg value="Rscript"/> 
                 <arg value="${root.dir}\src\test\R\check.R"/>
             </exec>
         </else></if>     
@@ -699,17 +695,13 @@
                 <echo level="error">Start: ${startDate}</echo>
                 <if><os family="unix"/><then>
                     <exec executable="/bin/bash" failonerror="false" timeout="600000" resultproperty="@{test.file}_R.failed">
-                        <arg value="R"/> 
-                        <arg value="CMD"/> 
-                        <arg value="BATCH"/>
+                        <arg value="Rscript"/> 
                         <arg value="${root.dir}/src/test/R/@{test.file}"/>
                     </exec>
                 </then><else>
                     <exec executable="cmd.exe" failonerror="false" timeout="600000" resultproperty="@{test.file}_R.failed">
                         <arg line="/c"/>
-                        <arg value="R"/> 
-                        <arg value="CMD"/> 
-                        <arg value="BATCH"/>
+                        <arg value="Rscript"/> 
                         <arg value="${root.dir}\src\test\R\@{test.file}"/>
                     </exec>
                 </else></if>
