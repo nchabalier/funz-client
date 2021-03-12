@@ -155,9 +155,9 @@ jobs:
       uses: OrbitalOwen/desktop-screenshot-action@0.1
       with:
         file-name: 'test-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-Main.jpg'
-    - if: steps.anttest.outcome != 'success' && matrix.os != "windows-latest"
+    - if: steps.anttest.outcome != 'success' && matrix.os != 'windows-latest'
       run: ps aux
-    - if: steps.anttest.outcome != 'success' && matrix.os == "windows-latest"
+    - if: steps.anttest.outcome != 'success' && matrix.os == 'windows-latest'
       run: tasklist /V
     - if: steps.anttest.outcome != 'success'
       run: exit 1
@@ -283,9 +283,9 @@ jobs:
       uses: OrbitalOwen/desktop-screenshot-action@0.1
       with:
         file-name: 'test-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-${{ matrix.CLI }}.jpg'
-    - if: steps.anttest.outcome != 'success' && matrix.os != "windows-latest"
+    - if: steps.anttest.outcome != 'success' && matrix.os != 'windows-latest'
       run: ps aux
-    - if: steps.anttest.outcome != 'success' && matrix.os == "windows-latest"
+    - if: steps.anttest.outcome != 'success' && matrix.os == 'windows-latest'
       run: tasklist /V
     - if: steps.anttest.outcome != 'success'
       run: exit 1
