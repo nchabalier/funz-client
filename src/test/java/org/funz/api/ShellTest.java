@@ -295,14 +295,14 @@ public class ShellTest extends org.funz.api.TestUtils {
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[-0.5,-0.3]"), newMap("nmax", "3")); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
 
-        File bad_res = new File("tmp"+File.pathSeparator+"mult.R.res");
+        File bad_res = new File("tmp"+File.separator+"mult.R.res");
         if (bad_res.exists()) {
             Disk.removeDir(bad_res);
             assert !bad_res.exists() : "Could not delete " + bad_res;
         }
         sac.setArchiveDirectory(bad_res);
 
-        File good_res = new File("tmp"+File.pathSeparator+"good/mult.R.res.good");
+        File good_res = new File("tmp"+File.separator+"good/mult.R.res.good");
         if (good_res.exists()) {
             Disk.removeDir(good_res);
             assert !good_res.exists() : "Could not delete " + good_res;
@@ -382,7 +382,7 @@ public class ShellTest extends org.funz.api.TestUtils {
             new Thread(new Runnable() {
 
                 public void run() {
-                    final File tmp_in = new File("tmp"+File.pathSeparator+"branin." + I + ".R");
+                    final File tmp_in = new File("tmp"+File.separator+"branin." + I + ".R");
                     if (tmp_in.exists()) {
                         tmp_in.delete();
                     }
