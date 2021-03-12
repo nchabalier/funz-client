@@ -110,7 +110,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         File tmp_in = mult_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[-0.5,-0.1]", "x2", new String[]{"0.1"}), newMap("nmax", "15")); // R should be dedected by plugin automatically.
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
+        sac.setArchiveDirectory(newTmpDir("test1Case1Design"));
         Funz.setVerbosity(verbose);
 
         //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
@@ -134,7 +134,7 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         System.err.println( newMap("x1", "[-0.5,-0.1]", "x2", "[0.3,0.8]"));
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[-0.5,-0.1]", "x2", "[0.3,0.8]"), newMap("nmax", "3")); // R should be dedected by plugin automatically.
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
+        sac.setArchiveDirectory(newTmpDir("test1Design"));
         Funz.setVerbosity(10);
 
         //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
@@ -165,7 +165,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         File tmp_in = branin_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", "EGO", newMap("x1", "[0,1]", "x2", "[0,1]"), newMap("iterations", "10"));
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
+        sac.setArchiveDirectory(newTmpDir("test1DesignOutExpr"));
         Funz.setVerbosity(verbose);
 
         sac.setOutputExpression("GaussianDensity:cat[1],1");
@@ -195,7 +195,7 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", null, newMap("x1", new String[]{"0", "1"}, "x2", new String[]{"0", "1"}), null);
         Funz.setVerbosity(verbose);
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "branin.R.res"));
+        sac.setArchiveDirectory(newTmpDir("testNoDesignOutExpr"));
         sac.setOutputExpressions("GaussianDensity:cat[1],1");
         //sac.setOutputExpressions("cat[1]");
 
@@ -217,7 +217,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         File tmp_in = mult_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[-0.5,-0.1]"), newMap("nmax", "3", "delta", "1")); // R should be dedected by plugin automatically.
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
+        sac.setArchiveDirectory(newTmpDir("testNDesign"));
         Funz.setVerbosity(verbose);
 
         //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
@@ -243,7 +243,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         File tmp_in = mult_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", null, null, null); // R should be dedected by plugin automatically.
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
+        sac.setArchiveDirectory(newTmpDir("test1Case0Design"));
         Funz.setVerbosity(verbose);
 
         //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
@@ -268,7 +268,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         File tmp_in = mult_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", null, null, null); // R should be dedected by plugin automatically.
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
+        sac.setArchiveDirectory(newTmpDir("testNCasesNoDesign"));
         Funz.setVerbosity(verbose);
 
         //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
@@ -293,15 +293,16 @@ public class ShellTest extends org.funz.api.TestUtils {
         File tmp_in = mult_in();
 
         Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[-0.5,-0.3]"), newMap("nmax", "3")); // R should be dedected by plugin automatically.
-        sac.setArchiveDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
         Funz.setVerbosity(verbose);
 
-        File bad_res = new File("tmp/mult.R.res");
+        File bad_res = new File("tmp"+File.pathSeparator+"mult.R.res");
         if (bad_res.exists()) {
             Disk.removeDir(bad_res);
             assert !bad_res.exists() : "Could not delete " + bad_res;
         }
-        File good_res = new File("tmp/good/mult.R.res.good");
+        sac.setArchiveDirectory(bad_res);
+
+        File good_res = new File("tmp"+File.pathSeparator+"good/mult.R.res.good");
         if (good_res.exists()) {
             Disk.removeDir(good_res);
             assert !good_res.exists() : "Could not delete " + good_res;
@@ -381,7 +382,7 @@ public class ShellTest extends org.funz.api.TestUtils {
             new Thread(new Runnable() {
 
                 public void run() {
-                    final File tmp_in = new File("tmp/branin." + I + ".R");
+                    final File tmp_in = new File("tmp"+File.pathSeparator+"branin." + I + ".R");
                     if (tmp_in.exists()) {
                         tmp_in.delete();
                     }
