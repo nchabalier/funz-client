@@ -269,7 +269,7 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
         else parameters = c(parameters,paste("-D",p,"=",java.control[[p]],sep=""))
     }
 
-    parameters = c(parameters,"-Djava.awt.headless=true",'-Dnashorn.args="--no-deprecation-warning"')
+    parameters = c(parameters,"-Djava.awt.headless=true") #,'-Dnashorn.args="--no-deprecation-warning"')
 
     if (verbosity>3) cat(paste0("  Initializing JVM ...\n    ",paste0(parameters,collapse="\n    "),"\n"))
     .jinit(parameters=parameters, ...)
