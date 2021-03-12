@@ -132,17 +132,13 @@ jobs:
         cd ..
         cd $WD
       shell: bash
-    - uses: GabrielBB/xvfb-action@v1
-      with: 
-        run: ant -noinput -buildfile build.xml test
-      id: anttest
-      continue-on-error: true
-      timeout-minutes: 60
     - run: |
         ant -noinput -buildfile build.xml test
         if [ ${{ matrix.os }} = 'windows-latest' ]; then taskkill /IM "java.exe" /F; else killall java; fi
       shell: bash
       id: anttest
+      continue-on-error: true
+      timeout-minutes: 60
     - if: steps.anttest.outcome != 'success'
       uses: actions/upload-artifact@v2
       with:
