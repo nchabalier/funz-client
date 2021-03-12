@@ -191,14 +191,14 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
     if not os.path.isdir(_FUNZ_HOME):
         raise Exception("FUNZ_HOME environment variable not correctly set: FUNZ_HOME="+_FUNZ_HOME+"\nPlease setup FUNZ_HOME to your Funz installation path.\n(you can get Funz freely at https://funz.github.io/funz.org/)")
 
-    parameters = ["-Dapp.home="+_FUNZ_HOME,"-Duser.language=en","-Duser.country=US","-Dverbosity="+str(verbosity),"-Douterr=.Funz"]
+    parameters = ["-Dapp.home="+_FUNZ_HOME,"-Duser.language=en","-Duser.country=US","-Dverbosity="+str(verbosity)] #,"-Douterr=.Funz"]
     for p in java_control.keys():
         if p[0]=="X":
             parameters.append("-"+p+java_control[p])
         else:
             parameters.append("-D"+p+"="+java_control[p])
 
-    parameters.append("-Djava.awt.headless=True") # -Dnashorn.args='--no-deprecation-warning'")
+    parameters.append("-Djava.awt.headless=true") # -Dnashorn.args='--no-deprecation-warning'")
     
     classpath = [ f for f in os.listdir(os.path.join(_FUNZ_HOME,"lib")) if (os.path.isfile(os.path.join(os.path.join(_FUNZ_HOME,"lib"), f)) & ((os.path.splitext(f)[1])==".jar")) ]
     
@@ -215,7 +215,7 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
     if verbosity>3:
         print("  Initializing JVM ...\n    " + "\n    ".join(parameters))
     print("  Initializing Gateway ...")
-    print("                       ... classpath "+str(classpath))
+    print("                       ... using "+str(classpath))
     port = py4j.java_gateway.launch_gateway(classpath=(";" if sys.platform=="Windows" else ":").join(os.path.join(_FUNZ_HOME,"lib",str(j)) for j in classpath),javaopts=parameters,redirect_stdout=SysOut(),redirect_stderr=SysErr(),die_on_exit=True)
     print("                       ... port "+str(port))
     global _gateway
