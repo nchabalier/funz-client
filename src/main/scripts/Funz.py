@@ -178,7 +178,7 @@ if _dir is None: _dir = os.path.dirname(os.path.realpath(sys.argv[0]))
 # @param java_control list of JVM startup parameters (like -D...=...).
 # @param jvmargs optional parameters passed to 'java' call.
 # @example FUNZ_HOME="c:\Program Files\Funz";Funz_init(FUNZ_HOME)
-def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.platform=="Windows" else {'Xmx':"512m"}, verbosity=0, verbose_level=None, **jvmargs) :
+def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.platform.startswith("win") else {'Xmx':"512m"}, verbosity=0, verbose_level=None, **jvmargs) :
     if (not verbose_level is None) & (verbosity != verbose_level) : verbosity = verbose_level
 
     if FUNZ_HOME is None:
@@ -215,7 +215,7 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
     if verbosity>3:
         print("  Initializing JVM ...\n    " + "\n    ".join(parameters))
     print("  Initializing Gateway ...")
-    print("                       ... using "+str(classpath))
+    print("                       ... using "+(";" if sys.platform.startswith("win") else ":").join(os.path.join(_FUNZ_HOME,"lib",str(j)) for j in classpath))
     port = py4j.java_gateway.launch_gateway(classpath=(";" if sys.platform=="Windows" else ":").join(os.path.join(_FUNZ_HOME,"lib",str(j)) for j in classpath),javaopts=parameters,redirect_stdout=SysOut(),redirect_stderr=SysErr(),die_on_exit=True)
     print("                       ... port "+str(port))
     global _gateway
