@@ -78,7 +78,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results0 == null || !ArrayMapToMDString(results0).contains("cat") : "Not empty results: " + ArrayMapToMDString(results0);
 
         String s = getASCIIFileContent(tmp_in);
-        s = s.replace("?x1", "?[x1~.3]");
+        s = s.replace("?x1", "?[x1~-.3]");
         System.err.println("s " + s);
         ASCII.saveFile(tmp_in, s);
 
