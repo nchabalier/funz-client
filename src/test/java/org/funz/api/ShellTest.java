@@ -88,7 +88,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
 
-        assert sac.getProject().getVariableByName("x1").getDefaultValue().equals(".3") : "Did not found x1 default value.";
+        assert sac.getProject().getVariableByName("x1").getDefaultValue().equals("-.3") : "Did not found x1 default value.";
         assert sac.getProject().getVariableByName("x2").getDefaultValue().equals(".5") : "Did not found x2 default value.";
 
         assert sac.startComputationAndWait() : "Failed to run with default cases: " + sac.getState();
