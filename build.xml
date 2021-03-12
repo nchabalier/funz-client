@@ -656,8 +656,7 @@
     
     <target name="test-R" depends="dist-test, start-calculators" unless="env.NO_TEST_R">  
         <if><os family="unix"/><then>
-            <exec executable="/bin/bash" failonerror="true"><!-- output="check.R.out"-->
-                <arg value="Rscript"/> 
+            <exec executable="Rscript" failonerror="true" output="check.Rout">
                 <arg value="${root.dir}/src/test/R/check.R"/>
             </exec>
         </then><else>
@@ -694,8 +693,7 @@
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
                 <if><os family="unix"/><then>
-                    <exec executable="/bin/bash" failonerror="false" timeout="600000" resultproperty="@{test.file}_R.failed">
-                        <arg value="Rscript"/> 
+                    <exec executable="Rscript" failonerror="false" timeout="600000" resultproperty="@{test.file}_R.failed">
                         <arg value="${root.dir}/src/test/R/@{test.file}"/>
                     </exec>
                 </then><else>
