@@ -1548,12 +1548,11 @@ public abstract class BatchRun_v1 {
     }
 
     public void shutdown() {
+        out("Ask for batch shutdown:", 3);
         if (askToStop) {
-            out("Batch shutdown already in progress...", 4);
+            out("  Batch shutdown already in progress!", 3);
             return;
         }
-
-        out("Ask for batch shutdown.", 3);
 
         //System.err.println("======================= shutdown() > waitForCalculator = false;");
         waitForCalculator = false;
@@ -1562,7 +1561,10 @@ public abstract class BatchRun_v1 {
         }
         askToStop = true;
 
-        out("Shutdown provider", 3);
+        out("  Stop pooling", 3);
+        Funz_v1.POOL.setRefreshing(false, provider_lock, "BatchRun.shutdown");
+
+        out("  Shutdown provider", 3);
         if (provider != null) {
             synchronized (provider.client_lock) {
                 if (provider != null && provider.client_lock != null) {
@@ -1579,7 +1581,7 @@ public abstract class BatchRun_v1 {
         }
         //provider = null;
 
-        out("Break running cases", 3);
+        out("  Break running cases", 3);
         synchronized (running_cleaner) {
             for (Thread clean : running_cleaner.values()) {
                 clean.start();
@@ -1593,19 +1595,14 @@ public abstract class BatchRun_v1 {
             running_cleaner.clear();
         }
 
-        //synchronized (POOL) {
-        Funz_v1.POOL.setRefreshing(false, provider_lock, "BatchRun.shutdown");
-        //}
-
-        out("Waiting cases to stop", 3);
+        out("  Waiting cases to stop", 3);
         for (RunCase runCase : runCases) {
+            runCase.interrupt();
             try {
                 runCase.join();
             } catch (InterruptedException ex) {
             }
         }
-
-        out("Cleanup cases", 3);
         runCases.clear();
     }
 
