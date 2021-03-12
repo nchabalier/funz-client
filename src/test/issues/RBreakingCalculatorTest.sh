@@ -13,8 +13,8 @@ R CMD BATCH run.R 2>&1 > run.Rout &
 PID_R=$!
 echo "PID_R = "$PID_R
 
-ok1=`ps aux | grep " $PID_R " | grep "\.R" | wc -l`
-if [ ! $ok1 = "1" ]; then echo "FAILED to start client: $ok1"; ps aux | grep " $PID_R "> ps.out; echo "* ps.out"; cat ps.out; echo "* run.Rout"; cat run.Rout; echo "* Run.log"; cat Run.log; exit 1; fi
+ok1=`ps aux | grep " $PID_R " | tee ps.out | grep "\.R" | wc -l`
+if [ ! $ok1 = "1" ]; then echo "FAILED to start client: $ok1"; echo "* ps.out"; cat ps.out; echo "* run.Rout"; cat run.Rout; echo "* Run.log"; cat Run.log; exit 1; fi
 echo "OK started client"
 
 rm calc.out
@@ -26,8 +26,8 @@ echo "PID_CALCULATOR = "$PID_CALCULATOR
 
 sleep 2
 
-ok2=`ps aux | grep " $PID_CALCULATOR " | grep java | wc -l`
-if [ ! $ok2 = "1" ]; then echo "FAILED to start calculator: $ok2"; ps aux | grep " $PID_CALCULATOR "> ps.out; echo "* ps.out"; cat ps.out; kill -9 $PID_R; echo "* calc.out"; cat calc.out; exit 2; fi
+ok2=`ps aux | grep " $PID_CALCULATOR " | tee ps.out | grep java | wc -l`
+if [ ! $ok2 = "1" ]; then echo "FAILED to start calculator: $ok2"; echo "* ps.out"; cat ps.out; kill -9 $PID_R; echo "* calc.out"; cat calc.out; exit 2; fi
 echo "OK started calculator"
 
 ## for loop testing of previous Run only. Comment otherwise
@@ -43,12 +43,12 @@ kill -9 $PID_CALCULATOR
 
 sleep 3
 
-ok3=`ps aux | grep " $PID_CALCULATOR " | grep java | wc -l`
-if [ ! $ok3 = "0" ]; then echo "FAILED to stop calculation: $ok3"; ps aux | grep " $PID_CALCULATOR "> ps.out; echo "* ps.out"; cat ps.out; kill -9 $PID_R $PID_CALCULATOR; cat calc.out; exit 3; fi
+ok3=`ps aux | grep " $PID_CALCULATOR " | tee ps.out | grep java | wc -l`
+if [ ! $ok3 = "0" ]; then echo "FAILED to stop calculation: $ok3"; echo "* ps.out"; cat ps.out; kill -9 $PID_R $PID_CALCULATOR; cat calc.out; exit 3; fi
 echo "OK to stop calculation"
 
-ok4=`ps aux | grep " $PID_R " | grep "\.R" | wc -l`
-if [ ! $ok4 = "1" ]; then echo "FAILED to let client alive: $ok4"; ps aux | grep " $PID_R "> ps.out; echo "* ps.out"; cat ps.out; kill -9 $PID_R $PID_CALCULATOR; echo "* run.Rout"; cat run.Rout; echo "* Run.log"; cat Run.log; exit 4; fi
+ok4=`ps aux | grep " $PID_R " | tee ps.out | grep "\.R" | wc -l`
+if [ ! $ok4 = "1" ]; then echo "FAILED to let client alive: $ok4"; echo "* ps.out"; cat ps.out; kill -9 $PID_R $PID_CALCULATOR; echo "* run.Rout"; cat run.Rout; echo "* Run.log"; cat Run.log; exit 4; fi
 echo "OK client alive"
 
 rm calc.out
@@ -61,8 +61,8 @@ echo "PID_CALCULATOR2 = "$PID_CALCULATOR2
 
 sleep 3
 
-ok5=`ps aux | grep " $PID_R " | grep "\.R" | wc -l`
-if [ ! $ok5 = "1" ]; then echo "FAILED to restart calculation: $ok5"; ps aux | grep " $PID_R "> ps.out; echo "* ps.out"; cat ps.out; kill -9 $PID_R $PID_CALCULATOR; cat run.Rout; exit 5; fi
+ok5=`ps aux | grep " $PID_R " | tee ps.out | grep "\.R" | wc -l`
+if [ ! $ok5 = "1" ]; then echo "FAILED to restart calculation: $ok5"; echo "* ps.out"; cat ps.out; kill -9 $PID_R $PID_CALCULATOR; cat run.Rout; exit 5; fi
 echo "OK to restart calculation"
 
 done=0
@@ -77,8 +77,8 @@ while [ $i -le 10 ]; do
 done
 echo "Waited "$i"x10s"
 
-ok6=`ps aux | grep " $PID_R " | grep "\.R" | wc -l`
-if [ ! $ok6 = "0" ]; then echo "FAILED to finish calculation: $ok6"; ps aux | grep " $PID_R "> ps.out; echo "* ps.out"; cat ps.out; kill -9 $PID_R $PID_CALCULATOR; cat run.Rout; exit 6; fi
+ok6=`ps aux | grep " $PID_R " | tee ps.out | grep "\.R" | wc -l`
+if [ ! $ok6 = "0" ]; then echo "FAILED to finish calculation: $ok6"; echo "* ps.out"; cat ps.out; kill -9 $PID_R $PID_CALCULATOR; cat run.Rout; exit 6; fi
 echo "OK to finish calculation"
 
 ok7=`tail -10 run.Rout | grep "136.0767" | wc -l`
