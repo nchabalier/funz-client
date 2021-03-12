@@ -355,7 +355,7 @@ public class RunShell_v1 extends AbstractShell {
         Funz_v1.init();
         System.err.println(Funz_v1.CONF.toString());
 
-        File tmp_in = new File("tmp/branin.R");
+        File tmp_in = new File("tmp"+File.pathSeparator+"branin.R");
         if (tmp_in.exists()) {
             tmp_in.delete();
         }

@@ -162,8 +162,6 @@ public abstract class LoopDesign_v1 {
         Funz_v1.setVerbosity(level);
     }
 
-    Thread stopRun;
-
     /**
      * Create a 'design of ecperiments' (DoE) project.
      *
