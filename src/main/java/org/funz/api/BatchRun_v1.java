@@ -228,6 +228,7 @@ public abstract class BatchRun_v1 {
                                         err("<new ReserverClient> failed to provide " + computer.host + ":" + computer.port + ":" + ex.getMessage(), 6);
                                         nextClient = null;
                                         computer.freeUser();
+                                        client_lock.notifyAll(); // Say provideNewClient that we got a nextClient
                                         continue;
                                     }
                                 } // END synchronized (client_lock)
