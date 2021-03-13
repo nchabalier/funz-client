@@ -134,7 +134,7 @@ jobs:
       shell: bash
     - run: |
         ant -noinput -buildfile build.xml test
-        if [ ${{ matrix.os }} = 'windows-latest' ]; then tasklist | findstr java && taskkill //F //IM java.exe; else killall java || echo "no java"; fi
+        if [ ${{ matrix.os }} = 'windows-latest' ]; then taskkill //F //IM java.exe || echo "no java"; else killall java || echo "no java"; fi
       shell: bash
       id: anttest
       continue-on-error: true
@@ -263,7 +263,7 @@ jobs:
       shell: bash
     - run: |
         ant -noinput -buildfile build.xml test
-        if [ ${{ matrix.os }} = 'windows-latest' ]; then tasklist | findstr java && taskkill //F //IM "java.exe"; else killall java || echo "no java"; fi
+        if [ ${{ matrix.os }} = 'windows-latest' ]; then taskkill //F //IM "java.exe" || echo "no java"; else killall java || echo "no java"; fi
       shell: bash
       id: anttest
       continue-on-error: true
