@@ -1560,7 +1560,6 @@ public abstract class BatchRun_v1 {
         waitForCalculator = false;
         if (provider != null) {
             provider.waitingNextClient = false;
-            client_lock.notifyAll();
         }
         askToStop = true;
 
