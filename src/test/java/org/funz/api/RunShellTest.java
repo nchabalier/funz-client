@@ -122,7 +122,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         if (tmp_in.exists()) {
             tmp_in.delete();
         }
-        Disk.copyFile(new File("src/test/samples/branin.nop.R"), tmp_in);
+        Disk.copyFile(new File("src"+File.separator+"test"+File.separator+"samples","branin.nop.R"), tmp_in);
 
         RunShell_v1 sac = new RunShell_v1("R Crash", tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -217,7 +217,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         assert tmp.list().length == 0 : "Cannot empty tmp !";
 
         File tmp_in = branin_in();
-        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=2"));
+        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src"+File.separator+"test"+File.separator+"samples","branin.R")).replace("t=0", "t=2"));
 
         Funz.setVerbosity(verbose);
 
@@ -328,7 +328,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         if (tmp_in.exists()) {
             tmp_in.delete();
         }
-        Disk.copyFile(new File("src/test/samples/branin.nop.R"), tmp_in);
+        Disk.copyFile(new File("src"+File.separator+"test"+File.separator+"samples","branin.nop.R"), tmp_in);
 
         RunShell_v1 sac = new RunShell_v1(R, tmp_in, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -396,7 +396,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         File tmp_in = branin_in();
         File tmp_plugin = newTmpFile("getZ.ioplugin");
-        Disk.copyFile(new File("src/test/samples/getZ.ioplugin"), tmp_plugin);
+        Disk.copyFile(new File("src"+File.separator+"test"+File.separator+"samples","getZ.ioplugin"), tmp_plugin);
 
         RunShell_v1 sac = new RunShell_v1(R, new File[]{tmp_in, tmp_plugin}, (String) null); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
@@ -594,13 +594,14 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         final boolean[] tests = new boolean[]{false, false, false, false};
         final boolean[] done = new boolean[tests.length];
+        Thread[] ts = new Thread[tests.length];
         for (int i = 0; i < tests.length; i++) {
             done[i] = false;
         }
         Funz.setVerbosity(verbose);
         for (int i = 0; i < tests.length; i++) {
             final int I = i;
-            new Thread(new Runnable() {
+            ts[i] = new Thread(new Runnable() {
 
                 public void run() {
                     File tmp_in = null;
@@ -614,7 +615,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
                     }
                     while (true) {
                         try {
-                            Disk.copyFile(new File("src/test/samples/branin.R"), tmp_in);
+                            Disk.copyFile(new File("src"+File.separator+"test"+File.separator+"samples","branin.R"), tmp_in);
                             break;
                         } catch (Exception e) {
                             System.err.println("Retrying initialization of test ...");
@@ -666,7 +667,8 @@ public class RunShellTest extends org.funz.api.TestUtils {
                         }
                     }
                 }
-            }).start();
+            });
+            ts[i].start();
         }
 
         boolean alltrue = false;
@@ -676,10 +678,19 @@ public class RunShellTest extends org.funz.api.TestUtils {
             System.err.println("============================\n" + Print.gridStatusInformation() + "============================\n");
             synchronized (tests) {
                 alltrue = alltrue(done);
+                tests.notifyAll();
             }
         }
 
         assert alltrue(tests) : "One concurency run failed !";
+    
+        for (int i = 0; i < tests.length; i++) {
+            ts[i].interrupt();
+            ts[i].join();
+            synchronized (tests) {
+                tests.notifyAll();
+            }
+        }
     }
 
     @Test

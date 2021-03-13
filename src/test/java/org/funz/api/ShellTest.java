@@ -373,22 +373,23 @@ public class ShellTest extends org.funz.api.TestUtils {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testConcurrency");
         final boolean[] tests = new boolean[]{false, false, false, false};
         final boolean[] done = new boolean[tests.length];
+        Thread[] ts = new Thread[tests.length];
         for (int i = 0; i < tests.length; i++) {
             done[i] = false;
         }
         Funz.setVerbosity(verbose);
         for (int i = 0; i < tests.length; i++) {
             final int I = i;
-            new Thread(new Runnable() {
+            ts[i] = new Thread(new Runnable() {
 
                 public void run() {
-                    final File tmp_in = new File("tmp"+File.separator+"branin." + I + ".R");
+                    final File tmp_in = new File("tmp"+File.separator+"mult." + I + ".R");
                     if (tmp_in.exists()) {
                         tmp_in.delete();
                     }
                     while (true) {
                         try {
-                            Disk.copyFile(new File("src/test/samples/branin.R"), tmp_in);
+                            Disk.copyFile(new File("src"+File.separator+"test"+File.separator+"samples","mult.R"), tmp_in);
                             break;
                         } catch (Exception e) {
                             System.err.println("Retrying initialization of test ...");
@@ -400,6 +401,8 @@ public class ShellTest extends org.funz.api.TestUtils {
                         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
                         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
 
+                        sac.setArchiveDirectory(newTmpDir("testConcurrency."+I));
+
                         sac.startComputationAndWait();
 
                         Map<String, String[]> results = sac.getResultsStringArrayMap();
@@ -408,6 +411,7 @@ public class ShellTest extends org.funz.api.TestUtils {
                         synchronized (tests) {
                             tests[I] = true;
                             done[I] = true;
+                            tests.notifyAll();
                         }
                         sac.shutdown();
                     } catch (Exception e) {
@@ -416,16 +420,19 @@ public class ShellTest extends org.funz.api.TestUtils {
                         synchronized (tests) {
                             tests[I] = false;
                             done[I] = true;
+                            tests.notifyAll();
                         }
                     } catch (AssertionError e) {
                         System.err.println("FAILED shell " + I + " \n" + e.getLocalizedMessage());
                         synchronized (tests) {
                             tests[I] = false;
                             done[I] = true;
+                            tests.notifyAll();
                         }
                     }
                 }
-            }).start();
+            });
+            ts[i].start();
         }
 
         boolean alltrue = false;
@@ -434,10 +441,19 @@ public class ShellTest extends org.funz.api.TestUtils {
             //System.err.println(".");
             synchronized (tests) {
                 alltrue = alltrue(done);
+                tests.notifyAll();
             }
         }
 
         assert alltrue(tests) : "One concurency run failed !";
+
+        for (int i = 0; i < tests.length; i++) {
+            ts[i].interrupt();
+            ts[i].join();
+            synchronized (tests) {
+                tests.notifyAll();
+            }
+        }
     }
 
     @Test

@@ -52,7 +52,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         }
     };
 
-    @Test
+    //@Test
     public void testOutputExpr() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOutputExpr");
         File tmp_in = branin_in();
@@ -114,7 +114,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void testOutputExprGaussian() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOutputExprGaussian");
         File tmp_in = branin_in();
@@ -179,7 +179,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void test1Case() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1Case");
         File tmp_in = branin_in();
@@ -241,7 +241,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void testBatchTimeout() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testBatchTimeout");
         File tmp_in = branin_in();
@@ -302,12 +302,12 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void test1CaseLongExec() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1CaseLongExec");
         File tmp_in = branin_in();
         // will exceed tcp timeout for readResponse (10 s.)
-        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=15"));
+        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src"+File.separator+"test"+File.separator+"samples","branin.R")).replace("t=0", "t=15"));
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -369,12 +369,12 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void test20Cases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test20Cases");
         File tmp_in = branin_in();
         // will exceed tcp timeout for readResponse (10 s.)
-        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=1"));
+        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src"+File.separator+"test"+File.separator+"samples","branin.R")).replace("t=0", "t=1"));
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -444,12 +444,12 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void test20CasesLongExec() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test20CasesLongExec");
         File tmp_in = branin_in();
         // will exceed tcp timeout for readResponse (10 s.)
-        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=5"));
+        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src"+File.separator+"test"+File.separator+"samples","branin.R")).replace("t=0", "t=5"));
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -518,7 +518,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void test1CaseWithBinFile() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1CaseWithBinFile");
 
@@ -532,7 +532,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         if (tmp_in2.exists()) {
             tmp_in2.delete();
         }
-        Disk.copyFile(new File("src/test/samples/some.bin"), tmp_in2);
+        Disk.copyFile(new File("src"+File.separator+"test"+File.separator+"samples","some.bin"), tmp_in2);
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -594,11 +594,11 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void testDefinedVarValues() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDefinedVarValues");
         File tmp_in = branin_in();
-        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replaceFirst("\\?x1", "\\?\\[x1~{.6}\\]"));
+        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src"+File.separator+"test"+File.separator+"samples","branin.R")).replaceFirst("\\?x1", "\\?\\[x1~{.6}\\]"));
         ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(tmp_in).replaceFirst("\\?[x2~.5]", "\\?\\[x2~{.5}\\]"));
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
@@ -646,7 +646,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void test1FailedCaseOnPrepare() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1FailedCaseOnPrepare");
         File tmp_in = branin_in();
@@ -704,7 +704,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void test1FailedCaseOnRun() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1FailedCaseOnRun");
         File tmp_in = branin_in();
@@ -762,7 +762,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void testKill() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testKill");
         File tmp_in = branin_in();
@@ -845,13 +845,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         System.err.println("+++++++++++++++++++++++++ testConcurrency");
         final boolean[] tests = new boolean[]{false, false, false, false};
         final boolean[] done = new boolean[tests.length];
+        Thread[] ts = new Thread[tests.length];
         for (int i = 0; i < tests.length; i++) {
             done[i] = false;
         }
         Funz.setVerbosity(verbose);
         for (int i = 0; i < tests.length; i++) {
             final int I = i;
-            new Thread(new Runnable() {
+            ts[i] = new Thread(new Runnable() {
 
                 public void run() {
                     System.err.println("Starting instance " + I);
@@ -866,7 +867,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
                     }
                     while (true) {
                         try {
-                            Disk.copyFile(new File("src/test/samples/branin.R"), tmp_in);
+                            Disk.copyFile(new File("src"+File.separator+"test"+File.separator+"samples","branin.R"), tmp_in);
                             break;
                         } catch (Exception e) {
                             System.err.println("Retrying initialization of test ...");
@@ -949,7 +950,8 @@ public class BatchRunTest extends org.funz.api.TestUtils {
                         }
                     }
                 }
-            }).start();
+            });
+            ts[i].start();
         }
 
         boolean alltrue = false;
@@ -959,13 +961,22 @@ public class BatchRunTest extends org.funz.api.TestUtils {
             //System.err.println("============================\n" + Print.gridStatusInformation() + "============================\n");
             synchronized (tests) {
                 alltrue = alltrue(done);
+                tests.notifyAll();
             }
         }
 
         assert alltrue(tests) : "One concurency run failed !: " + Arrays.toString(tests);
+        
+        for (int i = 0; i < tests.length; i++) {
+            ts[i].interrupt();
+            ts[i].join();
+            synchronized (tests) {
+                tests.notifyAll();
+            }
+        }
     }
 
-    @Test
+    //@Test
     public void testMultipleCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testMultipleCases");
         File tmp_in = branin_in();
@@ -1031,7 +1042,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void testSomeCasesNotSelected() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testSomeCasesNotSelected");
         File tmp_in = branin_in();
@@ -1100,7 +1111,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         return sa;
     }
 
-    @Test
+    //@Test
     public void testSomeFailedCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testSomeFailedCases");
         File tmp_in = branin_in();
@@ -1154,7 +1165,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void testDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDuplicateCases");
         File tmp_in = branin_in();
@@ -1206,7 +1217,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void testIterativeDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testIterativeDuplicateCases");
         File tmp_in = branin_in();
@@ -1275,7 +1286,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void testVectorize() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testVectorize");
         File tmp_in = branin_in();
@@ -1339,11 +1350,11 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void testStopRestart() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testStopRestart");
         File tmp_in = branin_in();
-        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=1"));
+        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src"+File.separator+"test"+File.separator+"samples","branin.R")).replace("t=0", "t=1"));
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -1437,14 +1448,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void test2StopRestart() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test2StopRestart");
         File tmp_in0 = newTmpFile("branin0.R");
         if (tmp_in0.exists()) {
             tmp_in0.delete();
         }
-        ASCII.saveFile(tmp_in0, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=1"));
+        ASCII.saveFile(tmp_in0, ParserUtils.getASCIIFileContent(new File("src"+File.separator+"test"+File.separator+"samples","branin.R")).replace("t=0", "t=1"));
 
         IOPluginInterface plugin0 = IOPluginsLoader.newInstance(R, tmp_in0);
         Project prj0 = ProjectController.createProject(tmp_in0.getName(), tmp_in0, R, plugin0);
@@ -1524,7 +1535,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!! START 2nd Project !!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
         File tmp_in = branin_in();
-        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src/test/samples/branin.R")).replace("t=0", "t=1"));
+        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src"+File.separator+"test"+File.separator+"samples","branin.R")).replace("t=0", "t=1"));
 
         IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
         Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
@@ -1584,7 +1595,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
     }
 
-    @Test
+    //@Test
     public void testAddCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testAddCases");
         File tmp_in = branin_in();
@@ -1655,7 +1666,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    @Test
+    //@Test
     public void testCodeNoResult() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testCodeError");
         File tmp_in = branin_in();
