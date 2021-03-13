@@ -1569,9 +1569,9 @@ public abstract class BatchRun_v1 {
 
         out("  Shutdown provider", 3);
         if (provider != null) {
-            synchronized (provider.client_lock) {
-                if (provider != null && provider.client_lock != null) {
-                    provider.client_lock.notifyAll();
+            synchronized (client_lock) {
+                if (provider != null && client_lock != null) {
+                    client_lock.notifyAll();
                 }
             }
             provider.interrupt();
