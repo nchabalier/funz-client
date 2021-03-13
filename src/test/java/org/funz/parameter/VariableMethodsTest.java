@@ -23,6 +23,8 @@ import static org.funz.util.ParserUtils.getASCIIFileContent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.funz.util.Digest;
+import java.nio.charset.StandardCharsets;
 
 public class VariableMethodsTest {
 
@@ -236,6 +238,19 @@ public class VariableMethodsTest {
         assert readVar("" + vs + vl + "v~123;{1,2,3};\"comment\"" + vr,false).getComment().equals("comment") : "Failed to read var comment";
         assert readVar("" + vs + vl + "v~123;{1,2,3};\"comment\";[10,20]" + vr,false).getLowerBound() == 10 : "Failed to read var bound";
         assert readVar("" + vs + vl + "v~123;{1,2,3};\"comment\";[10,20]" + vr,false).getUpperBound() == 20 : "Failed to read var bound";
+    }
+
+    @Test
+    public void testKeepEOL() throws Exception {
+        for (File f : new File[]{new File("src"+File.separator+"test"+File.separator+"samples","input.CR"),new File("src"+File.separator+"test"+File.separator+"samples","input.CRLF"),new File("src"+File.separator+"test"+File.separator+"samples","input.LF")}) {
+            File of  = new File("tmp",f.getName());
+            VariableMethods.parseFileVars(varSyntax, f,of,null,null,null);
+            String md5_f = new String(Digest.getSum(f), StandardCharsets.UTF_8);
+            String md5_of = new String(Digest.getSum(of), StandardCharsets.UTF_8);
+            if (!md5_f.equals(md5_of)) 
+                System.err.println(f+ " ("+md5_f+") != "+of+ " ("+md5_of+")");
+            assert md5_f.equals(md5_of);
+        }
     }
 
     @Test

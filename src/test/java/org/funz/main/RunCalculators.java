@@ -44,5 +44,7 @@ public class RunCalculators {
         for (int i = 0; i < calculators.length; i++) {
             calculators[i].askToStop("end claculators");
         }
+
+        System.exit(0);
     }
 }

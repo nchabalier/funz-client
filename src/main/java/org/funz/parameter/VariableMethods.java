@@ -307,8 +307,27 @@ public class VariableMethods {
         nf.setGroupingUsed(false);
         nf.setMinimumIntegerDigits(6);
 
+        BufferedReader eolreader = new BufferedReader(new InputStreamReader(new FileInputStream(file), ASCII.CHARSET));
+        String eol = "";
+        while (eol.length() == 0 && eolreader.ready()) {
+            char c = (char)eolreader.read();
+            switch (c) {
+                case '\n': eol="\n"; break;
+                case '\r': if ((char)eolreader.read() == '\n') eol="\r\n"; else eol="\r"; break;
+                default:
+            }
+        }
+        //System.err.println("EOL: "+( eol .equals ("\r") ? "\\r" : (eol .equals  ("\n") ? "\\n" : eol .equals  ("\r\n") ? "\\r\\n" : "?") ));
+        eolreader.close();
+        if (eol.length() == 0) eol="\n";
+        final String EOL = eol;
+        PrintWriter writer = trg == null ? null : new PrintWriter(trg, ASCII.CHARSET) {
+            @Override
+            public void println() {
+                write(EOL);
+            }
+        };
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), ASCII.CHARSET));
-        PrintWriter writer = trg == null ? null : new PrintWriter(trg, ASCII.CHARSET);
 
         List<String> alreadyadded = new LinkedList<String>();
 

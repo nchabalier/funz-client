@@ -88,7 +88,8 @@ public class Computer {
 
     @Override
     public String toString() {
-        return "| " + name + " " + '\u0009'
+        return "| " + use + " " + '\u0009'
+                + "| " + name + " " + '\u0009'
                 + "| " + host + " " + '\u0009'
                 + "| " + os + " " + '\u0009'
                 + "| " + (ip + ":" + port) + " " + '\u0009'
@@ -100,7 +101,8 @@ public class Computer {
     }
 
     public static String toStringTitle() {
-        return "| Computer " + '\u0009'
+        return "| Use " + '\u0009'
+                + "| Computer " + '\u0009'
                 + "| host name " + '\u0009'
                 + "| OS " + '\u0009'
                 + "| address:port " + '\u0009'
@@ -155,9 +157,9 @@ public class Computer {
 
     public static interface ComputerStatusListener {
 
-        void fireComputerDied(Computer comp, int row);
+        void fireComputerDied(Computer comp);
 
-        void fireComputerStatusUnknown(Computer comp, int row);
+        void fireComputerStatusUnknown(Computer comp);
 
         void fireUpdateComputerInfo(Computer comp);
     }

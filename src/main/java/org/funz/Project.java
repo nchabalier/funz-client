@@ -795,7 +795,6 @@ public class Project {
      * removes all unreferred variables & groups from the project.
      */
     public void cleanParameters() {
-        //System.out.println("cleanParameters");
         boolean found = false;
 
         LinkedList<Variable> toRemove = new LinkedList<Variable>();
@@ -1628,7 +1627,7 @@ public class Project {
                 return v;
             }
         }
-        Log.err("Could not find variable " + vname, 1);
+        //Log.err("Could not find variable " + vname, 1);
         return null;
     }
 
@@ -2543,7 +2542,8 @@ public class Project {
             ps.println("<" + ELEM_SESSIONS + ">");
             for (DesignSession s : _designSessions) {
                 s.save(ps);
-                s.getDesign().saveNotebook();
+                Design d = s.getDesign();
+                if (d!=null) d.saveNotebook();
             }
             ps.println("</" + ELEM_SESSIONS + ">");
         } catch (IOException ioe) {

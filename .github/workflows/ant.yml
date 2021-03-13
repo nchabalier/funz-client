@@ -1,0 +1,322 @@
+name: Java CI
+
+on:
+  push:
+    branches: [ master ]
+    tags: [ 'v*.*' ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test-unit:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macOS-latest ]
+        java: [ 8, 11, 13 ]
+        Rserver: [ 'R2js' ] #, 'Renjin', 'R://localhost' ]
+    env:
+      #NO_TEST_JAVA: 1
+      NO_TEST_MAIN: 1
+      NO_TEST_ISSUES: 1
+      NO_TEST_R: 1
+      NO_TEST_PYTHON: 1
+      NO_TEST_BASH: 1
+      NO_TEST_CMD: 1
+      NO_CALCULATORS: 1
+      R_SERVER: ${{ matrix.Rserver }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+        java-package: jdk
+    - uses: r-lib/actions/setup-r@v1
+      with:
+        r-version: 3.6
+    - if: matrix.os == 'macos-latest'
+      run: ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+    - run: |
+        python -m pip install --upgrade pip
+        pip install py4j==0.10.8.1
+        pip install numpy
+    - if: matrix.os == 'windows-latest'
+      run: |
+        python -m venv venv3
+        venv3/Scripts/Activate.ps1
+    - run: |
+        WD=$PWD
+        cd ..
+        git clone https://github.com/Funz/funz-profile
+        git clone https://github.com/Funz/funz-core
+        cd funz-core
+        ant clean dist
+        cd ..
+        git clone https://github.com/Funz/funz-calculator
+        cd funz-calculator
+        ant clean dist
+        cd ..
+        cd $WD
+      shell: bash
+    - run: ant -noinput -buildfile build.xml test
+      id: anttest
+      continue-on-error: true
+      timeout-minutes: 60
+    - if: steps.anttest.outcome != 'success'
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifacts-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-unit
+        path: |
+          *.txt
+          *.log
+          *.out
+          *.Rout
+    - run: ant -noinput -buildfile build.xml coverage
+      if: matrix.os == 'ubuntu-latest'
+    - uses: codecov/codecov-action@v1
+      if: matrix.os == 'ubuntu-latest'
+    - if: steps.anttest.outcome != 'success'
+      run: exit 1
+
+  test-Main:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ ubuntu-latest , windows-latest, macOS-latest ]
+        java: [ 11 ]
+        Rserver: [ R2js ]
+    env:
+      NO_TEST_JAVA: 1
+      #NO_TEST_MAIN: 1
+      #NO_TEST_ISSUES: 1
+      NO_TEST_R: 1
+      NO_TEST_PYTHON: 1
+      NO_TEST_BASH: 1
+      NO_TEST_CMD: 1
+      #NO_CALCULATORS: 1
+      R_SERVER: ${{ matrix.Rserver }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+        java-package: jdk
+    - uses: r-lib/actions/setup-r@v1
+      with:
+        r-version: 3.6
+    - if: matrix.os == 'macos-latest'
+      run: ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
+    - run: sudo R CMD javareconf
+      if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+    - run: Rscript -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
+      shell: bash
+    - run: |
+        WD=$PWD
+        cd ..
+        git clone https://github.com/Funz/funz-profile
+        git clone https://github.com/Funz/funz-core
+        cd funz-core
+        ant clean dist
+        cd ..
+        cd $WD
+        ant dist # required by funz-calculator/dist-test
+        cd ..
+        git clone https://github.com/Funz/funz-calculator
+        cd funz-calculator
+        ant clean dist-test
+        cd ..
+        cd $WD
+      shell: bash
+    - run: |
+        ant -noinput -buildfile build.xml test
+        if [ ${{ matrix.os }} = 'windows-latest' ]; then tasklist | findstr java && taskkill //F //IM java.exe; else killall java || echo "no java"; fi
+      shell: bash
+      id: anttest
+      continue-on-error: true
+      timeout-minutes: 60
+    - if: steps.anttest.outcome != 'success'
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifacts-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-Main
+        path: |
+          *.txt
+          *.log
+          *.out
+          *.Rout
+    - if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
+      run: sudo apt-get -y install imagemagick
+    - if: steps.anttest.outcome != 'success'
+      uses: OrbitalOwen/desktop-screenshot-action@0.1
+      with:
+        file-name: 'test-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-Main.jpg'
+    - if: steps.anttest.outcome != 'success' && matrix.os != 'windows-latest'
+      run: ps aux
+    - if: steps.anttest.outcome != 'success' && matrix.os == 'windows-latest'
+      run: tasklist /V
+    - if: steps.anttest.outcome != 'success'
+      run: exit 1
+        
+  test-FunzCLI:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest , windows-latest, macos-latest ]
+        java: [ 11 ]
+        Rserver: [ R2js ]
+        CLI: [ R, Python, Bash, Cmd ]
+        exclude: 
+        - os: ubuntu-latest
+          CLI: Cmd
+        - os: macos-latest
+          CLI: Cmd
+        - os: windows-latest
+          CLI: Bash
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      NO_TEST_JAVA: 1
+      NO_TEST_MAIN: 1
+      NO_TEST_ISSUES: 1
+      #NO_TEST_R: 1
+      #NO_TEST_PYTHON: 1
+      #NO_TEST_BASH: 1
+      #NO_TEST_CMD: 1
+      #NO_CALCULATORS: 1
+      R_SERVER: ${{ matrix.Rserver }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - run: |
+        #echo '::set-env name=NO_TEST_R::1'
+        echo '::set-env name=NO_TEST_PYTHON::1'
+        echo '::set-env name=NO_TEST_BASH::1'
+        echo '::set-env name=NO_TEST_CMD::1'
+      shell: bash
+      if: matrix.CLI == 'R'
+    - run: |
+        echo '::set-env name=NO_TEST_R::1'
+        #echo '::set-env name=NO_TEST_PYTHON::1'
+        echo '::set-env name=NO_TEST_BASH::1'
+        echo '::set-env name=NO_TEST_CMD::1'
+      shell: bash
+      if: matrix.CLI == 'Python'
+    - run: |
+        echo '::set-env name=NO_TEST_R::1'
+        echo '::set-env name=NO_TEST_PYTHON::1'
+        #echo '::set-env name=NO_TEST_BASH::1'
+        echo '::set-env name=NO_TEST_CMD::1'
+      shell: bash
+      if: matrix.CLI == 'Bash'
+    - run: |
+        echo '::set-env name=NO_TEST_R::1'
+        echo '::set-env name=NO_TEST_PYTHON::1'
+        echo '::set-env name=NO_TEST_BASH::1'
+        #echo '::set-env name=NO_TEST_CMD::1'
+      shell: bash
+      if: matrix.CLI == 'Cmd'            
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+        java-package: jdk
+    - uses: r-lib/actions/setup-r@v1
+      with:
+        r-version: 3.6
+    - if: matrix.os == 'macos-latest'
+      run: ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
+    - run: sudo R CMD javareconf
+      if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+    - run: Rscript -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
+      if: env.NO_TEST_R != 1
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.6
+      if: env.NO_TEST_PYTHON != 1
+    - run: |
+        python -m pip install --upgrade pip
+        pip install py4j==0.10.8.1
+        pip install numpy
+      if: env.NO_TEST_PYTHON != 1
+    - if: matrix.os == 'windows-latest' && env.NO_TEST_PYTHON != 1
+      run: |
+        python -m venv venv3
+        venv3/Scripts/Activate.ps1
+    - run: |
+        WD=$PWD
+        cd ..
+        git clone https://github.com/Funz/funz-profile
+        git clone https://github.com/Funz/funz-core
+        cd funz-core
+        ant clean dist
+        cd ..
+        cd $WD
+        ant dist # required by funz-calculator/dist-test
+        cd ..
+        git clone https://github.com/Funz/funz-calculator
+        cd funz-calculator
+        ant clean dist-test
+        cd ..
+        cd $WD
+      shell: bash
+    - run: |
+        ant -noinput -buildfile build.xml test
+        if [ ${{ matrix.os }} = 'windows-latest' ]; then tasklist | findstr java && taskkill //F //IM "java.exe"; else killall java || echo "no java"; fi
+      shell: bash
+      id: anttest
+      continue-on-error: true
+      timeout-minutes: 60
+    - if: steps.anttest.outcome != 'success'
+      uses: actions/upload-artifact@v2
+      with:
+        name: artifacts-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-${{ matrix.CLI }}
+        path: |
+          *.txt
+          *.log
+          *.out
+          *.Rout
+    - if: matrix.os == 'ubuntu-latest' && steps.anttest.outcome != 'success'
+      run: sudo apt-get -y install imagemagick
+    - if: steps.anttest.outcome != 'success'
+      uses: OrbitalOwen/desktop-screenshot-action@0.1
+      with:
+        file-name: 'test-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-${{ matrix.CLI }}.jpg'
+    - if: steps.anttest.outcome != 'success' && matrix.os != 'windows-latest'
+      run: ps aux
+    - if: steps.anttest.outcome != 'success' && matrix.os == 'windows-latest'
+      run: tasklist /V
+    - if: steps.anttest.outcome != 'success'
+      run: exit 1
+      
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+        java-package: jdk
+    - run: |
+        WD=$PWD
+        cd ..
+        git clone https://github.com/Funz/funz-profile
+        git clone https://github.com/Funz/funz-core
+        cd funz-core
+        ant clean dist
+        cd ..
+        cd $WD
+    - run: ant clean dist
+    - uses: actions/upload-artifact@v2
+      with:
+        path: dist
+    - uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: dist/lib/funz-client*.jar
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+        
+        

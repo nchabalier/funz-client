@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.funz.Project;
+import org.funz.calculator.Calculator;
 import org.funz.util.ASCII;
 import org.funz.util.Disk;
 import static org.funz.util.Format.ArrayMapToMDString;
@@ -40,6 +41,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
             ASCII.saveFile(calc, FileUtils.readFileToString(calc).replace("exit-1.sh", "exit-1.bat"));
             File calcfail = new File("dist", "calculator.fail.xml");
             ASCII.saveFile(calcfail, FileUtils.readFileToString(calcfail).replace("exit-1.sh", "exit-1.bat"));
+            Thread.sleep(Calculator.PING_PERIOD * 2);
         }
 
         File tmp_in = newTmpFile("exit.dat");
@@ -60,7 +62,10 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert results.containsKey("info") : "No 'info' in results";
         assert results.get("info").length == 1 : "Bad length of 'info'";
-        assert results.get("info")[0].toString().contains("failed") : "Did not failed properly !";
+        assert results.get("info")[0].toString().contains("failed") : "Did not failed properly !\n"
+        + " * out.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","out.txt"))
+        + " * err.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","err.txt"))
+        + " * log.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","log.txt"));
 
         Thread.sleep(1000);
 
@@ -76,6 +81,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
             ASCII.saveFile(calc, FileUtils.readFileToString(calc).replace("crash.sh", "crash.bat"));
             File calcfail = new File("dist", "calculator.fail.xml");
             ASCII.saveFile(calcfail, FileUtils.readFileToString(calcfail).replace("crash.sh", "crash.bat"));
+            Thread.sleep(Calculator.PING_PERIOD * 2);
         }
 
         File tmp_in = newTmpFile("crash.dat");
@@ -96,7 +102,10 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert results.containsKey("info") : "No 'info' in results";
         assert results.get("info").length == 1 : "Bad length of 'info'";
-        assert results.get("info")[0].toString().contains("failed") : "Did not failed properly !";
+        assert results.get("info")[0].toString().contains("failed") : "Did not failed properly !\n"
+        + " * out.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","out.txt"))
+        + " * err.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","err.txt"))
+        + " * log.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","log.txt"));
 
         assert Arrays.asList(sac.getArchiveDirectory().list()).contains("output") : "No output dir in " + Arrays.asList(sac.getArchiveDirectory().list()) + "\n info:\n" + results.get("info")[0];
 
@@ -128,7 +137,10 @@ public class RunShellTest extends org.funz.api.TestUtils {
 
         assert results.containsKey("info") : "No 'info' in results";
         assert results.get("info").length == 1 : "Bad length of 'info'";
-        assert results.get("info")[0].toString().contains("failed") : "Did not failed properly !";
+        assert results.get("info")[0].toString().contains("failed") : "Did not failed properly !\n"
+        + " * out.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","out.txt"))
+        + " * err.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","err.txt"))
+        + " * log.txt:\n" + ParserUtils.getASCIIFileContent(new File(sac.getArchiveDirectory() + File.separator + "output","log.txt"));
 
         Thread.sleep(1000);
 
@@ -570,7 +582,7 @@ public class RunShellTest extends org.funz.api.TestUtils {
         });
         t.start();
 
-        Thread.sleep(3000);
+        Thread.sleep(2000);
         sac.shutdown();
 
         t.join();

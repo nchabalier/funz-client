@@ -21,7 +21,7 @@ MAIN=org.funz.main.$1
 
 LIB=`find $FUNZ_PATH/lib -name '*.jar' | xargs echo | tr ' ' ':'`
 
-java -Dnashorn.args="--no-deprecation-warning" -Dcharset=ISO-8859-1 -Xmx512m -Dapp.home=$FUNZ_PATH -classpath $LIB $MAIN $*
+java -Dcharset=ISO-8859-1 -Xmx512m -Dapp.home=$FUNZ_PATH -classpath $LIB $MAIN $*
 # -Douterr=.$1
 
 if [ $? -ne 0 ]; then 

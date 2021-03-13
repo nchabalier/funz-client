@@ -565,7 +565,7 @@ public class Client implements Protocol {
         try {
             to.execute(timeout);
         } catch (TimeOut.TimeOutException e) {
-            log(e.getLocalizedMessage());
+            log("TimeOutException: "+e.getLocalizedMessage());
         }
         if (to.getResult() == null) {
             return null;

@@ -239,7 +239,15 @@ public abstract class OutputFunctionExpression {
         public Anything(String value) {
             setParametersExpression(value);
             parametersNames = new String[]{"object"};
+        }
 
+        public Anything(String... values) {
+            setParametersExpression(values);
+            String[] names = new String[values.length];
+            for (int i=0; i < names.length; i++) {
+                names[i] = "object"+(i+1);    
+            }  
+            parametersNames = names;
         }
 
         public String getSymbolicValue() {

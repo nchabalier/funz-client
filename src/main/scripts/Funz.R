@@ -269,7 +269,7 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
         else parameters = c(parameters,paste("-D",p,"=",java.control[[p]],sep=""))
     }
 
-    parameters = c(parameters,"-Djava.awt.headless=true",'-Dnashorn.args="--no-deprecation-warning"')
+    parameters = c(parameters,"-Djava.awt.headless=true") #,'-Dnashorn.args="--no-deprecation-warning"')
 
     if (verbosity>3) cat(paste0("  Initializing JVM ...\n    ",paste0(parameters,collapse="\n    "),"\n"))
     .jinit(parameters=parameters, ...)
@@ -321,7 +321,8 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
 
     .jclassFile <<- J("java/io/File")
 
-    .jSIGPIPE <<- J("org/funz/util/SignalCatcher")$install("PIPE",FALSE) # because R has problems to support SIGPIPE raised by java (may occur when some socket are closed not gracefully)
+    if (Sys.info()[['sysname']]!="Windows")
+        .jSIGPIPE <<- J("org/funz/util/SignalCatcher")$install("PIPE",FALSE) # because R has problems to support SIGPIPE raised by java (may occur when some socket are closed not gracefully) on unix.
 }
 
 

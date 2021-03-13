@@ -87,7 +87,10 @@ public class CaseList extends ArrayList<Case> {
                 values = new String[columns.length];
                 Properties info = c.getInfo();
                 for (int i = 0; i < columns.length; i++) {
-                    values[i] = info.getProperty(columns[i], "-");
+                    if (info!=null)
+                        values[i] = info.getProperty(columns[i], "-");
+                    else 
+                        values[i] = "?";
                 }
                 writer.writeNext(values);
             }

@@ -161,7 +161,7 @@
                     <include name="**/*.jar" />
                 </fileset>
             </classpath>
-            <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+            <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
             <jvmarg value="-Dcharset=ISO-8859-1" />
             <jvmarg value="-Dapp.home=${dist.dir}" />
             <arg value="${config.dir}/${quotas.xml}" />
@@ -190,7 +190,7 @@
         </copy>
         <java classname="org.funz.conf.Configuration" fork="true" >
             <classpath refid="dist.classpath" />
-            <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+            <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
             <jvmarg value="-Dcharset=ISO-8859-1" />
             <jvmarg value="-Dapp.home=${dist.dir}" />
             <arg value="${test.config.dir}/${quotas.xml}" />
@@ -264,6 +264,8 @@
         <antcall target="test-bash"/>
         <antcall target="test-cmd"/>
         <antcall target="test-python"/>
+
+        <antcall target="stop-calculators"/>
     </target>
         
     <target name="test-java" depends="dist-test, compile-test" unless="env.NO_TEST_JAVA">
@@ -299,8 +301,8 @@
                 
                         <record name="${test.class.id}.txt" action="start" />
                         <jacoco:coverage> 
-                            <java classname="${test.class.id}" fork="true" timeout="1200000" failonerror="false" resultproperty="@{test.class}.failed">
-                                <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+                            <java classname="${test.class.id}" fork="true" timeout="600000" failonerror="false" resultproperty="@{test.class}.failed">
+                                <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
                                 <classpath refid="test.classpath" />
                                 <classpath path="${build.dir}" />
                                 <classpath path="${unit.test.jar}" />
@@ -313,6 +315,7 @@
                         <if>
                             <equals arg1="${@{test.class}.failed}" arg2="0" />
                             <then>
+                                <echo message="Success: @{test.class}" />
                             </then>
                             <else>
                                 <property name="failed" value="1" /> 
@@ -379,8 +382,8 @@
                 
                         <record name="${test.class.id}.txt" action="start" />
                         <jacoco:coverage> 
-                            <java classname="${test.class.id}" fork="true" timeout="1200000" failonerror="false" resultproperty="@{test.class}.failed">
-                                <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+                            <java classname="${test.class.id}" fork="true" timeout="600000" failonerror="false" resultproperty="@{test.class}.failed">
+                                <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
                                 <classpath refid="test.classpath" />
                                 <classpath path="${build.dir}" />
                                 <classpath path="${unit.test.jar}" />
@@ -393,6 +396,7 @@
                         <if>
                             <equals arg1="${@{test.class}.failed}" arg2="0" />
                             <then>
+                                <echo message="Success: @{test.class}" />
                             </then>
                             <else>
                                 <property name="failed" value="1" /> 
@@ -425,25 +429,31 @@
                     project.setProperty('startTime', new Date().getTime());
                     project.setProperty('startDate', new Date());
                 </script>
-                <echo level="error">Start: ${startDate}</echo>
-                <exec executable="/bin/bash" osfamily="unix" failonerror="false" timeout="1200000" resultproperty="@{test.file}_issues.failed">
-                    <arg value="${root.dir}/src/test/issues/@{test.file}"/>
-                </exec>
-                <script language="javascript">
-                    project.setProperty('elapsedTime', new Date().getTime() - startTime)
-                </script>
-                <echo message="@{test.file} Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
-                <echo level="error" message="@{test.file} Time: ${elapsedTime} ms"/>
-                
-                <if>
-                    <equals arg1="${@{test.file}_issues.failed}" arg2="0" />
-                    <then>
-                    </then>
-                    <else>
-                        <property name="failed_issues" value="1" />
-                        <echo message="Failures: @{test.file}" />
-                    </else>
-                </if>
+                <if><os family="unix"/>
+                <then>
+                    <echo level="error">Start: ${startDate}</echo>
+                    <exec executable="/bin/bash" failonerror="false" timeout="600000" resultproperty="@{test.file}_issues.failed">
+                        <arg value="${root.dir}/src/test/issues/@{test.file}"/>
+                    </exec>
+                    <script language="javascript">
+                        project.setProperty('elapsedTime', new Date().getTime() - startTime)
+                    </script>
+                    <echo message="@{test.file} Time: ${elapsedTime} ms" file="${root.dir}/@{test.file}.txt" append="true"/>
+                    <echo level="error" message="@{test.file} Time: ${elapsedTime} ms"/>
+
+                    <if>
+                        <equals arg1="${@{test.file}_issues.failed}" arg2="0" />
+                        <then>
+                            <echo message="Success: @{test.file}" />
+                        </then>
+                        <else>
+                            <property name="failed_issues" value="1" />
+                            <echo message="Failures: @{test.file}" />
+                        </else>
+                    </if>
+                </then><else>
+                    <echo message="Ignored: @{test.file}" />
+                </else></if>
             </sequential>
         </for>
         <fail message="Test failure detected for issues, check test results." if="failed_issues" />
@@ -451,7 +461,7 @@
 
     <target name="start-calculators" depends="compile, compile-test, stop-calculators" unless="env.NO_CALCULATORS">
         <java classname="org.funz.main.RunCalculators" fork="true" spawn="true">
-            <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+            <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
             <classpath refid="calculator.classpath" />
             <classpath path="${build.dir}" />
             <classpath path="${unit.test.jar}" />
@@ -466,6 +476,17 @@
     </target>
 
     <target name="test-cmd" depends="dist-test, start-calculators" unless="env.NO_TEST_CMD">
+        <exec executable="cmd.exe" failonerror="true" output="check.bat.out">
+            <arg line="/c"/>
+            <arg line="${root.dir}\src\test\cmd\check.bat"/>
+        </exec>
+        <loadfile property="check.bat.out" srcFile="check.bat.out"/>
+        <fail message="check failed: ${check.bat.out}">
+            <condition>
+                <not><resourcecontains resource="check.bat.out" substring="ok"/></not>
+            </condition>
+        </fail>
+
         <fileset id="tests" dir="${root.dir}/src/test/cmd/" includes="**/*Test.bat" />
         
         <pathconvert pathsep="${line.separator}" property="tests-cmd.list" refid="tests">
@@ -485,9 +506,9 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="cmd.exe" osfamily="windows" failonerror="false" timeout="2400000" resultproperty="@{test.file}.failed">
+                <exec executable="cmd.exe" failonerror="false" timeout="600000" resultproperty="@{test.file}.failed">
                     <arg line="/c"/>
-                    <arg line="${root.dir}/src/test/cmd/@{test.file}"/>
+                    <arg line="${root.dir}\src\test\cmd\@{test.file}"/>
                 </exec>
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
@@ -498,6 +519,7 @@
                 <if>
                     <equals arg1="${@{test.file}.failed}" arg2="0" />
                     <then>
+                        <echo message="Success: @{test.file}" />
                     </then>
                     <else>
                         <property name="failed_cmd" value="1" />
@@ -511,6 +533,16 @@
     </target>
 
     <target name="test-bash" depends="dist-test, start-calculators"  unless="env.NO_TEST_BASH">
+        <exec executable="/bin/bash" failonerror="true" output="check.sh.out">
+            <arg value="${root.dir}/src/test/bash/check.sh"/>
+        </exec>
+        <loadfile property="check.sh.out" srcFile="check.sh.out"/>
+        <fail message="check failed: ${check.sh.out}">
+            <condition>
+                <not><resourcecontains resource="check.sh.out" substring="ok"/></not>
+            </condition>
+        </fail>
+
         <fileset id="tests" dir="${root.dir}/src/test/bash/" includes="**/*Test.sh" />
         
         <pathconvert pathsep="${line.separator}" property="tests-bash.list" refid="tests">
@@ -530,7 +562,7 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="/bin/bash" osfamily="unix" failonerror="false" timeout="2400000" resultproperty="@{test.file}.failed">
+                <exec executable="/bin/bash" failonerror="false" timeout="600000" resultproperty="@{test.file}.failed">
                     <arg value="${root.dir}/src/test/bash/@{test.file}"/>
                 </exec>
                 <script language="javascript">
@@ -542,10 +574,11 @@
                 <if>
                     <equals arg1="${@{test.file}.failed}" arg2="0" />
                     <then>
+                        <echo message="Success: @{test.file}" />
                     </then>
                     <else>
                         <property name="failed_bash" value="1" />
-                        <echo message="Failures: @{test.class}" />
+                        <echo message="Failures: @{test.file}" />
                     </else>
                 </if>
             </sequential>
@@ -555,6 +588,22 @@
     </target>
 
     <target name="test-python" depends="dist-test, start-calculators" unless="env.NO_TEST_PYTHON">
+        <if><os family="unix"/><then>
+            <exec executable="python3" failonerror="true" output="check.py.out">
+                <arg line="${root.dir}/src/test/python/check.py" />
+            </exec>
+        </then><else>
+            <exec executable="python3" failonerror="true" output="check.py.out">
+                <arg line="${root.dir}\src\test\python\check.py" />
+            </exec>
+        </else></if>
+        <loadfile property="check.py.out" srcFile="check.py.out"/>
+        <fail message="check failed: ${check.py.out}">
+            <condition>
+                <not><resourcecontains resource="check.py.out" substring="ok"/></not>
+            </condition>
+        </fail>
+
         <fileset id="tests" dir="${root.dir}/src/test/python/" includes="**/*Test.py" />
         
         <pathconvert pathsep="${line.separator}" property="tests-python.list" refid="tests">
@@ -574,9 +623,15 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="python3" osfamily="unix" failonerror="false" timeout="2400000" resultproperty="@{test.file}_python.failed">
-                    <arg value="${root.dir}/src/test/python/@{test.file}"/>
-                </exec>
+                <if><os family="unix"/><then>
+                    <exec executable="python3" failonerror="false" timeout="600000" resultproperty="@{test.file}_python.failed">
+                        <arg value="${root.dir}/src/test/python/@{test.file}"/>
+                    </exec>
+                </then><else>
+                    <exec executable="python3" failonerror="false" timeout="600000" resultproperty="@{test.file}_python.failed">
+                        <arg value="${root.dir}\src\test\python\@{test.file}"/>
+                    </exec>
+                </else></if>
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
                 </script>
@@ -586,6 +641,7 @@
                 <if>
                     <equals arg1="${@{test.file}_python.failed}" arg2="0" />
                     <then>
+                        <echo message="Success: @{test.file}" />
                     </then>
                     <else>
                         <property name="failed_python" value="1" />
@@ -599,6 +655,24 @@
     </target>
     
     <target name="test-R" depends="dist-test, start-calculators" unless="env.NO_TEST_R">  
+        <if><os family="unix"/><then>
+            <exec executable="Rscript" failonerror="true" output="check.Rout">
+                <arg value="${root.dir}/src/test/R/check.R"/>
+            </exec>
+        </then><else>
+            <exec executable="cmd.exe" failonerror="true" output="check.Rout">
+                <arg line="/c"/>
+                <arg value="Rscript"/> 
+                <arg value="${root.dir}\src\test\R\check.R"/>
+            </exec>
+        </else></if>     
+        <loadfile property="check.R.out" srcFile="check.Rout"/>
+        <fail message="check failed: ${check.R.out}">
+            <condition>
+                <not><resourcecontains resource="check.Rout" substring="ok"/></not>
+            </condition>
+        </fail>
+
         <fileset id="tests" dir="${root.dir}/src/test/R/" includes="**/*Test.R" />
         
         <pathconvert pathsep="${line.separator}" property="tests-R.list" refid="tests">
@@ -618,13 +692,17 @@
                     project.setProperty('startDate', new Date());
                 </script>
                 <echo level="error">Start: ${startDate}</echo>
-                <exec executable="/bin/bash" osfamily="unix" failonerror="false" timeout="1200000" resultproperty="@{test.file}_R.failed">
-                    <!--env key="JAVA_HOME" value=""/-->
-                    <arg value="R"/> 
-                    <arg value="CMD"/> 
-                    <arg value="BATCH"/>
-                    <arg value="${root.dir}/src/test/R/@{test.file}"/>
-                </exec>
+                <if><os family="unix"/><then>
+                    <exec executable="Rscript" failonerror="false" timeout="600000" resultproperty="@{test.file}_R.failed">
+                        <arg value="${root.dir}/src/test/R/@{test.file}"/>
+                    </exec>
+                </then><else>
+                    <exec executable="cmd.exe" failonerror="false" timeout="600000" resultproperty="@{test.file}_R.failed">
+                        <arg line="/c"/>
+                        <arg value="Rscript"/> 
+                        <arg value="${root.dir}\src\test\R\@{test.file}"/>
+                    </exec>
+                </else></if>
                 <script language="javascript">
                     project.setProperty('elapsedTime', new Date().getTime() - startTime)
                 </script>
@@ -634,6 +712,7 @@
                 <if>
                     <equals arg1="${@{test.file}_R.failed}" arg2="0" />
                     <then>
+                        <echo message="Success: @{test.file}" />
                     </then>
                     <else>
                         <property name="failed_R" value="1" />
@@ -656,7 +735,7 @@
                     <file name="${dist.dir}/${client.jar}"/>
                 </filelist>
             </classpath>
-            <jvmarg value='-Dnashorn.args="--no-deprecation-warning"'/>
+            <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
             <jvmarg value="-Dcharset=ISO-8859-1" />
             <jvmarg value="-Dapp.home=${dist.dir}" />
             <arg value="-dump" />

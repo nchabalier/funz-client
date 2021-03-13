@@ -33,6 +33,7 @@ import org.funz.util.Disk;
 import static org.funz.util.Format.repeat;
 import org.funz.util.ZipTool;
 import org.math.array.IntegerArray;
+import org.funz.log.LogTicToc;
 
 /**
  * @author richet
@@ -138,17 +139,16 @@ public abstract class BatchRun_v1 {
         public void run() {
 
             while (waitForCalculator) {
-                out(provideNewClient_HEAD + "Waiting client: " + waitingNextClient, 7);
-                out(provideNewClient_HEAD + "Waiting calculator: " + waitForCalculator, 7);
+                out(provideNewClient_HEAD + "Waiting client:" + waitingNextClient+" Waiting calculator:" + waitForCalculator, 7);
                 while (waitForCalculator && !waitingNextClient) {
                     try {
                         out(provideNewClient_HEAD + "O", 8);
                         synchronized (client_lock) {
                             out(provideNewClient_HEAD + "o", 8);
                             while (!waitingNextClient) {
-                                client_lock.wait();//SLEEP_PERIOD);
+                                client_lock.wait(); // Wait for provideNewClient to ask for nextClient
                                 if (!waitForCalculator) {
-                                    out(provideNewClient_HEAD + "no longer waiting calculator. STOPPED.", 7);
+                                    out(provideNewClient_HEAD + "no longer waiting calculator. Stop NewClientProvider.", 7);
                                     return;
                                 }
                             }
@@ -159,18 +159,18 @@ public abstract class BatchRun_v1 {
                         continue;
                     }
                 }
-                out(provideNewClient_HEAD + "... client waited.", 7);
-                out(provideNewClient_HEAD + "Wait for filling pool:", 7);
+                out(provideNewClient_HEAD + "... client waited. Wait for filling pool...", 7);
                 while (waitForCalculator && (Funz_v1.POOL.getComputers().size() <= 0 || (prj.getMaxCalcs() > 0 && getNumOfCompsUsed() >= prj.getMaxCalcs()))) {
                     try {
                         out(provideNewClient_HEAD + "p", 8);
-                        out("waitForCalculator:"+waitForCalculator+" POOL.getComputers().size():" + Funz_v1.POOL.getComputers().size() + "<=0 || prj.getMaxCalcs():" + prj.getMaxCalcs() + ">0 && getNumOfCompsUsed():" + getNumOfCompsUsed() + ">=" + prj.getMaxCalcs() + ":prj.getMaxCalcs()", 9);
-                        sleep(SLEEP_PERIOD);
+                        out("waitForCalculator:"+waitForCalculator+" waitingNextClient:"+waitingNextClient+" POOL.getComputers().size():" + Funz_v1.POOL.getComputers().size() + "<=0 || prj.getMaxCalcs():" + prj.getMaxCalcs() + ">0 && getNumOfCompsUsed():" + getNumOfCompsUsed() + ">=" + prj.getMaxCalcs() + ":prj.getMaxCalcs()", 9);
+                        Funz_v1.POOL.setRefreshing(true, this, "WaitForCalculator:"+waitForCalculator+" Pool size:"+Funz_v1.POOL.getComputers().size()+" Computers used:"+getNumOfCompsUsed());
+                        sleep(Protocol.PING_PERIOD);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace(System.err);
                     }
                 }
-                out(provideNewClient_HEAD + " Pool filled.", 7);
+                out(provideNewClient_HEAD + "                     ... Pool filled:\n"+Funz_v1.POOL, 7);
                 try {
                     for (final Computer computer : Funz_v1.POOL.getComputers()) {
                         if ((waitForCalculator && waitingNextClient) && (prj.getMaxCalcs() < 0 || getNumOfCompsUsed() < prj.getMaxCalcs())) {//Add this because following synchronized could add a lag so the limit of computers should be exceeded.
@@ -182,10 +182,10 @@ public abstract class BatchRun_v1 {
                                     out("  " + computer.host + ":" + computer.port + " reserved by same provider. Skipping...", 8);
                                     continue;
                                 }
-                                try {
-                                    synchronized (client_lock) {
+                                synchronized (client_lock) {
+                                    try {
                                         if (computer.use && computer.getUser() == prj) { //check again not blacklisted
-                                            int t = 5; // retry on "Socket creation failed" 5 times
+                                            int t = 5; // retry when "Socket creation failed" 5 times
                                             IOException ee = null;
                                             while (t-- >= 0) {
                                                 try {
@@ -213,28 +213,25 @@ public abstract class BatchRun_v1 {
                                                 throw ee;
                                             }
                                         } else {
-                                            out("<new ReserverClient> rejected " + computer.host + ":" + computer.port + ": already used or blacklisted", 2);
+                                            out("<new ReserverClient> rejected " + computer.host + ":" + computer.port + ": usable: "+computer.use+" and used by "+computer.getUser(), 2);
                                             continue;
                                         }
 
                                         out("  " + computer.host + ":" + computer.port + " provided.", 7);
-                                        //   waitingNextClient = false;
-
                                         out(provideNewClient_HEAD + "Fire new client found", 7);
-                                        //client_lock.notify();//
-                                        client_lock.notifyAll();
+                                                                                
+                                        client_lock.notifyAll(); // Say provideNewClient that we got a nextClient
+                                        client_lock.wait(org.funz.Protocol.PING_PERIOD); // Wait that provideNewClient gets nextClient before continuing 
 
-                                        client_lock.wait();
+                                        break;
+                                    } catch (Exception ex) {
+                                        err("<new ReserverClient> failed to provide " + computer.host + ":" + computer.port + ":" + ex.getMessage(), 6);
+                                        nextClient = null;
+                                        computer.freeUser();
+                                        continue;
                                     }
-                                    break;
-                                } catch (Exception ex) {
-                                    err("<new ReserverClient> failed to provide " + computer.host + ":" + computer.port + ":" + ex.getMessage(), 6);
-                                    nextClient = null;
-                                    computer.freeUser();
-                                    continue;
-                                }
-                            } else {
-                                out(computer.toString(), 6);
+                                } // END synchronized (client_lock)
+                            } else { // NOT if (computer.isReady(prj.getCode(), prj.getMinCPU(), prj.getMinMEM(), prj.getMinDISK(), prj.getRegexpCalculators()))
                                 if (computer.getUser() != null) {
                                     out("<!computer.isReady> not available: user=" + computer.getUser(), 6);
                                 }
@@ -248,24 +245,22 @@ public abstract class BatchRun_v1 {
                                     out("<!computer.isReady> not available: activity=" + computer.activity, 6);
                                 }
                             }
-
                             //}
-                        } else {
-                            break;
+                        } else { // NOT if ((waitForCalculator && waitingNextClient) && (prj.getMaxCalcs() < 0 || getNumOfCompsUsed() < prj.getMaxCalcs()))
+                            break; // Shortcut to break loop, as we dont need nextClient anymore...
                         }
-                    }
-                    if (waitingNextClient) {//means that no free computer found, so wait few seconds that POOL is updated
-                        sleep(1000);
-                        //synchronized (POOL) {
-                        //Funz_v1.POOL.setRefreshing(true, provider_lock, "waitingNextClient");
-                        //}
-                    }
-                } catch (Exception cme) {
-                    if (!(cme instanceof IllegalAccessException)) {
+                    } // END: for (final Computer computer : Funz_v1.POOL.getComputers())
+                    if (waitingNextClient) { // means that no suitable computer found, so wait few seconds that POOL is updated
+                        out("No suitable computer found. Force reset pool.", 6);
+                        Funz_v1.POOL.forceResetComputers();
+                        sleep(org.funz.Protocol.PING_PERIOD);
+                    }                        
+                } catch (Exception cme) { // Some exception maybe coming from "for computers" loop...
+                    //if (!(cme instanceof IllegalAccessException)) {
                         err(cme, 1);
-                    }
+                    //} else cme.printStackTrace(); // Avoid ignoring exotic exception...
                 }
-            }
+            } // END while (waitForCalculator)
             out(provideNewClient_HEAD + "Provider STOPPED.", 10);
         }
 
@@ -291,28 +286,25 @@ public abstract class BatchRun_v1 {
                 out(provideNewClient_HEAD + "Fire waiting new client ... ", 8);
 
                 //client_lock.notify();//
-                client_lock.notifyAll();
+                client_lock.notifyAll(); // Notify ReserverClient loop that we want a nextClient
 
                 try {
-                    client_lock.wait();
-
+                    client_lock.wait(); // Wait for ReserverClient to provide a nextClient...
                     out(provideNewClient_HEAD + "Got notify: nextClient: " + nextClient, 8);
                 } catch (InterruptedException ex) {
                 }
-                waitingNextClient = false; //
-                //client_lock.notify();//
-                client_lock.notifyAll();
+                waitingNextClient = false; // ... We got the nextClient, so don't wait for another one
+                client_lock.notifyAll(); // Say that to ReserverClient loop
 
                 out(provideNewClient_HEAD + "Client returned: " + nextClient, 8);
                 if (waitingNextClient) {
                     err(provideNewClient_HEAD + "!!! Still waiting next client !", 8);
                 }
-                if (nextClient == null) {
+                if (nextClient == null) { // That should never occur
                     err(provideNewClient_HEAD + "!!! Returned null client !", 8);
                 }
             }
             return nextClient;
-
         }
 
         private void pause() {
@@ -435,6 +427,7 @@ public abstract class BatchRun_v1 {
         }
 
         waitForCalculator = true;
+
         if (!provider.waitingNextClient && !provider.isAlive()) {
             provider.start();
         }
@@ -1265,9 +1258,9 @@ public abstract class BatchRun_v1 {
             while (waited_time< prj.waitingTimeout*1000 && !Funz_v1.POOL.getCodes().contains(prj.getCode())) {
                 setState(BATCH_WAITINGCOMPUTERS+StringUtils.repeat(".",waited_time/1000));
                 //synchronized (this) {
-                sleep(SLEEP_PERIOD);
+                sleep(org.funz.Protocol.PING_PERIOD);
                 //}
-                waited_time += SLEEP_PERIOD;
+                waited_time += org.funz.Protocol.PING_PERIOD;
             }
             if (!Funz_v1.POOL.getCodes().contains(prj.getCode())) {
                 setState(BATCH_ERROR+": '"+ prj.getCode() + "' is missing in Funz grid.");
@@ -1377,32 +1370,24 @@ public abstract class BatchRun_v1 {
                 }
                 int[][] states = new int[getSelectedCases().size()][Case.STATE_STRINGS.length];
                 while (f < numToRun && !askToStop) {
-                    try {
-                        out(f + "<" + numToRun + " ... " + waitForCalculator + " " + (provider == null ? "null provider" : "provider.waitingNextClient=" + provider.waitingNextClient), 8);
-                        synchronized (this) {
-                            wait(SLEEP_PERIOD);
-                        }
-                    } catch (InterruptedException ex) {
-                        err("trap InterruptedException: " + ex.getMessage(), 0);
-                    }
                     //out_noln(" ? ", 5);
                     int f_old = f;
-                    //LogUtils.tic("filled");
+                    //LogTicToc.tic("filled");
                     f = filled(torun);
-                    //LogUtils.toc("filled");
+                    //LogTicToc.toc("filled");
 
                     // let's start only some cases (to limit concurrent RunCase threads)
                     for (int i = 0; i < /*f - f_old*/ Math.min(prj.getMaxCalcs(), numToRun - f); i++) {
                         for (int j = 0; j < runCases.size(); j++) {
-                            //LogUtils.tic("runCases.get(j)");
+                            //LogTicToc.tic("runCases.get(j)");
                             RunCase rc = runCases.get(j);
-                            //LogUtils.toc("runCases.get(j)");
+                            //LogTicToc.toc("runCases.get(j)");
                             if (!rc.isAlive()) {
                                 if (rc.c != null && rc.c.getState() == Case.STATE_INTACT) {
                                     out("Starting case " + rc.c.getName(), 3);
-                                    //LogUtils.tic("rc.start()");
+                                    //LogTicToc.tic("rc.start()");
                                     rc.start();
-                                    //LogUtils.toc("rc.start()");
+                                    //LogTicToc.toc("rc.start()");
                                     //System.err.println("+");
                                     break;
                                 }//else System.err.println(rc.c.getStatusInformation());
@@ -1440,7 +1425,18 @@ public abstract class BatchRun_v1 {
                             setState(state_name + ":\t" + state_value);
                         }
                     }
-                }
+
+                    // Let some time before updating cases state and wakeup some new one
+                    try {
+                        out(f + "<" + numToRun + " ... " + waitForCalculator + " " + (provider == null ? "null provider" : "provider.waitingNextClient=" + provider.waitingNextClient), 8);
+                        synchronized (this) {
+                            wait(SLEEP_PERIOD);
+                        }
+                    } catch (InterruptedException ex) {
+                        err("trap InterruptedException: " + ex.getMessage(), 0);
+                    }
+                } // END while (f < numToRun && !askToStop)
+
                 if (askToStop) {
                     throw new Exception("Asked batch to stop");
                 }
@@ -1464,7 +1460,6 @@ public abstract class BatchRun_v1 {
             setArchiveDirectory(archiveDirectory);
         } catch (Exception ex) {
             err(ex, 0);
-            ex.printStackTrace();
             //LogUtils.tic("merged_results.putAll(Utils.mergeStringArrayMap");
             merged_results.putAll(mergeStringArrayMap(newMap("error", ex.getMessage(), "trace", ex.fillInStackTrace())));
             //LogUtils.toc("merged_results.putAll(Utils.mergeStringArrayMap");
@@ -1513,13 +1508,14 @@ public abstract class BatchRun_v1 {
         return state;
     }
 
-    static int filled(List<Case> cases) {
+    int filled(List<Case> cases) {
         int n = 0;
         for (int i = 0; i < cases.size(); i++) {        //for (Case t : cases) {
             Case t = cases.get(i);
             if (t.hasRun()) {
                 //System.err.print("x");
                 n++;
+                if (t.getDuration()>0) SLEEP_PERIOD = Math.min(SLEEP_PERIOD,t.getDuration());
             }//else                 System.err.print("-");
 
         }
@@ -1552,12 +1548,11 @@ public abstract class BatchRun_v1 {
     }
 
     public void shutdown() {
+        out("Ask for batch shutdown:", 3);
         if (askToStop) {
-            out("Batch shutdown already in progress...", 4);
+            out("  Batch shutdown already in progress!", 3);
             return;
         }
-
-        out("Ask for batch shutdown.", 3);
 
         //System.err.println("======================= shutdown() > waitForCalculator = false;");
         waitForCalculator = false;
@@ -1566,25 +1561,27 @@ public abstract class BatchRun_v1 {
         }
         askToStop = true;
 
-        out("Shutdown provider", 3);
+        out("  Stop pooling", 3);
+        Funz_v1.POOL.setRefreshing(false, provider_lock, "BatchRun.shutdown");
+
+        out("  Shutdown provider", 3);
         if (provider != null) {
             synchronized (provider.client_lock) {
                 if (provider != null && provider.client_lock != null) {
                     provider.client_lock.notifyAll();
                 }
             }
+            provider.interrupt();
             try {
                 provider.join();
             } catch (InterruptedException ex) {
                 ex.printStackTrace(System.err);
             }
-            if (provider != null) {
-                provider.nextClient = null;
-            }
+            provider.nextClient = null;
         }
         //provider = null;
 
-        out("Break runing cases", 3);
+        out("  Break running cases", 3);
         synchronized (running_cleaner) {
             for (Thread clean : running_cleaner.values()) {
                 clean.start();
@@ -1598,19 +1595,14 @@ public abstract class BatchRun_v1 {
             running_cleaner.clear();
         }
 
-        //synchronized (POOL) {
-        Funz_v1.POOL.setRefreshing(false, provider_lock, "BatchRun.shutdown");
-        //}
-
-        out("Waiting cases to stop", 3);
+        out("  Waiting cases to stop", 3);
         for (RunCase runCase : runCases) {
+            runCase.interrupt();
             try {
                 runCase.join();
             } catch (InterruptedException ex) {
             }
         }
-
-        out("Cleanup cases", 3);
         runCases.clear();
     }
 

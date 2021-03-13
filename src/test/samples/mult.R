@@ -17,7 +17,9 @@ Sys.sleep(t);
 cat('X = ',c( ?x1 , ?[x2~.5]),'\n');
 
 if ( ?x1 <= 0 ) {
-  cat('z = ',mult(c( ?x1 , !{f(?x2)} )),'\n')
+  z = mult(c( ?x1 , !{f(?x2)} ))
 } else {
-  cat('z = ?','\n')
+  z = '?'
 }
+
+cat('z = ',z,'\n')

@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.funz.Project;
+import org.funz.Protocol;
+
 import static org.funz.api.DesignShell_v1.DEFAULT_FUNCTION_NAME;
 import org.funz.calculator.Calculator;
 import org.funz.conf.Configuration;
@@ -91,13 +93,11 @@ public class TestUtils {
 
     public static final String R = "R";
 
-    public static int verbose = 2;
+    public static int verbose = 5;
     public static Calculator[] calculators;
     static MathExpression M = null; //new RMathExpression("R://localhost", new File("R.log"));
 
     public static void test(String arg) throws Exception {
-        Configuration.setVerboseLevel(verbose);
-
         calculators = new Calculator[8];
         for (int i = 0; i < calculators.length - 1; i++) {
             calculators[i] = startCalculator(i, CONF_XML);
@@ -105,6 +105,7 @@ public class TestUtils {
         calculators[calculators.length - 1] = startCalculator(calculators.length - 1, CONF_XML_FAILING);
 
         Funz_v1.init(null, null, M);
+        Configuration.setVerboseLevel(verbose);
 
         org.junit.runner.JUnitCore.main(arg);
 
@@ -132,13 +133,16 @@ public class TestUtils {
 
     @After
     public void tearDown() throws InterruptedException {
+        System.err.println("//////// TestUtils.tearDown...");
         Log.setCollector(Log.SystemCollector);
 
         if (Funz_v1.POOL != null) {
+            System.err.println("//////// TestUtils.tearDown: POOL.shutdown");
             Funz_v1.POOL.shutdown();
         }
-        Thread.sleep(2000);
+        Thread.sleep(Protocol.PING_PERIOD);
 
+        System.err.println("//////// TestUtils.tearDown: CLEANUP_FILES");
         for (final String m : CLEANUP_FILES) {
             File[] todelete = new File(".").listFiles(new FilenameFilter() {
 
@@ -152,10 +156,10 @@ public class TestUtils {
             });
             for (File file : todelete) {
                 if (file.isFile()) {
-                    System.err.println("Delete file " + file + " : " + file.delete());
+                    System.err.println("//////// TestUtils.tearDown: Delete file " + file + " : " + file.delete());
                 }
                 if (file.isDirectory()) {
-                    System.err.println("Delete directory " + file);
+                    System.err.println("//////// TestUtils.tearDown: Delete directory " + file);
                     try {
                         org.apache.commons.io.FileUtils.deleteDirectory(file);
                     } catch (IOException ex) {
@@ -164,6 +168,7 @@ public class TestUtils {
                 }
             }
         }
+        System.err.println("//////// TestUtils.tearDown: done.");
     }
 
     static File tmp = new File("tmp");
@@ -204,17 +209,23 @@ public class TestUtils {
     }
 
     public void setUp(String name) throws Exception {
+        System.err.println("//////// TestUtils.setUp...");
         MainUtils.init(name, verbose);
-        System.err.println("Test init at: " + HMS());
+        System.err.println("//////// TestUtils.setUp: Test init at: " + HMS());
 
         File fdir = new File(".f");
         org.apache.commons.io.FileUtils.deleteDirectory(fdir);
 
         if (Funz_v1.POOL == null) {
             throw new Exception("POOL is null !!!");
+        } else {
+            System.err.println("//////// TestUtils.setUp: POOL.wakeup");
+            Funz_v1.POOL.wakeup();
         }
+
         Project.DEFAULT_waitingTimeout = 10;//10 s. max before hard stopping batch if no calc found.
         Project.DEFAULT_blacklistTimeout = 600;//10 s. max before hard stopping batch if no calc found.
+        System.err.println("//////// TestUtils.setUp done.");
     }
 
     public static final String CONF_XML = "./dist/calculator.xml";
@@ -234,7 +245,7 @@ public class TestUtils {
 
             @Override
             public void run() {
-                calc.run();
+                calc.runloop();
             }
         }.start();
         Thread.sleep(100);
