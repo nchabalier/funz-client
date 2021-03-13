@@ -124,9 +124,9 @@ public abstract class BatchRun_v1 {
         this.state = StringUtils.rightPad(state, 80);
     }
 
-    class NewClientProvider extends Thread {
+    private final Object client_lock = new Object();
 
-        private final Object client_lock = new Object();
+    class NewClientProvider extends Thread {
 
         public NewClientProvider() {
             super("NewClientProvider");
@@ -293,6 +293,7 @@ public abstract class BatchRun_v1 {
                     client_lock.wait(); // Wait for ReserverClient to provide a nextClient...
                     out(provideNewClient_HEAD + "Got notify: nextClient: " + nextClient, 8);
                 } catch (InterruptedException ex) {
+                    out(provideNewClient_HEAD + "Interrupt waiting!" , 8);
                 }
                 waitingNextClient = false; // ... We got the nextClient, so don't wait for another one
                 client_lock.notifyAll(); // Say that to ReserverClient loop
@@ -1559,6 +1560,7 @@ public abstract class BatchRun_v1 {
         waitForCalculator = false;
         if (provider != null) {
             provider.waitingNextClient = false;
+            provider.client_lock.notifyAll()
         }
         askToStop = true;
 
