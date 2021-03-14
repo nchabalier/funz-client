@@ -586,7 +586,7 @@ public abstract class BatchRun_v1 {
                 addInfoHistory(c, "Failed to get a client");
                 throw new IOException(c.getName() + ": " + "Failed to get a client");
             } else {
-                addInfoHistory(c, "Has a client.");
+                addInfoHistory(c, "Has a client: "+client);
             }
 
             client.c = c;
@@ -705,7 +705,6 @@ public abstract class BatchRun_v1 {
                     blacklistComputer(client.computer, "Failed to execute on " + client.getHost() + ": " + (kill_client.killed ? "Killed" : client.getReason()));
                 }
                 transferOutput(client, c);
-                client.disconnect();
                 throw new IOException(c.getName() + ": " + "Failed to execute on " + client.getHost() + ": " + (kill_client.killed ? "Killed" : client.getReason()));
             } else {
                 synchronized (running_cleaner) {
@@ -728,9 +727,9 @@ public abstract class BatchRun_v1 {
 
             endCase(c);
         } catch (IOException e) {
-            errorCase(e, c);
+            errorCase(e, c); // This is NOT a definitive failure. We should retry this case (if try < maxtry)
         } catch (Exception e) {
-            failedCase(e, c);
+            failedCase(e, c); // This IS a defitive failure. This case will not be retried.
         } finally {
             if (incNumOfCompsDone) {
                 decNumOfComps();
