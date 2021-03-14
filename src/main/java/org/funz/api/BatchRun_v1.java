@@ -1565,8 +1565,8 @@ public abstract class BatchRun_v1 {
         out("  Stop pooling", 3);
         Funz_v1.POOL.setRefreshing(false, this, "BatchRun.shutdown");
 
-        out("  Shutdown provider", 3);
         if (provider != null) {
+            out("  Shutdown provider", 3);
             synchronized (client_lock) {
                 if (provider != null && client_lock != null) {
                     client_lock.notifyAll();
