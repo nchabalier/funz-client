@@ -275,7 +275,7 @@ public abstract class BatchRun_v1 {
             out(provideNewClient_HEAD + "Providing new client ... ", 8);
 
             // not necessary in general, but so we are sure that it will provide some calculators...
-            Funz_v1.POOL.setRefreshing(true, provider_lock, "provideNewClient");
+            Funz_v1.POOL.setRefreshing(true, this, "provideNewClient");
 
             synchronized (client_lock) {
                 if (waitingNextClient) {
@@ -312,7 +312,7 @@ public abstract class BatchRun_v1 {
         private void pause() {
             //System.err.println("================================ pause() >  waitForCalculator = false;");
             waitForCalculator = false;
-            Funz_v1.POOL.setRefreshing(false, provider_lock, "pause provideNewClient");
+            Funz_v1.POOL.setRefreshing(false, this, "pause provideNewClient");
             synchronized (client_lock) {
                 waitingNextClient = false;
                 client_lock.notifyAll();
@@ -424,7 +424,7 @@ public abstract class BatchRun_v1 {
     final Map<Case, Thread> running_cleaner = new HashMap<>();
 
     void beforeRunCases() {
-        if (provider == null || provider.getState() == Thread.State.TERMINATED) {
+        if (provider == null) {
             provider = new NewClientProvider();
         }
 
@@ -1564,7 +1564,7 @@ public abstract class BatchRun_v1 {
         askToStop = true;
 
         out("  Stop pooling", 3);
-        Funz_v1.POOL.setRefreshing(false, provider_lock, "BatchRun.shutdown");
+        Funz_v1.POOL.setRefreshing(false, this, "BatchRun.shutdown");
 
         out("  Shutdown provider", 3);
         if (provider != null) {
