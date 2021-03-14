@@ -671,25 +671,19 @@ public class RunShellTest extends org.funz.api.TestUtils {
             ts[i].start();
         }
 
-        boolean alltrue = false;
-        while (!alltrue) {
-            Thread.sleep(2000);
-            //System.err.println(".");
+        while (!alltrue(done)) {
+            Thread.sleep(1000);
             System.err.println("============================\n" + Print.gridStatusInformation() + "============================\n");
-            synchronized (tests) {
-                alltrue = alltrue(done);
-                tests.notifyAll();
-            }
         }
 
         assert alltrue(tests) : "One concurency run failed !";
-    
+
         for (int i = 0; i < tests.length; i++) {
             ts[i].interrupt();
-            ts[i].join();
             synchronized (tests) {
                 tests.notifyAll();
             }
+            ts[i].join();
         }
     }
 
