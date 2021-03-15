@@ -301,7 +301,7 @@
                 
                         <record name="${test.class.id}.txt" action="start" />
                         <jacoco:coverage> 
-                            <java classname="${test.class.id}" fork="true" timeout="600000" failonerror="false" resultproperty="@{test.class}.failed">
+                            <java classname="${test.class.id}" fork="true" timeout="1200000" failonerror="false" resultproperty="@{test.class}.failed">
                                 <!--jvmarg value='-Dnashorn.args="-.-no-deprecation-warning"'/-->
                                 <classpath refid="test.classpath" />
                                 <classpath path="${build.dir}" />
