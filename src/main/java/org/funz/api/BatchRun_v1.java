@@ -742,6 +742,11 @@ public abstract class BatchRun_v1 {
                     ex.printStackTrace();
                 }
                 client.disconnect(); // maybe release this client aso procvide new client may re-use it for another case... instead of reserve/unreserve all clients independantly ?
+                client = null;
+
+                synchronized (client_lock) {
+                    client_lock.notifyAll();
+                } 
             }
 
             c.reserve(null);
