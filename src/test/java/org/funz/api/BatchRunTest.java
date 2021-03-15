@@ -52,7 +52,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         }
     };
 
-    //@Test
+    @Test
     public void testOutputExpr() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOutputExpr");
         File tmp_in = branin_in();
@@ -114,7 +114,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testOutputExprGaussian() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOutputExprGaussian");
         File tmp_in = branin_in();
@@ -179,7 +179,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test1Case() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1Case");
         File tmp_in = branin_in();
@@ -241,7 +241,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testBatchTimeout() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testBatchTimeout");
         File tmp_in = branin_in();
@@ -302,7 +302,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test1CaseLongExec() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1CaseLongExec");
         File tmp_in = branin_in();
@@ -369,7 +369,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test20Cases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test20Cases");
         File tmp_in = branin_in();
@@ -444,7 +444,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test20CasesLongExec() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test20CasesLongExec");
         File tmp_in = branin_in();
@@ -518,7 +518,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test1CaseWithBinFile() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1CaseWithBinFile");
 
@@ -594,7 +594,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testDefinedVarValues() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDefinedVarValues");
         File tmp_in = branin_in();
@@ -646,7 +646,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test1FailedCaseOnPrepare() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1FailedCaseOnPrepare");
         File tmp_in = branin_in();
@@ -704,7 +704,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test1FailedCaseOnRun() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1FailedCaseOnRun");
         File tmp_in = branin_in();
@@ -762,7 +762,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testKill() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testKill");
         File tmp_in = branin_in();
@@ -970,7 +970,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         }
     }
 
-    //@Test
+    @Test
     public void testMultipleCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testMultipleCases");
         File tmp_in = branin_in();
@@ -1036,7 +1036,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testSomeCasesNotSelected() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testSomeCasesNotSelected");
         File tmp_in = branin_in();
@@ -1105,7 +1105,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         return sa;
     }
 
-    //@Test
+    @Test
     public void testSomeFailedCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testSomeFailedCases");
         File tmp_in = branin_in();
@@ -1159,7 +1159,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDuplicateCases");
         File tmp_in = branin_in();
@@ -1211,7 +1211,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testIterativeDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testIterativeDuplicateCases");
         File tmp_in = branin_in();
@@ -1280,7 +1280,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testVectorize() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testVectorize");
         File tmp_in = branin_in();
@@ -1344,7 +1344,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testStopRestart() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testStopRestart");
         File tmp_in = branin_in();
@@ -1442,7 +1442,91 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
+    public void testPingPong() {
+        final Object lock = new Object();
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean finish = false;
+                while (!finish)
+                    synchronized (lock) {
+                        System.err.println("    t1.run");
+                        System.err.println("      t1.wait:");
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            finish = true;
+                        }
+                        System.err.println("      t1.wait: continue");
+                    }   
+                System.err.println("    /t1.run");
+            }
+        });
+
+        Thread t2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean finish = false;
+                while (!finish)
+                    synchronized (lock) {
+                        System.err.println("    t2.run");
+                        System.err.println("      t2.wait:");
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            finish = true;
+                        }
+                        System.err.println("      t2.wait: continue");
+                    }
+                System.err.println("    /t2.run");
+            }
+        });
+
+        System.err.println("starting...");
+
+        t1.start();
+        t2.start();
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.err.println("  wakeup...");
+        synchronized (lock) {
+            lock.notifyAll();
+        }
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.err.println("finishing...");
+
+        t1.interrupt();
+        try {
+            t1.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.err.println("  t1.end");
+
+        t2.interrupt();
+        try {
+            t2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.err.println("  t2.end");
+    }
+
+    @Test
     public void test2StopRestart() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test2StopRestart");
         File tmp_in0 = newTmpFile("branin0.R");
@@ -1469,6 +1553,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         prj0.buildParameterList();
         prj0.resetDiscreteCases(o);
         prj0.setCases(prj0.getDiscreteCases(), o);
+
         prj0.setMaxCalcs(1);
 
         final BatchRun_v1 batchRun0 = new BatchRun_v1(o, prj0, newTmpDir("test2StopRestart")) {
@@ -1550,6 +1635,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         prj.buildParameterList();
         prj.resetDiscreteCases(o);
         prj.setCases(prj.getDiscreteCases(), o);
+        
         prj.setMaxCalcs(1);
 
         final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("test2StopRestart_2")) {
@@ -1589,7 +1675,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
     }
 
-    //@Test
+    @Test
     public void testAddCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testAddCases");
         File tmp_in = branin_in();
@@ -1660,7 +1746,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testCodeNoResult() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testCodeError");
         File tmp_in = branin_in();

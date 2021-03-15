@@ -23,6 +23,8 @@ import org.funz.util.ASCII;
 import static org.funz.util.Data.asString;
 import static org.funz.util.Data.newMap;
 import org.funz.util.Disk;
+import org.funz.util.Format;
+
 import static org.funz.util.ParserUtils.getASCIIFileContent;
 import org.junit.After;
 import org.junit.Rule;
@@ -80,14 +82,18 @@ public class TestUtils {
     }
 
     public static void out(String string, int i) {
+        System.err.println(Format.repeat(i,"-","")+"> "+string);
         Log.out(string, i);
     }
 
     public static void err(String msg, int i) {
+        System.err.println(Format.repeat(i,"-","")+"! "+msg);
         Log.err(msg, i);
     }
 
     public static void err(Exception ex, int i) {
+        System.err.println(Format.repeat(i,"-","")+"> "+ex.getMessage()+":");
+        ex.printStackTrace();
         Log.err(ex, i);
     }
 
