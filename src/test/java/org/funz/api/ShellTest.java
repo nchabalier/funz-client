@@ -35,15 +35,15 @@ public class ShellTest extends org.funz.api.TestUtils {
     public void testCacheCase() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testCacheCase");
 
-        test1Case1Design();
+        test1Design();
         System.err.println("==================================================");
 
         File tmp_in = mult_in();
 
-        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[0,1]"), newMap("nmax", "5")); // R should be dedected by plugin automatically.
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "cat", ALGORITHM, newMap("x1", "[-0.5,-0.1]", "x2", "[0.3,0.8]"), newMap("nmax", "3")); // R should be dedected by plugin automatically.
         Funz.setVerbosity(verbose);
 
-        sac.addCacheDirectory(new File(tmp_in.getParentFile(), "mult.R.res"));
+        sac.addCacheDirectory(new File(tmp_in.getParentFile(), "test1Design"));
 
         assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
         assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
