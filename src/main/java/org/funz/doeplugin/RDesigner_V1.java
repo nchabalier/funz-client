@@ -541,7 +541,9 @@ public class RDesigner_V1 extends Designer {
                                         
                         try {
                             if (R.asList(R.eval("DesignEnv")).containsKey("files")) {
-                                String[] analyse_files = R.asStrings(R.eval("DesignEnv$files"));
+                                String[] analyse_files = (R.asInteger(R.eval("length(DesignEnv$files)"))>1) 
+                                    ? R.asStrings(R.eval("DesignEnv$files")) 
+                                    : new String[]{R.asString(R.eval("DesignEnv$files"))};
                                 for (int i = 0; i < analyse_files.length; i++) {
                                     String analyse_file = analyse_files[i];
                                     boolean exists = (boolean) R.eval("file.exists('" + analyse_file + "')");
@@ -603,7 +605,9 @@ public class RDesigner_V1 extends Designer {
 
                 try {
                     if (R.asList(R.eval("DesignEnv")).containsKey("files")) {
-                        String[] analyse_files = R.asStrings(R.eval("DesignEnv$files"));
+                        String[] analyse_files = (R.asInteger(R.eval("length(DesignEnv$files)"))>1) 
+                          ? R.asStrings(R.eval("DesignEnv$files")) 
+                          : new String[]{R.asString(R.eval("DesignEnv$files"))};
                         for (int i = 0; i < analyse_files.length; i++) {
                             String analyse_file = analyse_files[i];
                             if ((boolean) R.eval("file.exists('" + analyse_file + "')")) {
