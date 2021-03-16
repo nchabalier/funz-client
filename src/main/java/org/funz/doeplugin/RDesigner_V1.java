@@ -540,7 +540,7 @@ public class RDesigner_V1 extends Designer {
                         out = R.asString(R.eval("displayResultsTmp(DesignEnv,X" + suffix + ",Y" + suffix + ")"));
                                         
                         try {
-                            if (R.asList(R.eval("DesignEnv")).containsKey("files")) {
+                            if (!R.asLogical(R.eval("is.null(DesignEnv$files)"))) {
                                 String[] analyse_files = (R.asInteger(R.eval("length(DesignEnv$files)"))>1) 
                                     ? R.asStrings(R.eval("DesignEnv$files")) 
                                     : new String[]{R.asString(R.eval("DesignEnv$files"))};
@@ -604,7 +604,7 @@ public class RDesigner_V1 extends Designer {
                 out = R.asString(R.eval("displayResults(DesignEnv,Xanalyse" + currentiteration + ",Yanalyse" + currentiteration + ")"));
 
                 try {
-                    if (R.asList(R.eval("DesignEnv")).containsKey("files")) {
+                    if (!R.asLogical(R.eval("is.null(DesignEnv$files)"))) {
                         String[] analyse_files = (R.asInteger(R.eval("length(DesignEnv$files)"))>1) 
                           ? R.asStrings(R.eval("DesignEnv$files")) 
                           : new String[]{R.asString(R.eval("DesignEnv$files"))};
@@ -621,7 +621,6 @@ public class RDesigner_V1 extends Designer {
                                 if (i == 0) {
                                     out = out.replace(analyse_file, DesignHelper.getResultsRelativePath(f, _repository.getName()));
                                 }
-
                             }
                         }
                     }
