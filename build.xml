@@ -330,8 +330,8 @@
     </target>
 
     <target name="coverage" >
+        <sleep seconds="3"/>
         <jacoco:report>
-                        
             <executiondata>
                 <file file="jacoco.exec"/>
             </executiondata>
@@ -347,7 +347,6 @@
                         
             <html destdir="coverage"/>
             <xml destfile="jacoco.xml"/>
-                        
         </jacoco:report>
     </target>
 
