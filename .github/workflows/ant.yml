@@ -10,11 +10,11 @@ on:
 jobs:
   test-unit:
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
         java: [ 8, 11, 13 ]
-        Rserver: [ 'R2js' ] #, 'Renjin', 'R://localhost' ]
+        Rserver: [ 'R2js' , 'Renjin', 'R://localhost' ]
     env:
       #NO_TEST_JAVA: 1
       NO_TEST_MAIN: 1
@@ -65,7 +65,7 @@ jobs:
     - run: ant -noinput -buildfile build.xml test
       id: anttest
       continue-on-error: true
-      timeout-minutes: 60
+      timeout-minutes: 100
     - if: steps.anttest.outcome != 'success'
       uses: actions/upload-artifact@v2
       with:
@@ -76,7 +76,7 @@ jobs:
           *.out
           *.Rout
     - run: ant -noinput -buildfile build.xml coverage
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.java == 11
     - uses: codecov/codecov-action@v1
       if: matrix.os == 'ubuntu-latest'
     - if: steps.anttest.outcome != 'success'
