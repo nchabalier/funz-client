@@ -1316,6 +1316,10 @@ public abstract class BatchRun_v1 {
                 }
             }
 
+            if (askToStop) { // Last chance to exit before starting many threads for cases & NewClientProvider...
+                throw new Exception("Asked batch to stop");
+            }
+
             for (CloneCase cloneCase: cloneCases) {
                 cloneCase.start();
             }
