@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -219,8 +220,11 @@ public abstract class BatchRun_v1 {
                                         }
 
                                         out("  " + computer.host + ":" + computer.port + " provided.", 7);
+
+                                        if (!(!askToStop && waitForCalculator && waitingNextClient)) 
+                                            throw new Exception("Client no longer waited: waitForCalculator="+waitForCalculator+", waitingNextClient="+waitingNextClient);
+
                                         out(provideNewClient_HEAD + "Fire new client found", 7);
-                                                                                
                                         newclient_lock.notifyAll(); // NewClientProvider.run: say to provideNewClient that we got the nextClient
                                         newclient_lock.wait();//org.funz.Protocol.PING_PERIOD); // NewClientProvider.run: wait that provideNewClient gets nextClient before continuing (otherwise we will not have another one !)
 
@@ -409,7 +413,7 @@ public abstract class BatchRun_v1 {
         return nmOfCompUsed;
     }
 
-    final Map<Case, Thread> running_cleaner = new HashMap<>();
+    final Map<Case, Thread> running_cleaner = new ConcurrentHashMap<>();
 
     void beforeRunCases() {
         waitForCalculator = true;
@@ -668,9 +672,7 @@ public abstract class BatchRun_v1 {
                     }
                 }
             }, c.getName() + ": " + "Kill client " + kill_client.getHost() + ":" + kill_client.getPort());
-            synchronized (running_cleaner) {
-                running_cleaner.put(c, killer);
-            }
+            running_cleaner.put(c, killer);
             //LogUtils.toc("kill_client " + c.getName());
 
             //LogUtils.tic("execute " + c.getName());
@@ -693,9 +695,7 @@ public abstract class BatchRun_v1 {
                 transferOutput(client, c);
                 throw new IOException(c.getName() + ": " + "Failed to execute on " + client.getHost() + ": " + (kill_client.killed ? "Killed" : client.getReason()));
             } else {
-                synchronized (running_cleaner) {
-                    running_cleaner.remove(c);
-                }
+                running_cleaner.remove(c);
             }
             //LogUtils.toc("execute " + c.getName());
 
@@ -1577,19 +1577,17 @@ public abstract class BatchRun_v1 {
         //provider = null;
 
         out("  Break running cases", 3);
-        synchronized (running_cleaner) {
-            for (Thread clean : running_cleaner.values()) {
-                clean.start();
-            }
-            for (Thread clean : running_cleaner.values()) {
-                try {
-                    clean.join();
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            running_cleaner.clear();
+        for (Thread clean : running_cleaner.values()) {
+            clean.start();
         }
+        for (Thread clean : running_cleaner.values()) {
+            try {
+                clean.join();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+        running_cleaner.clear();
 
         out("  Waiting cases to stop", 3);
         for (RunCase runCase : runCases) {
