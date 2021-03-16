@@ -414,7 +414,7 @@ public abstract class BatchRun_v1 {
     void beforeRunCases() {
         waitForCalculator = true;
 
-        if (provider == null || provider.getState() == Thread.State.TERMINATED) {
+        if (!askToStop && (provider == null || provider.getState() == Thread.State.TERMINATED)) {
             provider = new NewClientProvider();
             provider.start();
         }
