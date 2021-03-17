@@ -86,7 +86,7 @@ public class InputFile implements XMLConstants {
         hash = 11 * hash + (this._file != null ? this._file.hashCode() : 0);
         hash = 11 * hash + Arrays.deepHashCode(this._path);
         hash = 11 * hash + (this._vars != null ? this._vars.hashCode() : 0);
-        System.err.println(this.toString()+": "+hash);
+        //System.err.println(this.toString()+": "+hash);
         return hash;
     }
 

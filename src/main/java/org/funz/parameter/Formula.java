@@ -166,7 +166,7 @@ public class Formula {
                 res = Formula.Eval(varreplaced_expr, engine);
                 //Configuration.logMessage(r, LogCollector.SeverityLevel.INFO, false, "  and returns " + res);
             } catch (Formula.EvalException pse) {
-//pse.printStackTrace(System.err);
+                //pse.printStackTrace(System.err);
                 return false;
                 //Configuration.logMessage(r, LogCollector.SeverityLevel.INFO, false, "  and returns ERROR " + pse.getMessage());
             }

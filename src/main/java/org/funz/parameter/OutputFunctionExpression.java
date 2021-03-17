@@ -1192,7 +1192,8 @@ public abstract class OutputFunctionExpression {
     }
 
     public void displayNotValidInformation(String info) {
-        System.err.println("Output expression " + toString() + " is not valid:" + info);
+        Log.logMessage(this, SeverityLevel.WARNING, false, "Output expression " + toString() + " is not valid:" + info);
+        //System.err.println("Output expression " + toString() + " is not valid:" + info);
     }
 
     public String checkValidExpression() {

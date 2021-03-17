@@ -461,8 +461,8 @@ public class RMathExpression extends MathExpression {
             }
             Log.logMessage(name, SeverityLevel.INFO, false, "Rsession " + name + " ended.");
         } catch (Exception e) {
-            e.printStackTrace(System.err);
             Log.logMessage(name, SeverityLevel.ERROR, false, "Rsession " + name + " end failed.");
+            e.printStackTrace(System.err);
         }
         if (streamlogger != null) {
             streamlogger.closeLog();

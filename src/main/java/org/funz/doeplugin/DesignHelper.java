@@ -111,7 +111,7 @@ public class DesignHelper {
             g.dispose();
             ImageIO.write((RenderedImage) bufferedImage, "PNG", target);
         } catch (Exception ex) {
-            //ex.printStackTrace(System.err);
+            ex.printStackTrace(System.err);
         }
 
         return "<img src='" + DesignHelper.getResultsRelativePath(target, null) + "' width='" + width + "' height='" + height + "'/>";
@@ -188,23 +188,21 @@ public class DesignHelper {
                         l = z[i].length;
                     }
                 } catch (Exception ex) {
-                    ex.printStackTrace();
-                    //ex.printStackTrace(System.err);
                     Log.logMessage("DesignHelper", SeverityLevel.ERROR, true, e.toString());
-                    Log.logException(false, ex);
+                    ex.printStackTrace(System.err);
                     z[i] = rep(l, Double.NaN);
                 }
             } catch (ClassCastException cce) {
-                cce.printStackTrace(System.err);
                 String c;
                 try {
                     c = e.doEval(f).getClass().getSimpleName();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
                     Log.logException(false, ex);
+                    ex.printStackTrace(System.err);
                     c = "?";
                 }
                 Log.logMessage(f, SeverityLevel.ERROR, false, "Problem while casting " + f.toNiceSymbolicString() + " to (double[]): \n  in fact class is " + c + " : " + e.getOutputValues());
+                cce.printStackTrace(System.err);
             }
         }
         for (int i = 0; i < z.length; i++) {
@@ -256,7 +254,7 @@ public class DesignHelper {
         } else if (in instanceof double[]) {
             return (double[]) in;
         } else {
-            System.err.println("Could not cast to double[]: " + Data.asString(in) + " (class " + in.getClass() + ")");
+            Log.logMessage("castDoubleArray",SeverityLevel.WARNING, false,"Could not cast to double[]: " + Data.asString(in) + " (class " + in.getClass() + ")");
             return null;
         }
     }
@@ -315,7 +313,7 @@ public class DesignHelper {
         }
         for (int i = 0; i < y.length; i++) {
             if (!equals(x[i], y[i])) {
-                System.err.println(DoubleArray.toString(x[i]) + " != " + DoubleArray.toString(y[i]));
+                //System.err.println(DoubleArray.toString(x[i]) + " != " + DoubleArray.toString(y[i]));
                 return false;
             }
         }

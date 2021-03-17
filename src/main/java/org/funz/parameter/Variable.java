@@ -9,6 +9,9 @@ import java.util.List;
 import org.apache.commons.exec.OS;
 import org.funz.Project;
 import org.funz.XMLConstants;
+import org.funz.log.Log;
+import org.funz.log.LogCollector.SeverityLevel;
+
 import static org.funz.api.Utils.toObject;
 import org.funz.util.ASCII;
 import static org.funz.util.Format.fromHTML;
@@ -240,6 +243,7 @@ public class Variable extends VariableMethods implements XMLConstants, Parameter
         if (win) {
             for (int index = 0; index < Variable.win_chartodelete.length; index++) {
                 if (v.indexOf(Variable.win_chartodelete[index]) != -1) {
+                    Log.logMessage("Variable", SeverityLevel.ERROR, true, "This path element contains some Windows special characters: " + win_chartodelete[index]);
                     System.err.println("This path element contains some Windows special characters: " + win_chartodelete[index]);
                     //MessageDialog.showError("This path element contains some Windows special characters: " + win_chartodelete[index]);
                     return false;

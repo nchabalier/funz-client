@@ -21,7 +21,7 @@ import static org.funz.util.Data.*;
  */
 public class Utils {
 
-    public static void main(String[] args) throws Exception {
+    /*public static void main(String[] args) throws Exception {
         new Funz_v1();
         System.err.println(findVariables(null, new File[]{new File("src/main/resources/samples/branin.R")}));
 
@@ -29,7 +29,7 @@ public class Utils {
         vv.put("x1", "0.5");
         vv.put("x2", "0.6");
         compileVariables("R", new File[]{new File("src/main/resources/samples/branin.R")}, vv, new File("."));
-    }
+    }*/
 
     public static void compileVariables(String _model, File[] _input, Map vars_values, File outdir) throws Exception {
         String model;
