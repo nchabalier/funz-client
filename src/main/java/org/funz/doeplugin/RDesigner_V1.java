@@ -541,7 +541,7 @@ public class RDesigner_V1 extends Designer {
                                         
                         try {
                             if (!R.asLogical(R.eval("is.null(DesignEnv$files)"))) {
-                                String[] analyse_files = (R.asInteger(R.eval("length(DesignEnv$files)"))>1) 
+                                String[] analyse_files = (R.asLogical(R.eval("length(DesignEnv$files)>1"))) 
                                     ? R.asStrings(R.eval("DesignEnv$files")) 
                                     : new String[]{R.asString(R.eval("DesignEnv$files"))};
                                 for (int i = 0; i < analyse_files.length; i++) {
@@ -605,7 +605,7 @@ public class RDesigner_V1 extends Designer {
 
                 try {
                     if (!R.asLogical(R.eval("is.null(DesignEnv$files)"))) {
-                        String[] analyse_files = (R.asInteger(R.eval("length(DesignEnv$files)"))>1) 
+                        String[] analyse_files = (R.asLogical(R.eval("length(DesignEnv$files)>1"))) 
                           ? R.asStrings(R.eval("DesignEnv$files")) 
                           : new String[]{R.asString(R.eval("DesignEnv$files"))};
                         for (int i = 0; i < analyse_files.length; i++) {
