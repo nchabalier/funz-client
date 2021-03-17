@@ -307,14 +307,18 @@ jobs:
         ant clean dist
         cd ..
         cd $WD
-    - run: ant clean dist
+    - run: |
+        ant clean dist
+        cd dist; zip -r ../funz-client.zip ./*; cd ..
     - uses: actions/upload-artifact@v2
       with:
         path: dist
     - uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: dist/lib/funz-client*.jar
+        files: |
+          dist/lib/funz-client*.jar
+          funz-*.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
