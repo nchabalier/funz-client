@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Funz/funz-client.png)](https://travis-ci.org/Funz/funz-client)
+[![.github/workflows/ant.yml](https://github.com/Funz/funz-client/actions/workflows/ant.yml/badge.svg)](https://github.com/Funz/funz-client/actions/workflows/ant.yml)
 [![codecov](https://codecov.io/gh/Funz/funz-client/branch/master/graph/badge.svg)](https://codecov.io/gh/Funz/funz-client)
 
 # funz-client
