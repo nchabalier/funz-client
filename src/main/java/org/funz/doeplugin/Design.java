@@ -59,11 +59,11 @@ public abstract class Design implements DesignConstants/*, ResultPainter*/ {
             return asString(prj.getPlugin().getFormulaInterpreter().eval(_designer.getOptions().get(o), _session.getFixedParameters()));
         } catch (MathExpression.MathException ex) {
             Log.err(ex, 1);
-            Log.err("Could not evaluate option " + o + " in options list " + _designer.getOptions(), 0);
+            Log.err("Ignore evaluation of option " + o + " as " + _designer.getOptions().get(o) + " with "+_session.getFixedParameters(), 1);
             return _designer.getOptions().get(o);
         } catch (Exception e) {
             Log.err(e, 0);
-            Log.err("Could not interpret option " + o + " in options list " + _designer.getOptions(), 0);
+            Log.err("Could not interpret option " + o + " in options list " + _designer.getOptions() + " with "+_session.getFixedParameters(), 0);
             return null;
         }
     }
