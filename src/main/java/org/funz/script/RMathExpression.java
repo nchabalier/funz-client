@@ -286,7 +286,7 @@ public class RMathExpression extends MathExpression {
                         serverConf = null; // We reset this conf to let RserveSession startup deamon by itself.
                     }
                     R = new RserveSession(streamlogger, env, serverConf);
-                    R.setCRANRepository("http://cloud.r-project.org");
+                    R.setCRANRepository(Configuration.getProperty("R.repos","http://cloud.r-project.org"));
                 } else if (R_engine.equals("Renjin")) {
                     R = new RenjinSession(streamlogger, env);
                 } else {
@@ -294,6 +294,7 @@ public class RMathExpression extends MathExpression {
                 }
             } catch (Exception e) {
                 Log.out("Could not instanciate Rsession: " + e.getMessage(), 0);
+                e.printStackTrace();
                 R = null;
             }
 
@@ -410,13 +411,13 @@ public class RMathExpression extends MathExpression {
             String RLibPath = "file.path(Sys.getenv('HOME'),'.Funz','R')";
             //}
             //if (RLibPath != null) {
-            R.voidEval("if(!file.exists(" + RLibPath + ")) dir.create(" + RLibPath + ",recursive=TRUE)");
+            R.voidEval("if (!file.exists(" + RLibPath + ")) dir.create(" + RLibPath + ",recursive=TRUE)");
             R.voidEval(".libPaths(new=" + RLibPath + ")");
             R.log("libPath " + ASCII.cat("\n            ", R.asStrings(R.eval(".libPaths()"))), Level.WARNING);
             //}
         } catch (Exception r) {
-            r.printStackTrace();
             Log.err(r, 1);
+            r.printStackTrace();
         }
     }
 
