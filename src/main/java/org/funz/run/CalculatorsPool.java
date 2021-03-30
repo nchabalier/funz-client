@@ -177,12 +177,13 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
     }
 
     public Computer getComputer(String ip, String name, String host, int port) {
-            for (Iterator it = getComputers().iterator(); it.hasNext();) {
-                Computer comp = (Computer) it.next();
-                if ((ip == null || comp.ip.equals(ip)) && (name == null || comp.name.equals(name)) && (host == null || comp.host.equals(host)) && comp.port == port) {
-                    return comp;
-                }
+        Iterator<Computer> it = getComputers().iterator();
+        while(it.hasNext()) {
+            Computer comp = (Computer) it.next();
+            if ((ip == null || comp.ip.equals(ip)) && (name == null || comp.name.equals(name)) && (host == null || comp.host.equals(host)) && comp.port == port) {
+                return comp;
             }
+        }
         return null;
     }
 
@@ -195,27 +196,29 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
     }
 
     public void removeComputer(String host, int port) {
-            for (Iterator it = getComputers().iterator(); it.hasNext();) {
-                Computer comp = (Computer) it.next();
-                if (comp.host.equals(host) && comp.port == port) {
-                    _comps.remove(comp);
-                    return;
-                }
+        Iterator<Computer> it = getComputers().iterator();
+        while(it.hasNext()) {
+            Computer comp = (Computer) it.next();
+            if (comp.host.equals(host) && comp.port == port) {
+                _comps.remove(comp);
+                return;
             }
+        }
     }
 
     final List<Thread> blackList = new CopyOnWriteArrayList<>();
 
     public void blacklistComputer(final String host, final int port, final long time) {
-            for (Iterator it = getComputers().iterator(); it.hasNext();) {
-                final Computer comp = (Computer) it.next();
-                if (comp.host.equals(host) && comp.port == port) {
-                    Thread b = new BlackLister(comp, time*1000);
-                    b.start();
-                    blackList.add(b);
-                    return;
-                }
+        Iterator<Computer> it = getComputers().iterator();
+        while(it.hasNext()) {
+            final Computer comp = (Computer) it.next();
+            if (comp.host.equals(host) && comp.port == port) {
+                Thread b = new BlackLister(comp, time*1000);
+                b.start();
+                blackList.add(b);
+                return;
             }
+        }
     }
 
     class BlackLister extends Thread {
@@ -610,7 +613,8 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                 } else {
                         long now = System.currentTimeMillis();
                         List<Computer> toremove = new ArrayList<>();
-                        for (Iterator it = getComputers().iterator(); it.hasNext();) {
+                        Iterator<Computer> it = getComputers().iterator();
+                        while(it.hasNext()) {
                             final Computer comp = (Computer) it.next();
                             long diff = now - comp.lastPing;
                             if (diff > PING_PERIOD*10) {
@@ -638,7 +642,8 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
     public void forceResetComputers() {
             long now = System.currentTimeMillis();
             List<Computer> toremove = new ArrayList<>();
-            for (Iterator it = getComputers().iterator(); it.hasNext();) {
+            Iterator<Computer> it = getComputers().iterator();
+            while(it.hasNext()) {
                 final Computer comp = (Computer) it.next();
                 long diff = now - comp.lastPing;
                 if (diff > PING_PERIOD) {
