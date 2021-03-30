@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
 import org.apache.commons.exec.OS;
+import org.apache.commons.io.FileUtils;
 import org.funz.Project;
 import static org.funz.XMLConstants.*;
 import org.funz.conf.Configuration;
@@ -710,6 +711,7 @@ public class Case extends Experiment {
     }
     public static int MAX_PATH_LENGTH = Integer.parseInt(Configuration.getProperty("max_path_length", OS.isFamilyWindows() ? "64" : "256"));
 
+    String cont_path, disc_path, discgrp_path, cont_hash, disc_hash, discgrp_hash;
     public String getRelativePath() {
         if (_relativePath == null) {
             StringBuilder discgrp = new StringBuilder();
@@ -745,11 +747,14 @@ public class Case extends Experiment {
                 }
             }
 
-            String cont_hash = cont.toString();
+            cont_path = cont.toString();
+            cont_hash = cont_path;
+            
+            disc_path = disc.toString();
+            disc_hash = disc_path;
 
-            String disc_hash = disc.toString();
-
-            String discgrp_hash = discgrp.toString();
+            discgrp_path = discgrp.toString();
+            discgrp_hash = discgrp_path;
 
             _relativePath = discgrp_hash + disc_hash + cont_hash;
 
@@ -1101,6 +1106,32 @@ public class Case extends Experiment {
             try {
                 writer.close();
             } catch (Exception ee) {
+            }
+        }
+
+        String path = f.getAbsolutePath();
+        if (disc_hash!=null && !disc_hash.equals(disc_path)) {
+            File hash_path = new File(path.substring(0,path.indexOf(disc_hash)),disc_hash);
+            try{
+                FileUtils.writeStringToFile(new File(hash_path,".path"), disc_path);
+            } catch(IOException e) {
+                Log.err(e, 1);
+            }
+        }
+        if (discgrp_hash!=null && !discgrp_hash.equals(discgrp_path)) {
+            File hash_path = new File(path.substring(0,path.indexOf(discgrp_hash)));
+            try{
+                FileUtils.writeStringToFile(new File(hash_path,".path"), discgrp_path);
+            } catch(IOException e) {
+                Log.err(e, 1);
+            }
+        }
+        if (cont_hash!=null && !cont_hash.equals(cont_path)) {
+            File hash_path = new File(path.substring(0,path.indexOf(cont_hash)));
+            try{
+                FileUtils.writeStringToFile(new File(hash_path,".path"), cont_path);
+            } catch(IOException e) {
+                Log.err(e, 1);
             }
         }
     }
