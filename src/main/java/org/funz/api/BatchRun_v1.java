@@ -508,7 +508,7 @@ public abstract class BatchRun_v1 {
                         }
                         addInfoHistory(c, "Cache copied.");
 
-                        parseResult(c);
+                        parseResult(c, false);
 
                         endCase(c);
 
@@ -708,25 +708,14 @@ public abstract class BatchRun_v1 {
             transferOutput(client, c);
 
             //LogUtils.tic("parseResult " + c.getName());
-            parseResult(c);
+            parseResult(c, true);
             //LogUtils.toc("parseResult " + c.getName());
 
             endCase(c);
-
-            c.writeInfoFile(new File(prj.getCaseTmpDir(c) + File.separator + Case.FILE_INFO));
         } catch (IOException e) {
             errorCase(e, c); // This is NOT a definitive failure. We should retry this case (if try < maxtry)
         } catch (Exception e) {
-            try {
-                parseResult(c);
-            } catch (Exception ex) {
-                addInfoHistory(c, "Exception parsing: "+ex.getMessage());
-                err("parseResult: " + ex.getMessage() + "\n" + getInfoHistory(c), 3);
-            } 
-
             failedCase(e, c); // This IS a defitive failure. This case will not be retried.
-        
-            c.writeInfoFile(new File(prj.getCaseTmpDir(c) + File.separator + Case.FILE_INFO));
         } finally {
             if (incNumOfCompsDone) {
                 decNumOfComps();
@@ -835,7 +824,7 @@ public abstract class BatchRun_v1 {
         //LogUtils.toc("unzip " + c.getName());
     }
 
-    void parseResult(Case c) throws Exception {
+    void parseResult(Case c, boolean doSummary) throws Exception {
         addInfoHistory(c, "Parsing results.");
         out("Parsing results of " + c.getName() + ".", 1);
         //LogTicToc.tic("IO");
@@ -901,6 +890,10 @@ public abstract class BatchRun_v1 {
 
         c.setResult(result);
 
+        if (doSummary) {
+            c.writeInfoFile(new File(prj.getCaseTmpDir(c) + File.separator + Case.FILE_INFO));
+        }
+
         c.setState(Case.STATE_OVER);
     }
 
@@ -947,6 +940,12 @@ public abstract class BatchRun_v1 {
 
         addInfoHistory(c, "Failed: " + e.getMessage());
         out("Failed running case " + c.getName() + ": " + e, 1);
+
+        try {
+            parseResult(c, true);
+        } catch (Exception ex) {
+            err("parseResult: " + ex.getMessage() + "\n" + getInfoHistory(c), 3);
+        }
 
         c.setInformation(info_histories.get(c.getName()));
 
@@ -1048,7 +1047,7 @@ public abstract class BatchRun_v1 {
                 boolean succeded = true;
 
                 try {
-                    parseResult(toclone);
+                    parseResult(toclone, false);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     succeded = false;
