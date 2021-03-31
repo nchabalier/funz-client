@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.io.FileUtils;
 import static org.funz.Constants.*;
@@ -985,11 +987,6 @@ public class Project {
         //System.out.println(Experiment.toString_ExperimentArray("Project.addDesign ALL", _cases));
     }
 
-    /*public void setDesign(ArrayList<Experiment> exps, Case.Observer observer, int discCaseIdx) {
-     //force reinit _cases
-     //_cases = new CaseList(exps.size());
-     addDesign(exps, observer, discCaseIdx);
-     }*/
     /**
      * Returns the case's tmp directory after its calculation is over. Append
      * INPUT_DIR or OUTPUT_DIR to acces to input and outpt directories.
@@ -2557,6 +2554,13 @@ public class Project {
         }
         Log.logMessage(this, SeverityLevel.INFO, false, "Design sessions saved.");
     }
+    
+    Map<Case,File> casesDir = new ConcurrentHashMap<>();
+
+    public File getCaseCurrentDir(Case c) {
+        if (casesDir.containsKey(c)) return casesDir.get(c);
+        return getCaseTmpDir(c);
+    }
 
     public void moveCasesSpoolTo(File to, List<Case> cases) {
         if (cases != null) {
@@ -2589,6 +2593,7 @@ public class Project {
                             //Disk.removeDir(archiveCasePath); No, problem when superimposing many projects in same directory
                         }
                         Disk.moveDir(new File(getSpoolDir(), c.getRelativePath()), archiveCasePath);
+                        casesDir.put(c,archiveCasePath);
                     } else {
                         Log.out("Case spool dir " + new File(getSpoolDir(), c.getRelativePath()) + " does not exists.", 1);
                     }
