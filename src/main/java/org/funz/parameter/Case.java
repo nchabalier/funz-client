@@ -1112,12 +1112,18 @@ public class Case extends Experiment {
             writer = new PrintWriter(new FileOutputStream(f));
             getInfo().store(writer, null/*"Written at " + System.currentTimeMillis()*/);
         } catch (Exception e) {
-            // not important
+            Log.err(e, 1);
         } finally {
             try {
                 writer.close();
             } catch (Exception ee) {
             }
+        }
+
+        try {
+            FileUtils.writeStringToFile(new File(f.getParentFile(),"history.txt"), getHistory());
+        } catch (IOException e) {
+            Log.err(e, 1);
         }
 
         String path = f.getAbsolutePath();
