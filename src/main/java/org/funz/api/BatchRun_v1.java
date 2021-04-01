@@ -424,17 +424,12 @@ public abstract class BatchRun_v1 {
         }
     }
 
-    Map<String, String> info_histories = new HashMap<>();
-
     String getInfoHistory(Case c) {
-        return info_histories.get(c.getName());
+        return c.getHistory();
     }
 
     void addInfoHistory(Case c, String info) {
-        if (!info_histories.containsKey(c.getName())) {
-            info_histories.put(c.getName(), "## " + c.getName());
-        }
-        info_histories.replace(c.getName(), info_histories.get(c.getName()) + "\n  [" + LogTicToc.HMS() + "]  > " + info);
+        c.appendHistory(info);
     }
 
     public boolean killCase(final Case c) {
@@ -947,7 +942,7 @@ public abstract class BatchRun_v1 {
             err("parseResult: " + ex.getMessage() + "\n" + getInfoHistory(c), 3);
         }
 
-        c.setInformation(info_histories.get(c.getName()));
+        c.setInformation("Failed: " + e.getMessage());
 
         c.setState(Case.STATE_FAILED);
     }

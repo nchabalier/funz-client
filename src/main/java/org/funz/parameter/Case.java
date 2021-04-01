@@ -24,6 +24,7 @@ import org.funz.conf.Configuration;
 import org.funz.doeplugin.DesignSession;
 import org.funz.doeplugin.Experiment;
 import org.funz.log.Log;
+import org.funz.log.LogTicToc;
 import org.funz.log.LogCollector.SeverityLevel;
 import org.funz.util.ASCII;
 import static org.funz.util.Data.*;
@@ -39,6 +40,15 @@ import org.w3c.dom.NodeList;
 public class Case extends Experiment {
 
     private Map<String, Object> _result;
+    private StringBuilder history;
+
+    public void appendHistory(String str) {
+        history.append("\n[" + LogTicToc.HMS() + "] "+str);
+    }
+
+    public String getHistory() {
+        return history.toString();
+    }
 
     @Override
     public String toString() {
@@ -448,6 +458,7 @@ public class Case extends Experiment {
         for (int i = 1; i < _nodes.length; i++) {
             sb.append("/").append(_nodes[i].name);
         }
+        history.append("# "+sb.toString());
         return sb.toString();
     }
 
