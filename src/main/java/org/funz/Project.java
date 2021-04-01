@@ -1,6 +1,7 @@
 package org.funz;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -2593,7 +2594,30 @@ public class Project {
                             //Disk.removeDir(archiveCasePath); No, problem when superimposing many projects in same directory
                         }
                         Disk.moveDir(new File(getSpoolDir(), c.getRelativePath()), archiveCasePath);
-                        casesDir.put(c,archiveCasePath);
+                        casesDir.put(c,archiveCasePath); // update shortcut accessible through getCaseCurrentDir()
+
+                        // Copy also "".path" files from parents dirs
+                        File parent = archiveCasePath;
+                        if (!parent.getCanonicalPath().startsWith(getSpoolDir().getCanonicalPath())) {
+                            Log.err("Error trying to move .path files: " + 
+                                    parent.getCanonicalPath() + " is not inside " + getSpoolDir().getCanonicalPath(), 1);
+                        } else {
+                                // raise one step in tree as long as not reached "spool" root
+                            while (!parent.getCanonicalPath().equals(getSpoolDir().getCanonicalPath())) {
+                                File[] pathFiles = parent.listFiles(new FileFilter() {
+                                    @Override
+                                    public boolean accept(File f) {
+                                        return f.getName().equals(".path");
+                                    }
+                                });
+                                if (pathFiles != null && pathFiles.length == 1) {
+                                    Disk.copyFilesIn(pathFiles, 
+                                                     new File(parent.getCanonicalPath().replace(getSpoolDir().getCanonicalPath(), to.getCanonicalPath())));
+                                }
+                                parent = parent.getParentFile();
+                            }
+                        }
+
                     } else {
                         Log.out("Case spool dir " + new File(getSpoolDir(), c.getRelativePath()) + " does not exists.", 1);
                     }
