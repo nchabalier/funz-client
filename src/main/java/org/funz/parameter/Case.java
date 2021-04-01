@@ -40,7 +40,7 @@ import org.w3c.dom.NodeList;
 public class Case extends Experiment {
 
     private Map<String, Object> _result;
-    private StringBuilder history;
+    private StringBuilder history = new StringBuilder();
 
     public void appendHistory(String str) {
         history.append("\n[" + LogTicToc.HMS() + "] "+str);
