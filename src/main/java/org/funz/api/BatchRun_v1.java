@@ -24,6 +24,7 @@ import org.funz.log.Log;
 import org.funz.log.LogTicToc;
 import org.funz.parameter.Cache;
 import org.funz.parameter.Case;
+import org.funz.parameter.Case.CaseRunner;
 import org.funz.parameter.Case.Observer;
 import org.funz.parameter.CaseList;
 import org.funz.parameter.OutputFunctionExpression;
@@ -39,7 +40,7 @@ import org.funz.log.LogTicToc;
 /**
  * @author richet
  */
-public abstract class BatchRun_v1 {
+public abstract class BatchRun_v1 implements CaseRunner {
 
     Project prj;
     volatile boolean askToStop = false;
@@ -432,9 +433,9 @@ public abstract class BatchRun_v1 {
         c.appendHistory(info);
     }
 
-    public boolean killCase(final Case c) {
+    Thread killCase(final Case c) {
         if (c == null || !running_cleaner.containsKey(c)) {
-            return false;
+            return null;
         }
         Thread killer = running_cleaner.get(c);
         killer.start();
@@ -444,11 +445,51 @@ public abstract class BatchRun_v1 {
          return false;
          }*/
         running_cleaner.remove(c);
-        return true;
+        return killer;
     }
 
-    public boolean runCase(final Case c) {
-        //LogUtils.tic("runCase " + c.getName());
+    public boolean stopCase(final Case c) {
+        Thread kill = killCase(c);
+        if (kill!=null)
+            try {
+                kill.join();
+                return true;
+            } catch (InterruptedException e) {
+                return false;
+            }
+        return true;
+    }
+    
+    public boolean restartCase(Case c) {
+        for (int j = 0; j < runCases.size(); j++) {
+            RunCase rc = runCases.get(j);
+            if (rc.c == c) {
+                rc.interrupt();
+                Thread kill = killCase(c);
+                if (kill!=null)
+                    try {
+                        kill.join();
+                    } catch (InterruptedException e) {
+                    }
+                c.reset();
+                RunCase newrc = new RunCase(c);
+                runCases.set(j,newrc);
+                newrc.start();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean startCase(final Case c) {
+        if (getPendingCases().contains(c))
+            return runCase(c);
+        else 
+            return false;
+    }
+
+    boolean runCase(final Case c) {
+            //LogUtils.tic("runCase " + c.getName());
         //startCase(c);
 
         File[] files = null;
@@ -486,7 +527,7 @@ public abstract class BatchRun_v1 {
 
                     File outdir = new File(dir + File.separator + Constants.OUTPUT_DIR);
                     try {
-                        startCase(c);
+                        beginCase(c);
 
                         addInfoHistory(c, "Copying cache ...");
 
@@ -577,7 +618,7 @@ public abstract class BatchRun_v1 {
             client.c = c;
 
             //LogUtils.tic("startCase " + c.getName());
-            startCase(c);
+            beginCase(c);
             //LogUtils.toc("startCase " + c.getName());
 
             addInfoHistory(c, "Trying to reserve client " + client);
@@ -892,7 +933,7 @@ public abstract class BatchRun_v1 {
         c.setState(Case.STATE_OVER);
     }
 
-    void startCase(Case c) {
+    void beginCase(Case c) {
         c.setInformation("Starting ...");
         out("Starting " + c.getName(), 1);
 
@@ -955,6 +996,7 @@ public abstract class BatchRun_v1 {
             super(c.getName() + ": " + "RunCase " + c.getIndex() + " project " + prj.getName());
             out("Created new RunCase thread " + c.getName(), 10);
             this.c = c;
+            c.setRunner(BatchRun_v1.this);
         }
 
         @Override

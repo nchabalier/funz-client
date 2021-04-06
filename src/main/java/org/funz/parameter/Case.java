@@ -39,6 +39,30 @@ import org.w3c.dom.NodeList;
  */
 public class Case extends Experiment {
 
+    CaseRunner  runner;
+    public interface CaseRunner {
+        public boolean startCase(final Case c);
+        public boolean restartCase(final Case c);
+        public boolean stopCase(final Case c);
+    }
+
+    public void setRunner(CaseRunner runner){
+        this.runner = runner;
+    }
+
+    public boolean run() {
+        if (runner==null) return false;
+        return runner.startCase(this);
+    }    
+    public boolean restart() {
+        if (runner==null) return false;
+        return runner.restartCase(this);
+    }    
+    public boolean stop() {
+        if (runner==null) return false;
+        return runner.stopCase(this);
+    }
+
     private Map<String, Object> _result;
     private StringBuilder history = new StringBuilder();
 
