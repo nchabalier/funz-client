@@ -1165,6 +1165,8 @@ public abstract class BatchRun_v1 {
          return t.hasRun();
          }
          });*/
+         Collections.sort(theseCases, 
+                        (o1, o2) -> o1.getIndex()-o2.getIndex());
         return theseCases;
     }
 
