@@ -273,8 +273,29 @@ public abstract class BatchRun_v1 implements CaseRunner {
 
         static final String provideNewClient_HEAD = "                                                       [ClientProvider] ";
 
+        List<Case> askers = new LinkedList<>();
+        ReserverClient provideNewClient(Case asker) {
+            synchronized(askers) {
+                askers.add(asker);
+                Collections.sort(askers, (o1, o2) -> o2.getIndex() - o1.getIndex());
+            }
+           
+            while (askers.indexOf(asker)!=0) {
+                synchronized(askers) {
+                    try { 
+                        askers.wait(1000); 
+                    } catch (InterruptedException e) {
+                    }
+                } 
+            }
+            synchronized(askers) {
+                askers.remove(asker);
+                return provideNewClient(); 
+            }
+        }
+
         synchronized ReserverClient provideNewClient() {
-            if (askToStop) {
+                if (askToStop) {
                 out(provideNewClient_HEAD + "Asked to stop, so providing null client.", 8);
                 return null;
             }
@@ -464,7 +485,6 @@ public abstract class BatchRun_v1 implements CaseRunner {
         for (int j = 0; j < runCases.size(); j++) {
             RunCase rc = runCases.get(j);
             if (rc.c == c) {
-                rc.interrupt();
                 Thread kill = killCase(c);
                 if (kill!=null)
                     try {
@@ -575,7 +595,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
                     }
                     addInfoHistory(c, "Got provider...");
                     //LogTicToc.tic("provideNewClient " + c.getName());
-                    client = provider.provideNewClient();
+                    client = provider.provideNewClient(c);
                     //LogTicToc.toc("provideNewClient " + c.getName());
                 //    provider_lock.notifyAll();
                 //}
@@ -725,19 +745,17 @@ public abstract class BatchRun_v1 implements CaseRunner {
                 }
             })) {
                 addInfoHistory(c, "Failed to execute on " + client.getHost() + ": " + (kill_client.killed ? "Killed" : client.getReason()));
-                if (!kill_client.killed) {
-                    blacklistComputer(client.computer, "Failed to execute on " + client.getHost() + ": " + (kill_client.killed ? "Killed" : client.getReason()));
-                }
+            
                 transferOutput(client, c);
-                throw new IOException(c.getName() + ": " + "Failed to execute on " + client.getHost() + ": " + (kill_client.killed ? "Killed" : client.getReason()));
-            } else {
-                running_cleaner.remove(c);
+
+                if (kill_client.killed) {
+                    throw new Exception(c.getName() + ": " + "Code killed.");
+                } else {                      
+                    blacklistComputer(client.computer, "Failed to execute on " + client.getHost() + ": " + (kill_client.killed ? "Killed" : client.getReason()));
+                    throw new IOException(c.getName() + ": " + "Failed to execute on " + client.getHost() + ": " + (kill_client.killed ? "Killed" : client.getReason()));
+                }
             }
             //LogUtils.toc("execute " + c.getName());
-
-            if (kill_client.killed) {
-                throw new IOException(c.getName() + ": " + "Code killed.");
-            }
 
             addInfoHistory(c, "Execution done.");
 
@@ -753,6 +771,8 @@ public abstract class BatchRun_v1 implements CaseRunner {
         } catch (Exception e) {
             failedCase(e, c); // This IS a defitive failure. This case will not be retried.
         } finally {
+            running_cleaner.remove(c);
+            
             if (incNumOfCompsDone) {
                 decNumOfComps();
             }
@@ -926,11 +946,11 @@ public abstract class BatchRun_v1 implements CaseRunner {
 
         c.setResult(result);
 
+        c.setState(Case.STATE_OVER);
+
         if (doSummary) {
             c.writeInfoFile(new File(prj.getCaseTmpDir(c) + File.separator + Case.FILE_INFO));
         }
-
-        c.setState(Case.STATE_OVER);
     }
 
     void beginCase(Case c) {
@@ -1207,8 +1227,6 @@ public abstract class BatchRun_v1 implements CaseRunner {
          return t.hasRun();
          }
          });*/
-         Collections.sort(theseCases, 
-                        (o1, o2) -> o1.getIndex()-o2.getIndex());
         return theseCases;
     }
 
@@ -1303,10 +1321,10 @@ public abstract class BatchRun_v1 implements CaseRunner {
             Alert.showInformation("Bypass Funz grid checking for code '"+prj.getCode()+"'");
         
         try {
-            runCases.clear();
-
             //LogUtils.tic("getPendingCases");
             torun = new ArrayList<>(getPendingCases());
+            runCases = new ArrayList<>(torun.size());
+
             List<CloneCase> cloneCases = new ArrayList<CloneCase>();
             //LogUtils.toc("getPendingCases");
 
@@ -1551,7 +1569,6 @@ public abstract class BatchRun_v1 implements CaseRunner {
                 n++;
                 if (t.getDuration()>0) SLEEP_PERIOD = Math.min(SLEEP_PERIOD,t.getDuration());
             }//else                 System.err.print("-");
-
         }
         return n;
     }
