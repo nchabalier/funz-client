@@ -482,15 +482,20 @@ public abstract class BatchRun_v1 implements CaseRunner {
     }
     
     public boolean restartCase(Case c) {
+        Thread kill = killCase(c);
+        if (kill!=null)
+            try {
+                kill.join();
+            } catch (InterruptedException e) {
+            }
         for (int j = 0; j < runCases.size(); j++) {
             RunCase rc = runCases.get(j);
             if (rc.c == c) {
-                Thread kill = killCase(c);
-                if (kill!=null)
-                    try {
-                        kill.join();
-                    } catch (InterruptedException e) {
-                    }
+                rc.interrupt();
+                try {
+                    rc.join();
+                } catch (InterruptedException e) {
+                }
                 c.reset();
                 RunCase newrc = new RunCase(c);
                 runCases.set(j,newrc);
@@ -746,13 +751,12 @@ public abstract class BatchRun_v1 implements CaseRunner {
             })) {
                 addInfoHistory(c, "Failed to execute on " + client.getHost() + ": " + (kill_client.killed ? "Killed" : client.getReason()));
             
-                transferOutput(client, c);
-
                 if (kill_client.killed) {
-                    throw new Exception(c.getName() + ": " + "Code killed.");
+                    throw new Exception(c.getName() + ": " + " killed.");
                 } else {                      
-                    blacklistComputer(client.computer, "Failed to execute on " + client.getHost() + ": " + (kill_client.killed ? "Killed" : client.getReason()));
-                    throw new IOException(c.getName() + ": " + "Failed to execute on " + client.getHost() + ": " + (kill_client.killed ? "Killed" : client.getReason()));
+                    transferOutput(client, c);
+                    blacklistComputer(client.computer, "Failed to execute on " + client.getHost() + ": " + client.getReason());
+                    throw new IOException(c.getName() + ": " + "Failed to execute on " + client.getHost() + ": " + client.getReason());
                 }
             }
             //LogUtils.toc("execute " + c.getName());
@@ -942,6 +946,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
         out("Results of " + c.getName() + " parsed: "+result, 1);
         //LogTicToc.toc("OutputFunctionExpression");
 
+        addInfoHistory(c,"Results parsed: " + result);
         c.setInformation("Results parsed: " + result);
 
         c.setResult(result);
@@ -1032,8 +1037,8 @@ public abstract class BatchRun_v1 implements CaseRunner {
                 }
 
                 if (!success) {
-                    Alert.showInformation(c.getName() + " Failed run try (" + c.getTriesDone() + "/" + (prj.getMaxRetry() + 1) + ")");
-                    err(c.getName() + " Failed run try (" + c.getTriesDone() + "/" + (prj.getMaxRetry() + 1) + ")", 2);
+                    Alert.showInformation(c.getName() + " Failed run");
+                    err(c.getName() + " Failed run", 2);
                 }
             }
 
@@ -1048,8 +1053,8 @@ public abstract class BatchRun_v1 implements CaseRunner {
                     c.setInformation("Run failed: too much retry (" + c.getStatusInformation() + ")");
                     Alert.showError(c.getName() + " Run failed: too much retry (" + c.getStatusInformation() + ")");
                 } else if (c.isFailed()) {
-                    c.setInformation("Run failed: case has failed (" + c.getStatusInformation() + ")");
-                    Alert.showError(c.getName() + " Run failed: case has failed (" + c.getStatusInformation() + ")");
+                    c.setInformation("Run failed: " + c.getStatusInformation());
+                    Alert.showError(c.getName() + " Run failed: " + c.getStatusInformation() );
                 } else if (askToStop) {
                     c.setInformation("Run failed: ask to stop");
                     Alert.showError(c.getName() + " Run failed: ask to stop");

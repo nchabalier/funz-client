@@ -841,6 +841,170 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     }
 
     @Test
+    public void testStopCase() throws Exception {
+        System.err.println("+++++++++++++++++++++++++ testStopCase");
+        File tmp_in = branin_in();
+        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src"+File.separator+"test"+File.separator+"samples","branin.R")).replace("t=0", "t=1"));
+
+        IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
+        Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
+
+        plugin.setFormulaInterpreter(new RMathExpression(tmp_in.getName() + "_" + Configuration.timeDigest(), Configuration.isLog("R") ? new File(prj.getLogDir(), tmp_in.getName() + ".Rlog") : null));
+        prj.setMainOutputFunction(plugin.suggestOutputFunctions().get(0));
+        prj.setDesignerId(NODESIGNER_ID);
+
+        Variable x1 = prj.getVariableByName("x1");
+        x1.setType(Variable.TYPE_REAL);
+        x1.setValues(VariableMethods.Value.asValueList(".1", ".2"));
+
+        Variable x2 = prj.getVariableByName("x2");
+        x2.setType(Variable.TYPE_REAL);
+        x2.setValues(VariableMethods.Value.asValueList(".1", ".2"));
+
+        prj.retries = TEST_RETRIES;
+        prj.buildParameterList();
+
+        prj.resetDiscreteCases(o);
+
+        prj.setCases(prj.getDiscreteCases(), o);
+
+        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testStopCase")) {
+
+            @Override
+            public void out(String string, int i) {
+                TestUtils.out(string, i);
+            }
+
+            @Override
+            public void err(String msg, int i) {
+                TestUtils.err(msg, i);
+            }
+
+            @Override
+            public void err(Exception ex, int i) {
+                TestUtils.err(ex, i);
+            }
+        };
+
+        Thread t = new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    assert batchRun.runBatch() : "Failed to run batch: "+batchRun.getState();
+
+                    Map<String, String[]> results = batchRun.getResultsStringArrayMap();
+                    assert ArrayMapToMDString(results).trim().length() > 0 : "Empty results";
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        t.start();
+
+        int i = 100;
+        while ((i--) > 0 && ! (prj.getCases().get(3).getState()==Case.STATE_RUNNING)) {
+            Thread.sleep(100);
+        }
+        
+        System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!! STOP CASE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        assert batchRun.stopCase(prj.getCases().get(3)) : "Failed to stop case: "+batchRun.getState();
+
+        t.join();
+
+        System.err.println(Format.ArrayMapToMDString(batchRun.getResultsArrayMap()));
+
+        assert batchRun.getArchiveDirectory().exists() : "Did not created archive dir " + batchRun.getArchiveDirectory();
+        assert Arrays.deepToString(batchRun.getResultsArrayMap().get("cat")).contains("null") : "Did not stop case: "+Arrays.deepToString(batchRun.getResultsArrayMap().get("cat"));
+
+        batchRun.shutdown();
+    }
+
+
+    @Test
+    public void testRestartCase() throws Exception {
+        System.err.println("+++++++++++++++++++++++++ testRestartCase");
+        File tmp_in = branin_in();
+        ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src"+File.separator+"test"+File.separator+"samples","branin.R")).replace("t=0", "t=1"));
+
+        IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
+        Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
+
+        plugin.setFormulaInterpreter(new RMathExpression(tmp_in.getName() + "_" + Configuration.timeDigest(), Configuration.isLog("R") ? new File(prj.getLogDir(), tmp_in.getName() + ".Rlog") : null));
+        prj.setMainOutputFunction(plugin.suggestOutputFunctions().get(0));
+        prj.setDesignerId(NODESIGNER_ID);
+
+        Variable x1 = prj.getVariableByName("x1");
+        x1.setType(Variable.TYPE_REAL);
+        x1.setValues(VariableMethods.Value.asValueList(".1", ".2"));
+
+        Variable x2 = prj.getVariableByName("x2");
+        x2.setType(Variable.TYPE_REAL);
+        x2.setValues(VariableMethods.Value.asValueList(".1", ".2"));
+
+        prj.retries = TEST_RETRIES;
+        prj.buildParameterList();
+
+        prj.resetDiscreteCases(o);
+
+        prj.setCases(prj.getDiscreteCases(), o);
+
+        final BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("testRestartCase")) {
+
+            @Override
+            public void out(String string, int i) {
+                TestUtils.out(string, i);
+            }
+
+            @Override
+            public void err(String msg, int i) {
+                TestUtils.err(msg, i);
+            }
+
+            @Override
+            public void err(Exception ex, int i) {
+                TestUtils.err(ex, i);
+            }
+        };
+
+        Thread t = new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    assert batchRun.runBatch() : "Failed to run batch: "+batchRun.getState();
+
+                    Map<String, String[]> results = batchRun.getResultsStringArrayMap();
+                    assert ArrayMapToMDString(results).trim().length() > 0 : "Empty results";
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        t.start();
+
+        int i = 100;
+        while ((i--) > 0 && ! (prj.getCases().get(3).getState()==Case.STATE_RUNNING)) {
+            Thread.sleep(100);
+        }
+        
+        System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!! STOP CASE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        assert batchRun.restartCase(prj.getCases().get(3)) : "Failed to restart case: "+batchRun.getState();
+
+        t.join();
+
+        System.err.println(Format.ArrayMapToMDString(batchRun.getResultsArrayMap()));
+
+        assert batchRun.getArchiveDirectory().exists() : "Did not created archive dir " + batchRun.getArchiveDirectory();
+
+        System.err.println(prj.getCases().get(3).getResult());
+        System.err.println(prj.getCases().get(3).getHistory());
+
+        assert !Arrays.deepToString(batchRun.getResultsArrayMap().get("cat")).contains("null") : "Did not restart case: "+Arrays.deepToString(batchRun.getResultsArrayMap().get("cat"));
+        assert Arrays.deepToString(batchRun.getResultsArrayMap().get("cat")).contains("50.75626") : "Did not restart case: "+Arrays.deepToString(batchRun.getResultsArrayMap().get("cat"));
+
+        batchRun.shutdown();
+    }
+
+    @Test
     public void testConcurrency() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testConcurrency");
         final boolean[] tests = new boolean[]{false, false, false, false};

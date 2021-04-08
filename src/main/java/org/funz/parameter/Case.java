@@ -92,6 +92,7 @@ public class Case extends Experiment {
 
     public void reset() {
         _retries = 0;
+        _output = null;
         setState(Case.STATE_INTACT);
         reserve(null);
         try {
