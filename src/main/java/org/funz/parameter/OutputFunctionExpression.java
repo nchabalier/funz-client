@@ -29,8 +29,8 @@ public abstract class OutputFunctionExpression {
     public static String COORD_END = ")";
     public static String SEQUENCE_BEGIN = "{";
     public static String SEQUENCE_END = "}";
-    public static String TEXT_BEGIN = "`";
-    public static String TEXT_END = "`";
+    public static String TEXT_BEGIN = "'";
+    public static String TEXT_END = "'";
 
     public static String buildPoint(double... x) {
         StringBuilder s = new StringBuilder();
@@ -926,46 +926,51 @@ public abstract class OutputFunctionExpression {
             OutputFunctionInstances = new HashMap<>();
             OutputFunctionNames = new HashMap<>();
 
+            // !!! be carefull that order is important for recognition of type: more specified to less one (Anything)
+
             OutputFunctions.add(GaussianDensity.class);
             OutputFunctionInstances.put(GaussianDensity.class, new GaussianDensity());
             OutputFunctionNames.put(GaussianDensity.class, "Gaussian density");
+                        
+            OutputFunctions.add(Numeric3DArray.class);
+            OutputFunctionInstances.put(Numeric3DArray.class, new Numeric3DArray());
+            OutputFunctionNames.put(Numeric3DArray.class, "Numeric3DArray");
 
-            OutputFunctions.add(Numeric.class);
-            OutputFunctionInstances.put(Numeric.class, new Numeric());
-            OutputFunctionNames.put(Numeric.class, "Numeric");
+            OutputFunctions.add(Numeric2DArray.class);
+            OutputFunctionInstances.put(Numeric2DArray.class, new Numeric2DArray());
+            OutputFunctionNames.put(Numeric2DArray.class, "Numeric2DArray");
 
             OutputFunctions.add(NumericArray.class);
             OutputFunctionInstances.put(NumericArray.class, new NumericArray());
             OutputFunctionNames.put(NumericArray.class, "NumericArray");
 
-            OutputFunctions.add(Sequence.class);
-            OutputFunctionInstances.put(Sequence.class, new Sequence());
-            OutputFunctionNames.put(Sequence.class, "Sequence");
+            OutputFunctions.add(Numeric3D.class);
+            OutputFunctionInstances.put(Numeric3D.class, new Numeric3D());
+            OutputFunctionNames.put(Numeric3D.class, "Numeric3D");
 
             OutputFunctions.add(Numeric2D.class);
             OutputFunctionInstances.put(Numeric2D.class, new Numeric2D());
             OutputFunctionNames.put(Numeric2D.class, "Numeric2D");
-            OutputFunctions.add(Numeric2DArray.class);
-            OutputFunctionInstances.put(Numeric2DArray.class, new Numeric2DArray());
-            OutputFunctionNames.put(Numeric2DArray.class, "Numeric2DArray");
 
-            OutputFunctions.add(Numeric3D.class);
-            OutputFunctionInstances.put(Numeric3D.class, new Numeric3D());
-            OutputFunctionNames.put(Numeric3D.class, "Numeric3D");
-            OutputFunctions.add(Numeric3DArray.class);
-            OutputFunctionInstances.put(Numeric3DArray.class, new Numeric3DArray());
-            OutputFunctionNames.put(Numeric3DArray.class, "Numeric3DArray");
+            OutputFunctions.add(Numeric.class);
+            OutputFunctionInstances.put(Numeric.class, new Numeric());
+            OutputFunctionNames.put(Numeric.class, "Numeric");
 
-            OutputFunctions.add(Anything.class);
-            OutputFunctionInstances.put(Anything.class, new Anything());
-            OutputFunctionNames.put(Anything.class, "Anything");
-            OutputFunctions.add(AnythingND.class);
-            OutputFunctionInstances.put(AnythingND.class, new AnythingND());
-            OutputFunctionNames.put(AnythingND.class, "AnythingND");
+            OutputFunctions.add(Sequence.class);
+            OutputFunctionInstances.put(Sequence.class, new Sequence());
+            OutputFunctionNames.put(Sequence.class, "Sequence");
 
             OutputFunctions.add(Text.class);
             OutputFunctionInstances.put(Text.class, new Text());
             OutputFunctionNames.put(Text.class, "Text");
+
+            OutputFunctions.add(AnythingND.class);
+            OutputFunctionInstances.put(AnythingND.class, new AnythingND());
+            OutputFunctionNames.put(AnythingND.class, "AnythingND");
+
+            OutputFunctions.add(Anything.class);
+            OutputFunctionInstances.put(Anything.class, new Anything());
+            OutputFunctionNames.put(Anything.class, "Anything");
         }
     }
 
