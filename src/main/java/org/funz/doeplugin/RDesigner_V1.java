@@ -365,10 +365,10 @@ public class RDesigner_V1 extends Designer {
                 try {
                     String Rinput = "list(";
                     for (Parameter p : _parameters) {
-                        Rinput = Rinput + "'" + p.getName() + "'=list('min'=" + p.getLowerBound() + ",'max'=" + p.getUpperBound() + "),";
+                        Rinput = Rinput + "\"" + p.getName() + "\"=list('min'=" + p.getLowerBound() + ",'max'=" + p.getUpperBound() + "),";
                     }
                     Rinput = Rinput.substring(0, Rinput.length() - 1) + ")";
-                    String Routput = "'" + _designer.getOutputFunctionExpression().toNiceSymbolicString().replace("'","\\'") + "'";
+                    String Routput = "\"" + _designer.getOutputFunctionExpression().toNiceSymbolicString().replace("\"","'") + "\"";
                     X0 = R.asMatrix(R.eval("getInitialDesign(DesignEnv," + Rinput + "," + Routput + ")"));
                 } catch (Exception r) {
                     Log.err(r, 1);
