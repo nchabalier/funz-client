@@ -664,6 +664,7 @@ public class Case extends Experiment {
                 }
             }
         }
+        in.put("path",getRelativePath());
         return in;
     }
 
