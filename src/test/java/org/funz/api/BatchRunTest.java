@@ -981,12 +981,12 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         });
         t.start();
 
-        int i = 100;
+        int i = 1000;
         while ((i--) > 0 && ! (prj.getCases().get(3).getState()==Case.STATE_RUNNING)) {
             Thread.sleep(100);
         }
         
-        System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!! STOP CASE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!! STOP/RESTART CASE 3 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: " + batchRun.getState());
         assert batchRun.restartCase(prj.getCases().get(3)) : "Failed to restart case: "+batchRun.getState();
 
         t.join();
