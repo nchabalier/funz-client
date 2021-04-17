@@ -908,6 +908,8 @@ public abstract class BatchRun_v1 implements CaseRunner {
         out("Set case " + c.getName() + " IO", 5);
         Map<String, Object> result = new HashMap<>();
 
+        result.put(Case.PROP_PATH, c.getRelativePath());
+
         if (inputValues != null) {
             for (String var : inputValues.keySet()) {
                 result.put(var, inputValues.get(var));

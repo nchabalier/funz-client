@@ -306,7 +306,7 @@ public class Case extends Experiment {
     //MODIFIED_INFO = 5;
     public static final int MODIFIED_CALC = 3, MODIFIED_STATE = 0, MODIFIED_TIME = 2, MODIFIED_INFO = 1;
     public static String[] MODIFIED_STRINGS = {"state", "info", "time", "calc"};
-    public static final String PROP_CODE = "code", PROP_START = "start", PROP_END = "end", PROP_DURATION = "duration", PROP_STATE = "state", PROP_CALC = "calc", PROP_VAR = "input", PROP_OUT = "output", PROP_INTER = "intermediate";
+    public static final String PROP_PATH = "path", PROP_CODE = "code", PROP_START = "start", PROP_END = "end", PROP_DURATION = "duration", PROP_STATE = "state", PROP_CALC = "calc", PROP_VAR = "input", PROP_OUT = "output", PROP_INTER = "intermediate";
     public static final String[] STATE_HTML_STRINGS = {"intact", "<font size=-1 color=red>failed</font>",
         "<font size=-1 color=red>error</font>", "preparing", "<font size=-1 color=green>running</font>",
         "<font size=-1 color=blue>done</font>"
@@ -664,7 +664,6 @@ public class Case extends Experiment {
                 }
             }
         }
-        in.put("path",getRelativePath());
         return in;
     }
 

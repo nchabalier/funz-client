@@ -289,7 +289,6 @@ public class DesignShellTest extends org.funz.api.TestUtils {
     public void testError() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testError");
         Funz.setVerbosity(3);
-
         HashMap<String, String> variable_bounds = new HashMap<String, String>();
         variable_bounds.put("x1", "["+mult_x1_min+","+mult_x1_max+"]");
         variable_bounds.put("x2", "["+mult_x2_min+","+mult_x2_max+"]");
