@@ -1054,34 +1054,24 @@ public abstract class BatchRun_v1 implements CaseRunner {
                 } else {
                     c.setInformation("Run succeded.");
                 }
+                c.modified(Case.MODIFIED_STATE, "run");
+                c.setObserver(null);
+                c = null;
             } else {
                 if (c.getTriesDone() > prj.getMaxRetry()) {
                     c.setInformation("Run failed: too much retry (" + c.getStatusInformation() + ")");
-                    Alert.showError(c.getName() + " Run failed: too much retry (" + c.getStatusInformation() + ")");
                 } else if (c.isFailed()) {
                     c.setInformation("Run failed: " + c.getStatusInformation());
-                    Alert.showError(c.getName() + " Run failed: " + c.getStatusInformation() );
                 } else if (askToStop) {
-                    c.setInformation("Run failed: ask to stop");
-                    Alert.showError(c.getName() + " Run failed: ask to stop");
+                    c.setInformation("Run failed: ask to stop"); 
+                    c.setState(Case.STATE_INTACT);
                 } else if (!waitForCalculator) {
                     c.setInformation("Run failed: not waiting for calculator");
-                    Alert.showError(c.getName() + " Run failed: not waiting for calculator");
                 } else if (c.isOver()) {
                     c.setInformation("Run failed: case was over");
-                    Alert.showError(c.getName() + " Run failed: case was over");
-                }
+                }      
+                Alert.showError(c.getName() + ": " + c.getStatusInformation() );
             }
-
-            if (askToStop) {
-                c.setState(Case.STATE_INTACT);
-            }
-
-            c.modified(Case.MODIFIED_STATE, "run");
-
-            c.setObserver(null);
-
-            c = null;
         }
     }
 
