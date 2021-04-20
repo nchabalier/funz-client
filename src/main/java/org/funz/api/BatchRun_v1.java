@@ -500,9 +500,13 @@ public abstract class BatchRun_v1 implements CaseRunner {
                 RunCase newrc = new RunCase(c);
                 runCases.set(j,newrc);
                 newrc.start();
+                out("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR Found case "+c, 0);
                 return true;
-            }
-        }
+            } else                
+            out("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR Not case "+rc.c, 0);
+
+        }            
+        err("Cannot find case "+c+" in pending cases.", 1);
         return false;
     }
 
