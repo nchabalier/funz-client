@@ -1051,6 +1051,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
             if (success) {
                 if(c.isError()) {
                     c.setInformation("Run error.");
+                    if (askToStop) c.setState(Case.STATE_INTACT);
                 } else {
                     c.setInformation("Run succeded.");
                 }
