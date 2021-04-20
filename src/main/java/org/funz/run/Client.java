@@ -542,6 +542,8 @@ public class Client implements Protocol {
                 t.interrupt();
             }
         }
+        readWatcher.interrupt();
+        readWatcher.join();
         super.finalize();
     }
 
