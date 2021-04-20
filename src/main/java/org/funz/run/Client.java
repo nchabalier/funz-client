@@ -816,6 +816,7 @@ public class Client implements Protocol {
         _writer.flush();
         boolean ok = readResponse() && _return.equals(RET_YES);
         _reserved = !ok;
+        readWatcher.interrupt();
         log(" ! unreserved = " + ok + " response=" + _response);
         return ok;
     }
