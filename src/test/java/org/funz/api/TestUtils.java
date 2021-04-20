@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Map;
+
+import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.funz.Project;
 import org.funz.Protocol;
@@ -104,6 +106,15 @@ public class TestUtils {
     static MathExpression M = null; //new RMathExpression("R://localhost", new File("R.log"));
 
     public static void test(String arg) throws Exception {
+        if (OS.isFamilyWindows()) {
+            File calc = new File(CONF_XML);
+            ASCII.saveFile(calc, FileUtils.readFileToString(calc).replace("crash.sh", "crash.bat"));
+            ASCII.saveFile(calc, FileUtils.readFileToString(calc).replace("exit-1.sh", "exit-1.bat"));
+            File calcfail = new File(CONF_XML_FAILING);
+            ASCII.saveFile(calcfail, FileUtils.readFileToString(calcfail).replace("crash.sh", "crash.bat"));
+            ASCII.saveFile(calcfail, FileUtils.readFileToString(calcfail).replace("exit-1.sh", "exit-1.bat"));
+        }
+
         calculators = new Calculator[8];
         for (int i = 0; i < calculators.length - 1; i++) {
             calculators[i] = startCalculator(i, CONF_XML);

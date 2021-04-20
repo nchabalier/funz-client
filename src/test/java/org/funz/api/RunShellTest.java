@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.funz.Project;
 import org.funz.calculator.Calculator;
@@ -35,14 +34,6 @@ public class RunShellTest extends org.funz.api.TestUtils {
     @Test
     public void testExitNot0() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testExitNot0");
-
-        if (OS.isFamilyWindows()) {
-            File calc = new File("dist", "calculator.xml");
-            ASCII.saveFile(calc, FileUtils.readFileToString(calc).replace("exit-1.sh", "exit-1.bat"));
-            File calcfail = new File("dist", "calculator.fail.xml");
-            ASCII.saveFile(calcfail, FileUtils.readFileToString(calcfail).replace("exit-1.sh", "exit-1.bat"));
-            Thread.sleep(Calculator.PING_PERIOD * 2);
-        }
 
         File tmp_in = newTmpFile("exit.dat");
         if (tmp_in.exists()) {
@@ -75,14 +66,6 @@ public class RunShellTest extends org.funz.api.TestUtils {
     @Test
     public void testCrash() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++ testCrash");
-
-        if (OS.isFamilyWindows()) {
-            File calc = new File("dist", "calculator.xml");
-            ASCII.saveFile(calc, FileUtils.readFileToString(calc).replace("crash.sh", "crash.bat"));
-            File calcfail = new File("dist", "calculator.fail.xml");
-            ASCII.saveFile(calcfail, FileUtils.readFileToString(calcfail).replace("crash.sh", "crash.bat"));
-            Thread.sleep(Calculator.PING_PERIOD * 2);
-        }
 
         File tmp_in = newTmpFile("crash.dat");
         if (tmp_in.exists()) {
