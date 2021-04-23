@@ -491,16 +491,15 @@ public abstract class BatchRun_v1 implements CaseRunner {
         for (int j = 0; j < runCases.size(); j++) {
             RunCase rc = runCases.get(j);
             if (rc.c == c) {
-                rc.c = null;
                 rc.interrupt();
+                c.reset();
+                RunCase newrc = new RunCase(c);
+                runCases.set(j,newrc);
                 try {
                     rc.join();
                 } catch (InterruptedException e) {
                 }
-                c.reset();
-                RunCase newrc = new RunCase(c);
-                runCases.set(j,newrc);
-                newrc.start();
+                if (!newrc.isAlive()) newrc.start();
                 out("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR Found case "+c, 0);
                 return true;
             } else                
@@ -1036,7 +1035,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
             c.setInformation("Case not started");
             //System.err.println(c.getName()+" starting... "+!askToStop+" "+ waitForCalculator +" "+ !c.isOver() +" "+ (tries <= prj.getMaxRetries()));
             boolean success = false;
-            while (c!=null && !askToStop /*&& waitForCalculator*/ && !c.hasRun() /*&& tries <= prj.getMaxRetries()*/) {
+            while (!askToStop /*&& waitForCalculator*/ && !c.hasRun() /*&& tries <= prj.getMaxRetries()*/) {
                 try {
                     success = runCase(c);
                 } catch (Exception e) {
@@ -1439,7 +1438,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
                                 if (rc.c != null && rc.c.getState() == Case.STATE_INTACT) {
                                     out("Starting case " + rc.c.getName(), 3);
                                     //LogTicToc.tic("rc.start()");
-                                    rc.start();
+                                    if (!rc.isAlive()) rc.start();
                                     //LogTicToc.toc("rc.start()");
                                     //System.err.println("+");
                                     break;
