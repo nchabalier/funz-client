@@ -491,6 +491,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
         for (int j = 0; j < runCases.size(); j++) {
             RunCase rc = runCases.get(j);
             if (rc.c == c) {
+                rc.c = null;
                 rc.interrupt();
                 try {
                     rc.join();
@@ -1035,7 +1036,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
             c.setInformation("Case not started");
             //System.err.println(c.getName()+" starting... "+!askToStop+" "+ waitForCalculator +" "+ !c.isOver() +" "+ (tries <= prj.getMaxRetries()));
             boolean success = false;
-            while (!askToStop /*&& waitForCalculator*/ && !c.hasRun() /*&& tries <= prj.getMaxRetries()*/) {
+            while (c!=null && !askToStop /*&& waitForCalculator*/ && !c.hasRun() /*&& tries <= prj.getMaxRetries()*/) {
                 try {
                     success = runCase(c);
                 } catch (Exception e) {
