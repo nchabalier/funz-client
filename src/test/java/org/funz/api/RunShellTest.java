@@ -252,8 +252,8 @@ public class RunShellTest extends org.funz.api.TestUtils {
         //assert Arrays.deepEquals(results2.get("x2"), x2) : Arrays.toString(results2.get("x2")) + " != " + Arrays.toString(x2);
         //assert Arrays.deepEquals(round2(results2.get("cat")), z) : Arrays.toString(round2(results2.get("cat"))) + " != " + Arrays.toString(z);
 
-        assert (Double) (results2.get("duration"))[0] < 5 : "Did not used cache ! (duration was " + ((Double[]) (results2.get("duration")))[0] + ")";
-        assert (Double) (results2.get("duration"))[1] > 5 : "Too short case run ! (duration was " + ((Double[]) (results2.get("duration")))[1] + ")";
+        assert (Double) (results2.get("duration"))[0] < 5 : "Did not used cache ! (duration was " + (results2.get("duration"))[0] + ")";
+        assert (Double) (results2.get("duration"))[1] > 5 : "Too short case run ! (duration was " +  (results2.get("duration"))[1] + ")";
 
         Thread.sleep(1000);
         sac2.shutdown();
