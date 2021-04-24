@@ -23,6 +23,7 @@ import static org.funz.XMLConstants.*;
 import org.funz.conf.Configuration;
 import org.funz.doeplugin.DesignSession;
 import org.funz.doeplugin.Experiment;
+import org.funz.log.Alert;
 import org.funz.log.Log;
 import org.funz.log.LogTicToc;
 import org.funz.log.LogCollector.SeverityLevel;
@@ -818,9 +819,9 @@ public class Case extends Experiment {
                 }
             }
 
-            //if (_relativePath.length() > MAX_PATH_LENGTH) {
-            //    MessageDialog.showInformation("Warning, length of case " + _relativePath + "might bee too long. Try to reduce path length.");
-            //}
+            if (_relativePath.length() > MAX_PATH_LENGTH) {
+                Alert.showInformation("Warning, length of case " + _relativePath + "might bee too long. Try to reduce path length.");
+            }
         }
         return _relativePath;
     }
@@ -1155,7 +1156,7 @@ public class Case extends Experiment {
         if (disc_hash!=null && !disc_hash.equals(disc_path)) {
             File hash_path = new File(path.substring(0,path.indexOf(disc_hash)),disc_hash);
             try{
-                FileUtils.writeStringToFile(new File(hash_path,".path"), disc_path);
+                FileUtils.writeStringToFile(new File(hash_path,"path.txt"), disc_path);
             } catch(IOException e) {
                 Log.err(e, 1);
             }
@@ -1163,7 +1164,7 @@ public class Case extends Experiment {
         if (discgrp_hash!=null && !discgrp_hash.equals(discgrp_path)) {
             File hash_path = new File(path.substring(0,path.indexOf(discgrp_hash)));
             try{
-                FileUtils.writeStringToFile(new File(hash_path,".path"), discgrp_path);
+                FileUtils.writeStringToFile(new File(hash_path,"path.txt"), discgrp_path);
             } catch(IOException e) {
                 Log.err(e, 1);
             }
@@ -1171,7 +1172,7 @@ public class Case extends Experiment {
         if (cont_hash!=null && !cont_hash.equals(cont_path)) {
             File hash_path = new File(path.substring(0,path.indexOf(cont_hash)));
             try{
-                FileUtils.writeStringToFile(new File(hash_path,".path"), cont_path);
+                FileUtils.writeStringToFile(new File(hash_path,"path.txt"), cont_path);
             } catch(IOException e) {
                 Log.err(e, 1);
             }

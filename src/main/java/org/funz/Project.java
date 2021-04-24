@@ -2596,10 +2596,10 @@ public class Project {
                         Disk.moveDir(new File(getSpoolDir(), c.getRelativePath()), archiveCasePath);
                         casesDir.put(c,archiveCasePath); // update shortcut accessible through getCaseCurrentDir()
 
-                        // Copy also "".path" files from parents dirs
+                        // Copy also ""path.txt" files from parents dirs
                         File parent = archiveCasePath;
                         if (!parent.getCanonicalPath().startsWith(getSpoolDir().getCanonicalPath())) {
-                            Log.err("Error trying to move .path files: " + 
+                            Log.err("Error trying to move path.txt files: " + 
                                     parent.getCanonicalPath() + " is not inside " + getSpoolDir().getCanonicalPath(), 1);
                         } else {
                                 // raise one step in tree as long as not reached "spool" root
@@ -2607,13 +2607,14 @@ public class Project {
                                 File[] pathFiles = parent.listFiles(new FileFilter() {
                                     @Override
                                     public boolean accept(File f) {
-                                        return f.getName().equals(".path");
+                                        return f.getName().equals("path.txt");
                                     }
                                 });
                                 if (pathFiles != null && pathFiles.length == 1) {
                                     Disk.copyFilesIn(pathFiles, 
                                                      new File(parent.getCanonicalPath().replace(getSpoolDir().getCanonicalPath(), to.getCanonicalPath())));
                                 }
+                                Log.out("Moved path.txt files " + pathFiles[0].getCanonicalPath()+" -> "+new File(parent.getCanonicalPath().replace(getSpoolDir().getCanonicalPath(), to.getCanonicalPath())).getCanonicalPath(),2);
                                 parent = parent.getParentFile();
                             }
                         }

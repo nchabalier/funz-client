@@ -2,11 +2,13 @@ package org.funz.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.funz.Project;
 import org.funz.ProjectController;
 import org.funz.conf.Configuration;
@@ -443,6 +445,112 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         batchRun.shutdown();
     }
+
+@Test
+public void test4CasesLongPath() throws Exception {
+    System.err.println("+++++++++++++++++++++++++ test4CasesLongPath");
+    File tmp_in = branin_in();
+    // will exceed tcp timeout for readResponse (10 s.)
+    ASCII.saveFile(tmp_in, ParserUtils.getASCIIFileContent(new File("src"+File.separator+"test"+File.separator+"samples","branin.R")).replace("t=0", "t=1"));
+
+    Configuration.setProperty("max_path_length", "20");
+
+    IOPluginInterface plugin = IOPluginsLoader.newInstance(R, tmp_in);
+    Project prj = ProjectController.createProject(tmp_in.getName(), tmp_in, R, plugin);
+    //prj.blacklistTimeout = 10; //10 s. timeout after blacklisting
+
+    assert prj.getVariableByName("x1") != null : "Variable x1 not detected";
+    assert prj.getVariableByName("x2") != null : "Variable x2 not detected";
+    assert prj.getVariableByName("x1").getDefaultValue() == null : "Variable x1 default value not null.";
+    assert prj.getVariableByName("x2").getDefaultValue().equals(".5") : "Variable x2 default value not detected.";
+
+    plugin.setFormulaInterpreter(new RMathExpression(tmp_in.getName() + "_" + Configuration.timeDigest(), Configuration.isLog("R") ? new File(prj.getLogDir(), tmp_in.getName() + ".Rlog") : null));
+    prj.setMainOutputFunction(plugin.suggestOutputFunctions().get(0));
+    prj.setDesignerId(NODESIGNER_ID);
+
+    Variable x1 = prj.getVariableByName("x1");
+    x1.setType(Variable.TYPE_REAL);
+    x1.setValues(VariableMethods.Value.asValueList(
+        ".111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111", 
+    ".2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"));
+
+    Variable x2 = prj.getVariableByName("x2");
+    x2.setType(Variable.TYPE_REAL);
+    x2.setValues(VariableMethods.Value.asValueList(
+        ".111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111", 
+    ".2222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"));
+
+    prj.retries = TEST_RETRIES;
+    prj.buildParameterList();
+
+    prj.resetDiscreteCases(o);
+
+    prj.setCases(prj.getDiscreteCases(), o);
+
+    prj.useCache = false;
+
+    BatchRun_v1 batchRun = new BatchRun_v1(o, prj, newTmpDir("test4CasesLongPath")) {
+
+        @Override
+        public void out(String string, int i) {
+            TestUtils.out(string, i);
+        }
+
+        @Override
+        public void err(String msg, int i) {
+            TestUtils.err(msg, i);
+        }
+
+        @Override
+        public void err(Exception ex, int i) {
+            TestUtils.err(ex, i);
+        }
+    };
+
+    assert batchRun.runBatch() : "Failed to run batch";
+
+    assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
+    System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
+
+    System.err.println(Arrays.asList(batchRun.getResultsStringArrayMap().get("output")));
+
+    String[] output = batchRun.getResultsStringArrayMap().get("output");
+    List<Integer> failed = new LinkedList<>();
+    for (int i = 0; i < output.length; i++) {
+        if (output[i].contains("null")) {
+            failed.add(i);
+            System.err.println("Some null result: case " + i + "\n" + batchRun.getResultsStringArrayMap().get("info")[i].replace("\\n", "\n"));
+        }
+    }
+    assert failed.isEmpty() : "Some failed cases : " + failed;
+
+    batchRun.shutdown();
+
+    assert FileUtils.listFiles(prj.getResultsDir(), new IOFileFilter() {
+
+        @Override
+        public boolean accept(File file) {
+            return file.getName().equals("path.txt");
+        }
+
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.equals("path.txt");
+        }
+
+    }, new IOFileFilter() {
+        @Override
+        public boolean accept(File file) {
+            return true;
+        }
+
+        @Override
+        public boolean accept(File dir, String name) {
+            return true;
+        }
+    }).size() > 0;
+}
+
 
     @Test
     public void test20CasesLongExec() throws Exception {
