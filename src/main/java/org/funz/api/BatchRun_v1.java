@@ -495,10 +495,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
                 c.reset();
                 RunCase newrc = new RunCase(c);
                 runCases.set(j,newrc);
-                try {
-                    rc.join();
-                } catch (InterruptedException e) {
-                }
+                newrc.start();
                 return true;
             }                
         }            
