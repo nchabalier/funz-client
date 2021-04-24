@@ -499,12 +499,8 @@ public abstract class BatchRun_v1 implements CaseRunner {
                     rc.join();
                 } catch (InterruptedException e) {
                 }
-                if (!newrc.isAlive()) newrc.start();
-                out("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR Found case "+c, 0);
                 return true;
-            } else                
-            out("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR Not case "+rc.c, 0);
-
+            }                
         }            
         err("Cannot find case "+c+" in pending cases.", 1);
         return false;
@@ -1438,7 +1434,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
                                 if (rc.c != null && rc.c.getState() == Case.STATE_INTACT) {
                                     out("Starting case " + rc.c.getName(), 3);
                                     //LogTicToc.tic("rc.start()");
-                                    if (!rc.isAlive()) rc.start();
+                                    rc.start();
                                     //LogTicToc.toc("rc.start()");
                                     //System.err.println("+");
                                     break;
