@@ -32,6 +32,8 @@ import org.funz.run.Client;
 import org.funz.run.Computer;
 import static org.funz.util.Data.*;
 import org.funz.util.Disk;
+import org.funz.util.Format;
+
 import static org.funz.util.Format.repeat;
 import org.funz.util.ZipTool;
 import org.math.array.IntegerArray;
@@ -492,9 +494,10 @@ public abstract class BatchRun_v1 implements CaseRunner {
             RunCase rc = runCases.get(j);
             if (rc.c == c) {
                 rc.interrupt();
-                c.reset();
                 RunCase newrc = new RunCase(c);
                 runCases.set(j,newrc);
+                try { rc.join(); } catch (InterruptedException e) {} // need to be done before c.reset(), otherwise outputmay be not null, so not updated after restart
+                c.reset();
                 newrc.start();
                 return true;
             }                
@@ -882,6 +885,15 @@ public abstract class BatchRun_v1 implements CaseRunner {
         //LogUtils.toc("unzip " + c.getName());
     }
 
+    private boolean isMapEmpty(Map m) {
+        if (m==null) return true;
+        for (Object k : m.keySet()) {
+            if (m.get(k) != null) 
+                return false;
+        }
+        return true;
+    }
+
     void parseResult(Case c, boolean doSummary) throws Exception {
         addInfoHistory(c, "Parsing results.");
         out("Parsing results of " + c.getName() + ".", 1);
@@ -890,22 +902,20 @@ public abstract class BatchRun_v1 implements CaseRunner {
         //LogTicToc.tic("inputValues");
         Map<String, Object> inputValues = (c.getInputValues() == null ? ProjectController.getCaseInputs(prj, c.getIndex()) : c.getInputValues());
         //c.setInputValues(inputValues);
-        out("Set case " + c.getName() + " I", 5);
+        out("Set case " + c.getName() + " inputValues:" + inputValues, 5);
         //LogTicToc.toc("inputValues");
 
         //LogTicToc.tic("outputValues");
-        Map<String, Object> outputValues = (c.getOutputValues() == null ? ProjectController.getCaseOutputs(prj, c.getIndex(), true) : c.getOutputValues());
+        Map<String, Object> outputValues = (isMapEmpty(c.getOutputValues()) ? ProjectController.getCaseOutputs(prj, c.getIndex(), true) : c.getOutputValues());
         //System.err.println("outputValues "+        outputValues);
         c.setOutputValues(outputValues);
-        out("Set case " + c.getName() + " O", 5);
+        out("Set case " + c.getName() + " outputValues: "+Format.ArrayMapToJSONString(outputValues), 5);
         //LogTicToc.toc("outputValues");
 
         Map<String, Object> intermediateValues = (c.getIntermediateValues() == null ? ProjectController.getCaseIntermediates(prj, c.getIndex()) : c.getIntermediateValues());
         c.setIntermediateValues(intermediateValues);
 
-        out("Set case " + c.getName() + " IO", 5);
         Map<String, Object> result = new HashMap<>();
-
         result.put(Case.PROP_PATH, c.getRelativePath());
 
         if (inputValues != null) {
