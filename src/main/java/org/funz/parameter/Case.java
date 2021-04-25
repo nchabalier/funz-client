@@ -96,11 +96,18 @@ public class Case extends Experiment {
         _output = null;
         setState(Case.STATE_INTACT);
         reserve(null);
-        try {
-            Disk.removeDir(prj.getCaseTmpDir(this));
-        } catch (IOException ee) {
-            ee.printStackTrace();
-        }
+        int i = 10;
+        while (i-- > 0 && prj.getCaseTmpDir(this).exists()) // for windows lock file...
+            try {
+                Disk.removeDir(prj.getCaseTmpDir(this));
+            } catch (IOException ee) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
+            }
+        if (prj.getCaseTmpDir(this).exists()) 
+            Log.err("Failed to remove case tmp dir: "+prj.getCaseTmpDir(this), 1);
     }
 
     public String getStatusInformation() {

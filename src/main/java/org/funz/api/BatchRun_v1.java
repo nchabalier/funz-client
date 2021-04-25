@@ -849,6 +849,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
         //LogUtils.toc("archiving " + c.getName());
 
         //LogUtils.tic("Transfer " + c.getName());
+        Disk.emptyDir(outdir); // ensure outdir is free before transfer
         if (!client.transferArchive(dir, null)) {
             addInfoHistory(c, "Failed to transfer: " + client.getReason());
             blacklistComputer(client.computer, "Failed to transfer: " + client.getReason());
