@@ -5,6 +5,8 @@ import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.funz.log.Log;
 import org.funz.log.LogFile;
 import org.funz.script.RMathExpression;
@@ -371,8 +373,8 @@ public class ShellTest extends org.funz.api.TestUtils {
     @Test
     public void testConcurrency() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testConcurrency");
-        final boolean[] tests = new boolean[]{false, false, false, false};
-        final boolean[] done = new boolean[tests.length];
+        boolean[] tests = new boolean[]{false, false, false, false};
+        boolean[] done = new boolean[tests.length];
         Thread[] ts = new Thread[tests.length];
         for (int i = 0; i < tests.length; i++) {
             done[i] = false;
@@ -435,9 +437,14 @@ public class ShellTest extends org.funz.api.TestUtils {
             ts[i].start();
         }
 
-        while (!alltrue(done)) {
+        boolean  alldone = false;
+        while (!alldone) {
+            synchronized (tests) {
+                alldone = alltrue(done); 
+                tests.notifyAll();  
+            }   
             Thread.sleep(1000);
-            System.err.println("============================\n" + Print.gridStatusInformation() + "============================\n");
+            System.err.println("done: "+Arrays.toString(done)+" tests: "+Arrays.toString(tests));
         }
 
         assert alltrue(tests) : "One concurency run failed !";
