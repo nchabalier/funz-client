@@ -1230,9 +1230,14 @@ public class BatchRunTest extends org.funz.api.TestUtils {
             ts[i].start();
         }
 
-        while (!alltrue(done)) {
+        boolean  alldone = false;
+        while (!alldone) {
+            synchronized (tests) {
+                alldone = alltrue(done); 
+                tests.notifyAll();  
+            }   
             Thread.sleep(1000);
-            System.err.println("============================\n" + Print.gridStatusInformation() + "============================\n");
+            System.err.println("done: "+Arrays.toString(done)+" tests: "+Arrays.toString(tests));
         }
 
         assert alltrue(tests) : "One concurency run failed !";
