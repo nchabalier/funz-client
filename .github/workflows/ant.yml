@@ -66,10 +66,14 @@ jobs:
       id: anttest
       continue-on-error: true
       timeout-minutes: 100
+    - if: matrix.Rserver == 'R://localhost'
+      run: |
+        echo '::set-env name=Rserver::Rlocalhost'
+      shell: bash
     - if: steps.anttest.outcome != 'success'
       uses: actions/upload-artifact@v2
       with:
-        name: artifacts-${{ matrix.os }}-${{ matrix.java }}-${{ matrix.Rserver }}-unit
+        name: artifacts-${{ matrix.os }}-${{ matrix.java }}-${Rserver}-unit
         path: |
           *.txt
           *.log
