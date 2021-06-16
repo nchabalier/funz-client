@@ -77,7 +77,7 @@ jobs:
     - if: steps.anttest.outcome != 'success'
       uses: actions/upload-artifact@v2
       with:
-        name: artifacts-${{ matrix.os }}-${{ matrix.java }}-$Rserver-unit
+        name: artifacts-${{ matrix.os }}-${{ matrix.java }}-${{ env.Rserver }}-unit
         path: |
           *.txt
           *.log
