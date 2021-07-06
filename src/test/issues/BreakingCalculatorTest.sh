@@ -9,7 +9,7 @@ sh run.sh 2>&1 > run.out &
 PID_RUN=$!
 echo "PID_RUN = "$PID_RUN
 
-ok1=`ps aux | grep " $PID_RUN " | tee ps.out | grep sh | wc -l`
+ok1=`ps aux | tee ps.out | grep " $PID_RUN " | grep sh | wc -l`
 if [ ! $ok1 = "1" ]; then echo "FAILED to start client: $ok1"; echo "* ps.out"; cat ps.out; echo "* run.out"; cat run.out; echo "* Run.log"; cat Run.log; exit 1; fi
 echo "OK started client"
 
@@ -21,7 +21,7 @@ PID_CALCULATOR=$!
 
 sleep 2
 
-ok2=`ps aux | grep " $PID_CALCULATOR " | tee ps.out | grep java | wc -l`
+ok2=`ps aux | tee ps.out | grep " $PID_CALCULATOR " | grep java | wc -l`
 if [ ! $ok2 = "1" ]; then echo "FAILED to start calculator: $ok2"; echo "* ps.out"; cat ps.out; kill -9 $PID_RUN; echo "* calc.out"; cat calc.out; exit 2; fi
 echo "OK started calculator"
 
@@ -39,11 +39,11 @@ echo "PID_CALCULATOR = "$PID_CALCULATOR
 
 sleep 3
 
-ok3=`ps aux | grep " $PID_CALCULATOR " | tee ps.out | grep java | wc -l`
+ok3=`ps aux | tee ps.out | grep " $PID_CALCULATOR " | grep java | wc -l`
 if [ ! $ok3 = "0" ]; then echo "FAILED to stop calculation: $ok3"; echo "* ps.out"; cat ps.out; kill -9 $PID_RUN $PID_CALCULATOR; cat calc.out; exit 3; fi
 echo "OK to stop calculation"
 
-ok4=`ps aux | grep " $PID_RUN " | tee ps.out | grep sh | wc -l`
+ok4=`ps aux | tee ps.out | grep " $PID_RUN " | grep sh | wc -l`
 if [ ! $ok4 = "1" ]; then echo "FAILED to let client alive: $ok4"; echo "* ps.out"; cat ps.out; kill -9 $PID_RUN $PID_CALCULATOR; echo "* run.out"; cat run.out; echo "* Run.log"; cat Run.log; exit 4; fi
 echo "OK client alive"
 
@@ -57,7 +57,7 @@ echo "PID_CALCULATOR2 = "$PID_CALCULATOR2
 
 sleep 3
 
-ok5=`ps aux | grep " $PID_RUN " | tee ps.out | grep sh | wc -l`
+ok5=`ps aux | tee ps.out | grep " $PID_RUN " | grep sh | wc -l`
 if [ ! $ok5 = "1" ]; then echo "FAILED to restart calculation: $ok5"; echo "* ps.out"; cat ps.out; kill -9 $PID_RUN $PID_CALCULATOR; cat run.out; exit 5; fi
 echo "OK to restart calculation"
 
@@ -73,7 +73,7 @@ while [ $i -le 10 ]; do
 done
 echo "Waited "$i"x10s"
 
-ok6=`ps aux | grep " $PID_RUN " | tee ps.out | grep sh | wc -l`
+ok6=`ps aux | tee ps.out | grep " $PID_RUN " | grep sh | wc -l`
 if [ ! $ok6 = "0" ]; then echo "FAILED to finish calculation: $ok6"; echo "* ps.out"; cat ps.out; kill -9 $PID_RUN $PID_CALCULATOR; cat run.out; exit 6; fi
 echo "OK to finish calculation"
 
