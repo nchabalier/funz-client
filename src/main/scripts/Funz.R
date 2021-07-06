@@ -382,6 +382,7 @@ Funz_Design <- function(fun,design,options=NULL,input.variables,fun.control=list
     it = 1
     .Funz.done <<- FALSE;
     while (TRUE) {
+        flush.console()
 
         X = Funz_Design.next(designshell,X,fun,fun.control,verbosity,...)
 
@@ -640,6 +641,8 @@ Funz_Run <- function(model=NULL,input.files,input.variables=NULL,all.combination
     pointstatus = "-"
     new_pointstatus = "-"
     while(!finished) {
+        flush.console()
+
         tryCatch(expr={
         .Funz.done <<- FALSE;
         Sys.sleep(monitor.control$sleep)
@@ -934,6 +937,8 @@ Funz_RunDesign <- function(model=NULL,input.files,output.expressions=NULL,design
     status = "-"
     new_status = "-"
     while(!finished) {
+        flush.console()
+
         tryCatch(expr={
         .Funz.done <<- FALSE;
         Sys.sleep(monitor.control$sleep)
