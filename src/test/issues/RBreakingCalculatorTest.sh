@@ -13,6 +13,8 @@ R CMD BATCH run.R 2>&1 > run.Rout &
 PID_R=$!
 echo "PID_R = "$PID_R
 
+sleep 1 # let coming 'ps' update 
+
 ok1=`ps aux | tee ps.out | grep " $PID_R " | grep "\.R" | wc -l`
 if [ ! $ok1 = "1" ]; then echo "FAILED to start client: $ok1"; echo "* ps.out"; cat ps.out; echo "* run.Rout"; cat run.Rout; echo "* Run.log"; cat Run.log; exit 1; fi
 echo "OK started client"
