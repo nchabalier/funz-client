@@ -164,7 +164,7 @@ def _PFileArrayToJFileArray(files):
 
 def _jdelete(jo):
     _jclassUtils.delete(jo)
-
+   
 
 ###################################### Init ###################################
 _dir = None
@@ -600,7 +600,7 @@ def Funz_Run(model=None, input_files=None, input_variables=None, all_combination
              finished = (bool(re.search('Over.',state)) | bool(re.search('Failed!',state)) | bool(re.search('Exception!!',state)))
 
              if verbosity>0: 
-                 print("\r" + state,end="") 
+                 print("\r" + state.replace("\n"," | ").ljust(80),end="") 
 
              if callable(monitor_control['display_fun']):
                  new_pointstatus = runshell.getCalculationPointsStatus()
@@ -907,7 +907,7 @@ def Funz_RunDesign(model=None,input_files=None,output_expressions=None,design=No
              finished = (bool(re.search('Over.',state)) | bool(re.search('Failed!',state)) | bool(re.search('Exception!!',state)))
 
              if verbosity>0: 
-                 print("\r" + state.replace("\n"," | "),end="") 
+                 print("\r" + state.replace("\n"," | ").ljust(80),end="") 
 
              if callable(monitor_control['display_fun']):
                  new_status = shell.getCalculationPointsStatus()

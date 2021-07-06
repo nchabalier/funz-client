@@ -240,6 +240,9 @@ options(OutDec= ".")
     !(length(path) == 0) && (path[1] == "" || regexpr("^.:$", path[1]) != -1);
 }
 
+.rightpad <- function(txt,n) {
+    paste0(txt,paste0(collapse='',rep(" ",max(0,n-nchar(txt)))))
+}
 
 ##################################### Init ###################################
 .dir = ""
@@ -652,7 +655,7 @@ Funz_Run <- function(model=NULL,input.files,input.variables=NULL,all.combination
 
         finished = (grepl("Over.",state) | grepl("Failed!",state) | grepl("Exception!!",state))
 
-        if (verbosity>0) cat(paste("\r",state))
+        if (verbosity>0) cat(paste("\r",.rightpad(gsub("\n"," | ",state),80)))
 
         if (is.function(monitor.control$display.fun)) {
             new_pointstatus = runshell$getCalculationPointsStatus()
@@ -949,7 +952,7 @@ Funz_RunDesign <- function(model=NULL,input.files,output.expressions=NULL,design
 
         finished = (grepl("Over.",state) | grepl("Failed!",state) | grepl("Exception!!",state))
 
-        if (verbosity>0) cat(paste("\r",gsub("\n"," | ",state)))
+        if (verbosity>0) cat(paste("\r",.rightpad(gsub("\n"," | ",state),80)))
 
         if (is.function(monitor.control$display.fun)) {
             new_status = shell$getCalculationPointsStatus()
