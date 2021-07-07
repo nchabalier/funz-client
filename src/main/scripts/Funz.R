@@ -303,15 +303,15 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
     if (!is.null(verbosity)) .jclassFunz$setVerbosity(as.integer(verbosity))
 
     .Funz.Models <<- NULL
-    .Funz_Designs <<- NULL
+    .Funz.Designs <<- NULL
 
     if (verbosity>3) cat("  Initializing Funz...\n")
     .jclassFunz$init()
 
     .Funz.Models <<- .jclassFunz$getModelList()
     if (verbosity>0) {cat("  Funz models (port ",.jclassFunz$POOL$getPort(),"):",paste(.Funz.Models),"\n")}
-    .Funz_Designs <<- .jclassFunz$getDesignList()
-    if (verbosity>0) {cat("  Funz designs (engine ",.jclassFunz$MATH$getEngineName(),"):",paste(.Funz_Designs),"\n")}
+    .Funz.Designs <<- .jclassFunz$getDesignList()
+    if (verbosity>0) {cat("  Funz designs (engine ",.jclassFunz$MATH$getEngineName(),"):",paste(.Funz.Designs),"\n")}
 
     # pre-load some class objects from funz API
     .jclassData <<- J("org/funz/util/Data")
@@ -335,7 +335,7 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
 ##################################### Design ###################################
 
 #' Apply a design of experiments through Funz environment on a response surface.
-#' @param design Design of Expetiments (DoE) given by its name (for instance ""). See .Funz_Designs global var for a list of possible values.
+#' @param design Design of Expetiments (DoE) given by its name (for instance ""). See .Funz.Designs global var for a list of possible values.
 #' @param input.variables list of variables definition in a String (for instance x1="[-1,1]")
 #' @param options list of options to pass to the DoE. All options not given are set to their default values. Note that '_' char in names will be replaced by ' '.
 #' @param fun response surface as a target (say objective when optimization) function of the DoE. This should include calls to Funz_Run() function.
@@ -354,11 +354,11 @@ Funz_Design <- function(fun,design,options=NULL,input.variables,fun.control=list
     .Funz.Last.design <<- list(design=design,options=options,fun=fun,input.variables=input.variables,fun.control=list(cache=fun.control$cache,vectorize=fun.control$vectorize,vectorize.by=fun.control$vectorize.by,foreach.options=fun.control$foreach.options),monitor.control=list(results.tmp=monitor.control$results.tmp),archive.dir=archive.dir,verbosity=verbosity,log.file=log.file,optargs=list(...))
 
     if (is.null(design))
-        stop(paste("Design 'design' must be specified.\n Available: ",.Funz_Designs))
+        stop(paste("Design 'design' must be specified.\n Available: ",.Funz.Designs))
 
-    if (exists(".Funz_Designs"))
-        if (!is.element(el=design,set=.Funz_Designs))
-            stop(paste("Design",design,"is not available in this Funz workbench (",paste0(.Funz_Designs,collapse=","),")"))
+    if (exists(".Funz.Designs"))
+        if (!is.element(el=design,set=.Funz.Designs))
+            stop(paste("Design",design,"is not available in this Funz workbench (",paste0(.Funz.Designs,collapse=","),")"))
 
     if (is.null(input.variables))
         stop(paste("Input variables 'input.variables' must be specified."))
@@ -426,7 +426,7 @@ Funz_Design <- function(fun,design,options=NULL,input.variables,fun.control=list
 
 
 #' Initialize a design of experiments through Funz environment.
-#' @param design Design of Expetiments (DoE) given by its name (for instance ""). See .Funz_Designs global var for a list of possible values.
+#' @param design Design of Expetiments (DoE) given by its name (for instance ""). See .Funz.Designs global var for a list of possible values.
 #' @param input.variables list of variables definition in a String (for instance x1="[-1,1]")
 #' @param options list of options to pass to the DoE. All options not given are set to their default values. Note that '_' char in names will be replaced by ' '.
 #' @param archive.dir define an arbitrary output directory where results (log, images) are stored.
@@ -581,10 +581,10 @@ Funz_Design.results <- function(designshell) {
 #' @return information about this design.
 Funz_Design.info <- function(design, input.variables) {
     if (is.null(design))
-        stop(paste("Design 'design' must be specified.\n Available: ",.Funz_Designs))
+        stop(paste("Design 'design' must be specified.\n Available: ",.Funz.Designs))
 
-    if (exists(".Funz_Designs"))
-        if (!is.element(el=design,set=.Funz_Designs))
+    if (exists(".Funz.Designs"))
+        if (!is.element(el=design,set=.Funz.Designs))
             stop(paste("Design",design,"is not available in this Funz workbench."))
 
     # Build input as a HashMap<String, String>
@@ -924,12 +924,12 @@ Funz_RunDesign <- function(model=NULL,input.files,output.expressions=NULL,design
     }
 
     if (is.null(design))
-        stop(paste("Design argument 'design' must be specified (",paste0(.Funz_Designs,collapse=","),")"))
+        stop(paste("Design argument 'design' must be specified (",paste0(.Funz.Designs,collapse=","),")"))
 
     if (!is.null(design))
-        if (exists(".Funz_Designs"))
-            if (!is.element(el=design,set=.Funz_Designs))
-                stop(paste("Design",design,"is not available in this Funz workbench (",paste0(.Funz_Designs,collapse=","),")"))
+        if (exists(".Funz.Designs"))
+            if (!is.element(el=design,set=.Funz.Designs))
+                stop(paste("Design",design,"is not available in this Funz workbench (",paste0(.Funz.Designs,collapse=","),")"))
 
     if (is.null(input.variables))
         stop(paste("Input variables 'input.variables' must be specified."))
