@@ -220,7 +220,7 @@ options(OutDec= ".")
 #' @test .JStringArrayToRVector(.RVectorToJStringArray(c(1,2,3)))
 .JStringArrayToRVector <- function(string.array) {
     l = c()
-    if (is.null(string.array)) return(m)
+    if (is.null(string.array)) return(l)
     if (length(string.array)>0)
         for (i in 1:length(string.array)) {
             if (is.character(string.array[[i]]))
