@@ -9,14 +9,17 @@
 
 ################################# Imports ######################################
 
-if (Sys.info()[['sysname']]=="Windows") system("echo JAVA_HOME=%JAVA_HOME%") else system("echo JAVA_HOME=$JAVA_HOME")
+if (!("rJava" %in% installed.packages()))
+    stop("rJava package must be installed.")
 
-if (!require(rJava))
-    stop("rJava package (> 0.9) is required.")
+if (!require(rJava)) {
+    if (Sys.info()[['sysname']]=="Windows") system("echo JAVA_HOME=%JAVA_HOME%") else system("echo JAVA_HOME=$JAVA_HOME")
+    stop("rJava package is required.")
+}
 
 rJava.version = packageDescription('rJava')$Version
 if (compareVersion(rJava.version, "0.9-0") < 0)
-    stop(paste("Installed rJava version (",rJava.version,") is too old. Please update to >0.9"))
+    stop(paste("rJava version (",rJava.version,") is too old. Please update to >0.9"))
 
 
 ################################# .Internals ######################################
