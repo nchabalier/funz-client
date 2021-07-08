@@ -260,7 +260,7 @@ if (.dir=="") try(.dir <- dirname(sys.frame(1)$ofile),silent=T) # Try to detect 
 #' @param java.control list of JVM startup parameters (like -D...=...).
 #' @param ... optional parameters passed to '.jinit' call.
 #' @example Funz.init()
-Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']]=="Windows",list(Xmx="512m",Xss="256k"),list(Xmx="512m")), verbose.level=1, verbosity=verbose.level, ...) {
+Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']]=="Windows",list(Xmx="512m",Xss="256k"),list(Xmx="512m")), verbose.level=0, verbosity=verbose.level, ...) {
     if (is.null(FUNZ_HOME))
         stop("FUNZ_HOME environment variable not set.\nPlease setup FUNZ_HOME to your Funz installation path.")
 
@@ -335,7 +335,7 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
 ##################################### Design ###################################
 
 #' Apply a design of experiments through Funz environment on a response surface.
-#' @param design Design of Expetiments (DoE) given by its name (for instance ""). See .Funz.Designs global var for a list of possible values.
+#' @param design Design of Experiments (DoE) given by its name (for instance ""). See .Funz.Designs global var for a list of possible values.
 #' @param input.variables list of variables definition in a String (for instance x1="[-1,1]")
 #' @param options list of options to pass to the DoE. All options not given are set to their default values. Note that '_' char in names will be replaced by ' '.
 #' @param fun response surface as a target (say objective when optimization) function of the DoE. This should include calls to Funz_Run() function.
@@ -343,7 +343,7 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
 #' @param fun.control$vectorize Set to "fun" (by default) if fun accepts nrows>1 input. Set to "foreach" if delegating to 'foreach' loop the parallelization of separate 'fun' calls (packages foreach required, and some Do* needs to be registered and started before, and shutdown after). Set to "parallel" if delegating to 'parallel' the parallelization of separate 'fun' calls. Set to FALSE or "apply" means apply() will be used for serial launch of experiments.
 #' @param fun.control$vectorize.by set the number of parallel execution if fun.control$vectorize is set to "foreach" or "parallel". By default, set to the number of core of your computer (if known by R, otherwise set to 1).
 #' @param fun.control$foreach.options optional parameters to pass to the foreach DoPar. Should include anything needed for 'fun' evaluation.
-#' @param monitor.control$results.tmp lsit of design results to deisplay at each batch. TRUE means "all", NULL/FALSE means "none".
+#' @param monitor.control$results.tmp list of design results to display at each batch. TRUE means "all", NULL/FALSE means "none".
 #' @param archive.dir define an arbitrary output directory where results (log, images) are stored.
 #' @param verbosity print (lot of) information while running.
 #' @param verbose.level deprecated verbosity
@@ -618,13 +618,13 @@ Funz_Design.info <- function(design, input.variables) {
 #' @param input.variables data.frame of input variable values. If more than one experiment (i.e. nrow >1), experiments will be launched simultaneously on the Funz grid.
 #' @param all.combinations if FALSE, input.variables variables are grouped (default), else, if TRUE experiments are an expaanded grid of input.variables
 #' @param output.expressions list of interest output from the code. Will become the names() of return list.
+#' @param run.control$force.retry is number of retries before failure.
+#' @param run.control$cache.dir setup array of directories to search inside before real launching calculations.
+#' @param monitor.control$sleep delay time between two checks of results.
+#' @param monitor.control$display.fun a function to display project cases status. Argument passed to is the data.frame of DoE state.
 #' @param archive.dir define an arbitrary output directory where results (cases, csv files) are stored.
 #' @param verbosity print (lot of) information while running.
 #' @param verbose.level deprecated verbosity
-#' @param run.control$force.retry
-#' @param run.control$cache.dir
-#' @param monitor.control$sleep delay time between two checks of results.
-#' @param monitor.control$display.fun a function to display project cases status. Argument passed to is the data.frame of DoE state.
 #' @return list of array results from the code, arrays size being equal to input.variables arrays size.
 #' @example Funz_Run(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R"),input.variables = list(a=runif(10), b=runif(10)), output.expressions = "z")
 Funz_Run <- function(model=NULL,input.files,input.variables=NULL,all.combinations=FALSE,output.expressions=NULL,run.control=list(force.retry=2,cache.dir=NULL),archive.dir=NULL,verbose.level=0,verbosity=verbose.level,log.file=TRUE,monitor.control=list(sleep=5,display.fun=NULL)) {
@@ -697,10 +697,10 @@ Funz_Run <- function(model=NULL,input.files,input.variables=NULL,all.combination
 #' @param input.variables data.frame of input variable values. If more than one experiment (i.e. nrow >1), experiments will be launched simultaneously on the Funz grid.
 #' @param all.combinations if FALSE, input.variables variables are grouped (default), else, if TRUE experiments are an expanded grid of input.variables
 #' @param output.expressions list of interest output from the code. Will become the names() of return list.
+#' @param run.control$force.retry is number of retries before failure.
+#' @param run.control$cache.dir setup array of directories to search inside before real launching calculations.
 #' @param archive.dir define an arbitrary output directory where results (cases, csv files) are stored.
 #' @param verbosity print (lot of) information while running.
-#' @param run.control$force.retry
-#' @param run.control$cache.dir
 #' @return a Java shell object, which calculations are started.
 Funz_Run.start <- function(model,input.files,input.variables=NULL,all.combinations=FALSE,output.expressions=NULL,run.control=list(force.retry=2,cache.dir=NULL),archive.dir=NULL,verbosity=0,log.file=TRUE) {
     if (!exists(".Funz.Last.run")) .Funz.Last.run <<- list()
@@ -845,7 +845,7 @@ Funz_GridStatus <- function() {
 #' @param model name of the code wrapper to use. See .Funz.Models global var for a list of possible values.
 #' @param input.files files to give as input for the code.
 #' @return list of variables & their possible default value
-#' @example Funz_ParseInput(model = "[R]", input.files = file.path(FUNZ_HOME,"samples","branin.R"))
+#' @example Funz_ParseInput(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R"))
 Funz_ParseInput <- function(model,input.files) {
     if (exists(".Funz.Models"))
         if (!is.null(model) && (!is.element(el=model,set=.Funz.Models)))
@@ -863,8 +863,8 @@ Funz_ParseInput <- function(model,input.files) {
 #' @param input.files files to give as input for the code.
 #' @param input.values list of variable values to compile.
 #' @param output.dir directory where to put compiled files.
-#' @example Funz.Compile(model = "[R]", input.files = file.path(FUNZ_HOME,"samples","branin.R"),input.values = list(a=0.5, b=0.6))
-#' @example Funz_CompileInput(model = "[R]", input.files = file.path(FUNZ_HOME,"samples","branin.R"),input.values = list(a=c(0.5,.55), b=c(0.6,.7)))
+#' @example Funz_CompileInput(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R"),input.values = list(a=0.5, b=0.6))
+#' @example Funz_CompileInput(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R"),input.values = list(a=c(0.5,.55), b=c(0.6,.7)))
 Funz_CompileInput <- function(model,input.files,input.values,output.dir=".") {
     if (exists(".Funz.Models"))
         if (!is.null(model) && (!is.element(el=model,set=.Funz.Models)))
@@ -890,7 +890,7 @@ Funz_CompileInput <- function(model,input.files,input.values,output.dir=".") {
 #' @param input.files files given as input for the code.
 #' @param output.dir directory where calculated files are.
 #' @return list of outputs & their value
-#' @example Funz_ReadOutput(model = "[R]", input.files = branin.R",output.dir=".")
+#' @example Funz_ReadOutput(model = "R", input.files = "branin.R",output.dir=".")
 Funz_ReadOutput <- function(model, input.files, output.dir) {
     if (exists(".Funz.Models"))
         if (!is.null(model) && (!is.element(el=model,set=.Funz.Models)))
@@ -907,11 +907,23 @@ Funz_ReadOutput <- function(model, input.files, output.dir) {
 ################################# Run & Design #################################
 
 #' Call an external (to R) code wrapped through Funz environment.
-#' @param TODO
+#' @param model name of the code wrapper to use. See .Funz.Models global var for a list of possible values.
+#' @param input.files list of files to give as input for the code. 
+#' @param design Design of Experiments (DoE) given by its name (for instance ""). See .Funz.Designs global var for a list of possible values.
+#' @param design.options list of options to pass to the DoE. All options not given are set to their default values. Note that '_' char in names will be replaced by ' '.
+#' @param input.variables list of variables definition in a String (for instance x1="[-1,1]"), or array of fixed values (will launch a design for each combination).
+#' @param output.expressions list of interest output from the code. Will become the names() of return list.
+#' @param run.control$force.retry is number of retries before failure.
+#' @param run.control$cache.dir setup array of directories to search inside before real launching calculations.
+#' @param monitor.control$sleep delay time between two checks of results.
+#' @param monitor.control$display.fun a function to display project cases status. Argument passed to is the data.frame of DoE state.
+#' @param archive.dir define an arbitrary output directory where results (cases, csv files) are stored.
+#' @param verbosity print (lot of) information while running.
+#' @param verbose.level deprecated verbosity
 #' @return list of array design and results from the code.
 #' @example Funz_RunDesign(model="R", input.files=file.path(FUNZ_HOME,"samples","branin.R"), output.expressions="cat", design = "gradientdescent", design.options = list(nmax=5),input.variables = list(x1="[0,1]",x2="[0,1]"))
 #' @example Funz_RunDesign(model="R", input.files=file.path(FUNZ_HOME,"samples","branin.R"), output.expressions="cat", design = "gradientdescent", design.options = list(nmax=5),input.variables = list(x1="[0,1]",x2=c(0,1)))
-Funz_RunDesign <- function(model=NULL,input.files,output.expressions=NULL,design=NULL,input.variables=NULL,design.options=NULL,run.control=list(force.retry=2,cache.dir=NULL),monitor.control=list(results.tmp=TRUE,sleep=5,display.fun=NULL),archive.dir=NULL,verbosity=0,log.file=TRUE) {
+Funz_RunDesign <- function(model=NULL,input.files,design=NULL,design.options=NULL,input.variables=NULL,output.expressions=NULL,run.control=list(force.retry=2,cache.dir=NULL),monitor.control=list(results.tmp=TRUE,sleep=5,display.fun=NULL),archive.dir=NULL,verbosity=0,log.file=TRUE) {
     .Funz.Last.rundesign <<- list(model=model,input.files=input.files,output.expressions=output.expressions,design=design,input.variables=input.variables,design.options=design.options,run.control=list(force.retry=run.control$force.retry,cache.dir=run.control$cache.dir),verbosity=verbosity,log.file=log.file,monitor.control=monitor.control,run.control=run.control,archive.dir=archive.dir)
 
     if (exists(".Funz.Models"))
@@ -988,9 +1000,19 @@ Funz_RunDesign <- function(model=NULL,input.files,output.expressions=NULL,design
 }
 
 #' Initialize a Funz shell to perform calls to an external code.
-#' @param
+#' @param model name of the code wrapper to use. See .Funz.Models global var for a list of possible values.
+#' @param input.files list of files to give as input for the code. 
+#' @param design Design of Experiments (DoE) given by its name (for instance ""). See .Funz.Designs global var for a list of possible values.
+#' @param design.options list of options to pass to the DoE. All options not given are set to their default values. Note that '_' char in names will be replaced by ' '.
+#' @param input.variables list of variables definition in a String (for instance x1="[-1,1]"), or array of fixed values (will launch a design for each combination).
+#' @param output.expressions list of interest output from the code. Will become the names() of return list.
+#' @param run.control$force.retry is number of retries before failure.
+#' @param run.control$cache.dir setup array of directories to search inside before real launching calculations.
+#' @param archive.dir define an arbitrary output directory where results (cases, csv files) are stored.
+#' @param verbosity print (lot of) information while running.
+#' @param verbose.level deprecated verbosity
 #' @return a Java shell object, which calculations are started.
-#' @example Funz_RunDesign.start(model = "[R]", input.files = file.path(FUNZ_HOME,"samples","branin.R")output.expressions = "z",design = "Conjugate Gradient",input.variables = list(a=runif(10), b="[0,1]"),design.options = list(Maximum_iterations=10))
+#' @example Funz_RunDesign.start(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R")output.expressions = "z",design = "Conjugate Gradient",input.variables = list(a=runif(10), b="[0,1]"),design.options = list(Maximum_iterations=10))
 Funz_RunDesign.start <- function(model,input.files,output.expressions=NULL,design=NULL,input.variables=NULL,design.options=NULL,run.control=list(force.retry=2,cache.dir=NULL),archive.dir=NULL,verbosity=0,log.file=TRUE) {
     if (!exists(".Funz.Last.rundesign")) .Funz.Last.rundesign <<- list()
 

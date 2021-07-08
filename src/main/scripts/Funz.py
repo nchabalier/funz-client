@@ -292,14 +292,14 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
 ###################################### Design ###################################
 
 ## Apply a design of experiments through Funz environment on a response surface.
-# @param design Design of Expetiments (DoE) given by its name (for instance ""). See _Funz_Designs global var for a list of possible values.
+# @param design Design of Experiments (DoE) given by its name (for instance ""). See _Funz_Designs global var for a list of possible values.
 # @param input_variables list of variables definition in a String (for instance x1="[-1,1]")
 # @param options list of options to pass to the DoE. All options not given are set to their default values. Note that '_' char in names will be replaced by ' '.
 # @param fun response surface as a target (say objective when optimization) function of the DoE. This should include calls to Funz_Run() function.
 # @param fun_control.cache set to True if you wish to search in previous evaluations of fun befaore launching a new experiment. Sometimes useful when design asks for same experiments many times. Always False if fun is not repeatible.
 # @param fun_control.vectorize Set to "fun" if fun accepts nrows>1 input. Set to "for" (by default) to use a for loop over argument arrays, "multiprocessing" if delegating to 'multiprocessing' the parallelization of separate 'fun' calls (packages multiprocessing required).
 # @param fun_control.vectorize_by set the number of parallel execution. By default, set to the number of core of your computer (if known, otherwise set to 4).
-# @param monitor_control.results_tmp lsit of design results to deisplay at each batch. True means "all", None/False means "none".
+# @param monitor_control.results_tmp list of design results to deisplay at each batch. True means "all", None/False means "none".
 # @param archive_dir define an arbitrary output directory where results (log, images) are stored.
 # @param verbosity print (lot of) information while running.
 # @param verbose_level deprecated verbosity
@@ -554,13 +554,13 @@ def Funz_Design_info(design, input_variables) :
 # @param input_variables data.frame of input variable values. If more than one experiment (i.e. nrow >1), experiments will be launched simultaneously on the Funz grid.
 # @param all_combinations if False, input_variables variables are grouped (default), else, if True experiments are an expaanded grid of input_variables
 # @param output_expressions list of interest output from the code. Will become the names() of return list.
+# @param run_control.force_retry is number of retries before failure.
+# @param run_control.cache_dir setup array of directories to search inside before real launching calculations.
+# @param monitor_control.sleep delay time between two checks of results.
+# @param monitor_control.display_fun a function to display project cases status. Argument passed to is the data.frame of DoE state.
 # @param archive_dir define an arbitrary output directory where results (cases, csv files) are stored.
 # @param verbosity print (lot of) information while running.
 # @param verbose_level deprecated verbosity
-# @param run_control.force_retry
-# @param run_control.cache_dir
-# @param monitor_control.sleep delay time between two checks of results.
-# @param monitor_control.display_fun a function to display project cases status. Argument passed to is the data.frame of DoE state.
 # @return list of array results from the code, arrays size being equal to input_variables arrays size.
 # @example Funz_Run("R", os.path.join(_FUNZ_HOME,"samples","branin.R"),{'x1':numpy.random.uniform(size=10), 'x2':numpy.random.uniform(size=10)}, "cat")
 def Funz_Run(model=None, input_files=None, input_variables=None, all_combinations=False, output_expressions=None, run_control={'force_retry':2, 'cache_dir':None}, archive_dir=None, verbosity=0, verbose_level=None, log_file=True, monitor_control={'sleep':5, 'display_fun':None}):   
@@ -634,10 +634,10 @@ def Funz_Run(model=None, input_files=None, input_variables=None, all_combination
 # @param input_variables data.frame of input variable values. If more than one experiment (i.e. nrow >1), experiments will be launched simultaneously on the Funz grid.
 # @param all_combinations if False, input_variables variables are grouped (default), else, if True experiments are an expaanded grid of input_variables
 # @param output_expressions list of interest output from the code. Will become the names() of return list.
+# @param run_control.force_retry is number of retries before failure.
+# @param run_control.cache_dir setup array of directories to search inside before real launching calculations.
 # @param archive_dir define an arbitrary output directory where results (cases, csv files) are stored.
 # @param verbosity print (lot of) information while running.
-# @param run_control.force_retry
-# @param run_control.cache_dir
 # @return a Java shell object, which calculations are started.
 def Funz_Run_start(model,input_files,input_variables=None,all_combinations=False,output_expressions=None,run_control={'force_retry':2,'cache_dir':None},archive_dir=None,verbosity=0,log_file=True) :
     if not '_Funz_Last_run' in globals():
@@ -806,7 +806,7 @@ def Funz_ParseInput(model,input_files):
 # @param input_values list of variable values to compile.
 # @param output_dir directory where to put compiled files.
 # @example Funz_CompileInput(model = "R", input_files = os.path.join(_FUNZ_HOME,"samples","branin.R"),input_values = {'x1':1, 'x2':.5},output_dir=".")
-# @example Funz.CompileInput("R", os.path.join(_FUNZ_HOME,"samples","branin.R"),{'x1':[1,2], 'x2':[.3,.5]},".")
+# @example Funz_CompileInput("R", os.path.join(_FUNZ_HOME,"samples","branin.R"),{'x1':[1,2], 'x2':[.3,.5]},".")
 def Funz_CompileInput(model,input_files,input_values,output_dir=".") :
     if '_Funz_Models' in globals():
         if (not model is None) & (not model in _Funz_Models):
@@ -840,7 +840,7 @@ def Funz_CompileInput(model,input_files,input_values,output_dir=".") :
 # @param input_files files given as input for the code.
 # @param output_dir directory where calculated files are.
 # @return list of outputs & their value
-# @example Funz_ReadOutput("R", os.path.join(_FUNZ_HOME,"samples","branin.R"), os.path.join(_FUNZ_HOME,"samples"))
+# @example Funz_ReadOutput("R", os.path.join(".","branin.R"), os.path.join("."))
 def Funz_ReadOutput(model, input_files, output_dir) :
     if '_Funz_Models' in globals():
         if (not model is None) & (not model in _Funz_Models):
@@ -854,11 +854,22 @@ def Funz_ReadOutput(model, input_files, output_dir) :
 
 ################################## Run & Design #################################
 
-# Call an external (to R) code wrapped through Funz environment.
-#' @param TODO
-#' @return list of array design and results from the code.
-#' @example Funz_RunDesign(model="R", input_files=os.path.join(FUNZ_HOME,"samples","branin.R"), output_expressions="cat", design = "gradientdescent", design_options = {nmax=5),input_variables = {x1="[0,1]",x2="[0,1]"))
-#' @example Funz_RunDesign("R", os.path.join(FUNZ_HOME,"samples","branin.R"), "cat", "gradientdescent", {nmax:5}, {x1:"[0,1]",x2:[0,1]})
+## Call an external (to R) code wrapped through Funz environment.
+# @param model name of the code wrapper to use. See .Funz.Models global var for a list of possible values.
+# @param input_files list of files to give as input for the code. 
+# @param design Design of Experiments (DoE) given by its name (for instance ""). See .Funz.Designs global var for a list of possible values.
+# @param design_options list of options to pass to the DoE. All options not given are set to their default values. Note that '_' char in names will be replaced by ' '.
+# @param input_variables list of variables definition in a String (for instance x1="[-1,1]"), or array of fixed values (will launch a design for each combination).# @param output.expressions list of interest output from the code. Will become the names() of return list.
+# @param run_control.force_retry is number of retries before failure.
+# @param run_control.cache_dir setup array of directories to search inside before real launching calculations.
+# @param monitor_control.sleep delay time between two checks of results.
+# @param monitor_control$display_fun a function to display project cases status. Argument passed to is the data.frame of DoE state.
+# @param archive_dir define an arbitrary output directory where results (cases, csv files) are stored.
+# @param verbosity print (lot of) information while running.
+# @param verbose_level deprecated verbosity
+# @return list of array design and results from the code.
+# @example Funz_RunDesign(model="R", input_files=os.path.join(FUNZ_HOME,"samples","branin.R"), output_expressions="cat", design = "gradientdescent", design_options = {nmax=5),input_variables = {x1="[0,1]",x2="[0,1]"))
+# @example Funz_RunDesign("R", os.path.join(FUNZ_HOME,"samples","branin.R"), "cat", "gradientdescent", {nmax:5}, {x1:"[0,1]",x2:[0,1]})
 def Funz_RunDesign(model=None,input_files=None,output_expressions=None,design=None,input_variables=None,design_options=None,run_control={'force_retry':2,'cache_dir':None},monitor_control={'results_tmp':True,'sleep':5,'display_fun':None},archive_dir=None,verbosity=0,verbose_level=None,log_file=True) :
     if input_files is None: raise Exception("Input files has to be defined")
     if not isinstance(input_files, list): input_files = [input_files]
@@ -936,10 +947,19 @@ def Funz_RunDesign(model=None,input_files=None,output_expressions=None,design=No
     return(results)
 
 
-#' Initialize a Funz shell to perform calls to an external code.
-#' @param
-#' @return a Java shell object, which calculations are started.
-#' @example Funz_RunDesign_start("[R]", os.path.join(FUNZ_HOME,"samples","branin.R"),"z","Conjugate Gradient",{a:numpy.random.uniform(size=10), b:"[0,1]"},{Maximum_iterations:10))
+## Initialize a Funz shell to perform calls to an external code.
+# @param model name of the code wrapper to use. See .Funz.Models global var for a list of possible values.
+# @param input_files list of files to give as input for the code. 
+# @param design Design of Experiments (DoE) given by its name (for instance ""). See .Funz.Designs global var for a list of possible values.
+# @param design_options list of options to pass to the DoE. All options not given are set to their default values. Note that '_' char in names will be replaced by ' '.
+# @param input_variables list of variables definition in a String (for instance x1="[-1,1]"), or array of fixed values (will launch a design for each combination).# @param output.expressions list of interest output from the code. Will become the names() of return list.
+# @param run_control.force_retry is number of retries before failure.
+# @param run_control.cache_dir setup array of directories to search inside before real launching calculations.
+# @param archive_dir define an arbitrary output directory where results (cases, csv files) are stored.
+# @param verbosity print (lot of) information while running.
+# @param verbose_level deprecated verbosity
+# @return a Java shell object, which calculations are started.
+# @example Funz_RunDesign_start("R", os.path.join(FUNZ_HOME,"samples","branin.R"),"z","Conjugate Gradient",{a:numpy.random.uniform(size=10), b:"[0,1]"},{Maximum_iterations:10))
 def Funz_RunDesign_start(model,input_files,output_expressions=None,design=None,input_variables=None,design_options=None,run_control={'force_retry':2,'cache_dir':None},archive_dir=None,verbosity=0,log_file=True) :
     if not '_Funz_Last_rundesin' in globals():
         global _Funz_Last_rundesign
@@ -1035,11 +1055,11 @@ def Funz_RunDesign_start(model,input_files,output_expressions=None,design=None,i
     return(shell)
 
 
-#' Parse a Java shell object to get its results.
-#' @param shell Java shell object to parse.
-#' @param verbosity print (lot of) information while running.
-#' @return list of array design and results from the code.
-#' @example TODO
+## Parse a Java shell object to get its results.
+# @param shell Java shell object to parse.
+# @param verbosity print (lot of) information while running.
+# @return list of array design and results from the code.
+# @example TODO
 def Funz_RunDesign_results(shell,verbosity) :
     if not '_Funz_Last_rundesign' in globals():
         global _Funz_Last_rundesign
@@ -1049,14 +1069,3 @@ def Funz_RunDesign_results(shell,verbosity) :
     _Funz_Last_rundesign['results'] = results
 
     return(results)
- 
- 
-###############################################################################
- 
-
-
-#Funz_init('/home/richet/Sync/Open/Funz/1.9/applications/funz-client/dist',verbosity=10)
-
-#def f(x): return(x['a']*x['b']) ; 
-
-#f=Funz_RunDesign(model="R",input_files="dist/samples/branin.R",output_expressions="cat",design = "GradientDescent", design_options = {'nmax':3},input_variables= {'x1':[0,1],'x2':"[1,2]"},verbosity=10)
