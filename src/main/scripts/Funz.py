@@ -18,14 +18,14 @@ import sys, os, time, re, locale, warnings
 import numpy
 import py4j.java_gateway
 
-# @test X = {'a':[1,2,3],'b':[4,5,6]}; _getInMapArray(X,1)
+# @test X = {'x1':[1,2,3],'x2':[4,5,6]}; _getInMapArray(X,1)
 def _getInMapArray(x,i) :
     xi={}
     for k in x.keys():
         xi[k] = x[k][i]
     return(xi)
 
-# @test X = {'a':[1,2,3],'b':[4,5,6]}; _up(X,{'c':0.213})
+# @test X = {'x1':[1,2,3],'x2':[4,5,6]}; _up(X,{'c':0.213})
 def _up(m,u) :
     mu = m
     mu.update(u)
@@ -87,10 +87,10 @@ def _JMapToPMap(m):
             
     return(p)    
     
-# @test X = {'a':1,'b':[4,5,6],'c':{'a':1,'b':[1,2]},'d':"abc"}; _PMapToJMap(X)
-# @test X = {'a':1,'b':[4,5,6],'c':{'a':1,'b':[1,2]},'d':"abc",'e':[[1,2,3]]}; _PMapToJMap(X)
-# @test X = {'a':[1,2,3],'b':[4,5,6]}; _PMapToJMap(X)
-# @test X = {'a':[[1,2,3]],'b':[[4,5,6]]}; _PMapToJMap(X)
+# @test X = {'x1':1,'x2':[4,5,6],'c':{'x1':1,'x2':[1,2]},'d':"abc"}; _PMapToJMap(X)
+# @test X = {'x1':1,'x2':[4,5,6],'c':{'x1':1,'x2':[1,2]},'d':"abc",'e':[[1,2,3]]}; _PMapToJMap(X)
+# @test X = {'x1':[1,2,3],'x2':[4,5,6]}; _PMapToJMap(X)
+# @test X = {'x1':[[1,2,3]],'x2':[[4,5,6]]}; _PMapToJMap(X)
 def _PMapToJMap(m) :
     jm = _jclassHashMap()
     for k in m.keys():
@@ -305,7 +305,7 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
 # @param verbose_level deprecated verbosity
 # @param vargs optional parameters passed to 'fun'
 # @return list of results from this DoE.
-# @example def f(x): return(x['a']*x['b']) ; Funz_Design(f,design = "GradientDescent", options = {'nmax':10},input_variables = {'a':"[0,1]",'b':"[1,2]"})
+# @example def f(x): return(x['x1']*x['x2']) ; Funz_Design(f,design = "GradientDescent", options = {'nmax':10},input_variables = {'x1':"[0,1]",'x2':"[1,2]"})
 def Funz_Design(fun,design,options=None,input_variables=None,fun_control={'cache':False,'vectorize':"for",'vectorize_by':1},monitor_control={'results_tmp':True},archive_dir=None,verbosity=0,verbose_level=None,log_file=True,*vargs):
     if (not verbose_level is None) & (verbosity != verbose_level) : verbosity = verbose_level
 
@@ -868,8 +868,8 @@ def Funz_ReadOutput(model, input_files, output_dir) :
 # @param verbosity print (lot of) information while running.
 # @param verbose_level deprecated verbosity
 # @return list of array design and results from the code.
-# @example Funz_RunDesign(model="R", input_files=os.path.join(FUNZ_HOME,"samples","branin.R"), output_expressions="cat", design = "gradientdescent", design_options = {nmax=5),input_variables = {x1="[0,1]",x2="[0,1]"))
-# @example Funz_RunDesign("R", os.path.join(FUNZ_HOME,"samples","branin.R"), "cat", "gradientdescent", {nmax:5}, {x1:"[0,1]",x2:[0,1]})
+# @example Funz_RunDesign(model="R", input_files=os.path.join(FUNZ_HOME,"samples","branin.R"), output_expressions="cat", design = "GradientDescent", design_options = {nmax=5),input_variables = {x1="[0,1]",x2="[0,1]"))
+# @example Funz_RunDesign("R", os.path.join(FUNZ_HOME,"samples","branin.R"), "cat", "GradientDescent", {nmax:5}, {x1:"[0,1]",x2:[0,1]})
 def Funz_RunDesign(model=None,input_files=None,output_expressions=None,design=None,input_variables=None,design_options=None,run_control={'force_retry':2,'cache_dir':None},monitor_control={'results_tmp':True,'sleep':5,'display_fun':None},archive_dir=None,verbosity=0,verbose_level=None,log_file=True) :
     if input_files is None: raise Exception("Input files has to be defined")
     if not isinstance(input_files, list): input_files = [input_files]

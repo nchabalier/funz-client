@@ -9,7 +9,7 @@
 
 ################################# Imports ######################################
 
-if (!("rJava" %in% installed.packages()))
+if (!("rJava" %in% utils::installed.packages()))
     stop("rJava package must be installed.")
 
 if (!require(rJava)) {
@@ -17,8 +17,8 @@ if (!require(rJava)) {
     stop("rJava package is required.")
 }
 
-rJava.version = packageDescription('rJava')$Version
-if (compareVersion(rJava.version, "0.9-0") < 0)
+rJava.version = utils::packageDescription('rJava')$Version
+if (utils::compareVersion(rJava.version, "0.9-0") < 0)
     stop(paste("rJava version (",rJava.version,") is too old. Please update to >0.9"))
 
 
@@ -115,11 +115,11 @@ options(OutDec= ".")
                 val = list()
                 if (length(vals)>0) {
                     for (i in 1:length(vals)) {
-                        if (is.null(vals[[i]])) 
-                            val[[i]] = NA 
+                        if (is.null(vals[[i]]))
+                            val[[i]] = NA
                         else
                             val[[i]] = vals[[i]]
-                        
+
                         # if (length(val)>=i) {
                             try(val[[i]] <- .jevalArray( vals[[i]],simplify=T),silent=T)
 
@@ -252,6 +252,7 @@ options(OutDec= ".")
 if (exists("FUNZ_HOME")) .dir=FUNZ_HOME
 if (.dir=="") .dir = Sys.getenv("FUNZ_HOME") # if not set, returns ""
 if (.dir=="") try(.dir <- dirname(sys.frame(1)$ofile),silent=T) # Try to detect directory of this script
+if (.dir=="") .dir=NULL
 
 #' Initialize Funz environment.
 #' @param FUNZ_HOME set to Funz installation path.
@@ -349,7 +350,7 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
 #' @param verbose.level deprecated verbosity
 #' @param ... optional parameters passed to 'fun'
 #' @return list of results from this DoE.
-#' @example Funz_Design(design = "GradientDescent", options = list(nmax=10),input.variables = list(a="[0,1]",b="[1,2]"), fun = function(X){abs(X$a*X$b)})
+#' @example Funz_Design(design = "GradientDescent", options = list(nmax=10),input.variables = list(x1="[0,1]",x2="[1,2]"), fun = function(X){abs(X$a*X$b)})
 Funz_Design <- function(fun,design,options=NULL,input.variables,fun.control=list(cache=FALSE,vectorize="fun",vectorize.by=1,foreach.options=NULL),monitor.control=list(results.tmp=TRUE),archive.dir=NULL,verbose.level=0,verbosity=verbose.level,log.file=TRUE,...) {
     .Funz.Last.design <<- list(design=design,options=options,fun=fun,input.variables=input.variables,fun.control=list(cache=fun.control$cache,vectorize=fun.control$vectorize,vectorize.by=fun.control$vectorize.by,foreach.options=fun.control$foreach.options),monitor.control=list(results.tmp=monitor.control$results.tmp),archive.dir=archive.dir,verbosity=verbosity,log.file=log.file,optargs=list(...))
 
@@ -368,12 +369,12 @@ Funz_Design <- function(fun,design,options=NULL,input.variables,fun.control=list
 
     if (!is.null(fun.control$vectorize)) {
         if (fun.control$vectorize=="foreach") {
-            if (!require(foreach))
+            if (!("foreach" %in% utils::installed.packages()))
                 stop("foreach package is required.")
-            if (!getDoParRegistered())
+            if (!foreach::getDoParRegistered())
                 stop("no foreach backend registered.")
         } else if (fun.control$vectorize=="parallel") {
-            if (!require(parallel))
+            if (!("parallel" %in% utils::installed.packages()))
                 stop("parallel package is required.")
         }
         if (is.null(fun.control$vectorize.by)) fun.control$vectorize.by=4
@@ -388,7 +389,7 @@ Funz_Design <- function(fun,design,options=NULL,input.variables,fun.control=list
     it = 1
     .Funz.done <<- FALSE;
     while (TRUE) {
-        flush.console()
+        utils::flush.console()
 
         X = Funz_Design.next(designshell,X,fun,fun.control,verbosity,...)
 
@@ -436,7 +437,7 @@ Funz_Design.init <- function(design,options=NULL,input.variables,archive.dir=NUL
     if (!exists(".Funz.Last.design")) .Funz.Last.design <<- list()
 
     # Build input as a HashMap<String, String>
-    jinput.variables<-new(.jclassLinkedHashMap)
+    jinput.variables <- new(.jclassLinkedHashMap,length(input.variables))
     for (key in names(input.variables)) {
         if (is.null(input.variables[[key]]))
             values = "[0,1]"
@@ -446,7 +447,7 @@ Funz_Design.init <- function(design,options=NULL,input.variables,archive.dir=NUL
     }
 
     # Set design options
-    joptions <- new(.jclassHashMap)
+    joptions <- new(.jclassHashMap,length(options))
     if(!is.null(options)) {
         for (key in names(options)) {
             joptions$put(key, paste(options[[key]]))
@@ -521,15 +522,15 @@ Funz_Design.next <- function(designshell,X,fun,fun.control=list(cache=FALSE,vect
         if (is.null(fun.control$vectorize) || fun.control$vectorize==FALSE || fun.control$vectorize=="apply") {
             Y = apply(X=X,FUN=fun,MARGIN=1,...)
         } else if (fun.control$vectorize=="fun") {
-            Y = fun(X,...)
+            Y = fun(as.data.frame(X),...)
         } else if (fun.control$vectorize=="foreach") {
             if (!is.null(fun.control$foreach.options)) {
-                Y = foreach(ix = 1:nrow(X), .combine = c, .options = fun.control$foreach.options) %dopar% fun(X[ix,],...)
+                Y = foreach::foreach(ix = 1:nrow(X), .combine = c, .options = fun.control$foreach.options) %dopar% fun(X[ix,],...)
             } else {
-                Y = foreach(ix = 1:nrow(X), .combine = c) %dopar% fun(X[ix,],...)
+                Y = foreach::foreach(ix = 1:nrow(X), .combine = c) %dopar% fun(X[ix,],...)
             }
         } else if (fun.control$vectorize=="parallel") {
-            Y <- array(unlist(mclapply(X=split(X, 1:nrow(X)),FUN=fun,mc.cores=fun.control$vectorize.by,...)))
+            Y <- array(unlist(parallel::mclapply(X=split(X, 1:nrow(X)),FUN=fun,mc.cores=fun.control$vectorize.by,...)))
         } else {
             stop(paste("fun.control$vectorize type '",fun.control$vectorize,"' not supported.",sep=""))
         }
@@ -626,7 +627,7 @@ Funz_Design.info <- function(design, input.variables) {
 #' @param verbosity print (lot of) information while running.
 #' @param verbose.level deprecated verbosity
 #' @return list of array results from the code, arrays size being equal to input.variables arrays size.
-#' @example Funz_Run(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R"),input.variables = list(a=runif(10), b=runif(10)), output.expressions = "z")
+#' @example Funz_Run(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R"),input.variables = list(x1=runif(10), b=runif(10)), output.expressions = "z")
 Funz_Run <- function(model=NULL,input.files,input.variables=NULL,all.combinations=FALSE,output.expressions=NULL,run.control=list(force.retry=2,cache.dir=NULL),archive.dir=NULL,verbose.level=0,verbosity=verbose.level,log.file=TRUE,monitor.control=list(sleep=5,display.fun=NULL)) {
     .Funz.Last.run <<- list(model=model,input.files=input.files,input.variables=input.variables,output.expressions=output.expressions,archive.dir=archive.dir,run.control=list(force.retry=run.control$force.retry,cache.dir=run.control$cache.dir),verbosity=verbosity,log.file=log.file,monitor.control=list(sleep=monitor.control$sleep,display.fun=monitor.control$display.fun))
 
@@ -647,7 +648,7 @@ Funz_Run <- function(model=NULL,input.files,input.variables=NULL,all.combination
     pointstatus = "-"
     new_pointstatus = "-"
     while(!finished) {
-        flush.console()
+        utils::flush.console()
 
         tryCatch(expr={
         .Funz.done <<- FALSE;
@@ -835,7 +836,7 @@ Funz_Run.info <- function(model=NULL,input.files=NULL) {
 #' Conveniency overview of Funz grid status.
 #' @return String list of all visible Funz daemons running on the network.
 Funz_GridStatus <- function() {
-    read.delim(textConnection(gsub("\t","",.jclassPrint$gridStatusInformation())),sep="|")[,2:9]
+    utils::read.delim(textConnection(gsub("\t","",.jclassPrint$gridStatusInformation())),sep="|")[,2:9]
 }
 
 
@@ -863,8 +864,8 @@ Funz_ParseInput <- function(model,input.files) {
 #' @param input.files files to give as input for the code.
 #' @param input.values list of variable values to compile.
 #' @param output.dir directory where to put compiled files.
-#' @example Funz_CompileInput(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R"),input.values = list(a=0.5, b=0.6))
-#' @example Funz_CompileInput(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R"),input.values = list(a=c(0.5,.55), b=c(0.6,.7)))
+#' @example Funz_CompileInput(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R"),input.values = list(x1=0.5, b=0.6))
+#' @example Funz_CompileInput(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R"),input.values = list(x1=c(0.5,.55), b=c(0.6,.7)))
 Funz_CompileInput <- function(model,input.files,input.values,output.dir=".") {
     if (exists(".Funz.Models"))
         if (!is.null(model) && (!is.element(el=model,set=.Funz.Models)))
@@ -908,7 +909,7 @@ Funz_ReadOutput <- function(model, input.files, output.dir) {
 
 #' Call an external (to R) code wrapped through Funz environment.
 #' @param model name of the code wrapper to use. See .Funz.Models global var for a list of possible values.
-#' @param input.files list of files to give as input for the code. 
+#' @param input.files list of files to give as input for the code.
 #' @param design Design of Experiments (DoE) given by its name (for instance ""). See .Funz.Designs global var for a list of possible values.
 #' @param design.options list of options to pass to the DoE. All options not given are set to their default values. Note that '_' char in names will be replaced by ' '.
 #' @param input.variables list of variables definition in a String (for instance x1="[-1,1]"), or array of fixed values (will launch a design for each combination).
@@ -921,8 +922,8 @@ Funz_ReadOutput <- function(model, input.files, output.dir) {
 #' @param verbosity print (lot of) information while running.
 #' @param verbose.level deprecated verbosity
 #' @return list of array design and results from the code.
-#' @example Funz_RunDesign(model="R", input.files=file.path(FUNZ_HOME,"samples","branin.R"), output.expressions="cat", design = "gradientdescent", design.options = list(nmax=5),input.variables = list(x1="[0,1]",x2="[0,1]"))
-#' @example Funz_RunDesign(model="R", input.files=file.path(FUNZ_HOME,"samples","branin.R"), output.expressions="cat", design = "gradientdescent", design.options = list(nmax=5),input.variables = list(x1="[0,1]",x2=c(0,1)))
+#' @example Funz_RunDesign(model="R", input.files=file.path(FUNZ_HOME,"samples","branin.R"), output.expressions="cat", design = "GradientDescent", design.options = list(nmax=5),input.variables = list(x1="[0,1]",x2="[0,1]"))
+#' @example Funz_RunDesign(model="R", input.files=file.path(FUNZ_HOME,"samples","branin.R"), output.expressions="cat", design = "GradientDescent", design.options = list(nmax=5),input.variables = list(x1="[0,1]",x2=c(0,1)))
 Funz_RunDesign <- function(model=NULL,input.files,design=NULL,design.options=NULL,input.variables=NULL,output.expressions=NULL,run.control=list(force.retry=2,cache.dir=NULL),monitor.control=list(results.tmp=TRUE,sleep=5,display.fun=NULL),archive.dir=NULL,verbosity=0,log.file=TRUE) {
     .Funz.Last.rundesign <<- list(model=model,input.files=input.files,output.expressions=output.expressions,design=design,input.variables=input.variables,design.options=design.options,run.control=list(force.retry=run.control$force.retry,cache.dir=run.control$cache.dir),verbosity=verbosity,log.file=log.file,monitor.control=monitor.control,run.control=run.control,archive.dir=archive.dir)
 
@@ -955,7 +956,7 @@ Funz_RunDesign <- function(model=NULL,input.files,design=NULL,design.options=NUL
     status = "-"
     new_status = "-"
     while(!finished) {
-        flush.console()
+        utils::flush.console()
 
         tryCatch(expr={
         .Funz.done <<- FALSE;
@@ -1001,7 +1002,7 @@ Funz_RunDesign <- function(model=NULL,input.files,design=NULL,design.options=NUL
 
 #' Initialize a Funz shell to perform calls to an external code.
 #' @param model name of the code wrapper to use. See .Funz.Models global var for a list of possible values.
-#' @param input.files list of files to give as input for the code. 
+#' @param input.files list of files to give as input for the code.
 #' @param design Design of Experiments (DoE) given by its name (for instance ""). See .Funz.Designs global var for a list of possible values.
 #' @param design.options list of options to pass to the DoE. All options not given are set to their default values. Note that '_' char in names will be replaced by ' '.
 #' @param input.variables list of variables definition in a String (for instance x1="[-1,1]"), or array of fixed values (will launch a design for each combination).
@@ -1012,7 +1013,7 @@ Funz_RunDesign <- function(model=NULL,input.files,design=NULL,design.options=NUL
 #' @param verbosity print (lot of) information while running.
 #' @param verbose.level deprecated verbosity
 #' @return a Java shell object, which calculations are started.
-#' @example Funz_RunDesign.start(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R")output.expressions = "z",design = "Conjugate Gradient",input.variables = list(a=runif(10), b="[0,1]"),design.options = list(Maximum_iterations=10))
+#' @example Funz_RunDesign.start(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R"),output.expressions = "z",design = "Conjugate Gradient",input.variables = list(x1=runif(10), b="[0,1]"),design.options = list(Maximum_iterations=10))
 Funz_RunDesign.start <- function(model,input.files,output.expressions=NULL,design=NULL,input.variables=NULL,design.options=NULL,run.control=list(force.retry=2,cache.dir=NULL),archive.dir=NULL,verbosity=0,log.file=TRUE) {
     if (!exists(".Funz.Last.rundesign")) .Funz.Last.rundesign <<- list()
 
