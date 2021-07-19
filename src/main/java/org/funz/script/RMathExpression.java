@@ -408,7 +408,7 @@ public class RMathExpression extends MathExpression {
         }
         try {
             //if (RLibPath == null) {
-            String RLibPath = "file.path('"+new File(Constants.APP_USER_DIR).getAbsolutePath().replace('\\', '/')+"','R')";
+            String RLibPath = "file.path('"+Constants.APP_USER_DIR.getAbsolutePath().replace('\\', '/')+"','R')";
             //}
             //if (RLibPath != null) {
             R.voidEval("if (!file.exists(" + RLibPath + ")) dir.create(" + RLibPath + ",recursive=TRUE)");
