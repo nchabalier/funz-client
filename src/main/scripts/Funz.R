@@ -261,21 +261,20 @@ if (.dir=="") .dir=NULL
 #' @param java.control list of JVM startup parameters (like -D...=...).
 #' @param ... optional parameters passed to '.jinit' call.
 #' @example Funz.init()
-Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']]=="Windows",list(Xmx="512m",Xss="256k"),list(Xmx="512m")), verbose.level=0, verbosity=verbose.level, ...) {
+Funz.init <- function(FUNZ_HOME=.dir, java.control=if (Sys.info()[['sysname']]=="Windows") list(Xmx="512m",Xss="256k") else list(Xmx="512m"), verbose.level=0, verbosity=verbose.level, ...) {
     if (is.null(FUNZ_HOME))
         stop("FUNZ_HOME environment variable not set.\nPlease setup FUNZ_HOME to your Funz installation path.")
 
     .FUNZ_HOME <<- normalizePath(FUNZ_HOME)
 
     if (!file.exists(.FUNZ_HOME))
-        stop(paste("FUNZ_HOME environment variable not correctly set: FUNZ_HOME=",FUNZ_HOME,"\nPlease setup FUNZ_HOME to your Funz installation path.\n(you can get Funz freely at https://funz.github.io/funz.org/)",sep=""))
+        stop(paste("FUNZ_HOME environment variable not correctly set: FUNZ_HOME=",FUNZ_HOME,"\nPlease setup FUNZ_HOME to your Funz installation path.\n(you can get Funz freely at https://funz.github.io/)",sep=""))
 
     parameters = c(paste("-Dapp.home",.FUNZ_HOME,sep="="),"-Duser.language=en","-Duser.country=US",paste(sep="","-Dverbosity=",verbosity)) #,"-Douterr=.Funz")
     for (p in names(java.control)) {
         if(substr(p,1,1)=="X") parameters = c(parameters,paste("-",p,java.control[[p]],sep=""))
         else parameters = c(parameters,paste("-D",p,"=",java.control[[p]],sep=""))
     }
-
     parameters = c(parameters,"-Djava.awt.headless=true") #,'-Dnashorn.args="--no-deprecation-warning"')
 
     if (verbosity>3) cat(paste0("  Initializing JVM ...\n    ",paste0(parameters,collapse="\n    "),"\n"))
@@ -296,7 +295,7 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
     if (verbosity>3) cat("  Loading org/funz/Constants ...\n")
     .jclassConstants <<- J("org/funz/Constants")
 
-    if (verbosity>0) cat(paste("Funz ",.jclassConstants$APP_VERSION," <build ",.jclassConstants$APP_BUILD_DATE,">\n",sep=""))
+    # if (verbosity>0) cat(paste("Funz ",.jclassConstants$APP_VERSION," <build ",.jclassConstants$APP_BUILD_DATE,">\n",sep=""))
 
     if (verbosity>3) cat("  Loading org/funz/api/Funz_v1 ...\n")
     .jclassFunz <<- J("org/funz/api/Funz_v1")
@@ -310,9 +309,9 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=ifelse(Sys.info()[['sysname']
     .jclassFunz$init()
 
     .Funz.Models <<- .jclassFunz$getModelList()
-    if (verbosity>0) {cat("  Funz models (port ",.jclassFunz$POOL$getPort(),"):",paste(.Funz.Models),"\n")}
+    # if (verbosity>0) {cat("  Funz models (port ",.jclassFunz$POOL$getPort(),"):",paste(.Funz.Models),"\n")}
     .Funz.Designs <<- .jclassFunz$getDesignList()
-    if (verbosity>0) {cat("  Funz designs (engine ",.jclassFunz$MATH$getEngineName(),"):",paste(.Funz.Designs),"\n")}
+    # if (verbosity>0) {cat("  Funz designs (engine ",.jclassFunz$MATH$getEngineName(),"):",paste(.Funz.Designs),"\n")}
 
     # pre-load some class objects from funz API
     .jclassData <<- J("org/funz/util/Data")
@@ -578,7 +577,7 @@ Funz_Design.results <- function(designshell) {
 }
 
 
-#' Conveniency method giving information about a design available as Funz_Design() arg.
+#' Convenience method giving information about a design available as Funz_Design() arg.
 #' @return information about this design.
 Funz_Design.info <- function(design, input.variables) {
     if (is.null(design))
@@ -803,7 +802,7 @@ Funz_Run.results <- function(runshell,verbosity) {
 }
 
 
-#' Conveniency test & information of Funz_Run model & input.
+#' Convenience test & information of Funz_Run model & input.
 #' @return general information concerning this model/input combination.
 Funz_Run.info <- function(model=NULL,input.files=NULL) {
     if (exists(".Funz.Models"))
@@ -833,7 +832,7 @@ Funz_Run.info <- function(model=NULL,input.files=NULL) {
 
 ################################# Grid #################################
 
-#' Conveniency overview of Funz grid status.
+#' Convenience overview of Funz grid status.
 #' @return String list of all visible Funz daemons running on the network.
 Funz_GridStatus <- function() {
     utils::read.delim(textConnection(gsub("\t","",.jclassPrint$gridStatusInformation())),sep="|")[,2:9]
@@ -842,7 +841,7 @@ Funz_GridStatus <- function() {
 
 ################################# Utils #################################
 
-#' Conveniency method to find variables & related info. in parametrized file.
+#' Convenience method to find variables & related info. in parametrized file.
 #' @param model name of the code wrapper to use. See .Funz.Models global var for a list of possible values.
 #' @param input.files files to give as input for the code.
 #' @return list of variables & their possible default value
@@ -859,7 +858,7 @@ Funz_ParseInput <- function(model,input.files) {
     #.JMapToRList(.jclassUtils$findVariables(model,.jcast(JArrayinput.files,new.class=.JNI.File.array)))
 }
 
-#' Conveniency method to compile variables in parametrized file.
+#' Convenience method to compile variables in parametrized file.
 #' @param model name of the code wrapper to use. See .Funz.Models global var for a list of possible values.
 #' @param input.files files to give as input for the code.
 #' @param input.values list of variable values to compile.
@@ -886,7 +885,7 @@ Funz_CompileInput <- function(model,input.files,input.values,output.dir=".") {
     #.jclassUtils$compileVariables(model,.jcast(JArrayinput.files,new.class=.JNI.File.array),JMapinput.values,new(.jclassFile,output.dir))
 }
 
-#' Conveniency method to find variables & related info. in parametrized file.
+#' Convenience method to find variables & related info. in parametrized file.
 #' @param model name of the code wrapper to use. See .Funz.Models global var for a list of possible values.
 #' @param input.files files given as input for the code.
 #' @param output.dir directory where calculated files are.
@@ -1107,6 +1106,9 @@ Funz_RunDesign.results <- function(shell,verbosity) {
     if (!exists(".Funz.Last.rundesign")) .Funz.Last.rundesign <<- list()
 
     results <- .JMapToRList(shell$getResultsArrayMap())
+    for (io in c(names(.Funz.Last.rundesign$input.variables),.Funz.Last.rundesign$output.expressions)) # Try to cast I/O values to R numeric
+        for (i in 1:length(results[[io]]))
+            results[[io]][[i]] = lapply(unlist(results[[io]][[i]]),.jsimplify)
     .Funz.Last.rundesign$results <<- results
 
     return(results)

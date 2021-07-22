@@ -1177,7 +1177,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
 
     public Map<String, Object[]> getResultsArrayMap() {
         if ((merged_results == null || merged_results.isEmpty()) && torun != null) {
-            return merge(torun);
+            merged_results = merge(torun);
         }
         if (merged_results == null) {
             return new HashMap<>();
