@@ -751,7 +751,9 @@ def Funz_Run_results(runshell,verbosity):
     
     results = _JMapToPMap(runshell.getResultsArrayMap())
     for io in _Funz_Last_run['output_expressions']+list(_Funz_Last_run['input_variables']):# Try to cast I/O values to R numeric
-        results[io] = [float(z) for z in results[io]]
+        try: 
+            results[io] = numpy.float_(results[io])
+        except: pass
     _Funz_Last_run['results'] = results
 
     return(results)
@@ -976,8 +978,8 @@ def Funz_RunDesign(model=None,input_files=None,output_expressions=None,design=No
 # @return a Java shell object, which calculations are started.
 # @example Funz_RunDesign_start("R", os.path.join(FUNZ_HOME,"samples","branin.R"),"z","Conjugate Gradient",{a:numpy.random.uniform(size=10), b:"[0,1]"},{Maximum_iterations:10))
 def Funz_RunDesign_start(model,input_files,output_expressions=None,design=None,input_variables=None,design_options=None,run_control={'force_retry':2,'cache_dir':None},archive_dir=None,verbosity=0,log_file=True) :
-    if not '_Funz_Last_rundesin' in globals(): global _Funz_Last_rundesin
-    if _Funz_Last_rundesin is None: _Funz_Last_rundesin = {}
+    if not '_Funz_Last_rundesign' in globals(): global _Funz_Last_rundesign
+    if _Funz_Last_rundesign is None: _Funz_Last_rundesign = {}
 
     # Check (and wrap to Java) input files.
     JArrayinput_files = _PFileArrayToJFileArray(input_files)
@@ -1013,7 +1015,7 @@ def Funz_RunDesign_start(model,input_files,output_expressions=None,design=None,i
         if verbosity>0: 
             print("Using default options\n",end='')
     # Let's instanciate the workbench
-    if "_Funz_Last_rundesin" in globals(): 
+    if "_Funz_Last_rundesign" in globals(): 
         if _Funz_Last_rundesign is dict:
             if 'shell' in _Funz_Last_rundesign.keys():
                 if verbosity>0: print("Terminating previous run...", end='')
@@ -1076,13 +1078,14 @@ def Funz_RunDesign_start(model,input_files,output_expressions=None,design=None,i
 # @return list of array design and results from the code.
 # @example TODO
 def Funz_RunDesign_results(shell,verbosity) :
-    if not '_Funz_Last_rundesin' in globals(): global _Funz_Last_rundesin
-    if _Funz_Last_rundesin is None: _Funz_Last_rundesin = {}
+    if not '_Funz_Last_rundesign' in globals(): global _Funz_Last_rundesign
+    if _Funz_Last_rundesign is None: _Funz_Last_rundesign = {}
 
     results = _JMapToPMap(shell.getResultsArrayMap())
     for io in _Funz_Last_rundesign['output_expressions']+list(_Funz_Last_rundesign['input_variables']):# Try to cast I/O values to R numeric
-        for i in range(len(results[io])):
-            results[io][i] = [float(z) for z in results[io][i]]
+        try:
+            results[io] = numpy.float_(results[io])
+        except: pass
     _Funz_Last_rundesign['results'] = results
 
     return(results)
