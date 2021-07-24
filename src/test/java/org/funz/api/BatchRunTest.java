@@ -1693,6 +1693,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         while (batchRun.getResultsArrayMap().get("cat") == null) {
             Thread.sleep(500); // should not exceed too much t=1000*3 used in branin.R
         }
+        System.err.println("cat:"+batchRun.getResultsArrayMap().get("cat"));
         System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!! KILL !!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         assert batchRun.stopBatch() : "Failed to stop batch";
 
@@ -1876,6 +1877,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
             Thread.sleep(500); // should not exceed too much t=1000*3 used in branin.R
             System.err.println("cat:"+batchRun0.getResultsArrayMap().get("cat"));
         }
+        System.err.println("cat:"+batchRun0.getResultsArrayMap().get("cat"));
         System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!! KILL !!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         assert batchRun0.stopBatch() : "0: Failed to stop batch";
 
