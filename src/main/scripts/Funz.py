@@ -43,13 +43,17 @@ def _PArray(o):
 # @test _gateway = py4j.java_gateway.JavaGateway(gateway_parameters= py4j.java_gateway.GatewayParameters(port=py4j.java_gateway.launch_gateway()))
 # @test J=_gateway.jvm
 def _JArray(jobjects,jclass=None):
+    if jobjects is None:
+        return([])
+    if isinstance(jobjects,numpy.ndarray):
+        return(_JArray(jobjects.tolist(),jclass))
     if jclass is None:
         jclass=str(jobjects[0].getClass())[6:]
     jarray = _gateway.new_array(py4j.java_collections.JavaClass(jclass,_gateway),len(jobjects))
     for i in list(range(0,len(jobjects))):
         if jobjects[i] is None:
             jarray[i] = None
-        elif isinstance(jobjects[i],list):
+        elif isinstance(jobjects[i],list) | isinstance(jobjects[i],numpy.ndarray):
             if len(jobjects[i])>0 :
                 jarray[i] = _JArray(jobjects[i],_PTypeToJClass(jobjects[i][0]))
             else:
@@ -91,6 +95,7 @@ def _JMapToPMap(m):
 # @test X = {'x1':1,'x2':[4,5,6],'c':{'x1':1,'x2':[1,2]},'d':"abc",'e':[[1,2,3]]}; _PMapToJMap(X)
 # @test X = {'x1':[1,2,3],'x2':[4,5,6]}; _PMapToJMap(X)
 # @test X = {'x1':[[1,2,3]],'x2':[[4,5,6]]}; _PMapToJMap(X)
+# @test X = {'x1':numpy.array([1,2,3]),'x2':numpy.array([4,5,6])}; _PMapToJMap(X)
 def _PMapToJMap(m) :
     jm = _jclassHashMap()
     for k in m.keys():
@@ -115,6 +120,8 @@ def _PTypeToJClass(object) :
         return("java.lang.Double")
     elif isinstance(object, str):
         return("java.lang.String")
+    elif isinstance(object, numpy.ndarray) :
+        return(_PTypeToJClass(object.tolist()))
     elif isinstance(object, list):
         if len(object)>0:
             return(("[L"+_PTypeToJClass(object[0])+";").replace("L[","[").replace(";;",";"))
@@ -1082,7 +1089,7 @@ def Funz_RunDesign_results(shell,verbosity) :
     if _Funz_Last_rundesign is None: _Funz_Last_rundesign = {}
 
     results = _JMapToPMap(shell.getResultsArrayMap())
-    for io in _Funz_Last_rundesign['output_expressions']+list(_Funz_Last_rundesign['input_variables']):# Try to cast I/O values to R numeric
+    for io in _JArrayToPArray(_Funz_Last_rundesign['output_expressions'])+list(_Funz_Last_rundesign['input_variables']):# Try to cast I/O values to R numeric
         try:
             results[io] = numpy.float_(results[io])
         except: pass
