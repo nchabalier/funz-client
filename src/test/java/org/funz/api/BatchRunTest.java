@@ -55,7 +55,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         }
     };
 
-    //@Test
+    @Test
     public void testOutputExpr() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOutputExpr");
         File tmp_in = branin_in();
@@ -117,7 +117,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testOutputExprGaussian() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOutputExprGaussian");
         File tmp_in = branin_in();
@@ -182,7 +182,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test1Case() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1Case");
         File tmp_in = branin_in();
@@ -244,7 +244,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testBatchTimeout() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testBatchTimeout");
         File tmp_in = branin_in();
@@ -305,7 +305,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test1CaseLongExec() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1CaseLongExec");
         File tmp_in = branin_in();
@@ -372,7 +372,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test20Cases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test20Cases");
         File tmp_in = branin_in();
@@ -447,7 +447,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test4CasesLongPath() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test4CasesLongPath");
         File tmp_in = branin_in();
@@ -556,7 +556,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         }).size() > 0 : "No path.txt file found";
     }
 
-    //@Test
+    @Test
     public void test20CasesLongExec() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test20CasesLongExec");
         File tmp_in = branin_in();
@@ -630,7 +630,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test1CaseWithBinFile() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1CaseWithBinFile");
 
@@ -706,7 +706,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testDefinedVarValues() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDefinedVarValues");
         File tmp_in = branin_in();
@@ -758,7 +758,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test1FailedCaseOnPrepare() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1FailedCaseOnPrepare");
         File tmp_in = branin_in();
@@ -816,7 +816,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void test1FailedCaseOnRun() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test1FailedCaseOnRun");
         File tmp_in = branin_in();
@@ -874,7 +874,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testKill() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testKill");
         File tmp_in = branin_in();
@@ -952,7 +952,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testStopCase() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testStopCase");
         File tmp_in = branin_in();
@@ -1032,7 +1032,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
     }
 
 
-    //@Test
+    @Test
     public void testRestartCase() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testRestartCase");
         File tmp_in = branin_in();
@@ -1116,7 +1116,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testConcurrency() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testConcurrency");
         final boolean[] tests = new boolean[]{false, false, false, false};
@@ -1251,7 +1251,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         }
     }
 
-    //@Test
+    @Test
     public void testMultipleCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testMultipleCases");
         File tmp_in = branin_in();
@@ -1317,7 +1317,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testSomeCasesNotSelected() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testSomeCasesNotSelected");
         File tmp_in = branin_in();
@@ -1386,7 +1386,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         return sa;
     }
 
-    //@Test
+    @Test
     public void testSomeFailedCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testSomeFailedCases");
         File tmp_in = branin_in();
@@ -1440,7 +1440,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDuplicateCases");
         File tmp_in = branin_in();
@@ -1492,7 +1492,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testIterativeDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testIterativeDuplicateCases");
         File tmp_in = branin_in();
@@ -1561,7 +1561,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testVectorize() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testVectorize");
         File tmp_in = branin_in();
@@ -1723,7 +1723,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testPingPong() {
         final Object lock = new Object();
         Thread t1 = new Thread(new Runnable() {
@@ -1807,7 +1807,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         System.err.println("  t2.end");
     }
 
-    //@Test
+    @Test
     public void test2StopRestart() throws Exception {
         System.err.println("+++++++++++++++++++++++++ test2StopRestart");
         File tmp_in0 = newTmpFile("branin0.R");
@@ -1956,7 +1956,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
     }
 
-    //@Test
+    @Test
     public void testAddCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testAddCases");
         File tmp_in = branin_in();
@@ -2027,7 +2027,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         batchRun.shutdown();
     }
 
-    //@Test
+    @Test
     public void testCodeNoResult() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testCodeError");
         File tmp_in = branin_in();
