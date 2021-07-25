@@ -68,10 +68,13 @@ def _JArray(jobjects,jclass=None):
 def _JArrayToPArray(a):
     pa = []
     for e in a:
-        if isinstance(e,py4j.java_collections.JavaArray):
+        if isinstance(e,list):
+            e = e
+            # do nothing, and avoid casting to anythong else in following elif
+        elif isinstance(e,py4j.java_collections.JavaArray):
             e = _JArrayToPArray(e)
         elif isinstance(e,py4j.java_collections.JavaList):
-            e = _JArrayToPArray(_JListToJArray(e))
+            e = e #automatically casted, now #_JArrayToPArray(_JListToJArray(e))
         elif isinstance(e,py4j.java_collections.JavaMap):
             e = _JMapToPMap(e)
         pa.append(e)
@@ -83,9 +86,9 @@ def _JMapToPMap(m):
         if isinstance(m[k],py4j.java_collections.JavaArray):
             p[k] = _JArrayToPArray(m[k])
         elif isinstance(m[k],py4j.java_collections.JavaList):
-            p[k] = _JArrayToPArray(_JListToJArray(m[k]))
+            p[k] = _JArrayToPArray(m[k]) #_JListToJArray(m[k]))
         elif isinstance(m[k],py4j.java_collections.JavaMap):
-            p[k] = _JMapToPMap(_JListToJArray(m[k]))
+            p[k] = _JMapToPMap(m[k]) #_JListToJArray(m[k]))
         else:
             p[k] = m[k]
             
@@ -136,9 +139,15 @@ def _PTypeToJClass(object) :
 #def _PArrayToJArray(a):
 #    return(py4j.java_collections.ListConverter().convert(a, _gateway))
 
-def _JListToJArray(l):
-    py4j.java_collections.JavaArray(l,_gateway)
-
+# def _JListToJArray(l):
+#     if l.size()>0:
+#         jclass=str(l.get(0).getClass())[6:]
+#         jarray0 = _gateway.new_array(py4j.java_collections.JavaClass(jclass,_gateway),0)
+#         return(l.toArray(jarray0))
+#         # return(py4j.java_collections.JavaArray(l,_gateway))
+#     else:
+#         return(_JArray(None))
+        
 def _asJObject(string) :
     if (string is None): return(None)
     jo = None
