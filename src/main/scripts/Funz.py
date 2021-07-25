@@ -606,6 +606,9 @@ def Funz_Run(model=None, input_files=None, input_variables=None, all_combination
         model = ""
         if verbosity>0: print("Using default model.")
 
+    if isinstance(output_expressions,str):
+        output_expressions = [output_expressions]
+        
     runshell = Funz_Run_start(model,input_files,input_variables,all_combinations,output_expressions,run_control,archive_dir,verbosity,log_file)
 
     #runshell.setRefreshingPeriod(_jlong(1000*monitor_control['sleep))
@@ -930,6 +933,9 @@ def Funz_RunDesign(model=None,input_files=None,output_expressions=None,design=No
     if input_variables is None:
         raise Exception("Input variables 'input_variables' must be specified.")
 
+    if isinstance(output_expressions,str):
+        output_expressions = [output_expressions]
+        
     shell = Funz_RunDesign_start(model,input_files,output_expressions,design,input_variables,design_options,run_control,archive_dir,verbosity,log_file)
 
     #shell.setRefreshingPeriod(_jlong(1000*monitor_control['sleep))
