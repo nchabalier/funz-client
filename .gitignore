@@ -7,6 +7,8 @@
 /nbproject/
 /dist/
 /test/
+/src/.Rproj.user/
+.vscode/*
 
 /*.png
 /*.html
@@ -17,8 +19,15 @@
 /*.txt
 /*.Rout
 /*.Rdata
+/*.RData
 /*.Rmd
 /*.exec
-
+/*.xml
 /.f/
-/src/.Rproj.user/
+/*.R
+/*.sh
+/*.bat
+/*.py
+/*.conf
+/Run*
+/Design*
