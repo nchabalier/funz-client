@@ -40,6 +40,12 @@ public class ParseExpressionTest {
         expressions = new LinkedList<String>();
         results = new LinkedList<Object>();
 
+        expressions.add("grep(\"(.*)Rmd\",\"mean\")>>get(0)");
+        results.add("Mean speed: `r mean(cars$speed)`");
+
+        expressions.add("`grep(\"(.*)Rmd\",\": `r \")>>before(\": `r \")>>get(0)>>split(\" \")>>get(0)`");
+        results.add("speed");
+
         expressions.add("contains(\"(.*)vbs\",\"WriteLine\")");
         results.add("true");
 
