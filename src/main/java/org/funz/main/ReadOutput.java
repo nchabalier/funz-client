@@ -180,7 +180,7 @@ public class ReadOutput extends MainUtils{
                 outs = newMap(_get,Utils.readOutput(_get, _archiveDir));
         } catch (Exception e) {
             System.err.println("[ERROR] failed to READ: " + e.getMessage());
-            e.printStackTrace();
+            if (verb>=10) e.printStackTrace();
             System.exit(READ_ERROR);
         }
 

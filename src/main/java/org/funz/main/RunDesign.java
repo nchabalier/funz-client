@@ -282,7 +282,7 @@ public class RunDesign extends MainUtils {
             if (_archiveDir == null) _archiveDir = new File(".");
         } catch (Exception e) {
             System.err.println("[ERROR] failed to parse options: " + e.getMessage());
-            //e.printStackTrace();
+            if (verb>=10) e.printStackTrace();
             System.err.println(help());
             System.exit(PARSE_ERROR);
         }
@@ -332,7 +332,7 @@ public class RunDesign extends MainUtils {
             shell.prj.saveInSpool();
         } catch (Exception e) {
             System.err.println("[ERROR] failed to CREATE Funz shell: " + e.getMessage() + "\n" + (shell != null ? ArrayMapToMDString(shell.getResultsArrayMap()) : "?"));
-            //e.printStackTrace();
+            if (verb>=10) e.printStackTrace();
             System.exit(CREATE_SHELL_ERROR);
         }
 
@@ -408,7 +408,7 @@ public class RunDesign extends MainUtils {
                         throw e;
                     } catch (Exception e) {
                         System.err.println("[WARNING] Cannot process progress: " + e.getMessage());
-                        e.printStackTrace();
+                        if (verb>=10) e.printStackTrace();
                     }
                 }
                 System.out.println(StringUtils.repeat(" ", 80));
@@ -433,7 +433,7 @@ public class RunDesign extends MainUtils {
         } catch (Exception e) {
             System.err.println("[ERROR] failed to RUN Funz shell: " + e.getMessage() + "\n" + 
                     ArrayMapToMDString(Data.remove_array(shell.getResultsArrayMap(),"(.*)\\.(\\d+)")));
-            //e.printStackTrace();
+            if (verb>=10) e.printStackTrace();
             System.exit(RUN_ERROR);
         } finally {
             if (_filter == null) {

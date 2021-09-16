@@ -139,7 +139,7 @@ public class ParseInput extends MainUtils{
             if (verb == -666) verb = 3;
         } catch (Exception e) {
             System.err.println("[ERROR] failed to parse options: " + e.getMessage());
-            e.printStackTrace();
+            if (verb>=10) e.printStackTrace();
             System.err.println(help());
             System.exit(PARSE_ERROR);
         }
@@ -161,7 +161,7 @@ public class ParseInput extends MainUtils{
             //toc("compileVariables");
         } catch (Exception e) {
             System.err.println("[ERROR] failed to FIND: " + e.getMessage());
-            e.printStackTrace();
+            if (verb>=10) e.printStackTrace();
             System.exit(FIND_ERROR);
         }
 

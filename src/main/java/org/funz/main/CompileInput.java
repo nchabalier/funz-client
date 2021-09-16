@@ -156,7 +156,7 @@ public class CompileInput extends MainUtils {
             if (_archiveDir == null) _archiveDir = new File(".");
         } catch (Exception e) {
             System.err.println("[ERROR] failed to parse options: " + e.getMessage());
-            e.printStackTrace();
+            if (verb>=10) e.printStackTrace();
             System.err.println(help());
             System.exit(PARSE_ERROR);
         }
@@ -177,7 +177,7 @@ public class CompileInput extends MainUtils {
             //toc("compileVariables");
         } catch (Exception e) {
             System.err.println("[ERROR] failed to COMPILE: " + e.getMessage());
-            e.printStackTrace();
+            if (verb>=10) e.printStackTrace();
             System.exit(COMPILE_ERROR);
         }
 

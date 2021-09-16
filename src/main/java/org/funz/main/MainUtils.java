@@ -33,7 +33,7 @@ public class MainUtils {
             Log.level = level; // keep after Funz.init(), otherwise it will be reseted !
         } catch (Exception e) {
             System.err.println("[ERROR] failed to INIT Funz: " + e.getMessage());
-            //e.printStackTrace();
+            if (level>=10) e.printStackTrace();
             System.exit(FUNZ_ERROR);
         }
         //toc("init");
