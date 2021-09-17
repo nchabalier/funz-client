@@ -43,7 +43,11 @@ public class ParseExpressionTest {
         expressions.add("grep(\"(.*)Rmd\",\"mean\")>>get(0)");
         results.add("Mean speed: `r mean(cars$speed)`");
 
-        expressions.add("`grep(\"(.*)Rmd\",\": `r \")>>before(\": `r \")>>get(0)>>split(\" \")>>get(0)`");
+        expressions.add("`grep(\"(.*)Rmd\",\":\\s`r\\s\")>>cut(\":\\s`r\\s\",1)>>get(0)>>split(\"\\s\")>>get(0)`");
+        results.add("speed");        
+        
+        // now, space char is not a split arg, if following a " char
+        expressions.add("`grep(\"(.*)Rmd\",\": `r \")>>cut(\": `r \",1)>>get(0)>>split(\" \")>>get(0)`");
         results.add("speed");
 
         expressions.add("contains(\"(.*)vbs\",\"WriteLine\")");

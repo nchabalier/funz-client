@@ -132,7 +132,7 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
 
         if (_properties.containsKey("outputlist") && _properties.getProperty("outputlist").length() > 0) {
             Log.logMessage("BasicIOPlugin " + getID(), SeverityLevel.INFO, false, "  outputlist=" + _properties.getProperty("outputlist"));
-            for (String o : _properties.getProperty("outputlist").split(" ")) {
+            for (String o : _properties.getProperty("outputlist").split("[\\\"] ")) {
                 if (isExpression(o)) {
                     Object eval = ParseExpression.eval(o, params);
                     if (eval != null) {
