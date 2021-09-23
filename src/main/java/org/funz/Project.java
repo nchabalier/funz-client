@@ -77,6 +77,7 @@ public class Project {
     public static String DEFAULT_regexpCalculators = null;
     public static boolean DEFAULT_patchInputWhenFailed = false;
     public static long DEFAULT_blacklistTimeout = 60;
+    public static boolean DEFAULT_deletePreviousArchive = false;
 
     public long blacklistTimeout = DEFAULT_blacklistTimeout;
     public int waitingTimeout = DEFAULT_waitingTimeout;
@@ -89,6 +90,7 @@ public class Project {
     public double minCPU = DEFAULT_minCPU;
     public String regexpCalculators = DEFAULT_regexpCalculators;
     public boolean patchInputWhenFailed = DEFAULT_patchInputWhenFailed;
+    public boolean deletePreviousArchive = DEFAULT_deletePreviousArchive;
     private AbstractShell shell;
 
     /**
@@ -2572,37 +2574,24 @@ public class Project {
 
                         File archiveCasePath = new File(to, c.getRelativePath());
                         if (archiveCasePath.exists()) {
-                            File[] inspool = new File(getSpoolDir(), c.getRelativePath()).listFiles();
-                            for (File f : inspool) {
-                                String f_from_spool = f.getAbsolutePath().replace(getSpoolDir().getAbsolutePath(), "");
-                                for (File o : archiveCasePath.listFiles()) {
-                                    String o_from_spool = o.getAbsolutePath().replace(archiveCasePath.getAbsolutePath(), "");
-                                    if (o_from_spool.equals(f_from_spool)) {
-                                        File oo = o.getAbsoluteFile();
-                                        while (o.getAbsolutePath().equals(f.getAbsolutePath())) {
-                                            oo = new File(oo.getParentFile(), oo.getName() + ".old");
-                                            Log.out("Move previous file/dir " + o + " to .old to avoid overwriting.", 2);
-                                        }
-                                        if (o.isFile()) {
-                                            Disk.moveFile(o, oo);
-                                        } else {
-                                            Disk.moveDir(o, o);
-                                        }
-                                    }
-                                }
+                            if (!deletePreviousArchive) {
+                            File oldArchiveCasePath = archiveCasePath;
+                            while(oldArchiveCasePath.exists()) {
+                                oldArchiveCasePath = new File(oldArchiveCasePath.getParentFile(), oldArchiveCasePath.getName()+".old");
                             }
-                            //Disk.removeDir(archiveCasePath); No, problem when superimposing many projects in same directory
+                            Disk.moveDir(archiveCasePath,oldArchiveCasePath);
+                        } else Disk.removeDir(archiveCasePath); //Warning: may cause problem when superimposing many projects in same directory
                         }
                         Disk.moveDir(new File(getSpoolDir(), c.getRelativePath()), archiveCasePath);
                         casesDir.put(c,archiveCasePath); // update shortcut accessible through getCaseCurrentDir()
 
-                        // Copy also ""path.txt" files from parents dirs
-                        File parent = archiveCasePath;
+                        // Copy also ""path.txt" files from parents dirs, as path.txt may be written in a parent of input/output
+                        File parent = new File(getSpoolDir(), c.getRelativePath());
                         if (!parent.getCanonicalPath().startsWith(getSpoolDir().getCanonicalPath())) {
                             Log.err("Error trying to move path.txt files: " + 
                                     parent.getCanonicalPath() + " is not inside " + getSpoolDir().getCanonicalPath(), 1);
                         } else {
-                                // raise one step in tree as long as not reached "spool" root
+                            // raise one step in tree as long as not reached "spool" root
                             while (!parent.getCanonicalPath().equals(getSpoolDir().getCanonicalPath())) {
                                 File[] pathFiles = parent.listFiles(new FileFilter() {
                                     @Override
@@ -2618,7 +2607,6 @@ public class Project {
                                 parent = parent.getParentFile();
                             }
                         }
-
                     } else {
                         Log.out("Case spool dir " + new File(getSpoolDir(), c.getRelativePath()) + " does not exists.", 1);
                     }
