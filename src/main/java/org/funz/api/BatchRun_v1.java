@@ -37,6 +37,7 @@ import org.funz.util.Format;
 import static org.funz.util.Format.repeat;
 import org.funz.util.ZipTool;
 import org.math.array.IntegerArray;
+import org.netlib.arpack.Ivout;
 import org.funz.log.LogTicToc;
 
 /**
@@ -840,7 +841,12 @@ public abstract class BatchRun_v1 implements CaseRunner {
         File dir = prj.getCaseTmpDir(c);
         File outdir = new File(dir + File.separator + Constants.OUTPUT_DIR);
         if (outdir.isDirectory()) {
-            out("Output directory " + outdir + " already exists", 2);
+            int i = 0;
+            while (new File(dir + File.separator + Constants.OUTPUT_DIR+"."+(i++)).exists()) {
+                i++;
+            }
+            out("Output directory " + outdir + " already exists, moving to "+new File(dir + File.separator + Constants.OUTPUT_DIR+"."+i), 2);
+            outdir.renameTo(new File(dir + File.separator + Constants.OUTPUT_DIR+"."+i));
         }
         if (!outdir.mkdirs()) {
             out("Output directory " + outdir + " was not created", 2);
