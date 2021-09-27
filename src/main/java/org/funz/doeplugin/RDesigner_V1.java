@@ -380,7 +380,7 @@ public class RDesigner_V1 extends Designer {
                     return new Status(Decision.ERROR, r.getMessage() + "\nR> " + R.getLastLogEntry() + "\nR!> " + R.getLastError());
                 }
 
-                //List<Experiment> exps = DesignHelper.createExperiments(scaleParametersWithBounds(X0), _parameters, prj);
+                //V1 plugin are expected to scale themselve: List<Experiment> exps = DesignHelper.createExperiments(scaleParametersWithBounds(X0), _parameters, prj);
                 List<Experiment> exps = DesignHelper.createExperiments(X0, _parameters, prj);
                 experimentsToAppendInQueue.addAll(exps);
 
@@ -464,7 +464,7 @@ public class RDesigner_V1 extends Designer {
                 } else {
                     Xn = R.asMatrix(rexp);
                 }
-                if (Xn == null || Xn.length == 0) {
+                if (Xn == null || Xn.length == 0 || Xn[0].length == 0) {
                     return new Status(DesignConstants.Decision.DESIGN_OVER);
                 }
                 if (allNaN(Xn)) {
@@ -475,7 +475,7 @@ public class RDesigner_V1 extends Designer {
 
                 R.set("Xnext" + currentiteration, Xn, Xnames);
 
-                // no more needed as plugin is exepected to scale iteself.List<Experiment> exps = DesignHelper.createExperiments(scaleParametersWithBounds(Xn), _parameters, prj);
+                //V1 plugin are expected to scale themselve: List<Experiment> exps = DesignHelper.createExperiments(scaleParametersWithBounds(Xn), _parameters, prj);
                 List<Experiment> exps = DesignHelper.createExperiments(Xn, _parameters, prj);
                 returnedExperiments.addAll(exps);
 

@@ -435,7 +435,7 @@ public class RDesigner_V0 extends Designer {
                 } else {
                     Xn = R.asMatrix(rexp);
                 }
-                if (Xn == null || Xn.length == 0 || allNaN(Xn)) {
+                if (Xn == null || Xn.length == 0 || Xn[0].length == 0) {
                     return new Status(DesignConstants.Decision.DESIGN_OVER);
                 }
                 if (allNaN(Xn)) {
