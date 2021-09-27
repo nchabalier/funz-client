@@ -358,6 +358,11 @@ public class RDesigner_V1 extends Designer {
                 R.note_text("Error: " + initFailedMsg);
                 return new Status(Decision.ERROR, initFailedMsg);
             }
+
+            if (_parameters==null || _parameters.length<=0) {
+                return new Status(Decision.ERROR, "No input parameters setup for Design !");
+            }
+
             try {
                 currentiteration = 0;
 
