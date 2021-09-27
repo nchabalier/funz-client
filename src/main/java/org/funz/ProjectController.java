@@ -33,9 +33,7 @@ public class ProjectController {
     }
 
     public static class RendererParamHolder {
-        //      LERD
         //public String groupMember[];
-
         public String resultName;
         public ArrayList<String[]> values;
         public String varNames[];

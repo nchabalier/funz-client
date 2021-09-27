@@ -37,7 +37,6 @@ import org.funz.util.Format;
 import static org.funz.util.Format.repeat;
 import org.funz.util.ZipTool;
 import org.math.array.IntegerArray;
-import org.netlib.arpack.Ivout;
 import org.funz.log.LogTicToc;
 
 /**
