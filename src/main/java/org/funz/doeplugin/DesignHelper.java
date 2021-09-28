@@ -223,7 +223,12 @@ public class DesignHelper {
         }
 
         if (in instanceof String) {
-            return castDoubleArray(Data.asObject((String) in));
+            Object in_o = Data.asObject((String) in);
+            if (in_o instanceof String) {
+                Log.logMessage("castDoubleArray",SeverityLevel.ERROR, false,"Could not cast to double[]: " + in + " is a String");
+                return null;
+            }
+            return castDoubleArray(in_o);
         }
 
         int i = 0;
