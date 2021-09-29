@@ -58,8 +58,7 @@ public class Run extends MainUtils {
         Option(String name, String key, String short_key, String help) {
             this.name = name;
             this.key = key;
-            this.short_key = short_key;
-            this.help = help;
+            this.short_key = short_key;Run.java:422
         }
 
         public boolean is(String word) {
@@ -416,16 +415,18 @@ public class Run extends MainUtils {
 
             Map<String, Object[]> print_results = new HashMap();
             if (results != null) {
+                List<String> toaddin_filter = new LinkedList<>();
                 for (int i = 0; i < _filter.size(); i++) {
                     String s = _filter.get(i);
                     for (String r : results.keySet()) {
                         if (r.equals(s) || r.matches(s)) {
-                            _filter.add(i+1, r);
+                            toaddin_filter.add(r);
                             print_results.put(r, results.get(r));
                         }
                     }
                     _filter.remove(i);
                 }
+                _filter.addAll(toaddin_filter);
             }
 
             System.out.println(ArrayMapToMDString(print_results, _filter));
