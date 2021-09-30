@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.sql.rowset.serial.SerialRef;
+
 import org.apache.commons.lang.StringUtils;
 import org.funz.Project;
 import static org.funz.api.AbstractShell.*;
@@ -424,8 +427,8 @@ public class Run extends MainUtils {
                             print_results.put(r, results.get(r));
                         }
                     }
-                    _filter.remove(i);
                 }
+                _filter.clear();
                 _filter.addAll(toaddin_filter);
             }
 

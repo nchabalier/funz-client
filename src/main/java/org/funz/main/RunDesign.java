@@ -458,8 +458,8 @@ public class RunDesign extends MainUtils {
                             print_results.put(r, results.get(r));
                         }
                     }
-                    _filter.remove(i);
                 }
+                _filter.clear();
                 _filter.addAll(toaddin_filter);
             }
 
