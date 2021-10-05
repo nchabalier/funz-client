@@ -164,6 +164,10 @@ public class RDesigner_V0 extends Designer {
         int currentiteration = -1;
         RMathExpression RME;
 
+        public String getStatus() {
+            return "."+currentiteration;
+        }
+
         public OldRDesign(Designer d, DesignSession ds) {
             super(d, ds);
             if (libraries != null && libraries.length > 0 && RMathExpression.GetEngineName().contains("R2js") || RMathExpression.GetEngineName().contains("Renjin")) {
@@ -315,7 +319,7 @@ public class RDesigner_V0 extends Designer {
                 Log.logMessage(Rsrc, SeverityLevel.INFO, true, "R:>" + R.getLastLogEntry() + "\nR!>" + R.getLastError());
                 //System.err.println("init " + "R:>" + R.getLastLogEntry() + "\nR!>" + R.getLastError());
 
-                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + "." + (currentiteration) + ".Rdata"), "");//(currentiteration) );
+                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + getStatus() + ".Rdata"), "");//(currentiteration) );
             } catch (Rsession.RException e) {
                 Log.err(e, 1);
                 Alert.showError(getName() + ".init: Could not initialize design\n" + e);
@@ -359,7 +363,7 @@ public class RDesigner_V0 extends Designer {
                     _repository.mkdirs();
                 }
 
-                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + "." + (currentiteration) + ".Rdata"), "");//(currentiteration) );
+                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + getStatus() + ".Rdata"), "");//(currentiteration) );
 
                 Status s = new Status(Decision.READY_FOR_NEXT_ITERATION);
                 R.note_text(s.getMessage());
@@ -406,7 +410,7 @@ public class RDesigner_V0 extends Designer {
 
                 R.set("Y" + currentiteration, ysdy, Ynames(ysdy));
 
-                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + "." + (currentiteration) + ".Rdata"), "");//(currentiteration) );
+                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + getStatus() + ".Rdata"), "");//(currentiteration) );
 
                 Object rexp = null;
                 try {
@@ -449,12 +453,12 @@ public class RDesigner_V0 extends Designer {
                 List<Experiment> exps = DesignHelper.createExperiments(scaleParametersWithBounds(Xn), _parameters, prj);
                 returnedExperiments.addAll(exps);
 
-                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + "." + (currentiteration) + ".Rdata"), "");//(currentiteration) );
+                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + getStatus() + ".Rdata"), "");//(currentiteration) );
 
                 double[][] Xi = R.asMatrix(R.eval("rbind(X" + currentiteration + ",Xnext" + currentiteration + ")"));
                 R.set("X" + (currentiteration + 1), Xi, Xnames);
 
-                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + "." + (currentiteration) + ".Rdata"), "");//(currentiteration) );
+                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + getStatus() + ".Rdata"), "");//(currentiteration) );
 
                 currentiteration++;
 
@@ -570,7 +574,7 @@ public class RDesigner_V0 extends Designer {
                 double[][] x = getInputArray(experiments);
                 R.set("Xanalyse" + currentiteration, x, Xnames);
 
-                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + "." + (currentiteration) + "_dr.Rdata"), "");//(currentiteration) );
+                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + getStatus() + "_dr.Rdata"), "");//(currentiteration) );
 
                 out = R.asString(R.eval("analyseDesign(Xanalyse" + currentiteration + ",Yanalyse" + currentiteration + ")"));
 

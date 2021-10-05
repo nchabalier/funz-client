@@ -24,6 +24,8 @@ public abstract class Design implements DesignConstants/*, ResultPainter*/ {
 
     Observer _observer;
 
+    public abstract String getStatus();
+
     public abstract void saveNotebook();
 
     /**

@@ -672,7 +672,7 @@ public abstract class LoopDesign_v1 {
                 Map<String, String> m = XMLToMap(content, "analysis");
                 results.putAll(m);
                 for (String k:m.keySet()){
-                    ASCII.saveFile(new File(design._repository, k.replace("analysis.", "") + ".txt"), m.get(k));
+                    ASCII.saveFile(new File(design._repository, k.replace("analysis.", "") + design.getStatus() + ".txt"), m.get(k));
                 }
             }
 
@@ -714,7 +714,7 @@ public abstract class LoopDesign_v1 {
                 Map<String, String> m = XMLToMap(content, "analysis");
                 results.putAll(m);
                 for (String k:m.keySet()){
-                    ASCII.saveFile(new File(design._repository, k.replace("analysis.", "") + ".txt"), m.get(k));
+                    ASCII.saveFile(new File(design._repository, k.replace("analysis.", "") + design.getStatus() + ".txt"), m.get(k));
                 }
             }
             return results;
