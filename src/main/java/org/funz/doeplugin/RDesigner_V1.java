@@ -340,7 +340,7 @@ public class RDesigner_V1 extends Designer {
                 Log.logMessage(Rsrc.getName(), SeverityLevel.INFO, true, "init: " + R.voidEval("DesignEnv <- " + _designer.getName() + "(.GlobalEnv)"));
                 Log.logMessage(Rsrc.getName(), SeverityLevel.INFO, true, "R:>" + R.getLastLogEntry() + "; R!>" + R.getLastError());
                 
-                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + (currentiteration) + ".Rdata"), "");//(currentiteration) );
+                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + "." + (currentiteration) + ".Rdata"), "");//(currentiteration) );
             } catch (Rsession.RException e) {
                 Log.err(e, 1);
                 Alert.showError(getName() + ".init: Could not initialize design\n" + e);
@@ -389,7 +389,7 @@ public class RDesigner_V1 extends Designer {
                 if (!_repository.isDirectory()) {
                     _repository.mkdirs();
                 }
-                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + (currentiteration) + ".Rdata"), "");//(currentiteration) );
+                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + "." + (currentiteration) + ".Rdata"), "");//(currentiteration) );
 
                 Status s = new Status(Decision.READY_FOR_NEXT_ITERATION);
                 R.note_text(s.getMessage());
@@ -436,7 +436,7 @@ public class RDesigner_V1 extends Designer {
 
                 R.set("Y" + currentiteration, ysdy, Ynames(ysdy));
 
-                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + (currentiteration) + ".Rdata"), "");//(currentiteration) );
+                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + "." + (currentiteration) + ".Rdata"), "");//(currentiteration) );
 
                 Object rexp = null;
                 try {
@@ -479,12 +479,12 @@ public class RDesigner_V1 extends Designer {
                 List<Experiment> exps = DesignHelper.createExperiments(Xn, _parameters, prj);
                 returnedExperiments.addAll(exps);
 
-                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + (currentiteration) + ".Rdata"), "");//(currentiteration) );
+                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + "." + (currentiteration) + ".Rdata"), "");//(currentiteration) );
 
                 double[][] Xi = R.asMatrix(R.eval("rbind(X" + currentiteration + ",Xnext" + currentiteration + ")"));
                 R.set("X" + (currentiteration + 1), Xi, Xnames);
 
-                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + (currentiteration) + ".Rdata"), "");//(currentiteration) );
+                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + "." + (currentiteration) + ".Rdata"), "");//(currentiteration) );
 
                 currentiteration++;
 
