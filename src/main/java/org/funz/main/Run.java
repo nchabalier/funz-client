@@ -422,7 +422,7 @@ public class Run extends MainUtils {
                 for (int i = 0; i < _filter.size(); i++) {
                     String s = _filter.get(i);
                     for (String r : results.keySet()) {
-                        if (r.equals(s) || r.matches(s)) {
+                        if (r.equals(s)) {
                             toaddin_filter.add(r);
                             print_results.put(r, results.get(r));
                         }

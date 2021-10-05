@@ -439,7 +439,7 @@ public class RunDesign extends MainUtils {
             if (_filter == null) {
                 _filter = new LinkedList<>();
                 _filter.add("case");
-                _filter.add("analysis\\.(\\D+)");
+                _filter.add("analysis");
                 _filter.addAll(Arrays.asList(shell.getInputVariables()));
                 _filter.addAll(Arrays.asList(shell.getOutputExpressions()));
                 _filter.add("state");
@@ -453,7 +453,7 @@ public class RunDesign extends MainUtils {
                 for (int i = 0; i < _filter.size(); i++) {
                     String s = _filter.get(i);
                     for (String r : results.keySet()) {
-                        if (r.equals(s) || r.matches(s)) {
+                        if (r.equals(s)) {
                             toaddin_filter.add(r);
                             print_results.put(r, results.get(r));
                         }
