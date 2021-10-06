@@ -533,7 +533,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
      newMap.putAll(last);
      for (String k : last.keySet()) {
      if (!k.matches(".+\\.(\\d+)") && !k.equals("case")) {
-     newMap.put(k + "." + time, last.get(k));
+     newMap.put(k + "[" + time + "]", last.get(k));
      }
      }
      return newMap;
@@ -568,7 +568,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
             //System.err.println(disc + " X:\n" + ArrayMapToMDString(X));
             prj.addDesignCases(loopDesigns[disc].initialExperiments, this, disc);
 
-            currentresult[disc].putAll(/*asMapStringString*/addSuffix(batchRuns[disc].getResultsArrayMap(), "." + time));//StringArrayMap()));
+            currentresult[disc].putAll(/*asMapStringString*/addSuffix(batchRuns[disc].getResultsArrayMap(), "[" + time + "]"));//StringArrayMap()));
             currentresult[disc].put("state", getRunDesignState(disc));
 
             if (batchRuns[disc].runBatch()) {
@@ -577,7 +577,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
                 currentresult[disc].put("state", SHELL_ERROR+": "+getRunDesignState(disc));
             }
 
-            currentresult[disc].putAll(/*asMapStringString*/addSuffix(batchRuns[disc].getResultsArrayMap(), "." + time));//StringArrayMap()));
+            currentresult[disc].putAll(/*asMapStringString*/addSuffix(batchRuns[disc].getResultsArrayMap(), "[" + time + "]"));//StringArrayMap()));
 
             Map<String, Object[]> Y = batchRuns[disc].getResultsArrayMap();//.get(prj.getMainOutputFunctionName());
 
@@ -587,7 +587,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
 
                 prj.addDesignCases(loopDesigns[disc].nextExperiments, this, disc);
 
-                currentresult[disc].putAll(addSuffix(batchRuns[disc].getResultsArrayMap(), "." + time));//StringArrayMap()));
+                currentresult[disc].putAll(addSuffix(batchRuns[disc].getResultsArrayMap(), "[" + time + "]"));//StringArrayMap()));
                 currentresult[disc].put("state", getRunDesignState(disc));
 
                 if (batchRuns[disc].runBatch()) {
@@ -596,8 +596,8 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
                     currentresult[disc].put("state", SHELL_ERROR +": "+getRunDesignState(disc));
                 }
 
-                currentresult[disc].putAll(addSuffix(batchRuns[disc].getResultsArrayMap(), "." + time));//StringArrayMap()));
-                currentresult[disc].putAll(addSuffix2(loopDesigns[disc].getResultsTmp(), "." + time));
+                currentresult[disc].putAll(addSuffix(batchRuns[disc].getResultsArrayMap(), "[" + time + "]"));//StringArrayMap()));
+                currentresult[disc].putAll(addSuffix2(loopDesigns[disc].getResultsTmp(), "[" + time + "]"));
 
                 Y = batchRuns[disc].getResultsArrayMap();
             }

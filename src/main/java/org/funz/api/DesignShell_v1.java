@@ -342,8 +342,8 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
                 ASCII.saveFile(new File(d, Constants.OUTPUT_DIR), Format.MapToJSONString(c.getOutputValues()));
             }
 
-            currentresult.putAll(addSuffix(X, "." + time));
-            currentresult.putAll(addSuffix(Y, "." + time));
+            currentresult.putAll(addSuffix(X, "[" + time + "]"));
+            currentresult.putAll(addSuffix(Y, "[" + time + "]"));
 
             while ((X = loopDesign.nextDesign(Y)) != null && notStopped) {
                 time = time + 1;
@@ -384,10 +384,10 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
                     ASCII.saveFile(new File(d, Constants.OUTPUT_DIR), Format.MapToJSONString(c.getOutputValues()));
                 }
 
-                currentresult.putAll(addSuffix(X, "." + time));
-                currentresult.putAll(addSuffix(Y, "." + time));
+                currentresult.putAll(addSuffix(X, "[" + time + "]"));
+                currentresult.putAll(addSuffix(Y, "[" + time + "]"));
 
-                currentresult.putAll(addSuffix2(loopDesign.getResultsTmp(), "." + time));
+                currentresult.putAll(addSuffix2(loopDesign.getResultsTmp(), "[" + time + "]"));
             }
 
             time = time + 1;
