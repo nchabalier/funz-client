@@ -669,10 +669,18 @@ public abstract class LoopDesign_v1 {
 
             results.put("analysis", content);
             if (content.startsWith("<")) {
-                Map<String, String> m = XMLToMap(content, "analysis");
+                Map<String, String> m = XMLToMap(content);
                 results.putAll(m);
                 for (String k:m.keySet()){
-                    ASCII.saveFile(new File(design._repository, k.replace("analysis.", "") + design.getStatus() + ".txt"), m.get(k));
+                    if (!k.contains(".")) 
+                        k =  k + design.getStatus() + ".txt";
+                    else {
+                        int i =k.indexOf(".");
+                        String k0 = k.substring(0,i);
+                        String k1 = k.substring(i+1);
+                        k = k0 + design.getStatus() + k1;
+                    }
+                    ASCII.saveFile(new File(design._repository, k), m.get(k));
                 }
             }
 
@@ -711,10 +719,12 @@ public abstract class LoopDesign_v1 {
 
             results.put("analysis", content);
             if (content.startsWith("<")) {
-                Map<String, String> m = XMLToMap(content, "analysis");
+                Map<String, String> m = XMLToMap(content);
                 results.putAll(m);
                 for (String k:m.keySet()){
-                    ASCII.saveFile(new File(design._repository, k.replace("analysis.", "") + design.getStatus() + ".txt"), m.get(k));
+                    if (!k.contains("."))  
+                        k =  k + ".txt";
+                    ASCII.saveFile(new File(design._repository, k), m.get(k));                
                 }
             }
             return results;
@@ -724,16 +734,16 @@ public abstract class LoopDesign_v1 {
         return results;
     }
 
-    Map<String, String> XMLToMap(String xml, String prefix) {
+    // This will convert a string of xml elements to a map. Keys of the map are xml types or xml type name if available (plus ".type" suffix)
+    Map<String, String> XMLToMap(String xml) {
         Map<String, String> map = new HashMap<>();
-
         int i = 0;
         while (i < xml.length() && i >= 0) {
             int end_type = xml.indexOf(">", i);
             String tag = xml.substring(i + 1, end_type);
-            String res_type = tag;
-            if (res_type.contains(" ")) {
-                res_type = res_type.substring(0, res_type.indexOf(" "));
+            String type = tag;
+            if (type.contains(" ")) {
+                type = type.substring(0, type.indexOf(" "));
             }
             String name = tag;
             if (name.contains(" name='")) {
@@ -747,10 +757,16 @@ public abstract class LoopDesign_v1 {
                 //map.put(prefix+"."+name, "");
                 i = end_type + 1;
             } else {
-                String end_tag = "</" + res_type + ">";
+                String end_tag = "</" + type + ">";
                 int end_res = xml.indexOf(end_tag, end_type + 1);
                 if (end_res > (end_type + 1)) {
-                    map.put(prefix + "." + name, xml.substring(end_type + 1, end_res).replace(DesignHelper.BASE, archiveDirectory.getPath()));
+                    // if <type name='xxx' then map key is xxx.type
+                    // if <type> then map key is type
+                    if (name.equals(type)) {
+                        map.put(type, xml.substring(end_type + 1, end_res).replace(DesignHelper.BASE, archiveDirectory.getPath()));
+                    } else {
+                        map.put(name+"."+type, xml.substring(end_type + 1, end_res).replace(DesignHelper.BASE, archiveDirectory.getPath()));
+                    }
                     i = xml.indexOf("<", end_res + end_tag.length());
                 } else {
                     i = xml.length();
