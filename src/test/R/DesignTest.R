@@ -23,17 +23,17 @@ testMatchRef <- function() {
     ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input.variables = list(x1="[0,1]",x2="[0,1]"), fun = branin.ref.vec,verbosity=VERBOSITY,archive.dir="tmp/testMatchRef.ref.R")
     runshell = Funz_Design(design = DESIGN, options = DESIGN_OPT,input.variables = list(x1="[0,1]",x2="[0,1]"), fun = branin.runshell.vec,verbosity=VERBOSITY,archive.dir="tmp/testMatchRef.runshell.R")
 
-    if (abs(as.numeric(ref$analysis.min)-as.numeric(runshell$analysis.min)) <1e-3) {
+    if (abs(as.numeric(ref$min)-as.numeric(runshell$min)) <1e-3) {
         return("OK")
     } else {
-        return(paste("FAILED to match reference and Funz design results: ref min=",ref$analysis.min," runshell min=",runshell$analysis.min))
+        return(paste("FAILED to match reference and Funz design results: ref min=",ref$min," runshell min=",runshell$min))
     }
 }
 
 testVectorizeFun <- function(f = branin.ref.vec) {
     ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input.variables = list(x1="[0,1]",x2="[0,1]"), fun = f,verbosity=VERBOSITY,fun.control=list(vectorize="fun"),archive.dir="tmp/testVectorizeFun.R")
 
-    if (abs(as.numeric(ref$analysis.min)-BraninGradientDescent_MIN)<1e-5) {
+    if (abs(as.numeric(ref$min)-BraninGradientDescent_MIN)<1e-5) {
         return("OK")
     } else {
         return("FAILED to find minimum")
@@ -43,7 +43,7 @@ testVectorizeFun <- function(f = branin.ref.vec) {
 testNoVectorize <- function(f = branin.ref.novec) {
     ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input.variables = list(x1="[0,1]",x2="[0,1]"), fun = f,verbosity=VERBOSITY,fun.control=list(vectorize=NULL),archive.dir="tmp/testNoVectorize.R")
 
-    if (abs(as.numeric(ref$analysis.min)-BraninGradientDescent_MIN)<1e-5) {
+    if (abs(as.numeric(ref$min)-BraninGradientDescent_MIN)<1e-5) {
         return("OK")
     } else {
         return("FAILED to find minimum")
@@ -55,7 +55,7 @@ testVectorizeForeach <- function(f = branin.ref.novec) {
     registerDoMC()
     ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input.variables = list(x1="[0,1]",x2="[0,1]"), fun = f,verbosity=VERBOSITY,fun.control=list(vectorize="foreach"),archive.dir="tmp/testVectorizeForeach.R")
 
-    if (abs(as.numeric(ref$analysis.min)-BraninGradientDescent_MIN)<1e-5) {
+    if (abs(as.numeric(ref$min)-BraninGradientDescent_MIN)<1e-5) {
         return("OK")
     } else {
         return("FAILED to find minimum")
@@ -65,7 +65,7 @@ testVectorizeForeach <- function(f = branin.ref.novec) {
 testVectorizeParallel <- function(f = branin.ref.novec) {
     ref <<- Funz_Design(design = DESIGN, options = DESIGN_OPT,input.variables = list(x1="[0,1]",x2="[0,1]"), fun = f,verbosity=VERBOSITY,fun.control=list(vectorize="parallel"),archive.dir="tmp/testVectorizeParallel.R")
 
-    if (abs(as.numeric(ref$analysis.min)-BraninGradientDescent_MIN)<1e-5) {
+    if (abs(as.numeric(ref$min)-BraninGradientDescent_MIN)<1e-5) {
         return("OK")
     } else {
         return("FAILED to find minimum")

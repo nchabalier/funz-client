@@ -123,7 +123,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.startComputationAndWait();
         Map<String, String[]> results = sac.getResultsStringArrayMap();
 
-        assert Double.parseDouble(results.get("analysis.min")[0].trim()) == -0.05 : "Bad convergence to " + results.get("analysis.min")[0];
+        assert Double.parseDouble(results.get("min")[0].trim()) == -0.05 : "Bad convergence to " + results.get("min")[0];
 
         sac.shutdown();
     }
@@ -151,9 +151,9 @@ public class ShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(results));
 
         assert results != null : "No results";
-        assert results.get("analysis.min") != null : "No analysis.min in results:" + results.keySet();
-        assert results.get("analysis.min").length > 0 : "No content analysis.min in results";
-        assert results.get("analysis.min")[0].trim().equals("-0.4") : "Bad convergence to " + results.get("analysis.min")[0];
+        assert results.get("min") != null : "No min in results:" + results.keySet();
+        assert results.get("min").length > 0 : "No content min in results";
+        assert results.get("min")[0].trim().equals("-0.4") : "Bad convergence to " + results.get("min")[0];
     }
 
     @Test
@@ -184,9 +184,9 @@ public class ShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(results));
 
         assert results != null : "No results";
-        assert results.get("analysis.min") != null : "No analysis.min in results:" + results.keySet();
-        assert results.get("analysis.min").length > 0 : "No content analysis.min in results";
-        assert results.get("analysis.min")[0].trim().startsWith("0.") : "Bad convergence to " + results.get("analysis.min")[0];
+        assert results.get("min") != null : "No min in results:" + results.keySet();
+        assert results.get("min").length > 0 : "No content min in results";
+        assert results.get("min")[0].trim().startsWith("0.") : "Bad convergence to " + results.get("min")[0];
     }
 
     @Test
@@ -233,9 +233,9 @@ public class ShellTest extends org.funz.api.TestUtils {
         //System.err.println(ArrayMapToMDString(results));
         sac.shutdown();
 
-        //System.err.println(ASCII.cat(",",results.get("analysis.min")));
-        assert Double.parseDouble(results.get("analysis.min")[0].trim()) < 0 : "0: Bad convergence to " + results.get("analysis.min")[0];
-        assert Double.parseDouble(results.get("analysis.min")[1].trim()) < 0 : "1: Bad convergence to " + results.get("analysis.min")[1];
+        //System.err.println(ASCII.cat(",",results.get("min")));
+        assert Double.parseDouble(results.get("min")[0].trim()) < 0 : "0: Bad convergence to " + results.get("min")[0];
+        assert Double.parseDouble(results.get("min")[1].trim()) < 0 : "1: Bad convergence to " + results.get("min")[1];
     }
 
     @Test

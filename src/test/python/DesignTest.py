@@ -25,10 +25,10 @@ def testMatchRef() :
     ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"}, fun = branin_ref_vec,verbosity=VERBOSITY,archive_dir="/tmp")
     runshell = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"}, fun = branin_runshell_vec,verbosity=VERBOSITY,archive_dir="tmp/testMatchRef.py")
 
-    if not (numpy.fabs(numpy.array(float(runshell['analysis.min'])).transpose()-numpy.array(float(ref['analysis.min']))) < 1e-4).all() :
+    if not (numpy.fabs(numpy.array(float(runshell['min'])).transpose()-numpy.array(float(ref['min']))) < 1e-4).all() :
         global failed
         failed=1
-        return("FAILED to match reference and Funz design results: ref min="+ref['analysis.min']+" runshell min="+runshell['analysis.min'])
+        return("FAILED to match reference and Funz design results: ref min="+ref['min']+" runshell min="+runshell['min'])
     else : 
         return("OK")
 
@@ -36,7 +36,7 @@ def testMatchRef() :
 def testVectorizeFun() :
     ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"},fun=branin_ref_vec,fun_control={'vectorize':"fun"},verbosity=VERBOSITY,archive_dir="tmp/testVectorizeFun.py")
 
-    if not math.fabs(float(ref['analysis.min'])-BraninGradientDescent_MIN)<0.1 :
+    if not math.fabs(float(ref['min'])-BraninGradientDescent_MIN)<0.1 :
         global failed
         failed=1
         return("FAILED to match reference and Funz evaluation")
@@ -47,7 +47,7 @@ def testVectorizeFun() :
 def testNoVectorize() :
     ref = Funz_Design(design = DESIGN, options = DESIGN_OPT,input_variables = {'x1':"[0,1]",'x2':"[0,1]"}, fun = branin_ref_novec,verbosity=VERBOSITY,fun_control={'vectorize':None},archive_dir="tmp/testNoVectorize.py")
 
-    if not math.fabs(float(ref['analysis.min'])-BraninGradientDescent_MIN)<0.1 :
+    if not math.fabs(float(ref['min'])-BraninGradientDescent_MIN)<0.1 :
         global failed
         failed=1
         return("FAILED to match reference and Funz evaluation")
