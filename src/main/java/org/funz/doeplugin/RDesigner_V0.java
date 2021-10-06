@@ -165,7 +165,7 @@ public class RDesigner_V0 extends Designer {
         RMathExpression RME;
 
         public String getStatus() {
-            return "."+currentiteration;
+            return "["+currentiteration+"]";
         }
 
         public OldRDesign(Designer d, DesignSession ds) {
@@ -574,7 +574,7 @@ public class RDesigner_V0 extends Designer {
                 double[][] x = getInputArray(experiments);
                 R.set("Xanalyse" + currentiteration, x, Xnames);
 
-                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + getStatus() + "_dr.Rdata"), "");//(currentiteration) );
+                R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + ".Rdata"), "");//(currentiteration) );
 
                 out = R.asString(R.eval("analyseDesign(Xanalyse" + currentiteration + ",Yanalyse" + currentiteration + ")"));
 
