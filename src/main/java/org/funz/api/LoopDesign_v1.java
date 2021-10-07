@@ -765,9 +765,9 @@ public abstract class LoopDesign_v1 {
                     // if <type name='xxx' then map key is xxx.type
                     // if <type> then map key is type
                     if (name.equals(type)) {
-                        map.put(type, xml.substring(end_type + 1, end_res).replace(DesignHelper.BASE, archiveDirectory.getPath()));
+                        map.put(type, xml.substring(end_type + 1, end_res).replace(DesignHelper.BASE, design._repository.getPath()));
                     } else {
-                        map.put(name+"."+type, xml.substring(end_type + 1, end_res).replace(DesignHelper.BASE, archiveDirectory.getPath()));
+                        map.put(name+"."+type, xml.substring(end_type + 1, end_res).replace(DesignHelper.BASE, design._repository.getPath()));
                     }
                     i = xml.indexOf("<", end_res + end_tag.length());
                 } else {
