@@ -1221,7 +1221,7 @@ public class Case extends Experiment {
             if (outs != null) {
                 for (String o : outs.keySet()) {
                     Object out = outs.get(o);
-                    props.setProperty(PROP_OUT + "." + o, "" + asString(out));
+                    props.setProperty(PROP_OUT + "." + o, asString(out));
                 }
             }
         } catch (Exception e) {
