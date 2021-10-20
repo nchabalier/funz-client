@@ -127,15 +127,13 @@ options(OutDec= ".")
                                 try(val[[i]] <- lapply(FUN=.jevalArray,val[[i]]),silent=T)
                             }
 
-                            if (length(val)<i || is.null(val[[i]]) || !is.array(val[[i]])) {
+                            if (length(val)<i || is.null(val[[i]]) || !(is.vector(val[[i]]) || is.array(val[[i]]))) {
 				                try(val[[i]] <- .jsimplify(.jclassData$asObject(vals[[i]])),silent=T)
-                            }
-                            if (length(val)<i || is.null(val[[i]]) || !is.array(val[[i]])) {
+                            if (length(val)<i || is.null(val[[i]]) || !(is.vector(val[[i]]) || is.array(val[[i]]))) {
 		    		            try(val[[i]] <- .jsimplify(vals[[i]]),silent=T) #.jsimplify(vals[[i]]$toString())
-                            }
-                            if (length(val)<i || is.null(val[[i]]) || !is.array(val[[i]])) {
+                            if (length(val)<i || is.null(val[[i]]) || !(is.vector(val[[i]]) || is.array(val[[i]]))) {
 				                try(val[[i]] <- .jsimplify(.jclassData$asString(vals[[i]])),silent=T) #.jsimplify(vals[[i]]$toString())
-                            }
+                            }}}
 			                if (is.character(val[[i]])) {
 				                num = NA
 				                try(num <- as.numeric(val[[i]]), silent=T)
