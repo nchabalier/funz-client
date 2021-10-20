@@ -67,6 +67,7 @@ jobs:
         cd $WD
       shell: bash
     - run: echo "R.server=$R_SERVER" > Funz.conf
+      shell: bash
     - run: ant -noinput -buildfile build.xml test
       id: anttest
       continue-on-error: true
@@ -138,6 +139,7 @@ jobs:
         cd $WD
       shell: bash
     - run: echo "R.server=$R_SERVER" > Funz.conf
+      shell: bash
     - run: |
         ant -noinput -buildfile build.xml test
         if [ ${{ matrix.os }} = 'windows-latest' ]; then taskkill //F //IM java.exe || echo "no java"; else killall java || echo "no java"; fi
@@ -268,6 +270,7 @@ jobs:
         cd $WD
       shell: bash
     - run: echo "R.server=$R_SERVER" > Funz.conf
+      shell: bash
     - run: |
         ant -noinput -buildfile build.xml test
         if [ ${{ matrix.os }} = 'windows-latest' ]; then taskkill //F //IM "java.exe" || echo "no java"; else killall java || echo "no java"; fi
