@@ -183,7 +183,7 @@ public class LoopDesignTest extends org.funz.api.TestUtils {
         }
         System.err.println(loopDesign.getResults().keySet());
         System.err.println(loopDesign.getResults().getOrDefault("min", ""));
-        assert loopDesign.getResults().getOrDefault("min", "").trim().equals("" + mult_min) : "Failed to find minimum ! \n" + loopDesign.getResults().get("min");
+        assert loopDesign.getResults().getOrDefault("min.Plot1D", "").trim().equals("" + mult_min) : "Failed to find minimum ! \n" + loopDesign.getResults().get("min");
     }
 
     @Test
