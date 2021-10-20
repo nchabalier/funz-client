@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, windows-latest, macOS-latest ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
         java: [ 8, 11, 13 ]
         Rserver: [ 'R2js' , 'Renjin', 'Rserve' ]
     env:
@@ -66,6 +66,7 @@ jobs:
         cd ..
         cd $WD
       shell: bash
+    - run: echo "R.server=$R_SERVER" > Funz.conf
     - run: ant -noinput -buildfile build.xml test
       id: anttest
       continue-on-error: true
@@ -90,7 +91,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ ubuntu-latest , windows-latest, macOS-latest ]
+        os: [ ubuntu-latest , windows-latest, macos-latest ]
         java: [ 11 ]
         Rserver: [ R2js ]
     env:
@@ -136,6 +137,7 @@ jobs:
         cd ..
         cd $WD
       shell: bash
+    - run: echo "R.server=$R_SERVER" > Funz.conf
     - run: |
         ant -noinput -buildfile build.xml test
         if [ ${{ matrix.os }} = 'windows-latest' ]; then taskkill //F //IM java.exe || echo "no java"; else killall java || echo "no java"; fi
@@ -265,6 +267,7 @@ jobs:
         cd ..
         cd $WD
       shell: bash
+    - run: echo "R.server=$R_SERVER" > Funz.conf
     - run: |
         ant -noinput -buildfile build.xml test
         if [ ${{ matrix.os }} = 'windows-latest' ]; then taskkill //F //IM "java.exe" || echo "no java"; else killall java || echo "no java"; fi
