@@ -124,7 +124,7 @@ options(OutDec= ".")
                             try(val[[i]] <- .jevalArray( vals[[i]],simplify=T),silent=T)
 
                             if (is.list(val[[i]])) {
-                                try(val[[i]] <- lapply(FUN=.jevalArray,val[[i]]),silent=T)
+                                try(val[[i]] <- rapply(val[[i]],.jevalArray,how="list"),silent=T)
                             }
 
                             if (length(val)<i || is.null(val[[i]]) || !(is.vector(val[[i]]) || is.array(val[[i]]))) {
