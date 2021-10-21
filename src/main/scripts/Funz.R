@@ -115,7 +115,7 @@ options(OutDec= ".")
                 val <- list()
                 if (length(vals)>0) {
                     for (i in 1:length(vals)) {
-	  		            if (is.null(vals[[i]]))
+                          if (is.null(vals[[i]]))
                             val[[i]] = NA
                         else
                             val[[i]] = vals[[i]]
@@ -128,25 +128,25 @@ options(OutDec= ".")
                             }
 
                             if (length(val)<i || is.null(val[[i]]) || !(is.vector(val[[i]]) || is.array(val[[i]]))) {
-				                try(val[[i]] <- .jsimplify(.jclassData$asObject(vals[[i]])),silent=T)
+                                try(val[[i]] <- .jsimplify(.jclassData$asObject(vals[[i]])),silent=T)
                             if (length(val)<i || is.null(val[[i]]) || !(is.vector(val[[i]]) || is.array(val[[i]]))) {
-		    		            try(val[[i]] <- .jsimplify(vals[[i]]),silent=T) #.jsimplify(vals[[i]]$toString())
+                                try(val[[i]] <- .jsimplify(vals[[i]]),silent=T) #.jsimplify(vals[[i]]$toString())
                             if (length(val)<i || is.null(val[[i]]) || !(is.vector(val[[i]]) || is.array(val[[i]]))) {
-				                try(val[[i]] <- .jsimplify(.jclassData$asString(vals[[i]])),silent=T) #.jsimplify(vals[[i]]$toString())
+                                try(val[[i]] <- .jsimplify(.jclassData$asString(vals[[i]])),silent=T) #.jsimplify(vals[[i]]$toString())
                             }}}
-			                if (is.character(val[[i]])) {
-				                num = NA
-				                try(num <- as.numeric(val[[i]]), silent=T)
-				                if (!is.na(num))
-	   			                    val[[i]] <- num
-			                }
+                            if (is.character(val[[i]])) {
+                                num = NA
+                                try(num <- as.numeric(val[[i]]), silent=T)
+                                if (!is.na(num))
+                                    val[[i]] <- num
+                            }
                             if (length(val)<i || is.null(val[[i]])) { # Anyway, do not allow to push a NULL in the list (it will remove the element)
-				                try(val[[i]] <- NA,silent=T)
+                                try(val[[i]] <- NA,silent=T)
                             }
                         # }
                     }
                 }
-		        l[[v]] <- val
+                l[[v]] <- val
             }
             #try(l[[v]] <- .jclassData$asObject(l[[v]]),silent=TRUE)
         }
