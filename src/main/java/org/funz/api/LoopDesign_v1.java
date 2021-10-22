@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -669,7 +670,7 @@ public abstract class LoopDesign_v1 {
 
             results.put("analysis", content);
             if (content.startsWith("<")) {
-                Map<String, String> m = XMLToMap(content);
+                Map<String, String> m = analysisXMLToMap(content);
                 results.putAll(m);
                 for (String k:m.keySet()){
                     String v = m.get(k);
@@ -720,7 +721,7 @@ public abstract class LoopDesign_v1 {
 
             results.put("analysis", content);
             if (content.startsWith("<")) {
-                Map<String, String> m = XMLToMap(content);
+                Map<String, String> m = analysisXMLToMap(content);
                 results.putAll(m);
                 for (String k:m.keySet()){
                     String v = m.get(k);
@@ -737,7 +738,8 @@ public abstract class LoopDesign_v1 {
     }
 
     // This will convert a string of xml elements to a map. Keys of the map are xml types or xml type name if available (plus ".type" suffix)
-    Map<String, String> XMLToMap(String xml) {
+    Map<String, String> analysisXMLToMap(String xml) {
+        if (xml==null) return null;
         Map<String, String> map = new HashMap<>();
         int i = 0;
         while (i < xml.length() && i >= 0) {
@@ -808,6 +810,12 @@ public abstract class LoopDesign_v1 {
         }
 
         return doe;
+    }
+
+    public Collection<String> analysisKeys() {
+        if (session==null) return null;
+        if (session.getAnalysis()==null) return null;
+        return analysisXMLToMap(session.getAnalysis()).keySet();
     }
 
     /*public static void main(String[] args) {

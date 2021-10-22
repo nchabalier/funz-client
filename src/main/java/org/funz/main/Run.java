@@ -50,7 +50,7 @@ public class Run extends MainUtils {
 	    MONITOR_CONTROL("Monitor control", "monitor_control", "mc", "Monitoring options, e.g. sleep=5 display=/usr/local/command_to_display_results"),
         VERBOSITY("Verbosity", "verbosity", "v", "Verbosity level in 0-10"),
         ARCHIVE_DIR("Archiving directory", "archive_dir", "ad", "Directory where to store output files and data"),
-        PRINT_FILTER("Print filter", "print_filter", "pf", "Output data filter: x1 x2 y code duration ..."),
+        OUTPUT_FILTER("Output filter", "output_filter", "of", "Output data filter: x1 x2 y code duration ..."),
         PRINT("Print file", "print", "p", "Filename with data format: xml json or csv (default if not recognized)");
 
         String name;
@@ -222,8 +222,8 @@ public class Run extends MainUtils {
                     _monitorControl = opts;
                     //System.err.println(_monitorControl);
                     i += j - 1;
-                } else if (Option.PRINT_FILTER.is(args[i])) {
-                    if (_filter != null) throw new Exception("[ERROR] Option "+Option.PRINT_FILTER.key+" already set!");
+                } else if (Option.OUTPUT_FILTER.is(args[i])) {
+                    if (_filter != null) throw new Exception("[ERROR] Option "+Option.OUTPUT_FILTER.key+" already set!");
                     List<String> outs = new LinkedList<>();
                     int j = 1;
                     while (i + j < args.length && !isOption(args[i + j])) {
@@ -403,7 +403,7 @@ public class Run extends MainUtils {
             //toc("getResultsStringArrayMap");
         } catch (Exception e) {
             System.err.println("[ERROR] failed to RUN Funz shell: " + e.getMessage() + "\n" + 
-                    ArrayMapToMDString(Data.remove_array(shell.getResultsArrayMap(),"(.*)\\.(\\d+)")));
+                    ArrayMapToMDString(shell.getResultsArrayMap()));
             if (verb>=10) e.printStackTrace();
             System.exit(RUN_ERROR);
         } finally {
@@ -422,7 +422,9 @@ public class Run extends MainUtils {
                 for (int i = 0; i < _filter.size(); i++) {
                     String s = _filter.get(i);
                     for (String r : results.keySet()) {
-                        if (r.equals(s)) {
+                        boolean match = r.equals(s);
+                        try { if (!match) match = r.matches(s); } catch (Exception e) { match = false; } // avoid any exception interrupt
+                        if (match) {
                             toaddin_filter.add(r);
                             print_results.put(r, results.get(r));
                         }

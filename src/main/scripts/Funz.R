@@ -83,6 +83,17 @@ options(OutDec= ".")
     return(as.data.frame(l,...))
 }
 
+## full matchin of regexp. equivalent to java "String.matches()"
+#' @test .jmatch("(.+)min",c("x1","x2","min","argmin","z"))
+#' @test .jmatch("(.*)min",c("x1","x2","min","argmin","z"))
+#' @test .jmatch("min",c("x1","x2","min","argmin","z"))
+.jmatch = function(pattern, x) {
+    g = gregexpr(pattern,x)
+    start_ok = (g==1)
+    len_ok = (nchar(x) == unlist(lapply(g,function(...)attr(...,"match.length"))))
+    return(x[start_ok & len_ok])
+}
+
 #' @test m = new(.jclassHashMap);m$put("a","b");.JMapToRList(m)
 #' @test m = new(.jclassHashMap);m$put("a",NULL);.JMapToRList(m)
 #' @test m = new(.jclassHashMap);m$put("a",.jnull());.JMapToRList(m)
@@ -93,10 +104,11 @@ options(OutDec= ".")
 #' @test m = new(.jclassHashMap);m$put("a",.jarray(runif(10)));.JMapToRList(m)
 #' @test m = new(.jclassHashMap);m$put("a",.jarray(c(.jarray(runif(10)),.jarray(runif(10)))));.JMapToRList(m)
 #' @test m = new(.jclassHashMap);m$put("a",.jarray(c(.jarray("abc"),.jarray("def"))));.JMapToRList(m)
-.JMapToRList <- function(m){
+.JMapToRList <- function(m, filter=NULL){
     l = list()
     if (is.null(m)) return(l)
     vars = .jclassData$keys(m)
+    if (!is.null(filter)) vars = .jmatch(filter, vars)
     for (v in vars) {
         vals = m$get(v)
         try(vals <- .jevalArray( m$get(v),simplify=T),silent=T)
@@ -349,16 +361,17 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=if (Sys.info()[['sysname']]==
 #' @param fun.control$foreach.options optional parameters to pass to the foreach DoPar. Should include anything needed for 'fun' evaluation.
 #' @param monitor.control$results.tmp list of design results to display at each batch. TRUE means "all", NULL/FALSE means "none".
 #' @param archive.dir define an arbitrary output directory where results (log, images) are stored.
+#' @param out.filter what output(s) to retreive in returned object.
 #' @param verbosity print (lot of) information while running.
 #' @param verbose.level deprecated verbosity
 #' @param ... optional parameters passed to 'fun'
 #' @return list of results from this DoE.
 #' @example Funz_Design(design = "GradientDescent", options = list(nmax=10),input.variables = list(x1="[0,1]",x2="[1,2]"), fun = function(X){abs(X$a*X$b)})
-Funz_Design <- function(fun,design,options=NULL,input.variables,fun.control=list(cache=FALSE,vectorize="fun",vectorize.by=1,foreach.options=NULL),monitor.control=list(results.tmp=TRUE),archive.dir=NULL,verbose.level=0,verbosity=verbose.level,log.file=TRUE,...) {
+Funz_Design <- function(fun,design,options=NULL,input.variables,fun.control=list(cache=FALSE,vectorize="fun",vectorize.by=1,foreach.options=NULL),monitor.control=list(results.tmp=TRUE),archive.dir=NULL,out.filter=NULL,verbose.level=0,verbosity=verbose.level,log.file=TRUE,...) {
     .Funz.Last.design <<- list(design=design,options=options,fun=fun,
                                input.variables=input.variables,
                                fun.control=fun.control,monitor.control=monitor.control,
-                               archive.dir=archive.dir,verbosity=verbosity,log.file=log.file,optargs=list(...))
+                               archive.dir=archive.dir,out.filter=out.filter,verbosity=verbosity,log.file=log.file,optargs=list(...))
 
     if (is.null(design))
         stop(paste("Design 'design' must be specified.\n Available: ",.Funz.Designs))
@@ -428,7 +441,14 @@ Funz_Design <- function(fun,design,options=NULL,input.variables,fun.control=list
     }
     .Funz.done <<- TRUE
 
-    return(Funz_Design.results(designshell))
+    if (is.null(out.filter)) {
+        out.filter = c(names(input.variables), 
+                       designshell$output,
+                       "analysis",
+                       designshell$loopDesign$analysisKeys());
+    }
+
+    return(Funz_Design.results(designshell, out.filter))
 }
 
 
@@ -566,8 +586,9 @@ Funz_Design.next <- function(designshell,X,fun,fun.control=list(cache=FALSE,vect
 
 #' Analyze a design of experiments through Funz environment.
 #' @param designshell Java shell object holding the design of expetiments.
+#' @param out.filter what output(s) to retreive in returned object.
 #' @return HTML analysis of the DoE.
-Funz_Design.results <- function(designshell) {
+Funz_Design.results <- function(designshell, out.filter) {
     if (!exists(".Funz.Last.design")) .Funz.Last.design <<- list()
 
     results = .JMapToRList(designshell$loopDesign$getResults())
@@ -576,7 +597,7 @@ Funz_Design.results <- function(designshell) {
     experiments = designshell$loopDesign$finishedExperimentsMap()
     .Funz.Last.design$experiments <<- experiments
 
-    results$design = .JMapToRDataFrame(experiments)
+    results$design = .JMapToRDataFrame(experiments, out.filter)
 
     .jdelete(designshell)
 
@@ -630,15 +651,16 @@ Funz_Design.info <- function(design, input.variables) {
 #' @param monitor.control$sleep delay time between two checks of results.
 #' @param monitor.control$display.fun a function to display project cases status. Argument passed to is the data.frame of DoE state.
 #' @param archive.dir define an arbitrary output directory where results (cases, csv files) are stored.
+#' @param out.filter what output(s) to retreive in returned object.
 #' @param verbosity print (lot of) information while running.
 #' @param verbose.level deprecated verbosity
 #' @return list of array results from the code, arrays size being equal to input.variables arrays size.
 #' @example Funz_Run(model = "R", input.files = file.path(FUNZ_HOME,"samples","branin.R"),input.variables = list(x1=runif(10), b=runif(10)), output.expressions = "z")
-Funz_Run <- function(model=NULL,input.files,input.variables=NULL,all.combinations=FALSE,output.expressions=NULL,run.control=list(force.retry=2,cache.dir=NULL),archive.dir=NULL,verbose.level=0,verbosity=verbose.level,log.file=TRUE,monitor.control=list(sleep=5,display.fun=NULL)) {
+Funz_Run <- function(model=NULL,input.files,input.variables=NULL,all.combinations=FALSE,output.expressions=NULL,run.control=list(force.retry=2,cache.dir=NULL),archive.dir=NULL,out.filter=NULL,verbose.level=0,verbosity=verbose.level,log.file=TRUE,monitor.control=list(sleep=5,display.fun=NULL)) {
     .Funz.Last.run <<- list(model=model,input.files=input.files,
                             input.variables=input.variables,output.expressions=output.expressions,
                             run.control=run.control,monitor.control=monitor.control,
-                            archive.dir=archive.dir,verbosity=verbosity,log.file=log.file)
+                            archive.dir=archive.dir,out.filter=out.filter,verbosity=verbosity,log.file=log.file)
 
     if (exists(".Funz.Models"))
         if (!is.null(model) && (!is.element(el=model,set=.Funz.Models)))
@@ -692,7 +714,14 @@ Funz_Run <- function(model=NULL,input.files,input.variables=NULL,all.combination
         )
     }
 
-    results = Funz_Run.results(runshell,verbosity)
+    if (is.null(out.filter)) {
+        out.filter = c(names(input.variables), 
+                       output.expressions,
+                       "state","duration","calc"
+                       );
+    }
+
+    results = Funz_Run.results(runshell,verbosity, out.filter)
 
     try(runshell$shutdown(),silent=TRUE)
     .jdelete(runshell)
@@ -800,12 +829,12 @@ Funz_Run.start <- function(model,input.files,input.variables=NULL,all.combinatio
 
 #' Parse a Java shell object to get its results.
 #' @param runshell Java shell object to parse.
-#' @param verbosity print (lot of) information while running.
+#' @param out.filter what output(s) to retreive in returned object.
 #' @return list of array design and results from the code, arrays size being equal to input.variables arrays size.
-Funz_Run.results <- function(runshell,verbosity) {
+Funz_Run.results <- function(runshell, out.filter) {
     if (!exists(".Funz.Last.run")) .Funz.Last.run <<- list()
 
-    results <- .JMapToRList(runshell$getResultsArrayMap())
+    results <- .JMapToRList(runshell$getResultsArrayMap(), out.filter)
     .Funz.Last.run$results <<- results
 
     return(results)
@@ -899,9 +928,10 @@ Funz_CompileInput <- function(model,input.files,input.values,output.dir=".") {
 #' @param model name of the code wrapper to use. See .Funz.Models global var for a list of possible values.
 #' @param input.files files given as input for the code.
 #' @param output.dir directory where calculated files are.
+#' @param out.filter what output(s) to retreive in returned object.
 #' @return list of outputs & their value
 #' @example Funz_ReadOutput(model = "R", input.files = "branin.R",output.dir=".")
-Funz_ReadOutput <- function(model, input.files, output.dir) {
+Funz_ReadOutput <- function(model, input.files, output.dir, out.filter) {
     if (exists(".Funz.Models"))
         if (!is.null(model) && (!is.element(el=model,set=.Funz.Models)))
             stop(paste("Model",model,"is not available in this Funz workbench (",paste0(.Funz.Models,collapse=","),")"))
@@ -909,7 +939,10 @@ Funz_ReadOutput <- function(model, input.files, output.dir) {
     # Check (and wrap to Java) input files.
     JArrayinput.files = .RFileArrayToJFileArray(input.files)
 
-    .JMapToRList(.jcall(.jclassUtils,.JNI.Map,"readOutputs",ifelse(is.null(model),"",model),.jcast(JArrayinput.files,.JNI.File.array),new(.jclassFile,output.dir)))
+    .JMapToRList(.jcall(.jclassUtils,.JNI.Map,"readOutputs",ifelse(is.null(model),"",model),
+                        .jcast(JArrayinput.files,.JNI.File.array),
+                        new(.jclassFile,output.dir)),
+                 out.filter)
     #.JMapToRList(.jclassUtils$findVariables(model,.jcast(JArrayinput.files,new.class=.JNI.File.array)))
 }
 
@@ -928,17 +961,18 @@ Funz_ReadOutput <- function(model, input.files, output.dir) {
 #' @param monitor.control$sleep delay time between two checks of results.
 #' @param monitor.control$display.fun a function to display project cases status. Argument passed to is the data.frame of DoE state.
 #' @param archive.dir define an arbitrary output directory where results (cases, csv files) are stored.
+#' @param out.filter what output(s) to retreive in returned object.
 #' @param verbosity print (lot of) information while running.
 #' @param verbose.level deprecated verbosity
 #' @return list of array design and results from the code.
 #' @example Funz_RunDesign(model="R", input.files=file.path(FUNZ_HOME,"samples","branin.R"), output.expressions="cat", design = "GradientDescent", design.options = list(nmax=5),input.variables = list(x1="[0,1]",x2="[0,1]"))
 #' @example Funz_RunDesign(model="R", input.files=file.path(FUNZ_HOME,"samples","branin.R"), output.expressions="cat", design = "GradientDescent", design.options = list(nmax=5),input.variables = list(x1="[0,1]",x2=c(0,1)))
-Funz_RunDesign <- function(model=NULL,input.files,design=NULL,design.options=NULL,input.variables=NULL,output.expressions=NULL,run.control=list(force.retry=2,cache.dir=NULL),monitor.control=list(results.tmp=TRUE,sleep=5,display.fun=NULL),archive.dir=NULL,verbosity=0,log.file=TRUE) {
+Funz_RunDesign <- function(model=NULL,input.files,design=NULL,design.options=NULL,input.variables=NULL,output.expressions=NULL,run.control=list(force.retry=2,cache.dir=NULL),monitor.control=list(results.tmp=TRUE,sleep=5,display.fun=NULL),archive.dir=NULL,out.filter=NULL,verbosity=0,log.file=TRUE) {
     .Funz.Last.rundesign <<- list(model=model,input.files=input.files,
                                   design=design,design.options=design.options,
                                   input.variables=input.variables,output.expressions=output.expressions,
                                   monitor.control=monitor.control,run.control=run.control,
-                                  archive.dir=archive.dir,verbosity=verbosity,log.file=log.file)
+                                  archive.dir=archive.dir,out.filter=out.filter,verbosity=verbosity,log.file=log.file)
 
     if (exists(".Funz.Models"))
         if (!is.null(model) && (!is.element(el=model,set=.Funz.Models)))
@@ -960,7 +994,7 @@ Funz_RunDesign <- function(model=NULL,input.files,design=NULL,design.options=NUL
     if (is.null(input.variables))
         stop(paste("Input variables 'input.variables' must be specified."))
 
-    shell = Funz_RunDesign.start(model,input.files,output.expressions,design,input.variables,design.options,run.control,archive.dir,verbosity,log.file)
+    shell <<- Funz_RunDesign.start(model,input.files,output.expressions,design,input.variables,design.options,run.control,archive.dir,verbosity,log.file)
 
     #shell$setRefreshingPeriod(.jlong(1000*monitor.control$sleep))
 
@@ -1004,8 +1038,17 @@ Funz_RunDesign <- function(model=NULL,input.files,design=NULL,design.options=NUL
         )
     }
 
+    if (is.null(out.filter)) {
+        out.filter = c(names(input.variables), 
+                       output.expressions,
+                       "analysis");
+        for (i in 1:length(shell$loopDesigns))
+            out.filter = c(out.filter, 
+                           unlist(lapply(.jevalArray(shell$loopDesigns[[i]]$analysisKeys()$toArray()),function(...)...$toString())))
+    }
+
     Sys.sleep(1)
-    results = Funz_RunDesign.results(shell,verbosity)
+    results = Funz_RunDesign.results(shell, out.filter)
 
     #try(shell$shutdown(),silent=TRUE)
     #.jdelete(shell)
@@ -1113,13 +1156,13 @@ Funz_RunDesign.start <- function(model,input.files,output.expressions=NULL,desig
 
 #' Parse a Java shell object to get its results.
 #' @param shell Java shell object to parse.
-#' @param verbosity print (lot of) information while running.
+#' @param out.filter what output(s) to retreive in returned object.
 #' @return list of array design and results from the code.
 #' @example TODO
-Funz_RunDesign.results <- function(shell,verbosity) {
+Funz_RunDesign.results <- function(shell, out.filter) {
     if (!exists(".Funz.Last.rundesign")) .Funz.Last.rundesign <<- list()
 
-    results <- .JMapToRList(shell$getResultsArrayMap())
+    results <- .JMapToRList(shell$getResultsArrayMap(), out.filter)
     for (io in c(names(.Funz.Last.rundesign$input.variables),.Funz.Last.rundesign$output.expressions)) # Try to cast I/O values to R numeric
         for (i in 1:length(results[[io]]))
             results[[io]][[i]] = lapply(unlist(results[[io]][[i]]),.jsimplify)
