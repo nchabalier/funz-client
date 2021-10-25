@@ -85,9 +85,10 @@ def _JArrayToPArray(a):
 # @test _jmatch("(.*)min",["x1","x2","min","argmin","z"])
 # @test _jmatch("min",["x1","x2","min","argmin","z"])
 def _jmatch(pattern, x):
+    eq_ok = [x[int(i)] for i in range(len(x)) if x[int(i)]==pattern]
     p = re.compile(pattern)
     g = [p.fullmatch(xi) for xi in x]
-    return([x[int(i)] for i in numpy.where(g)[0]])
+    return(numpy.unique(eq_ok + [x[int(i)] for i in numpy.where(g)[0]]))
 
 def _flat(S):
     if S == []:
@@ -1158,9 +1159,10 @@ def Funz_RunDesign_results(shell, out_filter) :
         out_filter = _flat(out_filter)
     results = _JMapToPMap(jresults, out_filter)
     for io in _JArrayToPArray(_Funz_Last_rundesign['output_expressions'])+list(_Funz_Last_rundesign['input_variables']):# Try to cast I/O values to R numeric
-        try:
-            results[io] = numpy.float_(results[io])
-        except: pass
+        if io in out_filter:
+            try:
+                results[io] = numpy.float_(results[io])
+            except: pass
     _Funz_Last_rundesign['results'] = results
 
     return(results)

@@ -88,10 +88,11 @@ options(OutDec= ".")
 #' @test .jmatch("(.*)min",c("x1","x2","min","argmin","z"))
 #' @test .jmatch("min",c("x1","x2","min","argmin","z"))
 .jmatch = function(pattern, x) {
+    eq_ok = (x == pattern)
     g = gregexpr(pattern,x)
     start_ok = (g==1)
     len_ok = (nchar(x) == unlist(lapply(g,function(...)attr(...,"match.length"))))
-    return(x[start_ok & len_ok])
+    return(x[eq_ok | (start_ok & len_ok)])
 }
 #' @test .jmatchs(c("min","argmin"),c("x1","x2","min","argmin","z"))
 .jmatchs = function(patterns, x) {
@@ -1168,6 +1169,7 @@ Funz_RunDesign.results <- function(shell, out.filter) {
     }
     results <- .JMapToRList(jresults, out.filter)
     for (io in c(names(.Funz.Last.rundesign$input.variables),.Funz.Last.rundesign$output.expressions)) # Try to cast I/O values to R numeric
+        if (io %in% out.filter)
         for (i in 1:length(results[[io]]))
             results[[io]][[i]] = lapply(unlist(results[[io]][[i]]),.jsimplify)
     .Funz.Last.rundesign$results <<- results
