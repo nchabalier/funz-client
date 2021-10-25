@@ -93,6 +93,10 @@ options(OutDec= ".")
     len_ok = (nchar(x) == unlist(lapply(g,function(...)attr(...,"match.length"))))
     return(x[start_ok & len_ok])
 }
+#' @test .jmatchs(c("min","argmin"),c("x1","x2","min","argmin","z"))
+.jmatchs = function(patterns, x) {
+    unlist(unique(sapply(patterns,function(p).jmatch(p,x))))
+}
 
 #' @test m = new(.jclassHashMap);m$put("a","b");.JMapToRList(m)
 #' @test m = new(.jclassHashMap);m$put("a",NULL);.JMapToRList(m)
@@ -106,9 +110,9 @@ options(OutDec= ".")
 #' @test m = new(.jclassHashMap);m$put("a",.jarray(c(.jarray("abc"),.jarray("def"))));.JMapToRList(m)
 .JMapToRList <- function(m, filter=NULL){
     l = list()
-    if (is.null(m)) return(l)
+    if (is.null(m) || is.jnull(m)) return(l)
     vars = .jclassData$keys(m)
-    if (!is.null(filter)) vars = .jmatch(filter, vars)
+    if (!is.null(filter)) vars = .jmatchs(filter, vars)
     for (v in vars) {
         vals = m$get(v)
         try(vals <- .jevalArray( m$get(v),simplify=T),silent=T)
@@ -127,9 +131,9 @@ options(OutDec= ".")
                 val <- list()
                 if (length(vals)>0) {
                     for (i in 1:length(vals)) {
-                          if (is.null(vals[[i]]))
+                        if (is.null(vals[[i]]) || is.jnull(vals[[i]]))
                             val[[i]] = NA
-                        else
+                        else {
                             val[[i]] = vals[[i]]
 
                         # if (length(val)>=i) {
@@ -155,7 +159,7 @@ options(OutDec= ".")
                             if (length(val)<i || is.null(val[[i]])) { # Anyway, do not allow to push a NULL in the list (it will remove the element)
                                 try(val[[i]] <- NA,silent=T)
                             }
-                        # }
+                        }
                     }
                 }
                 l[[v]] <- val
@@ -401,7 +405,7 @@ Funz_Design <- function(fun,design,options=NULL,input.variables,fun.control=list
 
     init = Funz_Design.init(design,options,input.variables,archive.dir,verbosity,log.file)
     X=init$X
-    designshell=init$designshell
+    designshell <<- init$designshell
 
     designshell$setCacheExperiments(isTRUE(fun.control$cache))
 
@@ -440,13 +444,6 @@ Funz_Design <- function(fun,design,options=NULL,input.variables,fun.control=list
         it = it+1;
     }
     .Funz.done <<- TRUE
-
-    if (is.null(out.filter)) {
-        out.filter = c(names(input.variables), 
-                       designshell$output,
-                       "analysis",
-                       designshell$loopDesign$analysisKeys());
-    }
 
     return(Funz_Design.results(designshell, out.filter))
 }
@@ -591,13 +588,20 @@ Funz_Design.next <- function(designshell,X,fun,fun.control=list(cache=FALSE,vect
 Funz_Design.results <- function(designshell, out.filter) {
     if (!exists(".Funz.Last.design")) .Funz.Last.design <<- list()
 
-    results = .JMapToRList(designshell$loopDesign$getResults())
+    jresults = designshell$loopDesign$getResults()
+    if (is.null(out.filter)) {
+        out.filter = c(designshell$getInputVariables(), 
+                       designshell$getOutputExpressions(),
+                       "analysis",
+                        unlist(lapply(.jevalArray(designshell$loopDesign$analysisKeys()$toArray()),function(...)...$toString())))
+    }
+    results = .JMapToRList(jresults, out.filter)
     .Funz.Last.design$results <<- results
 
     experiments = designshell$loopDesign$finishedExperimentsMap()
     .Funz.Last.design$experiments <<- experiments
 
-    results$design = .JMapToRDataFrame(experiments, out.filter)
+    results$design = .JMapToRDataFrame(experiments)
 
     .jdelete(designshell)
 
@@ -671,7 +675,7 @@ Funz_Run <- function(model=NULL,input.files,input.variables=NULL,all.combination
         if (verbosity>0) cat("Using default model.\n")
     }
 
-    runshell = Funz_Run.start(model,input.files,input.variables,all.combinations,output.expressions,run.control,archive.dir,verbosity,log.file)
+    runshell <<- Funz_Run.start(model,input.files,input.variables,all.combinations,output.expressions,run.control,archive.dir,verbosity,log.file)
 
     #runshell$setRefreshingPeriod(.jlong(1000*monitor.control$sleep))
 
@@ -714,14 +718,7 @@ Funz_Run <- function(model=NULL,input.files,input.variables=NULL,all.combination
         )
     }
 
-    if (is.null(out.filter)) {
-        out.filter = c(names(input.variables), 
-                       output.expressions,
-                       "state","duration","calc"
-                       );
-    }
-
-    results = Funz_Run.results(runshell,verbosity, out.filter)
+    results = Funz_Run.results(runshell, out.filter)
 
     try(runshell$shutdown(),silent=TRUE)
     .jdelete(runshell)
@@ -834,7 +831,14 @@ Funz_Run.start <- function(model,input.files,input.variables=NULL,all.combinatio
 Funz_Run.results <- function(runshell, out.filter) {
     if (!exists(".Funz.Last.run")) .Funz.Last.run <<- list()
 
-    results <- .JMapToRList(runshell$getResultsArrayMap(), out.filter)
+    jresults = runshell$getResultsArrayMap()
+    if (is.null(out.filter)) {
+        out.filter = c(runshell$getInputVariables(), 
+                       runshell$getOutputExpressions(),
+                       "state","duration","calc"
+                       );
+    }
+    results <- .JMapToRList(jresults, out.filter)
     .Funz.Last.run$results <<- results
 
     return(results)
@@ -1038,15 +1042,6 @@ Funz_RunDesign <- function(model=NULL,input.files,design=NULL,design.options=NUL
         )
     }
 
-    if (is.null(out.filter)) {
-        out.filter = c(names(input.variables), 
-                       output.expressions,
-                       "analysis");
-        for (i in 1:length(shell$loopDesigns))
-            out.filter = c(out.filter, 
-                           unlist(lapply(.jevalArray(shell$loopDesigns[[i]]$analysisKeys()$toArray()),function(...)...$toString())))
-    }
-
     Sys.sleep(1)
     results = Funz_RunDesign.results(shell, out.filter)
 
@@ -1162,7 +1157,16 @@ Funz_RunDesign.start <- function(model,input.files,output.expressions=NULL,desig
 Funz_RunDesign.results <- function(shell, out.filter) {
     if (!exists(".Funz.Last.rundesign")) .Funz.Last.rundesign <<- list()
 
-    results <- .JMapToRList(shell$getResultsArrayMap(), out.filter)
+    jresults = shell$getResultsArrayMap()
+    if (is.null(out.filter)) {
+        out.filter = c(shell$getInputVariables(), 
+                       shell$getOutputExpressions(),
+                       "analysis");
+        for (i in 1:length(shell$loopDesigns))
+            out.filter = c(out.filter, 
+                           unlist(lapply(.jevalArray(shell$loopDesigns[[i]]$analysisKeys()$toArray()),function(...)...$toString())))
+    }
+    results <- .JMapToRList(jresults, out.filter)
     for (io in c(names(.Funz.Last.rundesign$input.variables),.Funz.Last.rundesign$output.expressions)) # Try to cast I/O values to R numeric
         for (i in 1:length(results[[io]]))
             results[[io]][[i]] = lapply(unlist(results[[io]][[i]]),.jsimplify)

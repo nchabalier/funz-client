@@ -1,7 +1,7 @@
 testBraninGradientDescent <- function() {
-    rundesign <- Funz_RunDesign(model=CODE, input.files=SRC, output.expressions="cat", design = DESIGN, design.options = DESIGN_OPT,input.variables = list(x1="[0,1]",x2="[0,1]"), verbosity=VERBOSITY,archive.dir="tmp/testBraninGradientDescent.R")
+    rundesign <<- Funz_RunDesign(model=CODE, input.files=SRC, output.expressions="cat", design = DESIGN, design.options = DESIGN_OPT,input.variables = list(x1="[0,1]",x2="[0,1]"), verbosity=VERBOSITY,archive.dir="tmp/testBraninGradientDescent.R")
 
-    if (abs(as.numeric(rundesign$min[[1]])-BraninGradientDescent_MIN)<1e-5) {
+    if (abs(as.numeric(rundesign$min[[1]])-BraninGradientDescent_MIN)<1e-1) {
         return("OK")
     } else {
         return("FAILED to find minimum")
@@ -9,9 +9,9 @@ testBraninGradientDescent <- function() {
 }
 
 testBraninGradientDescentx2 <- function() {
-    rundesign2 <- Funz_RunDesign(model=CODE, input.files=SRC, output.expressions="cat", design = DESIGN, design.options = DESIGN_OPT,input.variables = list(x1=c(0,1),x2="[0,1]"), verbosity=VERBOSITY,archive.dir="tmp/testBraninGradientDescentx2.R")
+    rundesign2 <<- Funz_RunDesign(model=CODE, input.files=SRC, output.expressions="cat", design = DESIGN, design.options = DESIGN_OPT,input.variables = list(x1=c(0,1),x2="[0,1]"), verbosity=VERBOSITY,archive.dir="tmp/testBraninGradientDescentx2.R")
 
-    if (all(abs(as.numeric(rundesign2$min)-c(BraninGradientDescentx2_x1_0_MIN,BraninGradientDescentx2_x1_1_MIN))<1e-5)) {
+    if (all(abs(as.numeric(rundesign2$min)-c(BraninGradientDescentx2_x1_0_MIN,BraninGradientDescentx2_x1_1_MIN))<1e-1)) {
         return("OK")
     } else {
         return("FAILED to find minimums")
@@ -55,7 +55,7 @@ t0=Sys.time()
 for (t in c("testBraninGradientDescent","testBraninGradientDescentx2")) {
     print("")
     res = eval(parse(text = paste0("try(",t,"(),silent=FALSE)")))
-    print("")
+    cat("\n\n")
     print(paste0("Test ",t,": ",res))
 }
 print(Sys.time()-t0)

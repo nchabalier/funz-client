@@ -366,6 +366,10 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
         }
     }
 
+    public LoopDesign_v1[] getLoopDesigns() {
+        return loopDesigns;
+    }
+
     @Override
     public Map<String, Object[]> getResultsArrayMap() {
         if (haveNoDesign()) {

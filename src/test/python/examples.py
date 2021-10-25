@@ -1,5 +1,8 @@
+import os
 FUNZ_HOME=os.path.realpath("dist")
 exec(open(os.path.join(FUNZ_HOME,"Funz.py")).read())
+# exec(open(os.path.join("src/test/python/DesignTest.py")).read())
+
 Funz_init(FUNZ_HOME,verbosity=10)
 
 Funz_Run_info("R","dist/samples/branin.R")

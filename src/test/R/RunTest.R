@@ -77,7 +77,7 @@ t0=Sys.time()
 for (t in c("test1Case","test10Cases","testDuplicateCases","testFail1","testFail2")) {
     print("")
     res = eval(parse(text = paste0("try(",t,"(),silent=FALSE)")))
-    print("")
+    cat("\n\n")
     print(paste0("Test ",t,": ",res))
 }
 print(Sys.time()-t0)
