@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.funz.conf.Configuration;
 import org.funz.doeplugin.DesignConstants.Status;
 import static org.funz.doeplugin.DesignHelper.BASE;
@@ -428,7 +430,12 @@ public class RDesigner_V1 extends Designer {
                     return ee;
                 }
             }
-            return new String[n];
+            // else
+            String[] yn = new String[n];
+            for (int i = 0; i < yn.length; i++) {
+                yn[i] = StringUtils.join(_f.getParametersExpression(),"")+(i+1);
+            }
+            return yn;
         }
 
         @Override

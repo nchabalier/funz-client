@@ -398,7 +398,12 @@ public class RDesigner_V0 extends Designer {
                     return ee;
                 }
             }
-            return new String[n];
+            // else
+            String[] yn = new String[n];
+            for (int i = 0; i < yn.length; i++) {
+                yn[i] = StringUtils.join(_f.getParametersExpression(),"")+(i+1);
+            }
+            return yn;
         }
 
         @Override
