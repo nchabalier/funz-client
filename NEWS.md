@@ -10,11 +10,11 @@
 
 ## Fixes
 
-* recursively parse java objects ti implent R list in Funz.R
+* recursively parse java objects to implent R list in Funz.R
 * fix repository path for design results
 * check at least one input parameter is available for design
 * versbosity>=10 now print most of stacktraces
-* support for spaces inside dynamyc expressions in ParseExpression: ``
+* support for spaces inside dynamic expressions in ParseExpression: ``
 * default R lib path is now setup in $APP_USER_DIR/R instead of ~/.Funz/R
   
 
