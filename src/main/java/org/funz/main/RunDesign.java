@@ -442,7 +442,7 @@ public class RunDesign extends MainUtils {
                 _filter.addAll(Arrays.asList(shell.getInputVariables()));
                 _filter.addAll(Arrays.asList(shell.getOutputExpressions()));
                 _filter.add("analysis");
-                for (LoopDesign_v1 l:shell.loopDesigns) _filter.addAll(l.analysisKeys());
+                if (shell.loopDesigns != null) for (LoopDesign_v1 l:shell.loopDesigns) _filter.addAll(l.analysisKeys());
             }
 
             Map<String, Object[]> print_results = new HashMap();

@@ -497,7 +497,7 @@ public class Design extends MainUtils {
                 _filter.addAll(Arrays.asList(shell.getInputVariables()));
                 _filter.addAll(Arrays.asList(shell.getOutputExpressions()));
                 _filter.add("analysis");
-                _filter.addAll(shell.loopDesign.analysisKeys());
+                if (shell.loopDesign != null) _filter.addAll(shell.loopDesign.analysisKeys());
             }
 
             Map<String, Object> print_results = new HashMap();
