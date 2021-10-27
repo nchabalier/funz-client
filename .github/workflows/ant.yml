@@ -94,7 +94,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest , windows-latest, macos-10.15 ]
         java: [ 11 ]
-        Rserver: [ R2js ]
+        Rserver: [ Renjin ]
     env:
       NO_TEST_JAVA: 1
       #NO_TEST_MAIN: 1
