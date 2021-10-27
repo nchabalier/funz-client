@@ -22,7 +22,7 @@ function testRun2Design {
 }
 
 function testRunDesignFailed {
-    $FUNZ_HOME/Funz.sh RunDesign -m $CODE -d $DESIGN -do nmax=$NMAX delta=$DELTA -if $TMP_IN -iv x1=[-1.1,1] x2=[0.3,.4] -v $VERBOSITY -ad tmp/testRunDesignFailed.sh -oe x1+min\(cat,10,na.rm=F\) > testRunDesignFailed.out 2>&1
+    $FUNZ_HOME/Funz.sh RunDesign -m $CODE -d $DESIGN -do nmax=$NMAX delta=$DELTA -if $TMP_IN -iv x1=[-1.1,1] x2=[0.3,.4] -v $VERBOSITY -ad tmp/testRunDesignFailed.sh -oe x1+min\(cat,10,na.rm=FALSE\) > testRunDesignFailed.out 2>&1
     ok=`grep "RunDesign failed" testRunDesignFailed.out | wc -l`
     if (($ok > 0)); then rm testRunDesignFailed.out; echo "OK";return 0; else echo "FAILED:"; cat testRunDesignFailed.out;return 1; fi
 }

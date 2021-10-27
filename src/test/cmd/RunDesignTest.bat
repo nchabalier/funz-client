@@ -80,7 +80,7 @@ exit %failed%
 
 :testRunDesignFailed
     del /q testRunDesignFailed.out
-    call %FUNZ_HOME%\Funz.bat RunDesign -m %CODE% -d %DESIGN% -do nmax=%NMAX% delta=%DELTA% -if %TMP_IN% -iv x1=[-1.1,1] x2=[0.3,.4] -v %VERBOSITY% -ad tmp/testRunDesignFailed.bat -oe x1+min\(cat,10,na.rm=F\) > testRunDesignFailed.out 2>&1
+    call %FUNZ_HOME%\Funz.bat RunDesign -m %CODE% -d %DESIGN% -do nmax=%NMAX% delta=%DELTA% -if %TMP_IN% -iv x1=[-1.1,1] x2=[0.3,.4] -v %VERBOSITY% -ad tmp/testRunDesignFailed.bat -oe x1+min\(cat,10,na.rm=FALSE\) > testRunDesignFailed.out 2>&1
     set ok=0
     for /f %%i in ('%windir%\System32\find /C "RunDesign failed" ^< "testRunDesignFailed.out"') do set ok=%%i
     if %ok% gtr 0 (

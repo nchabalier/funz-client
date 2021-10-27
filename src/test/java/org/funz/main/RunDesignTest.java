@@ -88,7 +88,7 @@ public class RunDesignTest extends org.funz.api.TestUtils {
         File tmp_in = mult_in();
 
         try {
-            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=[0.5,1.0] x2=[0.3,0.8] -v 10 -ad tmp/testRunDesignFailedResult -oe x1+min(cat,10,na.rm=F)".split(" "));
+            RunDesign.main("RunDesign -m R -d GradientDescent -do nmax=3 -if tmp/mult.R -iv x1=[0.5,1.0] x2=[0.3,0.8] -v 10 -ad tmp/testRunDesignFailedResult -oe x1+min(cat,10,na.rm=FALSE)".split(" "));
         } catch (ExitCatcher e) {
             assert e.status != 0 : "Bad 0 exit status\n Rundesign.csv:\n" + FileUtils.readFileToString(new File(RunDesign.name + ".csv"));
         }
