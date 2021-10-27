@@ -269,11 +269,17 @@ options(OutDec= ".")
 }
 
 ##################################### Init ###################################
-.dir = ""
-if (exists("FUNZ_HOME")) .dir=FUNZ_HOME
-if (.dir=="") .dir = Sys.getenv("FUNZ_HOME") # if not set, returns ""
-if (.dir=="") try(.dir <- dirname(sys.frame(1)$ofile),silent=T) # Try to detect directory of this script
-if (.dir=="") .dir=NULL
+default.dir = ""
+if (exists("FUNZ_HOME")) default.dir=FUNZ_HOME
+if (default.dir=="") default.dir = Sys.getenv("FUNZ_HOME") # if not set, returns ""
+if (default.dir=="") try(default.dir <- dirname(sys.frame(1)$ofile),silent=T) # Try to detect directory of this script
+if (default.dir=="") default.dir=NULL
+
+default.java.control = ""
+if (exists("java.control")) default.java.control=java.control
+if (default.java.control=="") default.java.control = Sys.getenv("java.control") # if not set, returns ""
+if (default.java.control=="") try(default.java.control <- if (Sys.info()[['sysname']]=="Windows") list(Xmx="512m",Xss="256k") else list(Xmx="512m"))
+if (default.java.control=="") default.java.control=NULL
 
 #' Initialize Funz environment.
 #' @param FUNZ_HOME set to Funz installation path.
@@ -282,7 +288,7 @@ if (.dir=="") .dir=NULL
 #' @param java.control list of JVM startup parameters (like -D...=...).
 #' @param ... optional parameters passed to '.jinit' call.
 #' @example Funz.init()
-Funz.init <- function(FUNZ_HOME=.dir, java.control=if (Sys.info()[['sysname']]=="Windows") list(Xmx="512m",Xss="256k") else list(Xmx="512m"), verbose.level=0, verbosity=verbose.level, ...) {
+Funz.init <- function(FUNZ_HOME=default.dir, java.control=default.java.control, verbose.level=0, verbosity=verbose.level, ...) {
     if (is.null(FUNZ_HOME))
         stop("FUNZ_HOME environment variable not set.\nPlease setup FUNZ_HOME to your Funz installation path.")
 
@@ -292,7 +298,7 @@ Funz.init <- function(FUNZ_HOME=.dir, java.control=if (Sys.info()[['sysname']]==
         stop(paste("FUNZ_HOME environment variable not correctly set: FUNZ_HOME=",FUNZ_HOME,"\nPlease setup FUNZ_HOME to your Funz installation path.\n(you can get Funz freely at https://funz.github.io/)",sep=""))
 
     parameters = c(paste("-Dapp.home",.FUNZ_HOME,sep="="),"-Duser.language=en","-Duser.country=US",paste(sep="","-Dverbosity=",verbosity)) #,"-Douterr=.Funz")
-    for (p in names(java.control)) {
+    if (!is.null(java.control) && is.list(java.control)) for (p in names(java.control)) {
         if(substr(p,1,1)=="X") parameters = c(parameters,paste("-",p,java.control[[p]],sep=""))
         else parameters = c(parameters,paste("-D",p,"=",java.control[[p]],sep=""))
     }

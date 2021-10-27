@@ -208,10 +208,16 @@ def _jdelete(jo):
 
 
 ###################################### Init ###################################
-_dir = None
-if 'FUNZ_HOME' in globals(): _dir = FUNZ_HOME
-if _dir is None: _dir = os.getenv('FUNZ_HOME',None)
-if _dir is None: _dir = os.path.dirname(os.path.realpath(sys.argv[0]))
+default_dir = None
+if 'FUNZ_HOME' in globals(): default_dir = FUNZ_HOME
+if default_dir is None: default_dir = os.getenv('FUNZ_HOME',None)
+if default_dir is None: default_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
+
+default_java_control = None
+if 'java_control' in globals(): default_java_control = java_control
+if default_java_control is None: default_java_control = os.getenv('java_control',None)
+if default_java_control is None: default_java_control = {'Xmx':"512m",'Xss':"256k"} if sys.platform.startswith("win") else {'Xmx':"512m"}
+
 ## Initialize Funz environment.
 # @param FUNZ_HOME set to Funz installation path.
 # @param verbosity verbosity of Funz workbench.
@@ -219,7 +225,7 @@ if _dir is None: _dir = os.path.dirname(os.path.realpath(sys.argv[0]))
 # @param java_control list of JVM startup parameters (like -D...=...).
 # @param jvmargs optional parameters passed to 'java' call.
 # @example FUNZ_HOME="c:\Program Files\Funz";Funz_init(FUNZ_HOME)
-def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.platform.startswith("win") else {'Xmx':"512m"}, verbosity=0, verbose_level=None, **jvmargs) :
+def Funz_init(FUNZ_HOME=default_dir, java_control=default_java_control, verbosity=0, verbose_level=None, **jvmargs) :
     if (not verbose_level is None) & (verbosity != verbose_level) : verbosity = verbose_level
 
     if FUNZ_HOME is None:
@@ -233,11 +239,12 @@ def Funz_init(FUNZ_HOME=_dir, java_control={'Xmx':"512m",'Xss':"256k"} if sys.pl
         raise Exception("FUNZ_HOME environment variable not correctly set: FUNZ_HOME="+_FUNZ_HOME+"\nPlease setup FUNZ_HOME to your Funz installation path.\n(you can get Funz freely at https://funz.github.io/)")
 
     parameters = ["-Dapp.home="+_FUNZ_HOME,"-Duser.language=en","-Duser.country=US","-Dverbosity="+str(verbosity)] #,"-Douterr=.Funz"]
-    for p in java_control.keys():
-        if p[0]=="X":
-            parameters.append("-"+p+java_control[p])
-        else:
-            parameters.append("-D"+p+"="+java_control[p])
+    if (not (java_control is None)) & isinstance(java_control,dict):
+        for p in java_control.keys():
+            if p[0]=="X":
+                parameters.append("-"+p+java_control[p])
+            else:
+                parameters.append("-D"+p+"="+java_control[p])
     parameters.append("-Djava.awt.headless=true") # -Dnashorn.args='--no-deprecation-warning'")
     
     classpath = [ f for f in os.listdir(os.path.join(_FUNZ_HOME,"lib")) if (os.path.isfile(os.path.join(os.path.join(_FUNZ_HOME,"lib"), f)) & ((os.path.splitext(f)[1])==".jar")) ]
