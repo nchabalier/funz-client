@@ -3,6 +3,8 @@ package org.funz.api;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.funz.Project;
 import org.funz.doeplugin.DesignConstants;
@@ -10,6 +12,7 @@ import org.funz.log.Alert;
 import org.funz.log.Log;
 import org.funz.parameter.Cache;
 import org.funz.parameter.Case;
+import org.funz.parameter.OutputFunctionExpression;
 import org.funz.parameter.VarGroup;
 import org.funz.parameter.Variable;
 import org.funz.util.ASCII;
@@ -319,7 +322,13 @@ public class RunShell_v1 extends AbstractShell {
         if (batchRun == null) {
             return null;
         }
-        return batchRun.getResultsStringArrayMap();
+        List<String> allParams = new LinkedList();
+        for (OutputFunctionExpression oe : prj.getOutputFunctionsList()) {
+            for (String pe : oe.parametersExpression) {
+                allParams.add(pe);
+            }
+        }
+        return keepOnlyVarsInStr(allParams.toArray(new String[allParams.size()]),batchRun.getResultsStringArrayMap());
     }
 
     @Override
@@ -327,7 +336,13 @@ public class RunShell_v1 extends AbstractShell {
         if (batchRun == null) {
             return null;
         }
-        return batchRun.getResultsArrayMap();
+        List<String> allParams = new LinkedList();
+        for (OutputFunctionExpression oe : prj.getOutputFunctionsList()) {
+            for (String pe : oe.parametersExpression) {
+                allParams.add(pe);
+            }
+        }
+        return keepOnlyVarsIn(allParams.toArray(new String[allParams.size()]),batchRun.getResultsArrayMap());
     }
 
     @Override

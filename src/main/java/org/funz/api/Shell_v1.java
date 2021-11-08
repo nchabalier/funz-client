@@ -581,9 +581,8 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
                 currentresult[disc].put("state", SHELL_ERROR+": "+getRunDesignState(disc));
             }
 
-            currentresult[disc].putAll(/*asMapStringString*/addSuffix(batchRuns[disc].getResultsArrayMap(), "[" + time + "]"));//StringArrayMap()));
-
-            Map<String, Object[]> Y = batchRuns[disc].getResultsArrayMap();//.get(prj.getMainOutputFunctionName());
+            Map<String, Object[]> Y = keepOnlyVarsIn(prj.getMainOutputFunction().parametersExpression,batchRuns[disc].getResultsArrayMap());//.get(prj.getMainOutputFunctionName());
+            currentresult[disc].putAll(/*asMapStringString*/addSuffix(Y, "[" + time + "]"));//StringArrayMap()));
 
             while ((X = loopDesigns[disc].nextDesign(Y)) != null && notStopped) {
                 time = time + 1;
@@ -600,10 +599,9 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
                     currentresult[disc].put("state", SHELL_ERROR +": "+getRunDesignState(disc));
                 }
 
-                currentresult[disc].putAll(addSuffix(batchRuns[disc].getResultsArrayMap(), "[" + time + "]"));//StringArrayMap()));
+                Y = keepOnlyVarsIn(prj.getMainOutputFunction().parametersExpression,batchRuns[disc].getResultsArrayMap());
+                currentresult[disc].putAll(addSuffix(Y, "[" + time + "]"));//StringArrayMap()));
                 currentresult[disc].putAll(addSuffix2(loopDesigns[disc].getResultsTmp(), "[" + time + "]"));
-
-                Y = batchRuns[disc].getResultsArrayMap();
             }
 
             time = time + 1;
@@ -611,7 +609,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
 
             if (notStopped) {
                 currentresult[disc].putAll(loopDesigns[disc].getResults());
-                currentresult[disc].putAll(batchRuns[disc].getResultsArrayMap());
+                currentresult[disc].putAll(keepOnlyVarsIn(prj.getMainOutputFunction().parametersExpression,batchRuns[disc].getResultsArrayMap()));
             }
 
             currentresult[disc].put("state", getRunDesignState(disc));

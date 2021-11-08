@@ -783,6 +783,37 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
         return true;
     }
 
+    public static Map<String, Object[]> keepOnlyVarsIn(String[] parametersExpression, Map<String, Object[]> resultsArrayMap) {
+        if (parametersExpression==null || parametersExpression.length==0) return resultsArrayMap;
+        for (String var : resultsArrayMap.keySet()) {
+            boolean used=false;       
+            for (String expr : parametersExpression) {
+                if (expr.contains(var))
+                    used=true;
+                    break;
+                }
+            if (!used) 
+                resultsArrayMap.remove(var);
+        }
+        return resultsArrayMap;
+    }
+
+    // pfff....
+    public static Map<String, String[]> keepOnlyVarsInStr(String[] parametersExpression, Map<String, String[]> resultsArrayMap) {
+        if (parametersExpression==null || parametersExpression.length==0) return resultsArrayMap;
+        for (String var : resultsArrayMap.keySet()) {
+            boolean used=false;       
+            for (String expr : parametersExpression) {
+                if (expr.contains(var))
+                    used=true;
+                    break;
+                }
+            if (!used) 
+                resultsArrayMap.remove(var);
+        }
+        return resultsArrayMap;
+    }
+
     public void setProjectDir(File dir) throws IOException {
         Log.out("Moving project in " + dir, 0);
         File prjdir = dir;
