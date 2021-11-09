@@ -814,7 +814,7 @@ public abstract class LoopDesign_v1 {
 
     public Collection<String> analysisKeys() {
         if (session==null) return null;
-        if (session.getAnalysis()==null) return null;
+        if (session.getAnalysis()==null) return new LinkedList<String>();
         return analysisXMLToMap(session.getAnalysis()).keySet();
     }
 

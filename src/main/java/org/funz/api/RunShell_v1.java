@@ -347,7 +347,7 @@ public class RunShell_v1 extends AbstractShell {
                 allParams.add(pe);
             }
         }
-        List<String> unusedOut = Arrays.asList(prj.getOutputNames());
+        List<String> unusedOut = new LinkedList(Arrays.asList(prj.getOutputNames()));
         unusedOut = removeUsedIn(allParams.toArray(new String[allParams.size()]),unusedOut);
         
         batchRun.getResultsArrayMap().keySet().removeAll(unusedOut);

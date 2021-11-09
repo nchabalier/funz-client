@@ -581,7 +581,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
                 currentresult[disc].put("state", SHELL_ERROR+": "+getRunDesignState(disc));
             }
 
-            List<String> unusedOut = Arrays.asList(prj.getOutputNames());
+            List<String> unusedOut = new LinkedList(Arrays.asList(prj.getOutputNames()));
             unusedOut = removeUsedIn(prj.getMainOutputFunction().parametersExpression,unusedOut);
 
             Map<String, Object[]> Y = batchRuns[disc].getResultsArrayMap();//.get(prj.getMainOutputFunctionName());
