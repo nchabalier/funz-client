@@ -2,6 +2,7 @@ package org.funz.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -328,7 +329,11 @@ public class RunShell_v1 extends AbstractShell {
                 allParams.add(pe);
             }
         }
-        return keepOnlyVarsInStr(allParams.toArray(new String[allParams.size()]),batchRun.getResultsStringArrayMap());
+        List<String> unusedOut = Arrays.asList(prj.getOutputNames());
+        unusedOut = removeUsedIn(allParams.toArray(new String[allParams.size()]),unusedOut);
+        
+        batchRun.getResultsStringArrayMap().keySet().removeAll(unusedOut);
+        return batchRun.getResultsStringArrayMap();
     }
 
     @Override
@@ -342,7 +347,11 @@ public class RunShell_v1 extends AbstractShell {
                 allParams.add(pe);
             }
         }
-        return keepOnlyVarsIn(allParams.toArray(new String[allParams.size()]),batchRun.getResultsArrayMap());
+        List<String> unusedOut = Arrays.asList(prj.getOutputNames());
+        unusedOut = removeUsedIn(allParams.toArray(new String[allParams.size()]),unusedOut);
+        
+        batchRun.getResultsArrayMap().keySet().removeAll(unusedOut);
+        return batchRun.getResultsArrayMap();
     }
 
     @Override

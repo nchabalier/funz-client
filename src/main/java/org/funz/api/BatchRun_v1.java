@@ -1595,7 +1595,8 @@ public abstract class BatchRun_v1 implements CaseRunner {
 
                 if (cases.get(i).getInfo() != null && !cases.get(i).getInfo().isEmpty()) {
                     for (final String name : cases.get(i).getInfo().stringPropertyNames()) {
-                        results[i].put(name, asObject(cases.get(i).getInfo().getProperty(name)));
+                        if (!name.contains(Case.PROP_VAR) && !name.contains(Case.PROP_OUT)) //ignore input.x1, output.z, output, ...
+                            results[i].put(name, asObject(cases.get(i).getInfo().getProperty(name)));
                     }
                 }
                 if (cases.get(i).getOutputValues() != null) { // needed to get not only N(mean_keff,sigma_keff) (as string), but also individual mean_keff and sigma_keff values

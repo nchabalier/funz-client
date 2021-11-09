@@ -581,7 +581,11 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
                 currentresult[disc].put("state", SHELL_ERROR+": "+getRunDesignState(disc));
             }
 
-            Map<String, Object[]> Y = keepOnlyVarsIn(prj.getMainOutputFunction().parametersExpression,batchRuns[disc].getResultsArrayMap());//.get(prj.getMainOutputFunctionName());
+            List<String> unusedOut = Arrays.asList(prj.getOutputNames());
+            unusedOut = removeUsedIn(prj.getMainOutputFunction().parametersExpression,unusedOut);
+
+            Map<String, Object[]> Y = batchRuns[disc].getResultsArrayMap();//.get(prj.getMainOutputFunctionName());
+            Y.keySet().removeAll(unusedOut);
             currentresult[disc].putAll(/*asMapStringString*/addSuffix(Y, "[" + time + "]"));//StringArrayMap()));
 
             while ((X = loopDesigns[disc].nextDesign(Y)) != null && notStopped) {
@@ -599,7 +603,8 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
                     currentresult[disc].put("state", SHELL_ERROR +": "+getRunDesignState(disc));
                 }
 
-                Y = keepOnlyVarsIn(prj.getMainOutputFunction().parametersExpression,batchRuns[disc].getResultsArrayMap());
+                Y = batchRuns[disc].getResultsArrayMap();
+                Y.keySet().removeAll(unusedOut);
                 currentresult[disc].putAll(addSuffix(Y, "[" + time + "]"));//StringArrayMap()));
                 currentresult[disc].putAll(addSuffix2(loopDesigns[disc].getResultsTmp(), "[" + time + "]"));
             }
@@ -608,8 +613,10 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
             currentresult[disc].put("time", time);
 
             if (notStopped) {
+                Y = batchRuns[disc].getResultsArrayMap();
+                Y.keySet().removeAll(unusedOut); 
+                currentresult[disc].putAll(Y);
                 currentresult[disc].putAll(loopDesigns[disc].getResults());
-                currentresult[disc].putAll(keepOnlyVarsIn(prj.getMainOutputFunction().parametersExpression,batchRuns[disc].getResultsArrayMap()));
             }
 
             currentresult[disc].put("state", getRunDesignState(disc));

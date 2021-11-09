@@ -783,39 +783,24 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
         return true;
     }
 
-    public static Map<String, Object[]> keepOnlyVarsIn(String[] parametersExpression, Map<String, Object[]> resultsArrayMap) {
-        if (parametersExpression==null || parametersExpression.length==0) return resultsArrayMap;
+    public static List<String> removeUsedIn(String[] expressions, List<String> vars) {
+        //System.err.println("expressions: "+Arrays.toString(expressions));
+        //System.err.println("vars: "+vars);
+        if (expressions==null || expressions.length==0) return vars;
         List<String> toremove = new LinkedList();
-        for (String var : resultsArrayMap.keySet()) {
-            boolean used=false;       
-            for (String expr : parametersExpression) {
+        for (String var : vars) {
+            boolean used=false;
+            for (String expr : expressions) {
                 if (expr.contains(var))
                     used=true;
                     break;
                 }
-            if (!used)
+            if (used)
                 toremove.add(var);
         }
-        resultsArrayMap.keySet().removeAll(toremove);
-        return resultsArrayMap;
-    }
-
-    // pfff....
-    public static Map<String, String[]> keepOnlyVarsInStr(String[] parametersExpression, Map<String, String[]> resultsArrayMap) {
-        if (parametersExpression==null || parametersExpression.length==0) return resultsArrayMap;
-        List<String> toremove = new LinkedList();
-        for (String var : resultsArrayMap.keySet()) {
-            boolean used=false;       
-            for (String expr : parametersExpression) {
-                if (expr.contains(var))
-                    used=true;
-                    break;
-                }
-            if (!used) 
-                toremove.add(var);
-        }
-        resultsArrayMap.keySet().removeAll(toremove);
-        return resultsArrayMap;
+        //System.err.println("Will remove "+toremove+" from "+vars);
+        vars.removeAll(toremove);
+        return vars;
     }
 
     public void setProjectDir(File dir) throws IOException {

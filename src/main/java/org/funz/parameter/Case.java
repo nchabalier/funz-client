@@ -1199,7 +1199,7 @@ public class Case extends Experiment {
             props.setProperty(PROP_OUT, "" + asString(_output));
             props.setProperty("info", _info == null ? "" : _info);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Log.level>=10) e.printStackTrace();
             props.setProperty("exception", e.toString());
             return props;
         }
@@ -1212,7 +1212,7 @@ public class Case extends Experiment {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Log.level>=10) e.printStackTrace();
             props.setProperty("exception:nodes", e.getMessage());
             return props;
         }
@@ -1225,7 +1225,7 @@ public class Case extends Experiment {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (Log.level>=10) e.printStackTrace();
             props.setProperty("exception:output", e.getMessage());
             return props;
         }
@@ -1237,11 +1237,9 @@ public class Case extends Experiment {
                     props.setProperty(PROP_INTER + "." + i, "" + asString(iv));
                 }
             }
-
             return props;
         } catch (Exception e) {
-            e.printStackTrace();
-
+            if (Log.level>=10) e.printStackTrace();
             props.setProperty("exception:intermediate", e.getMessage());
             return props;
         }

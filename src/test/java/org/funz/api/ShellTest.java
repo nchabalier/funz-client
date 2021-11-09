@@ -5,7 +5,6 @@ import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.funz.log.Log;
 import org.funz.log.LogFile;
