@@ -1,3 +1,5 @@
+failed <<- 0
+
 # This is the Funz_Run call. All calculations are to be launched by Funz
 branin.runshell.vec <- function(X,...) {
     unlist(Funz_Run(model=CODE,input.files=SRC,input.variables = list(x1=X[,1],x2=X[,2]),verbosity=VERBOSITY,archive.dir="/tmp/branin.runshell.vec.R",...)$cat)
@@ -26,6 +28,7 @@ testMatchRef <- function() {
     if (abs(as.numeric(ref$min)-as.numeric(runshell$min)) <1e-1) {
         return("OK")
     } else {
+        failed <<- 1
         return(paste("FAILED to match reference and Funz design results: ref min=",ref$min," runshell min=",runshell$min))
     }
 }
@@ -36,6 +39,7 @@ testVectorizeFun <- function(f = branin.ref.vec) {
     if (abs(as.numeric(ref$min)-BraninGradientDescent_MIN)<1e-1) {
         return("OK")
     } else {
+        failed <<- 1
         return("FAILED to find minimum")
     }
 }
@@ -58,6 +62,7 @@ testVectorizeForeach <- function(f = branin.ref.novec) {
     if (abs(as.numeric(ref$min)-BraninGradientDescent_MIN)<1e-1) {
         return("OK")
     } else {
+        failed <<- 1
         return("FAILED to find minimum")
     }
 }
@@ -68,6 +73,7 @@ testVectorizeParallel <- function(f = branin.ref.novec) {
     if (abs(as.numeric(ref$min)-BraninGradientDescent_MIN)<1e-1) {
         return("OK")
     } else {
+        failed <<- 1
         return("FAILED to find minimum")
     }
 }
@@ -91,3 +97,5 @@ for (t in c("testMatchRef","testVectorizeFun","testNoVectorize","testVectorizeFo
     print(paste0("Test ",t,": ",res))
 }
 print(Sys.time()-t0)
+
+quit(status=failed)

@@ -1,3 +1,5 @@
+failed <<- 0
+
 # This is the Funz_Run call. All calculations are to be launched by Funz
 #' @test branin.runshell(data.frame(x1=.5,x2=.3))
 branin.runshell <- function(X,...) {
@@ -18,6 +20,7 @@ test1Case <- function() {
     Y.ref = branin.ref(X)
 
     if (!isTRUE(all(abs(Y.runshell-Y.ref) < 1e-4))) {
+        failed <<- 1
         return("FAILED to match reference and Funz evaluations")
     } else return("OK")
 }
@@ -29,6 +32,7 @@ test10Cases <- function() {
     Y.ref = branin.ref(X)
 
     if (!isTRUE(all(abs(Y.runshell-Y.ref) < 1e-4))) {
+        failed <<- 1
         return("FAILED to match reference and Funz evaluations")
     } else return("OK")
 }
@@ -43,6 +47,7 @@ testDuplicateCases <- function() {
     Y.ref = branin.ref(X)
 
     if (!isTRUE(all(abs(Y.runshell-Y.ref) < 1e-4))) {
+        failed <<- 1
         return("FAILED to match reference and Funz evaluations")
     } else return("OK")
 }
@@ -51,6 +56,7 @@ testFail1 <- function() {
     r <<- Funz_Run(model=CODE,input.files=SRC,input.variables=list(x1=c("0.5","abc")),verbosity=VERBOSITY,archive.dir="tmp/testFail1.R")
 
     try(if (r$state[1]=="done" & r$state[2]=="failed") return("OK"))
+    failed <<- 1
     return("FAILED")
 }
 
@@ -58,6 +64,7 @@ testFail2 <- function() {
     r <- Funz_Run(model=CODE,input.files=SRC,input.variables=list(x1=c("cde","abc")),verbosity=VERBOSITY,archive.dir="tmp/testFail2.R")
 
     try(if(r$state[1]=="failed" & r$state[2]=="failed") return("OK"))
+    failed <<- 1
     return("FAILED")
 }
 
@@ -79,3 +86,5 @@ for (t in c("test1Case","test10Cases","testDuplicateCases","testFail1","testFail
     print(paste0("Test ",t,": ",res))
 }
 print(Sys.time()-t0)
+
+quit(status=failed)

@@ -1,9 +1,12 @@
+failed <<- 0
+
 testBraninGradientDescent <- function() {
     rundesign <<- Funz_RunDesign(model=CODE, input.files=SRC, output.expressions="cat", design = DESIGN, design.options = DESIGN_OPT,input.variables = list(x1="[0,1]",x2="[0,1]"), verbosity=VERBOSITY,archive.dir="tmp/testBraninGradientDescent.R")
 
     if (abs(as.numeric(rundesign$min[[1]])-BraninGradientDescent_MIN)<1e-1) {
         return("OK")
     } else {
+        failed <<- 1
         return("FAILED to find minimum")
     }
 }
@@ -14,6 +17,7 @@ testBraninGradientDescentx2 <- function() {
     if (all(abs(as.numeric(rundesign2$min)-c(BraninGradientDescentx2_x1_0_MIN,BraninGradientDescentx2_x1_1_MIN))<1e-1)) {
         return("OK")
     } else {
+        failed <<- 1
         return("FAILED to find minimums")
     }
 }
@@ -60,3 +64,4 @@ for (t in c("testBraninGradientDescent","testBraninGradientDescentx2")) {
 }
 print(Sys.time()-t0)
 
+quit(status=failed)
