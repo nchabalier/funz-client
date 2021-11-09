@@ -50,17 +50,15 @@ testDuplicateCases <- function() {
 testFail1 <- function() {
     r <<- Funz_Run(model=CODE,input.files=SRC,input.variables=list(x1=c("0.5","abc")),verbosity=VERBOSITY,archive.dir="tmp/testFail1.R")
 
-    if (r$state[1]=="done" & r$state[2]=="failed")
-        return("OK")
-    else return("FAILED")
+    try(if (r$state[1]=="done" & r$state[2]=="failed") return("OK"))
+    return("FAILED")
 }
 
 testFail2 <- function() {
     r <- Funz_Run(model=CODE,input.files=SRC,input.variables=list(x1=c("cde","abc")),verbosity=VERBOSITY,archive.dir="tmp/testFail2.R")
 
-    if(r$state[1]=="failed" & r$state[2]=="failed")
-        return("OK")
-    else return("FAILED")
+    try(if(r$state[1]=="failed" & r$state[2]=="failed") return("OK"))
+    return("FAILED")
 }
 
 
