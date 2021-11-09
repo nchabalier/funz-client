@@ -785,6 +785,7 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
 
     public static Map<String, Object[]> keepOnlyVarsIn(String[] parametersExpression, Map<String, Object[]> resultsArrayMap) {
         if (parametersExpression==null || parametersExpression.length==0) return resultsArrayMap;
+        List<String> toremove = new LinkedList();
         for (String var : resultsArrayMap.keySet()) {
             boolean used=false;       
             for (String expr : parametersExpression) {
@@ -792,15 +793,17 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
                     used=true;
                     break;
                 }
-            if (!used) 
-                resultsArrayMap.remove(var);
+            if (!used)
+                toremove.add(var);
         }
+        resultsArrayMap.keySet().removeAll(toremove);
         return resultsArrayMap;
     }
 
     // pfff....
     public static Map<String, String[]> keepOnlyVarsInStr(String[] parametersExpression, Map<String, String[]> resultsArrayMap) {
         if (parametersExpression==null || parametersExpression.length==0) return resultsArrayMap;
+        List<String> toremove = new LinkedList();
         for (String var : resultsArrayMap.keySet()) {
             boolean used=false;       
             for (String expr : parametersExpression) {
@@ -809,8 +812,9 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
                     break;
                 }
             if (!used) 
-                resultsArrayMap.remove(var);
+                toremove.add(var);
         }
+        resultsArrayMap.keySet().removeAll(toremove);
         return resultsArrayMap;
     }
 
