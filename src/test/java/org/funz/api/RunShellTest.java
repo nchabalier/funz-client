@@ -397,19 +397,22 @@ public class RunShellTest extends org.funz.api.TestUtils {
         String[] x2 = new String[]{"0.1"};
         X.put("x2", x2);
         sac.setInputVariablesGroup("X", X);
-        sac.setOutputExpressions("cat");
+        sac.setOutputExpressions("cat","Z");
         sac.startComputationAndWait();
         Map<String, Object[]> results = sac.getResultsArrayMap();
+        System.out.println(results.keySet()+":");
         for (String r : results.keySet()) {
             if (results.get(r)!=null && results.get(r).length>0 && results.get(r)[0]!=null)
-                System.out.println(r + " (" + results.get(r).getClass() + ")((" + results.get(r)[0].getClass() + "))\n  " + ASCII.cat(",", results.get(r)));
+                System.out.println(r + " (" + results.get(r).getClass() + ")((" + results.get(r)[0].getClass() + "))\n  " +  Arrays.asList(results.get(r)));
+            else
+                System.out.println(r + " " + Arrays.asList(results.get(r)));
         }
 
         assert Arrays.deepEquals(results.get("x1"), x1) : Arrays.toString(results.get("x1")) + " != " + Arrays.toString(x1);
         assert Arrays.deepEquals(results.get("x2"), x2) : Arrays.toString(results.get("x2")) + " != " + Arrays.toString(x2);
         String[] z = branin(x1, x2);//new String[]{"136.0767"};
         assert Arrays.deepEquals(round2(results.get("cat")), z) : Arrays.toString(round2(results.get("cat"))) + " != " + Arrays.toString(z);
-        assert results.get("Z") != null : "No ioplugin more output parsed !";
+        assert results.get("Z") != null : "No ioplugin more output parsed ! "+results;
         assert ("" + round2(results.get("Z")[0]) + "").equals(z[0]) : "" + round2(results.get("Z")[0]) + "" + " != " + z[0];
 
         Thread.sleep(1000);

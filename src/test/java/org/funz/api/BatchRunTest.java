@@ -365,9 +365,9 @@ public class BatchRunTest extends org.funz.api.TestUtils {
 
         System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
 
-        assert batchRun.getResultsStringArrayMap().get("output.cat") != null : "Null result";
-        assert batchRun.getResultsStringArrayMap().get("output.cat").length == 1 : "Not 1 result";
-        assert batchRun.getResultsStringArrayMap().get("output.cat")[0].trim().trim().length() > 0 : "No output.cat result";
+        assert batchRun.getResultsStringArrayMap().get("cat") != null : "Null result";
+        assert batchRun.getResultsStringArrayMap().get("cat").length == 1 : "Not 1 result";
+        assert batchRun.getResultsStringArrayMap().get("cat")[0].trim().trim().length() > 0 : "No cat result";
 
         batchRun.shutdown();
     }
@@ -432,9 +432,9 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
         System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
 
-        System.err.println(Arrays.asList(batchRun.getResultsStringArrayMap().get("output")));
+        System.err.println(Arrays.asList(batchRun.getResultsStringArrayMap().get("cat")));
 
-        String[] output = batchRun.getResultsStringArrayMap().get("output");
+        String[] output = batchRun.getResultsStringArrayMap().get("cat");
         List<Integer> failed = new LinkedList<>();
         for (int i = 0; i < output.length; i++) {
             if (output[i].contains("null")) {
@@ -516,9 +516,9 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
         System.err.println(ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
 
-        System.err.println(Arrays.asList(batchRun.getResultsStringArrayMap().get("output")));
+        System.err.println(Arrays.asList(batchRun.getResultsStringArrayMap().get("cat")));
 
-        String[] output = batchRun.getResultsStringArrayMap().get("output");
+        String[] output = batchRun.getResultsStringArrayMap().get("cat");
         List<Integer> failed = new LinkedList<>();
         for (int i = 0; i < output.length; i++) {
             if (output[i].contains("null")) {
@@ -615,9 +615,9 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         assert ArrayMapToMDString(batchRun.getResultsStringArrayMap()).trim().length() > 2 : "Empty results";
         System.err.println("getResultsStringArrayMap: " + ArrayMapToMDString(batchRun.getResultsStringArrayMap()));
 
-        System.err.println(Arrays.asList(batchRun.getResultsStringArrayMap().get("output")));
+        System.err.println(Arrays.asList(batchRun.getResultsStringArrayMap().get("cat")));
 
-        String[] output = batchRun.getResultsStringArrayMap().get("output");
+        String[] output = batchRun.getResultsStringArrayMap().get("cat");
         List<Integer> failed = new LinkedList<>();
         for (int i = 0; i < output.length; i++) {
             if (output[i].contains("null")) {

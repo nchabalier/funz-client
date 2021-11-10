@@ -582,7 +582,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
             }
 
             List<String> unusedOut = new LinkedList(Arrays.asList(prj.getOutputNames()));
-            unusedOut = removeUsedIn(prj.getMainOutputFunction().parametersExpression,unusedOut);
+            unusedOut = notused(prj.getMainOutputFunction().parametersExpression,unusedOut);
 
             Map<String, Object[]> Y = batchRuns[disc].getResultsArrayMap();//.get(prj.getMainOutputFunctionName());
             Y.keySet().removeAll(unusedOut);

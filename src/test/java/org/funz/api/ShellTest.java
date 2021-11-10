@@ -259,7 +259,7 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         sac.shutdown();
 
-        assert results.get("output.cat")[0].equals("[-0.01]") : "Bad output:" + results.get("output.cat") + "\n" + ArrayMapToMDString(results);
+        assert results.get("cat")[0].equals("[-0.01]") : "Bad output:" + results.get("cat") + "\n" + ArrayMapToMDString(results);
     }
 
     @Test

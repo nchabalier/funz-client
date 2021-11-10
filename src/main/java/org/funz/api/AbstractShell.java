@@ -783,23 +783,21 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
         return true;
     }
 
-    public static List<String> removeUsedIn(String[] expressions, List<String> vars) {
+    public static List<String> notused(String[] expressions, List<String> vars) {
         //System.err.println("expressions: "+Arrays.toString(expressions));
         //System.err.println("vars: "+vars);
         if (expressions==null || expressions.length==0) return vars;
-        List<String> toremove = new LinkedList();
+        List<String> used = new LinkedList();
         for (String var : vars) {
-            boolean used=false;
             for (String expr : expressions) {
-                if (expr.contains(var))
-                    used=true;
+                if (expr.contains(var)) {
+                    used.add(var);
                     break;
                 }
-            if (used)
-                toremove.add(var);
+            }
         }
-        //System.err.println("Will remove "+toremove+" from "+vars);
-        vars.removeAll(toremove);
+        //System.err.println("Used "+used+" from "+vars+" in "+Arrays.toString(expressions));
+        vars.removeAll(used);
         return vars;
     }
 
