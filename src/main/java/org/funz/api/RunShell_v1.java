@@ -330,8 +330,11 @@ public class RunShell_v1 extends AbstractShell {
             }
         }
         List<String> unusedOut = Arrays.asList(prj.getOutputNames());
-        unusedOut = removeUsedIn(allParams.toArray(new String[allParams.size()]),unusedOut);
-        
+        //System.err.println("unusedOut "+unusedOut);
+        //System.err.println("allParams "+allParams);
+        unusedOut = notused(allParams.toArray(new String[allParams.size()]),unusedOut);
+        //System.err.println("unusedOut "+unusedOut);
+
         batchRun.getResultsStringArrayMap().keySet().removeAll(unusedOut);
         return batchRun.getResultsStringArrayMap();
     }
@@ -348,7 +351,10 @@ public class RunShell_v1 extends AbstractShell {
             }
         }
         List<String> unusedOut = new LinkedList(Arrays.asList(prj.getOutputNames()));
-        unusedOut = removeUsedIn(allParams.toArray(new String[allParams.size()]),unusedOut);
+        //System.err.println("unusedOut "+unusedOut);
+        //System.err.println("allParams "+allParams);
+        unusedOut = notused(allParams.toArray(new String[allParams.size()]),unusedOut);
+        //System.err.println("unusedOut "+unusedOut);
         
         batchRun.getResultsArrayMap().keySet().removeAll(unusedOut);
         return batchRun.getResultsArrayMap();
