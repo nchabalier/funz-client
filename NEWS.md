@@ -2,11 +2,13 @@
 
 * package all Funz dist in R and Pypi packages (https://github.com/Funz/Funz.R, https://github.com/Funz/Funz.py)
 * .../output dir is now incremented as output.i if already present
-* suffix for analysis or temporary vlaues in design are no longer '.n', but '[n]'
+* suffix for analysis or temporary values in design are no longer '.n', but '[n]'
 * design results now instanciated as text files in repository directory
-* add out_filter/out.filter in Funz.py/Funz.R, to avoid memory overload
+* add out_filter/out.filter in Funz.py/Funz.R, to reduce memory overload
 * refactor "output filter" to only select relevant info by default, regexp supported after strict matching
 * support java.control/java_control env var, used to setup java init in Funz.R/Funz.py packages
+* keep only usefull vars as results: only outputExpression for Run and only mainOutputExpression (by default first outputexpression) for RunDesign
+* Update Rsession to support R-4/Rserve >= 1.7-5
 
 ## Fixes
 
