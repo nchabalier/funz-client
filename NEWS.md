@@ -1,28 +1,64 @@
+# v1.14 - ?/11/2021
+
 ## Improvements
 
-* package all Funz dist in R and Pypi packages (https://github.com/Funz/Funz.R, https://github.com/Funz/Funz.py)
 * .../output dir is now incremented as output.i if already present
 * suffix for analysis or temporary values in design are no longer '.n', but '[n]'
-* design results now instanciated as text files in repository directory
-* add out_filter/out.filter in Funz.py/Funz.R, to reduce memory overload
-* refactor "output filter" to only select relevant info by default, regexp supported after strict matching
+* design results now instanciated as text files in repository directory: min.txt, argmin.txt, ...
+* add arguments out_filter/out.filter in Funz.py/Funz.R, to reduce memory overload
 * support java.control/java_control env var, used to setup java init in Funz.R/Funz.py packages
 * keep only usefull vars as results: only outputExpression for Run and only mainOutputExpression (by default first outputexpression) for RunDesign
-* Update Rsession to support R-4/Rserve >= 1.7-5
+* Update Rsession (to 3.1.5) to support R-4/Rserve >= 1.7-5 & 1.8-9 (legacy CRAN Rserve)
 
 ## Fixes
 
+* refactor "output filter" to only select relevant info by default, both strict matching and (then) regexp supported
 * recursively parse java objects to implent R list in Funz.R
 * fix repository path for design results
 * check at least one input parameter is available for design
 * versbosity>=10 now print most of stacktraces
 * support for spaces inside dynamic expressions in ParseExpression: ``
-* default R lib path is now setup in $APP_USER_DIR/R instead of ~/.Funz/R
-  
+
 
 # v1.13 - 20/08/2021
 
+## Improvements
+
+* package all Funz dist in R and Pypi packages (https://github.com/Funz/Funz.R, https://github.com/Funz/Funz.py)
+* return available codes in Funz_GridStatus() call for Funz.R & Funz.py
+* default R lib path is now setup in $APP_USER_DIR/R instead of ~/.Funz/R
+* force flush console in Funz.R, to better sync within RStudio/Jupyter front-end
+* add history.txt in case directory (to log all com. with calculator)
+* add path.txt file in case directory
+* also add "path" output for each case
+* implement Restart/Stop action for running cases (now available in Promethee)
+* sort cases by their index
+* support "R.repos" key in Funz.conf to setup CRAN repository(still http://cloud.r-project.org by default)
+
+## Fixes
+
+* fix missing output_expression in Funz.py RunDesign()
+* fix Funz.R Funz.init() java.control arg setup
+* do not repeat "Funz models..." and "Funz design..." messages in Funz.R & Funz.py
+* more robust tests in bash
+
+
 # v1.12 - 17/03/2021
+
+## Improvements
+
+* move to GHA instead of Travis
+* extend CI matrix & fixes in tests
+* faster shutdown (if required) in batch of running cases, at startup
+* up to Rsession 3.1.3
+* force refreshing computers pool
+
+## Fixes
+
+* retreive ressources (like images) from remote R session (with Rserve)
+* avoid wrashing Funz.R on windows if ctrl+C breaking
+* fix tests of Windows cmd.exe Funz.bat call
+
 
 # v1.11 - 02/11/2020
 
