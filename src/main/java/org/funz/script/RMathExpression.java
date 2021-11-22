@@ -91,7 +91,7 @@ public class RMathExpression extends MathExpression {
             verbose = Configuration.getBoolProperty("R.verbose");
         }
 
-        Log.out("R.server: " + Configuration.getProperty("R.server", "?"), 8);
+        //Log.out("R.server: " + Configuration.getProperty("R.server", "?"), 8);
         String[] Rservers = Configuration.getProperty("R.server", "").split(",");
         if (Rservers != null && Rservers.length > 0) {
             for (String Rserver : Rservers) {
