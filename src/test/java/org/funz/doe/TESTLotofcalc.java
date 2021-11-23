@@ -14,7 +14,6 @@ import org.funz.doeplugin.Designer;
 import org.funz.doeplugin.Experiment;
 import org.funz.parameter.OutputFunctionExpression;
 import org.funz.parameter.Parameter;
-import org.math.plot.Plot2DPanel;
 
 /**
  *
@@ -58,7 +57,7 @@ public class TESTLotofcalc extends Design {
 
     @Override
     public String displayResults(List<Experiment> finishedExperiments/*, File _repository*/) {
-        String out = "<HTML name='points'>" + DesignHelper.HTMLTable(finishedExperiments, _f) + DesignHelper.buildPNGPlot(new File(_repository, "plot.png"), new Plot2DPanel(), 400, 400) + "</HTML>";
+        String out = "<HTML name='points'>" + DesignHelper.HTMLTable(finishedExperiments, _f) + /*DesignHelper.buildPNGPlot(new File(_repository, "plot.png"), new Plot2DPanel(), 400, 400) + */"</HTML>";
         if (_f instanceof OutputFunctionExpression.Numeric) {
             out += "<Plot1D name='Z'>" + new OutputFunctionExpression.NumericArray().toNiceNumericString(DesignHelper.getOutputArray(finishedExperiments, _f)) + "</Plot1D>"
                     + "<Plot1D name='Z1,Z2'>Z1=" + new OutputFunctionExpression.NumericArray().toNiceNumericString(DesignHelper.getOutputArray(finishedExperiments, _f))
