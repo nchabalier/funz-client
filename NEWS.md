@@ -9,6 +9,7 @@
 * support java.control/java_control env var, used to setup java init in Funz.R/Funz.py packages
 * keep only usefull vars as results: only outputExpression for Run and only mainOutputExpression (by default first outputexpression) for RunDesign
 * Update Rsession (to 3.1.5) to support R-4/Rserve >= 1.7-5 & 1.8-9 (legacy CRAN Rserve)
+* remove jmatphlot dependency
 
 ## Fixes
 
@@ -25,7 +26,7 @@
 ## Improvements
 
 * package all Funz dist in R and Pypi packages (https://github.com/Funz/Funz.R, https://github.com/Funz/Funz.py)
-* return available codes in Funz_GridStatus() call for Funz.R & Funz.py
+* return also available codes in Funz_GridStatus() call for Funz.R & Funz.py
 * default R lib path is now setup in $APP_USER_DIR/R instead of ~/.Funz/R
 * force flush console in Funz.R, to better sync within RStudio/Jupyter front-end
 * add history.txt in case directory (to log all com. with calculator)
