@@ -246,7 +246,8 @@ def Funz_init(FUNZ_HOME=default_dir, java_control=default_java_control, verbosit
             else:
                 parameters.append("-D"+p+"="+java_control[p])
     parameters.append("-Djava.awt.headless=true") # -Dnashorn.args='--no-deprecation-warning'")
-    
+    parameters.append("-Djdk.lang.processReaperUseDefaultStackSize=true") # this avoids StackOverFLowError on process reaper call, which appears when ProcessBuilder is used (in Rsession btw)
+
     classpath = [ f for f in os.listdir(os.path.join(_FUNZ_HOME,"lib")) if (os.path.isfile(os.path.join(os.path.join(_FUNZ_HOME,"lib"), f)) & ((os.path.splitext(f)[1])==".jar")) ]
     
     class SysOut(py4j.compat.Queue) :
