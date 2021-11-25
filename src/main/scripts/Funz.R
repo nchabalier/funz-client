@@ -277,11 +277,10 @@ if (default.dir=="") default.dir = Sys.getenv("FUNZ_HOME") # if not set, returns
 if (default.dir=="") try(default.dir <- dirname(sys.frame(1)$ofile),silent=T) # Try to detect directory of this script
 if (default.dir=="") default.dir=NULL
 
-default.java.control = ""
+default.java.control = NULL
 if (exists("java.control")) default.java.control=java.control
-if (default.java.control=="") default.java.control = Sys.getenv("java.control") # if not set, returns ""
-if (default.java.control=="") try(default.java.control <- if (Sys.info()[['sysname']]=="Windows") list(Xmx="512m",Xss="256k") else list(Xmx="512m"))
-if (default.java.control=="") default.java.control=NULL
+if (is.null(default.java.control)) try(default.java.control <- if (Sys.info()[['sysname']]=="Windows") list(Xmx="512m",Xss="256k") else list(Xmx="512m"))
+if (is.null(default.java.control)) default.java.control=NULL
 
 #' Initialize Funz environment.
 #' @param FUNZ_HOME set to Funz installation path.

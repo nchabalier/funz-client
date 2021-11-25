@@ -215,7 +215,6 @@ if default_dir is None: default_dir = os.path.dirname(os.path.realpath(sys.argv[
 
 default_java_control = None
 if 'java_control' in globals(): default_java_control = java_control
-if default_java_control is None: default_java_control = os.getenv('java_control',None)
 if default_java_control is None: default_java_control = {'Xmx':"512m",'Xss':"256k"} if sys.platform.startswith("win") else {'Xmx':"512m"}
 
 ## Initialize Funz environment.
