@@ -1,24 +1,25 @@
-# v1.14 - ?/11/2021
+# v1.14 - 25/11/2021
 
 ## Improvements
 
-* .../output dir is now incremented as output.i if already present
+* .../output dir is now incremented as output.i if already exists
 * suffix for analysis or temporary values in design are no longer '.n', but '[n]'
 * design results now instanciated as text files in repository directory: min.txt, argmin.txt, ...
 * add arguments out_filter/out.filter in Funz.py/Funz.R, to reduce memory overload
 * support java.control/java_control env var, used to setup java init in Funz.R/Funz.py packages
 * keep only usefull vars as results: only outputExpression for Run and only mainOutputExpression (by default first outputexpression) for RunDesign
 * Update Rsession (to 3.1.5) to support R-4/Rserve >= 1.7-5 & 1.8-9 (legacy CRAN Rserve)
-* remove jmatphlot dependency
+* R package available on CRAN: `install.packages('Funz')`
 
 ## Fixes
 
 * refactor "output filter" to only select relevant info by default, both strict matching and (then) regexp supported
-* recursively parse java objects to implent R list in Funz.R
+* recursively parse java objects to implement R list in Funz.R
 * fix repository path for design results
 * check at least one input parameter is available for design
 * versbosity>=10 now print most of stacktraces
 * support for spaces inside dynamic expressions in ParseExpression: ``
+* remove jmatphlot dependency
 
 
 # v1.13 - 20/08/2021
@@ -26,6 +27,7 @@
 ## Improvements
 
 * package all Funz dist in R and Pypi packages (https://github.com/Funz/Funz.R, https://github.com/Funz/Funz.py)
+* Python package available on Pypi: `pip install Funz`
 * return also available codes in Funz_GridStatus() call for Funz.R & Funz.py
 * default R lib path is now setup in $APP_USER_DIR/R instead of ~/.Funz/R
 * force flush console in Funz.R, to better sync within RStudio/Jupyter front-end
@@ -62,6 +64,10 @@
 
 
 # v1.11 - 02/11/2020
+
+* Bundled in CRISTAL frontend "LATEC 1.5" (https://www.cristal-package.org/)
+* Bundled in Promethee2 frontend (https://gitlab.com/irsn/promethee2)
+
 
 # v1.10 - 05/05/2020
 
