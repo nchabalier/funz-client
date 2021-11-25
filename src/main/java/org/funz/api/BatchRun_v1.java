@@ -172,7 +172,8 @@ public abstract class BatchRun_v1 implements CaseRunner {
                         Funz_v1.POOL.setRefreshing(true, this, "WaitForCalculator:"+waitForCalculator+" Pool size:"+Funz_v1.POOL.getComputers().size()+" Computers used:"+getNumOfCompsUsed());
                         sleep(Protocol.PING_PERIOD);
                     } catch (InterruptedException ex) {
-                        ex.printStackTrace();
+                        err(ex.getMessage(),1);
+                        return;
                     }
                 }
                 out(provideNewClient_HEAD + "                     ... Pool filled:\n"+Funz_v1.POOL, 7);
@@ -1522,7 +1523,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
             setArchiveDirectory(archiveDirectory);
         } catch (Exception ex) {
             err(ex, 0);
-            ex.printStackTrace();
+            if (Log.level>=10) ex.printStackTrace();
             //LogUtils.tic("merged_results.putAll(Utils.mergeStringArrayMap");
             merged_results.putAll(mergeStringArrayMap(newMap("error", ex.getMessage(), "trace", ex.fillInStackTrace())));
             //LogUtils.toc("merged_results.putAll(Utils.mergeStringArrayMap");

@@ -1,12 +1,8 @@
 package org.funz.doeplugin;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.imageio.ImageIO;
 import org.funz.Project;
 import org.funz.log.Log;
 import org.funz.log.LogCollector.SeverityLevel;
@@ -15,8 +11,6 @@ import org.funz.parameter.OutputFunctionExpression.Numeric;
 import org.funz.parameter.Parameter;
 import org.funz.util.ASCII;
 import org.funz.util.Data;
-import org.math.array.DoubleArray;
-import org.math.plot.PlotPanel;
 
 /**
  *
@@ -89,19 +83,7 @@ public class DesignHelper {
         return tableresults.toString();
     }
 
-    public static String buildPNGPlot(File target, PlotPanel plot, int width, int height) {
-        /*Plot2DPanel plot = new Plot2DPanel();
-         if (y.length > 1) {
-         plot.addScatterPlot("", getColumnCopy(x, 0), y);
-         }
-        
-         plot.setAxisLabel(1, _f.toNiceSymbolicString());
-         plot.getAxis(1).setLabelPosition(-.15, .5);
-        
-         plot.setAxisLabel(0, p.getName());
-         plot.getAxis(0).setLabelPosition(.5, -.1);
-         plot.getAxis(1).setLabelAngle(-Math.PI / 2);*/
-
+    /*public static String buildPNGPlot(File target, PlotPanel plot, int width, int height) {
         try {
             plot.plotCanvas.setSize(width, height);
             BufferedImage bufferedImage = new BufferedImage(plot.plotCanvas.getWidth(), plot.plotCanvas.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -115,7 +97,7 @@ public class DesignHelper {
         }
 
         return "<img src='" + DesignHelper.getResultsRelativePath(target, null) + "' width='" + width + "' height='" + height + "'/>";
-    }
+    }*/
 
     public static boolean IsOutputFull(List<? extends Experiment> exps) {
         for (Experiment experiment : exps) {
