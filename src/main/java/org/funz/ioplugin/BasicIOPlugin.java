@@ -10,6 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.funz.Constants;
 import org.funz.log.Log;
 import org.funz.log.LogCollector.SeverityLevel;
@@ -17,6 +20,7 @@ import org.funz.parameter.OutputFunctionExpression;
 import org.funz.parameter.SyntaxRules;
 import org.funz.script.MathExpression;
 import org.funz.script.ParseExpression;
+import org.funz.script.RMathExpression;
 import org.funz.util.Data;
 import org.math.io.parser.ArrayString;
 
@@ -107,7 +111,8 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
                             ok = false;
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Log.logException(false,e);
+                        if (Log.level>=10) e.printStackTrace();
                         ok = false;
                     }
                 }
@@ -132,7 +137,11 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
 
         if (_properties.containsKey("outputlist") && _properties.getProperty("outputlist").length() > 0) {
             Log.logMessage("BasicIOPlugin " + getID(), SeverityLevel.INFO, false, "  outputlist=" + _properties.getProperty("outputlist"));
-            for (String o : _properties.getProperty("outputlist").split("[\\\"] ")) {
+            
+            List<String> outputlist = new LinkedList<String>();
+            Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(_properties.getProperty("outputlist"));
+            while (m.find()) outputlist.add(m.group(1)); 
+            for (String o : outputlist) {
                 if (isExpression(o)) {
                     Object eval = ParseExpression.eval(o, params);
                     if (eval != null) {
@@ -255,6 +264,7 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
 
     // This is the test entry point. 1st arg is ioplugin path, next are test case directories.
     public static void main(String[] args) throws Exception {
+        //MathExpression.SetDefaultInstance(RMathExpression.NewInstance("BasicIOPlugin")); not required: will just output "No instance ..." messages
         String errors = "";
         System.out.println("{\n\"class\": \"BasicIOPlugin\",");
         System.out.println("\"arg\": \"" + args[0] + "\",");
@@ -356,11 +366,12 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
                         }
                         System.out.println("    \"results\": {");
                         for (String ok : out.keySet()) {
+                            System.out.print("        \"" + ok );
                             Object o = out.get(ok);
                             String ostr = Data.asString(o);
                             String res = "FAILED:";
                             String ref = infos.getProperty("output." + ok);
-                            if (ostr.equals(ref)) {
+                            if (ref!=null && ostr.equals(ref)) {
                                 res = "OK";
                             } else {
                                 res = res + " " + ostr + " != " + ref;
@@ -368,7 +379,7 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
                             if (!res.equals("OK")) {
                                 errors = errors + "\n" + a + ": " + res;
                             }
-                            System.out.println("        \"" + ok + "\": \"" + res + "\",");
+                            System.out.println("\": \"" + res + "\",");
                         }
                         System.out.println("    },");
                     } else {
