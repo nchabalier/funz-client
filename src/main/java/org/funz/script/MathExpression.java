@@ -40,8 +40,27 @@ public abstract class MathExpression {
         }
     }
 
+    static List<MathExpression> all = new LinkedList();
     public MathExpression(String name) {
         this.name = name;
+        all.add(this);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        all.remove(this);
+        super.finalize();
+    }
+
+    public static void end() {
+        for (MathExpression m : all) {
+            if (m!=null)
+                try {
+                    m.finalize();
+                } catch (Throwable e) {
+                    if (Log.level>=10) e.printStackTrace();
+                }
+        }
     }
 
     public String getName() {
