@@ -135,6 +135,11 @@
                 <exclude name="**/TEST*"/>
                 <exclude name="**/Test*"/>
             </fileset>
+            <fileset dir="${src.dir}">
+                <include name="**"/>
+                <exclude name="**/TEST*"/>
+                <exclude name="**/Test*"/>
+            </fileset>
             <manifest>
                 <attribute name="Main-Class" value="${main.class}" />
                 <attribute name="Class-Path" value="${manifest.classpath}"/>
