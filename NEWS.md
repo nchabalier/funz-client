@@ -10,6 +10,7 @@
 * keep only usefull vars as results: only outputExpression for Run and only mainOutputExpression (by default first outputexpression) for RunDesign
 * Update Rsession (to 3.1.5) to support R-4/Rserve >= 1.7-5 & 1.8-9 (legacy CRAN Rserve)
 * R package available on CRAN: `install.packages('Funz')`
+* sources (.java files) are now shipped alongside classes inside funz-*.jar files.
 
 ## Fixes
 
@@ -20,6 +21,7 @@
 * versbosity>=10 now print most of stacktraces
 * support for spaces inside dynamic expressions in ParseExpression: ``
 * remove jmatphlot dependency
+* Rserve process should not persist more than its parent Funz call
 
 
 # v1.13 - 20/08/2021

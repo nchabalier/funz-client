@@ -161,11 +161,16 @@ public class Funz_v1 extends Funz {
         }
     }
 
+    public static void end() {
+        if (POOL != null) {
+            POOL.setRefreshing(false, Funz_v1.class, "finalize Funz_v1");
+        }
+        MathExpression.end();
+    }
+
     @Override
     protected void finalize() throws Throwable {
-        if (POOL != null) {
-            POOL.setRefreshing(false, this, "finalize Funz_v1");
-        }
+        end();
         super.finalize(); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -184,9 +189,8 @@ public class Funz_v1 extends Funz {
     }
 
     public static Map<String, String[]> getCalculatorsInformation() {
-        Object dummy = new Object();
         if (!POOL.isRefreshing()) {
-            POOL.setRefreshing(true, dummy, "Funz.getCalculatorsInformation");
+            POOL.setRefreshing(true, Funz_v1.class, "Funz.getCalculatorsInformation");
             try {
                 Thread.sleep(5000); // to let enough time to actualize grid
             } catch (InterruptedException ex) {
@@ -201,7 +205,7 @@ public class Funz_v1 extends Funz {
                 info.put(c.name + "(" + c.host + ":" + c.port + ")", infos);
             }
         }
-        POOL.setRefreshing(false, dummy, "end Funz.getCalculatorsInformation");
+        POOL.setRefreshing(false, Funz_v1.class, "end Funz.getCalculatorsInformation");
         return info;
     }
 }

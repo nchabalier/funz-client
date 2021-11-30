@@ -1,5 +1,7 @@
 package org.funz.script;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +42,28 @@ public abstract class MathExpression {
         }
     }
 
+    static List<MathExpression> all = Collections.synchronizedList(new ArrayList());
+    
     public MathExpression(String name) {
         this.name = name;
+        all.add(this);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        all.remove(this);
+        super.finalize();
+    }
+
+    public static synchronized void end() {
+        while (all.size()>0) {
+            if (all.get(0)!=null)
+                try {
+                    all.get(0).finalize();
+                } catch (Throwable e) {
+                    if (Log.level>=10) e.printStackTrace();
+                }
+        }
     }
 
     public String getName() {
