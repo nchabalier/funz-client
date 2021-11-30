@@ -165,13 +165,21 @@ public class Funz_v1 extends Funz {
         if (POOL != null) {
             POOL.setRefreshing(false, Funz_v1.class, "finalize Funz_v1");
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ab647d67524cd5ffb4129f9b6b33ba9c09984aff
         MathExpression.end();
     }
 
     @Override
     protected void finalize() throws Throwable {
         end();
+<<<<<<< HEAD
         super.finalize(); //To change body of generated methods, choose Tools | Templates.
+=======
+        super.finalize();
+>>>>>>> ab647d67524cd5ffb4129f9b6b33ba9c09984aff
     }
 
     public static void setVerbosity(int l) {
