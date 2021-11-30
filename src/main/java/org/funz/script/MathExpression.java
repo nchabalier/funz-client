@@ -1,5 +1,6 @@
 package org.funz.script;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +43,7 @@ public abstract class MathExpression {
     }
 
     static List<MathExpression> all = Collections.synchronizedList(new ArrayList());
-    
+
     public MathExpression(String name) {
         this.name = name;
         all.add(this);
