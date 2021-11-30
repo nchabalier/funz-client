@@ -43,11 +43,7 @@ public abstract class MathExpression {
     }
 
     static List<MathExpression> all = Collections.synchronizedList(new ArrayList());
-<<<<<<< HEAD
     
-=======
-
->>>>>>> ab647d67524cd5ffb4129f9b6b33ba9c09984aff
     public MathExpression(String name) {
         this.name = name;
         all.add(this);
