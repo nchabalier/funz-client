@@ -402,6 +402,8 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
 
             currentresult.put("state", getDesignState());
 
+            loopDesign.endDesign();
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -411,6 +413,13 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
             state = SHELL_EXCEPTION;
             return false;
         }
+    }
+
+    @Override
+    public void shutdown() {
+        if (loopDesign!=null)
+            loopDesign.endDesign();
+        super.shutdown();
     }
 
     @Override

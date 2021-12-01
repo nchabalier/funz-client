@@ -214,9 +214,9 @@ public class RDesigner_V1 extends Designer {
         }
 
         @Override
-        public void finalize() throws Throwable {
-            R.end();
-            super.finalize();
+        public void endDesign() {
+            if (R!=null) R.end();
+            super.endDesign();
         }
 
         @Override

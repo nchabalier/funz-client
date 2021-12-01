@@ -74,7 +74,12 @@ public abstract class Design implements DesignConstants/*, ResultPainter*/ {
 
     @Override
     public void finalize() throws Throwable {
+        endDesign();
         super.finalize();
+    }
+
+    public void endDesign() {
+        // to be overridden for proper gc, if needed
     }
 
     /**

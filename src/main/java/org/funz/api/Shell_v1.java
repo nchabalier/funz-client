@@ -621,6 +621,8 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
 
             currentresult[disc].put("state", getRunDesignState(disc));
 
+            loopDesigns[disc].endDesign();
+
             return true;
         } catch (Exception e) {
             Log.err(e, 0);
@@ -656,6 +658,10 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
                 }
             }
         }
+        if (loopDesigns!=null)
+            for (LoopDesign_v1 loopDesign : loopDesigns) {
+                loopDesign.endDesign();
+            }
         super.shutdown();
     }
 

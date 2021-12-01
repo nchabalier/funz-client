@@ -818,6 +818,11 @@ public abstract class LoopDesign_v1 {
         return analysisXMLToMap(session.getAnalysis()).keySet();
     }
 
+    public void endDesign() {
+        if (design!=null)
+            design.endDesign();
+    }
+
     /*public static void main(String[] args) {
         Funz_v1.init();
 
