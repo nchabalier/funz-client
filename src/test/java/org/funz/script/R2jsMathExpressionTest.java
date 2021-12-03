@@ -55,7 +55,6 @@ public class R2jsMathExpressionTest {
                 + engine.getLastResult()
                 + "\n    ! "
                 + engine.getLastError());
-        ((RMathExpression) engine).endR();
         ((RMathExpression) engine).finalizeRsession();
 
         //MathExpression.LogFrame.setVisible(false);

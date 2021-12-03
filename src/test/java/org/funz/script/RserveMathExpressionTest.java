@@ -46,7 +46,6 @@ public class RserveMathExpressionTest {
 
         org.junit.runner.JUnitCore.main(RserveMathExpressionTest.class.getName());
 
-        ((RMathExpression) engine).endR();
         ((RMathExpression) engine).finalizeRsession();
     }
 
