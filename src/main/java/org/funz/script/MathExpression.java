@@ -50,12 +50,12 @@ public abstract class MathExpression {
     }
 
     @Override
-    protected void finalize() throws Throwable {
+    public void finalize() throws Throwable {
         all.remove(this);
         super.finalize();
     }
 
-    public static synchronized void end() {
+    public static synchronized void End() {
         while (all.size()>0) {
             if (all.get(0)!=null)
                 try {

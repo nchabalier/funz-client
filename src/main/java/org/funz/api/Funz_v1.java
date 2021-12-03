@@ -120,6 +120,12 @@ public class Funz_v1 extends Funz {
             //toc("properties");
 
             //tic("math");
+            if (MATH!=null)
+                try {
+                    MATH.finalize();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
             if (math == null) {
                 String Rname = "Funz_" + Configuration.timeDigest();
                 Log.out("Initializing math. engine " + Rname, 1);
@@ -165,7 +171,7 @@ public class Funz_v1 extends Funz {
         if (POOL != null) {
             POOL.setRefreshing(false, Funz_v1.class, "finalize Funz_v1");
         }
-        MathExpression.end();
+        MathExpression.End();
     }
 
     @Override

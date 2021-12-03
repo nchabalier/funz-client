@@ -43,6 +43,8 @@ public class DesignShellTest extends org.funz.api.TestUtils {
 
         shell.startComputationAndWait();
         System.err.println(ArrayMapToMDString(shell.getResultsArrayMap()));
+
+        shell.shutdown();
     }
 
     // @Test
@@ -59,6 +61,8 @@ public class DesignShellTest extends org.funz.api.TestUtils {
 
         shell.startComputationAndWait();
         System.err.println(ArrayMapToMDString(shell.getResultsArrayMap()));
+
+        shell.shutdown();
     }
 
     @Test
@@ -86,6 +90,8 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         assert min_found >= mult_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
         
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
+
+        shell.shutdown();
     }
 
     @Test
@@ -113,6 +119,8 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         assert min_found >= mult_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
         
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
+
+        shell.shutdown();
     }
 
     @Test
@@ -127,7 +135,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         variable_bounds.put("x1", "[0,1]");
         variable_bounds.put("x2", "[0,1]");
         DesignShell_v1 shell = new DesignShell_v1(branin, "oldEGO", variable_bounds, newMap("iterations", "15"));
-        shell.setArchiveDirectory(newTmpDir("testOldRGradientDescent"));
+        shell.setArchiveDirectory(newTmpDir("testOldREGO"));
 
         assert shell.startComputationAndWait();
         assert shell.stopComputation();
@@ -143,6 +151,8 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         assert min_found <= branin_min: "Wrong convergence :" + org.apache.commons.io.FileUtils.readFileToString(new File("testOldREGO.log"));
 
         System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
+
+        shell.shutdown();
     }
 
     @Test
@@ -157,7 +167,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         variable_bounds.put("x1", "[0,1]");
         variable_bounds.put("x2", "[0,1]");
         DesignShell_v1 shell = new DesignShell_v1(branin, "EGO", variable_bounds, newMap("iterations", "15"));
-        shell.setArchiveDirectory(newTmpDir("testOldRGradientDescent"));
+        shell.setArchiveDirectory(newTmpDir("testREGO"));
 
         assert shell.startComputationAndWait();
         assert shell.stopComputation();
@@ -175,6 +185,8 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         assert min_found <= branin_min: "Wrong convergence :" + org.apache.commons.io.FileUtils.readFileToString(new File("testREGO.log"));
         
         System.out.println("analysis:\n" + ASCII.cat("\n", res.get("analysis")));
+
+        shell.shutdown();
     }
 
     @Test
@@ -224,6 +236,8 @@ public class DesignShellTest extends org.funz.api.TestUtils {
                 return file.getName().endsWith(".out");
             }
         }).length == 1 : "Did not built the error stream in the defined archive dir";
+
+        shell.shutdown();
     }
 
     // @Test
@@ -293,7 +307,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         variable_bounds.put("x1", "["+mult_x1_min+","+mult_x1_max+"]");
         variable_bounds.put("x2", "["+mult_x2_min+","+mult_x2_max+"]");
         DesignShell_v1 shell = new DesignShell_v1(mult, "GradientDescent", variable_bounds, null);
-        shell.setArchiveDirectory(newTmpDir("testOldRGradientDescent"));
+        shell.setArchiveDirectory(newTmpDir("testError"));
         shell.setDesignOption("nmax", "NaN");
         boolean failed = false;
         try {
@@ -302,5 +316,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
             failed = true;
         }
         assert failed : "Did not correclty failed";
+
+        shell.shutdown();
     }
 }

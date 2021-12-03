@@ -649,8 +649,8 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
                         ds.setAnalysis(format_res.toString());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
                     Log.err(e, 2);
+                    if (Log.level >= 10) e.printStackTrace();
                     ds.setAnalysis(e.getMessage());
                 }
             }

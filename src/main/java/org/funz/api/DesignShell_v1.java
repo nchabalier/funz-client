@@ -406,8 +406,8 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
 
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             Log.err(e, 0);
+            if (Log.level>=10) e.printStackTrace();
             currentresult.put("error", e.getMessage());
             Alert.showException(e);
             state = SHELL_EXCEPTION;

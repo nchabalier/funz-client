@@ -210,6 +210,7 @@ public class TestUtils {
             } catch (InterruptedException ex) {
             }
         }
+        if (!tmp.isDirectory()) throw new IOException("Could not create tmp dir: "+tmp);
         return tmpdir;
     }
 
