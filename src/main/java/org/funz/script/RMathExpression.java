@@ -339,12 +339,6 @@ public class RMathExpression extends MathExpression {
         return l.substring(0, l.length() - 1) + ")";
     }
 
-    void endR() {
-        if (R != null) {
-            R.end();
-        }
-    }
-
     public static void printInformation(Rsession R) {
         try {
             String nodename = (String) R.eval("Sys.info()[['nodename']]");
@@ -455,7 +449,7 @@ public class RMathExpression extends MathExpression {
         globalVariables.addAll(Arrays.asList(R.ls()));
     }
 
-    public void finalizeRsession() {
+    public synchronized void finalizeRsession() {
         try {
             if (R != null) {
                 R.end();
@@ -463,7 +457,7 @@ public class RMathExpression extends MathExpression {
             Log.logMessage(name, SeverityLevel.INFO, false, "Rsession " + name + " ended.");
         } catch (Exception e) {
             Log.logMessage(name, SeverityLevel.ERROR, false, "Rsession " + name + " end failed.");
-            e.printStackTrace(System.err);
+            if (Log.level >= 10) e.printStackTrace();
         }
         if (streamlogger != null) {
             streamlogger.closeLog();

@@ -210,7 +210,7 @@ public class RDesigner_V0 extends Designer {
 
         @Override
         public void endDesign() {
-            if (R!=null) R.end();
+            if (RME!=null) RME.finalizeRsession();
             super.endDesign();
         }
 
