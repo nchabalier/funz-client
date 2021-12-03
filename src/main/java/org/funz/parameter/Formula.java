@@ -36,7 +36,9 @@ public class Formula {
     }
 
     public static Map<String, String> AUTO_REPLACE_IN_EVAL = new HashMap();
-
+    static{
+        AUTO_REPLACE_IN_EVAL.put("\r\n","\n"); // for windows
+    }
     /**
      * Evaluates an expression
      */
@@ -81,7 +83,7 @@ public class Formula {
             }
         }
 
-        //System.err.print("Evaluating formula: " + expr);
+        //System.err.print("Evaluating formula: '" + expr+"'");
         Object eval = null;
         try {
             eval = engine.eval(expr, null);
