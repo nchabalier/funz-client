@@ -14,8 +14,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
         java: [ 8, 11, 13 ]
-        Rserver: [ 'Rserve' ]
-        # [ 'R2js' , 'Renjin', 'Rserve' ]
+        Rserver: [ 'R2js' , 'Renjin', 'Rserve' ]
     env:
       #NO_TEST_JAVA: 1
       NO_TEST_MAIN: 1
