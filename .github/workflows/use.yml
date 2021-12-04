@@ -35,8 +35,10 @@ jobs:
     - uses: r-lib/actions/setup-r@v1
       with:
         r-version: 3.6
-    - if: matrix.os == 'macos-latest'
-      run: ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
+    - if: matrix.os == 'macos-latest' && matrix.R == '3.6'
+      run: |
+        ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
+        echo "/Library/Frameworks/R.framework/Resources/bin" >> $GITHUB_PATH
     - run: sudo R CMD javareconf
       if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
     - run: Rscript -e "install.packages('rJava',repos = 'https://cloud.r-project.org')"
