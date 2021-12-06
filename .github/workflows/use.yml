@@ -35,7 +35,7 @@ jobs:
     - uses: r-lib/actions/setup-r@v1
       with:
         r-version: 3.6
-    - if: matrix.os == 'macos-latest' && matrix.R == '3.6'
+    - if: matrix.os == 'macos-latest'
       run: |
         ln -s /Library/Frameworks/R.framework/Versions/3.6 /Library/Frameworks/R.framework/Versions/3.5
         echo "/Library/Frameworks/R.framework/Resources/bin" >> $GITHUB_PATH
