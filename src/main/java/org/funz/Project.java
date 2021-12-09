@@ -804,7 +804,7 @@ public class Project {
         boolean found = false;
 
         LinkedList<Variable> toRemove = new LinkedList<Variable>();
-        if (!getCode().startsWith(DesignShell_v1.CODE_PREFIX)) { // otherwise, it is just a design, so variables do not belong to files
+        if (getCode()==null || !getCode().startsWith(DesignShell_v1.CODE_PREFIX)) { // otherwise, it is just a design, so variables do not belong to files
             for (Iterator vit = _vars.iterator(); vit.hasNext();) {
                 Variable var = (Variable) vit.next();
                 if (var.getFiles().size() == 0) {
