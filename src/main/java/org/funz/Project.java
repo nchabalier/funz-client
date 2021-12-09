@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 import static org.funz.Constants.*;
 import static org.funz.XMLConstants.*;
 import org.funz.api.AbstractShell;
+import org.funz.api.DesignShell_v1;
 import org.funz.api.Funz_v1;
 import org.funz.conf.Configuration;
 import org.funz.doeplugin.Design;
@@ -803,15 +804,17 @@ public class Project {
         boolean found = false;
 
         LinkedList<Variable> toRemove = new LinkedList<Variable>();
-        for (Iterator vit = _vars.iterator(); vit.hasNext();) {
-            Variable var = (Variable) vit.next();
-            if (var.getFiles().size() == 0) {
-                vit.remove();
-                if (var.getGroup() != null) {
-                    var.getGroup().removeVariable(var);
+        if (!getCode().startsWith(DesignShell_v1.CODE_PREFIX)) { // otherwise, it is just a design, so variables do not belong to files
+            for (Iterator vit = _vars.iterator(); vit.hasNext();) {
+                Variable var = (Variable) vit.next();
+                if (var.getFiles().size() == 0) {
+                    vit.remove();
+                    if (var.getGroup() != null) {
+                        var.getGroup().removeVariable(var);
+                    }
+                    toRemove.add(var);
+                    found = true;
                 }
-                toRemove.add(var);
-                found = true;
             }
         }
 

@@ -560,6 +560,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
 
     public boolean startDiscComputationAndWait(int disc) {
         int time = 0;
+        System.err.println( ">>>>>>>>>>>>>>>>>>>>>>>>>"+        prj.getMainOutputFunction());
         try {
             currentresult[disc] = new HashMap<>();
             currentresult[disc].put("time", time);

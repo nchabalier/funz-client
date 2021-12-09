@@ -171,7 +171,11 @@ public class DesignHelper {
                     }
                 } catch (Exception ex) {
                     Log.logMessage("DesignHelper", SeverityLevel.ERROR, true, e.toString());
-                    ex.printStackTrace(System.err);
+                    if (Log.level>=10) {
+                        ex.printStackTrace();
+                        System.err.println("Experiment: "+e);
+                        System.err.println("OutputFunctionExpression: "+f);
+                    }
                     z[i] = rep(l, Double.NaN);
                 }
             } catch (ClassCastException cce) {
@@ -180,7 +184,11 @@ public class DesignHelper {
                     c = e.doEval(f).getClass().getSimpleName();
                 } catch (Exception ex) {
                     Log.logException(false, ex);
-                    ex.printStackTrace(System.err);
+                    if (Log.level>=10) {
+                        ex.printStackTrace();
+                        System.err.println("Experiment: "+e);
+                        System.err.println("OutputFunctionExpression: "+f);
+                    }
                     c = "?";
                 }
                 Log.logMessage(f, SeverityLevel.ERROR, false, "Problem while casting " + f.toNiceSymbolicString() + " to (double[]): \n  in fact class is " + c + " : " + e.getOutputValues());

@@ -1294,7 +1294,7 @@ public abstract class OutputFunctionExpression {
 
     @Override
     public String toString() {
-        return toNiceSymbolicString();
+        return toNiceSymbolicString()+" ("+getClass().getSimpleName()+")";
     }
 
     public String write() {

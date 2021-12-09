@@ -36,6 +36,8 @@ import org.funz.parameter.VariableMethods;
 import org.funz.results.RendererHelper;
 import org.funz.script.RMathExpression;
 import static org.funz.util.Data.asString;
+
+import org.funz.util.ASCII;
 import org.funz.util.Disk;
 import org.funz.util.Format.XML;
 
@@ -358,7 +360,8 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
 
         prj.buildParameterList();
 
-        //System.err.println(ASCII.cat(",", prj.getParameterNames()));
+        //System.err.println(prj.getVariables());
+        //System.err.println(prj.getVariableAt(0).toInfoString());
         //System.err.println(prj.getCases());
     }
 

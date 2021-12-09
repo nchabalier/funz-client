@@ -43,6 +43,8 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
         setProject(prj);
     }
 
+    public final static String CODE_PREFIX = "Function: ";
+
     /**
      * @param f Function to implement as DesignShell_v1.Function
      * @param _designer name of the design to use. See Shell.DESIGNS static list
@@ -60,7 +62,8 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
         setInputModel(_designer, new File(_designer));
 
         prj.setMainOutputFunction(OutputFunctionExpression.read(output));
-        prj.setCode("Function: `" + f + "`");
+        
+        prj.setCode(CODE_PREFIX + "`" + f + "`");
 
         setInputVariables(_variableBounds);
 
@@ -104,12 +107,14 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
                 variable.setUpperBound(bounds[1]);
             }
         }
+        //System.err.println("_variableBounds "+_variableBounds);
         buildParameters();
     }
 
     public List<Case> buildDesign() throws Exception {
         //System.out.println("makeInitialDesign");
         List<Parameter> contparams = prj.getContinuousParameters();
+        if (contparams.size() < 1) throw new Exception("Require at least one continuous parameter for design.");
 
         prj.resetDiscreteCases(this);
         if (contparams.isEmpty()) {
@@ -121,7 +126,7 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
         prj.setCases(new CaseList(0), this);
         // split discrete and continous parameters
         CaseList discases = prj.getDiscreteCases();
-        assert discases.size() == 1 : "More than one discrete case not supported";
+        if (discases.size() != 1) throw new Exception("Just one discrete case supported.");
 
         if (loopDesign == null) {
             loopDesign = new LoopDesign_v1(this, this, prj, directory) {
@@ -303,7 +308,7 @@ public class DesignShell_v1 extends AbstractShell implements Design.Observer {
 
             List<Case> news = buildDesign();
             if (news == null)
-                throw new Exception("No variable suitable to apply design");
+                throw new Exception("Cannot build first design.");
 
             Map<String, Object[]> X = loopDesign.initDesign();
             currentresult.put("state", getDesignState());
