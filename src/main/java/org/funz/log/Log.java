@@ -131,12 +131,12 @@ public class Log /*implements LogCollector*/ {
             return;
         }
         if (src instanceof String) {
-            if (Configuration.isLog((String) src)) {
+            if (Log.level>10 || Configuration.isLog((String) src)) {
                 Collector.logMessage(severity, sync, "[" + src + "] " + message);
             }
             return;
         }
-        if (Configuration.isLog(src.getClass().getSimpleName())) {
+        if (Log.level>10 || Configuration.isLog(src.getClass().getSimpleName())) {
             Collector.logMessage(severity, sync, "[" + src.getClass().getSimpleName() + "] " + message);
             return;
         }
