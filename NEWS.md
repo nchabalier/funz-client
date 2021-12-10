@@ -1,3 +1,13 @@
+# v1.15 - ??/??/2022
+
+## Improvements
+
+## Fixes
+
+* add tests for multi-output algorithms
+* try force cast string[] output to double[], even when ioplugin returns string
+
+
 # v1.14 - 04/12/2021
 
 ## Improvements
