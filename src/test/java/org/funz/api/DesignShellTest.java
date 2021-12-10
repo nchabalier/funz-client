@@ -95,6 +95,33 @@ public class DesignShellTest extends org.funz.api.TestUtils {
     }
 
     @Test
+    public void testManyOutput() throws Exception {
+        System.err.println("+++++++++++++++++++++++++ testManyOutput");
+        Funz.setVerbosity(3);
+
+        HashMap<String, String> variable_bounds = new HashMap<String, String>();
+        variable_bounds.put("x1", "["+mult_x1_min+","+mult_x1_max+"]");
+        variable_bounds.put("x2", "["+mult_x2_min+","+mult_x2_max+"]");
+        DesignShell_v1 shell = new DesignShell_v1(sumprod, "RandomUnif", variable_bounds, null);
+        shell.setArchiveDirectory(newTmpDir("testManyOutput"));
+        shell.setDesignOption("sample_size", "10");
+        shell.setOutputExpressions("("+sumprod.fname+"[1],"+sumprod.fname+"[2])");
+
+        shell.startComputationAndWait();
+
+        Map<String, Object[]> res = shell.getResultsArrayMap();
+
+        assert res.get("state") != null : "Status null:" + res;
+        assert res.get("state").length == 1 : "Status: '" + ASCII.cat(",", res.get("state")) + "'";
+        assert res.get("state")[0].toString().contains("Design over") : "Status: '" + res.get("state")[0] + "'";
+
+        assert res.get("cat[1].sample_1") != null : "No cat[1].sample_ in results:" + res.keySet();
+        assert res.get("cat[1]+1.sample_2") != null : "No cat[1]+1.sample_2 in results:" + res.keySet();
+
+        shell.shutdown();
+    }
+
+    @Test
     public void testOldRGradientDescent() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOldRGradientDescent");
         Funz.setVerbosity(3);

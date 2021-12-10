@@ -180,6 +180,50 @@ public class RserveMathExpressionTest {
     }
 
     @Test
+    public void testRandomUnif() throws Exception {
+        System.err.println("+++++++++++++++++ testRandomUnif");
+
+        engine.R.source(new File("src/test/plugins/doe/RandomUnif.R"));
+
+        engine.R.voidEval("f = function(X) matrix(apply(X,1,function (x) {\n"
+                + "     x1 <- x[1] * 15 - 5\n"
+                + "     x2 <- x[2] * 15\n"
+                + "     (x2 - 5/(4 * pi^2) * (x1^2) + 5/pi * x1 - 6)^2 + 10 * (1 - 1/(8 * pi)) * cos(x1) + 10\n"
+                + " }),ncol=1)");
+
+        assert engine.R.ls("f") != null : "Cannot eval f";
+        engine.R.voidEval("options = list(sample_size=100)");
+        assert engine.R.print("options") != null : "Cannot eval options";
+
+        assert engine.R.voidEval("unif <- RandomUnif(options)") : "Failed last voidEval: " + engine.R.notebook();
+        assert engine.listVariables(true, true).contains("unif") : "Cannot get unif in envir";
+
+        assert engine.R.voidEval("X0 = getInitialDesign(unif,input=list(x1=list(min=0,max=1),x2=list(min=0,max=1)),'y')") : "Failed last voidEval: " + engine.R.notebook();
+        assert engine.R.voidEval("Y0 = f(X0); Xi = X0; Yi = Y0") : "Failed last voidEval: " + engine.R.notebook();
+        assert engine.listVariables(true, true).contains("Yi") : "Cannot get Yi in envir: " + engine.listVariables(true, true);
+
+        System.err.println(engine.R.print("Xi"));
+        System.err.println(engine.R.print("Yi"));
+
+        assert engine.R.voidEval("finished = FALSE");
+        assert engine.R.voidEval("while (!finished) {\n"
+                + "     Xj = getNextDesign(unif,Xi,Yi)\n"
+                + "     if (is.null(Xj) || (length(Xj) == 0)) {\n"
+                + "         finished = TRUE\n"
+                + "     } else {\n"
+                + "         Yj = f(Xj)\n"
+                + "         Xi = rbind(Xi,Xj)\n"
+                + "         Yi = rbind(Yi,Yj)\n"
+                + "     }\n"
+                + "}\n") : "Failed last voidEval: " + engine.R.notebook();
+
+        System.err.println(engine.R.print("Xj"));
+        System.err.println(engine.R.print("Yj"));
+        System.err.println(engine.R.print("displayResults(unif,Xi,Yi)"));
+        assert engine.R.asInteger(engine.R.eval("nrow(Yi)"))==100  : "Failed to get sample of f: " + engine.R.eval("Yi");
+    }
+
+    @Test
     public void testConcurrentEval() throws Exception {
         System.err.println("+++++++++++++++++ testConcurrentEval");
 

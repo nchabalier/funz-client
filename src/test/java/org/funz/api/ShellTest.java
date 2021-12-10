@@ -523,4 +523,60 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
     }
 
+    @Test
+    public void testManyOutput() throws Exception {
+        System.err.println("+++++++++++++++++++++++++ testManyOutput");
+
+        File tmp_in = mult_in();
+
+        System.err.println( newMap("x1", "[-0.5,-0.1]", "x2", "[0.3,0.8]"));
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "(cat[1],cat[1]+1)", "RandomUnif", newMap("x1", "[-0.5,-0.1]", "x2", "[0.3,0.8]"), newMap("sample_size", "10")); // R should be dedected by plugin automatically.
+        sac.setArchiveDirectory(newTmpDir("testManyOutput"));
+        Funz.setVerbosity(10);
+
+        //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
+        assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
+        assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
+
+        sac.startComputationAndWait();
+        Map<String, String[]> results = sac.getResultsStringArrayMap();
+        sac.shutdown();
+
+        System.err.println(sac.getState());
+        System.err.println(ArrayMapToMDString(results));
+
+        assert results != null : "No results";
+
+        assert results.get("cat[1].sample_1") != null : "No cat[1].sample_ in results:" + results.keySet();
+        assert results.get("cat[1]+1.sample_2") != null : "No cat[1]+1.sample_2 in results:" + results.keySet();
+    }
+
+    @Test
+    public void testStringOutput() throws Exception {
+        System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testStringOutput");
+
+        File tmp_in = mult_in();
+
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "catstr", null, null, null); // R should be dedected by plugin automatically.
+        sac.setArchiveDirectory(newTmpDir("testStringOutput"));
+        Funz.setVerbosity(verbose);
+
+        //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
+        assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
+        assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
+
+        sac.setInputVariable("x1", new String[]{"-0.1"});
+        sac.setInputVariable("x2", new String[]{"0.1"});
+
+        sac.startComputationAndWait();
+        Map<String, String[]> results = sac.getResultsStringArrayMap();
+
+        sac.shutdown();
+        assert results.containsKey("catstr") : "No output catstr in "+ "\n" + ArrayMapToMDString(results);
+        assert results.get("catstr")!=null : "Null output catstr in "+ "\n" + ArrayMapToMDString(results);
+        assert results.get("catstr").length>0 : "Empty output catstr in "+ "\n" + ArrayMapToMDString(results);
+        assert results.get("catstr")[0]!=null && results.get("catstr")[0].equals("[-0.01]") : "Bad output:" + Arrays.toString(results.get("catstr")) + "\n" + ArrayMapToMDString(results);
+   
+        System.err.println(ArrayMapToMDString(results));
+    }
 }
