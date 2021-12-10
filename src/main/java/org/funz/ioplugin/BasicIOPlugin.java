@@ -220,6 +220,7 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
                             } catch (Exception e) {
                                 lout.put(oes, null);
                                 Log.logMessage("BasicIOPlugin " + getID(), SeverityLevel.ERROR, false, "Impossible to get output: " + o + " , failed to use 'output.???.get' key defined in " + _id);
+                                if (Log.level>=10) e.printStackTrace();
                             }
                         }
                     } else {
@@ -232,6 +233,7 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
                     } catch (Exception e) {
                         lout.put(o, null);
                         Log.logMessage("BasicIOPlugin " + getID(), SeverityLevel.WARNING, false, "Impossible to eval output: " + o + " with plugin " + _id);
+                        if (Log.level>=10) e.printStackTrace();
                     }
                 }
             }
