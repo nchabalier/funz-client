@@ -2605,8 +2605,12 @@ public class Project {
                                 if (pathFiles != null && pathFiles.length == 1) {
                                     Disk.copyFilesIn(pathFiles, 
                                                      new File(parent.getCanonicalPath().replace(getSpoolDir().getCanonicalPath(), to.getCanonicalPath())));
+                                                     Log.out("Moved path.txt file " + pathFiles[0].getCanonicalPath()+" -> "+new File(parent.getCanonicalPath().replace(getSpoolDir().getCanonicalPath(), to.getCanonicalPath())).getCanonicalPath(),2);
+                                } else {
+                                    Log.err("No path.txt to move:"+
+                                    "\n  from "+ parent +" ("+Arrays.toString(parent.listFiles()) + ")" +
+                                    "\n  to "+new File(parent.getCanonicalPath().replace(getSpoolDir().getCanonicalPath(), to.getCanonicalPath())),3);
                                 }
-                                Log.out("Moved path.txt files " + pathFiles[0].getCanonicalPath()+" -> "+new File(parent.getCanonicalPath().replace(getSpoolDir().getCanonicalPath(), to.getCanonicalPath())).getCanonicalPath(),2);
                                 parent = parent.getParentFile();
                             }
                         }
@@ -2615,7 +2619,8 @@ public class Project {
                     }
                     //LogUtils.toc("prj.getSpoolDir(), c.getRelativePath()).exists()");
                 } catch (Exception e) {
-                    Log.err("Could not move case " + c.getName() + " in dir " + new File(getSpoolDir(), c.getRelativePath()) + " to results dir " + to + ":\n" + e.getLocalizedMessage(), 3);
+                    Log.err("Could not move case " + c.getName() + " in dir " + new File(getSpoolDir(), c.getRelativePath()) + " to results dir " + to + ": " + e.getMessage(), 3);
+                    if (Log.level>=10) e.printStackTrace();
                 }
             }
         }
