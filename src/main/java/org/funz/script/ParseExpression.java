@@ -34,6 +34,7 @@ public class ParseExpression {
         if (staticMethod == null) {
             Log.logMessage("[ParseExpression.Call]", SeverityLevel.WARNING, true, "Calling void method on args=" + Arrays.asList(args) + " for " + o);
         }
+        staticMethod = staticMethod.trim();
         if (args == null || args.length == 0) {
             Log.logMessage("[ParseExpression.Call]", SeverityLevel.WARNING, true, "Calling " + staticMethod + " on void args for " + o);
         }
@@ -123,7 +124,7 @@ public class ParseExpression {
                     if (isBraced(left) && isBraced(right)) {
                         return (Boolean) CallAlgebra(o, left) || (Boolean) CallAlgebra(o, right);
                     } else {
-                        throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...)");
+                        throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...) in expression: "+expr);
                     }
                 } else if (c == '+') {
                     String left = current_arg.toString();
@@ -131,7 +132,7 @@ public class ParseExpression {
                     if (isBraced(left) && isBraced(right)) {
                         return (Double) CallAlgebra(o, left) + (Double) CallAlgebra(o, right);
                     } else {
-                        throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...)");
+                        throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...) in expression: "+expr);
                     }
                 } else if (c == '-') {
                     String left = current_arg.toString();
@@ -139,7 +140,7 @@ public class ParseExpression {
                     if (isBraced(left) && isBraced(right)) {
                         return (Double) CallAlgebra(o, left) - (Double) CallAlgebra(o, right);
                     } else {
-                        throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...)");
+                        throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...) in expression: "+expr);
                     }
                 } else if (c == '*') {
                     String left = current_arg.toString();
@@ -147,7 +148,7 @@ public class ParseExpression {
                     if (isBraced(left) && isBraced(right)) {
                         return (Double) CallAlgebra(o, left) * (Double) CallAlgebra(o, right);
                     } else {
-                        throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...)");
+                        throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...) in expression: "+expr);
                     }
                 } else if (c == '/') {
                     String left = current_arg.toString();
@@ -155,7 +156,7 @@ public class ParseExpression {
                     if (isBraced(left) && isBraced(right)) {
                         return (Double) CallAlgebra(o, left) / (Double) CallAlgebra(o, right);
                     } else {
-                        throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...)");
+                        throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...) in expression: "+expr);
                     }
                 }
             }
@@ -420,6 +421,7 @@ public class ParseExpression {
             Log.logMessage("ParseExpression", SeverityLevel.INFO, false, "  >> " + out);
         } catch (Exception e) {
             Log.logException(false, new Exception("Failed to evaluate expression " + f + " on files " + rfiles + "\n" + e.getMessage()));
+            if (Log.level>=10) e.printStackTrace();
         }
         return out;
     }
