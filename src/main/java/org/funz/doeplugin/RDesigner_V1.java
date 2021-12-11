@@ -162,6 +162,18 @@ public class RDesigner_V1 extends Designer {
         return new RDesign(this, session);
     }
 
+    public static String Rquotes(String s) {
+        return "`"+s+"`";
+    }
+
+    public static String[] Rquotes(String[] s) {
+        String[] q = new String[s.length];
+        for (int i = 0; i < q.length; i++) {
+            q[i] = Rquotes(s[i]);
+        }
+        return q;
+    }
+
     public class RDesign extends Design {
 
         public Rsession R;
@@ -445,7 +457,7 @@ public class RDesigner_V1 extends Designer {
             try {
                 double[][] ysdy = getOutputParams(finishedExperiments);
 
-                R.set("Y" + currentiteration, ysdy, Ynames(ysdy));
+                R.set("Y" + currentiteration, ysdy, Rquotes(Ynames(ysdy)));
 
                 R.savels(new File(_repository.getAbsolutePath(), getName().replace(' ', '_') + getStatus() + ".Rdata"), "");//(currentiteration) );
 
@@ -546,7 +558,7 @@ public class RDesigner_V1 extends Designer {
 
                 String suffix = currentiteration + "_" + experiments.size();
                 double[][] ysdy = getOutputParams(experiments);
-                R.set("Y" + suffix, ysdy, Ynames(ysdy));
+                R.set("Y" + suffix, ysdy, Rquotes(Ynames(ysdy)));
                 double[][] x = getInputArray(experiments);
                 R.set("X" + suffix, x, Xnames);
 
@@ -611,7 +623,7 @@ public class RDesigner_V1 extends Designer {
             String out = null;
             try {
                 double[][] ysdy = getOutputParams(experiments);
-                R.set("Yanalyse" + currentiteration, ysdy, Ynames(ysdy));
+                R.set("Yanalyse" + currentiteration, ysdy, Rquotes(Ynames(ysdy)));
                 double[][] x = getInputArray(experiments);
                 R.set("Xanalyse" + currentiteration, x, Xnames);
 
