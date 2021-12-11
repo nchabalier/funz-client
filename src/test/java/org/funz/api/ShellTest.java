@@ -547,7 +547,7 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         assert results != null : "No results";
 
-        assert results.get("cat[1].sample_1") != null : "No cat[1].sample_ in results:" + results.keySet();
+        assert results.get("cat[1].sample_1") != null : "No cat[1].sample_1 in results:" + results.keySet();
         assert results.get("cat[1]+1.sample_2") != null : "No cat[1]+1.sample_2 in results:" + results.keySet();
     }
 
