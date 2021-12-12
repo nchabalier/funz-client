@@ -115,8 +115,8 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         assert res.get("state").length == 1 : "Status: '" + ASCII.cat(",", res.get("state")) + "'";
         assert res.get("state")[0].toString().contains("Design over") : "Status: '" + res.get("state")[0] + "'";
 
-        assert res.get("cat[1].sample_1") != null : "No cat[1].sample_ in results:" + res.keySet();
-        assert res.get("cat[1]+1.sample_2") != null : "No cat[1]+1.sample_2 in results:" + res.keySet();
+        assert res.get("sumprod[1].sample_1") != null : "No sumprod[1].sample_1 in results:" + res.keySet();
+        assert res.get("sumprod[2].sample_2") != null : "No sumprod[2].sample_2 in results:" + res.keySet();
 
         shell.shutdown();
     }
