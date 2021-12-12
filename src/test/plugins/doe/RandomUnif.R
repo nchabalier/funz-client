@@ -44,10 +44,10 @@ displayResults <- function(unif, X, Y) {
     html = "<HTML name='Sample'>"
     samples = ""
     sample = ""
-    Ynames = colnames(Y)
+    Ynames = names(Y)
     if (is.null(Ynames) || !(length(Ynames) == dimY)) {
       for (i in 1:dimY) {
-        Ynames[i] = paste0(unif$output,i)
+        Ynames[i] = paste0(unif$output,"[",i,"]")
       }
     }
 
