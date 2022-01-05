@@ -405,6 +405,17 @@ public class TestUtils {
         }
     };
 
+    static DesignShell_v1.Function sumprod = new DesignShell_v1.Function("sumprod", "x1", "x2") {
+        @Override
+        public Map f(Object... strings) {
+            double[] vals = new double[strings.length];
+            for (int i = 0; i < vals.length; i++) {
+                vals[i] = Double.parseDouble(strings[i].toString());
+            }
+            return newMap(sumprod.fname, new double[]{DoubleArray.product(vals),DoubleArray.sum(vals)});
+        }
+    };
+
     public static File mult_in() throws IOException {
         File tmp_in = newTmpFile("mult.R");
         if (tmp_in.exists()) {

@@ -60,7 +60,7 @@ public class RserveMathExpressionTest {
         //MathExpression.LogFrame.setVisible(false);
     }
 
-    //@Test
+    @Test
     public void testError() throws Exception {
         System.err.println("+++++++++++++++++ testError");
 
@@ -73,7 +73,7 @@ public class RserveMathExpressionTest {
         assert error : "Error not detected";
     }
 
-    //@Test
+    @Test
     public void testSet() throws Exception {
         System.err.println("+++++++++++++++++ testSet");
 
@@ -84,7 +84,7 @@ public class RserveMathExpressionTest {
         assert engine.eval("a", null) != null : "Cannot eval a in " + engine.listVariables(true, true);
     }
 
-    //@Test
+    @Test
     public void testPrintIn() throws Exception {
         System.err.println("+++++++++++++++++ testPrintIn");
 
@@ -92,14 +92,14 @@ public class RserveMathExpressionTest {
         assert s.equals("*") : "Bad print: " + s;
     }
 
-    //@Test
+    @Test
     public void testDecimal() throws Exception {
         System.err.println("+++++++++++++++++ testDecimal");
 
         assert engine.eval("paste(0.123)", null).equals("0.123") : "Bad decimal separator used:" + engine.eval("paste(0.123)", null);
     }
 
-    //@Test
+    @Test
     public void testBrent() throws Exception {
         engine.R.source(new File("src/test/plugins/doe/Brent.R"));
         
@@ -138,7 +138,7 @@ public class RserveMathExpressionTest {
         assert engine.R.asDouble(engine.R.eval("min(abs(Yi))")) < 0.1 : "Failed to get root value of f: " + engine.R.eval("min(abs(Yi))");
     }
     
-    //@Test
+    @Test
     public void testGradientDescent() throws Exception {
         System.err.println("+++++++++++++++++ testGradientDescent");
 
@@ -220,10 +220,10 @@ public class RserveMathExpressionTest {
         System.err.println(engine.R.print("Xj"));
         System.err.println(engine.R.print("Yj"));
         System.err.println(engine.R.print("displayResults(unif,Xi,Yi)"));
-        //assert engine.R.asDouble(engine.R.eval("min(Yi)")) < 10.0 : "Failed to get minimum value of f: " + engine.R.eval("min(Yi)");
+        assert engine.R.asInteger(engine.R.eval("nrow(Yi)"))==100  : "Failed to get sample of f: " + engine.R.eval("Yi");
     }
 
-    ////@Test
+    @Test
     public void testConcurrentEval() throws Exception {
         System.err.println("+++++++++++++++++ testConcurrentEval");
 
@@ -285,7 +285,7 @@ public class RserveMathExpressionTest {
         return true;
     }
 
-    //@Test
+    @Test
     public void testSimpleEval() throws Exception {
         System.err.println("+++++++++++++++++ testSimpleEval");
 
@@ -294,7 +294,7 @@ public class RserveMathExpressionTest {
         assert (Double) engine.eval("sum(runif(10))", null) < 10 : "bad evaluation of sum(runif(10))";
     }
 
-    //@Test
+    @Test
     public void testPrintEval() throws Exception {
         System.err.println("+++++++++++++++++ testPrintEval");
 
@@ -303,7 +303,7 @@ public class RserveMathExpressionTest {
         assert engine.eval("if (1<2) print(\"ok\") else print(\"no!!!\")", null).toString().equals("ok") : engine.eval("if (1<2) print(\"ok\") else print(\"no!!!\")", null);
     }
 
-    //@Test
+    @Test
     public void testls() throws Exception {
         System.err.println("+++++++++++++++++ testls");
 
@@ -313,7 +313,7 @@ public class RserveMathExpressionTest {
         assert list.equals("[a]") : "failed to listVariables: " + list;
     }
 
-    //@Test
+    @Test
     public void testSplitEval() throws Exception {
         System.err.println("+++++++++++++++++ testSplitEval");
 
@@ -331,7 +331,7 @@ public class RserveMathExpressionTest {
         assert Arrays.asList(engine.R.ls()).contains("ff") : "ff not found";
     }
 
-    //@Test
+    @Test
     public void testSimpleFunction() throws MathException {
         System.err.println("+++++++++++++++++ testSimpleFunction");
 

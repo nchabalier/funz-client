@@ -164,35 +164,31 @@ public class DesignHelper {
         for (int i = 0; i < z.length; i++) {
             Experiment e = finishedExperiments.get(i);
             try {
-                try {
-                    z[i] = DesignHelper.castDoubleArray(e.doEval(f));
-                    if (z[i] != null && l == 0 && z[i].length > 0) {
-                        l = z[i].length;
-                    }
-                } catch (Exception ex) {
-                    Log.logMessage("DesignHelper", SeverityLevel.ERROR, true, e.toString());
-                    if (Log.level>=10) {
-                        ex.printStackTrace();
-                        System.err.println("Experiment: "+e);
-                        System.err.println("OutputFunctionExpression: "+f);
-                    }
-                    z[i] = rep(l, Double.NaN);
+                z[i] = DesignHelper.castDoubleArray(e.doEval(f));
+                if (z[i] != null && l == 0 && z[i].length > 0) {
+                    l = z[i].length;
                 }
             } catch (ClassCastException cce) {
-                String c;
+                Log.logMessage(f, SeverityLevel.ERROR, true, "Problem while casting " + f.toNiceSymbolicString() + " to (double[]) on " + e.getOutputValues());
                 try {
-                    c = e.doEval(f).getClass().getSimpleName();
+                    Log.logMessage(f, SeverityLevel.ERROR, true, "... e.doEval(f): " + e.doEval(f));
                 } catch (Exception ex) {
-                    Log.logException(false, ex);
+                    Log.logException(true, ex);
                     if (Log.level>=10) {
                         ex.printStackTrace();
                         System.err.println("Experiment: "+e);
                         System.err.println("OutputFunctionExpression: "+f);
                     }
-                    c = "?";
                 }
-                Log.logMessage(f, SeverityLevel.ERROR, false, "Problem while casting " + f.toNiceSymbolicString() + " to (double[]): \n  in fact class is " + c + " : " + e.getOutputValues());
-                cce.printStackTrace(System.err);
+                if (Log.level>=10) cce.printStackTrace();
+            } catch (Exception ex) {
+                Log.logMessage("DesignHelper", SeverityLevel.ERROR, true, e.toString());
+                if (Log.level>=10) {
+                    ex.printStackTrace();
+                    System.err.println("Experiment: "+e);
+                    System.err.println("OutputFunctionExpression: "+f);
+                }
+                z[i] = rep(l, Double.NaN);
             }
         }
         for (int i = 0; i < z.length; i++) {
@@ -203,7 +199,7 @@ public class DesignHelper {
         return z;
     }
 
-    public static double[] castDoubleArray(Object in) {
+    public static double[] castDoubleArray(Object in) throws ClassCastException {
         if (in == null) {
             return null;
         }
@@ -240,6 +236,8 @@ public class DesignHelper {
             double[] outarray = new double[inarray.length];
             for (Object object : inarray) {
                 if (object != null) {
+                    if (!(object instanceof Double))
+                        object = Data.asObject(object.toString());
                     outarray[i++] = (Double) object;
                 } else {
                     outarray[i++] = Double.NaN;

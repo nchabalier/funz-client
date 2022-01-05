@@ -18,9 +18,10 @@ getInitialDesign <- function(unif,input,output) {
   unif$input <- input
   unif$output <- output
   d = length(input)
-  x = matrix(runif(d*unif$sample_size, 0, 1),ncol=d)
+  x = runif(d*unif$sample_size)
+  x = matrix(x,ncol=d)
   names(x) <- names(input)
-  return(from01(x,unif$input))
+  return(from01(x,input))
 }
 
 ## iterated design building.
@@ -43,9 +44,12 @@ displayResults <- function(unif, X, Y) {
     html = "<HTML name='Sample'>"
     samples = ""
     sample = ""
-    Ynames = colnames(Y)
-    if (is.null(Ynames) || length(Ynames) != dimY) 
-      Ynames = paste0(paste0(paste0(unif$output,"["),1:dimY),"]")
+    Ynames = names(Y)
+    if (is.null(Ynames) || !(length(Ynames) == dimY)) {
+      for (i in 1:dimY) {
+        Ynames[i] = paste0(unif$output,"[",i,"]")
+      }
+    }
 
     for (i in 1:dimY) {
         f = paste0("hist_",Ynames[i],".png",sep="")
@@ -57,10 +61,10 @@ displayResults <- function(unif, X, Y) {
         html <- paste0(html,'<br/>',
             '<img src="',  f,  '" width="600" height="600"/>')
 
-        samples <- paste0(samples,paste0(
-          "<sample_",i," name='",Ynames[i],"'>",
-          paste0(collapse=",",Y[,i])
-          ,"</sample_",i,">"));
+        s <- paste0("<sample_",i," name='",Ynames[i],"'>")
+        s <- paste0(s, paste0(collapse=",",Y[,i]))
+        s <- paste0(s, "</sample_",i,">")
+        samples <- paste0(samples, s)
 
         sample <- paste0(sample,"[",paste0(collapse=",",Y[,i]),"],")
     }
@@ -72,8 +76,9 @@ displayResults <- function(unif, X, Y) {
 displayResultsTmp <- displayResults
 
 from01 = function(X, inp) {
+  namesX=names(X)
   for (i in 1:ncol(X)) {
-    namei = names(X)[i]
+    namei = namesX[i]
     X[,i] = X[,i] * (inp[[ namei ]]$max-inp[[ namei ]]$min) + inp[[ namei ]]$min
   }
   return(X)

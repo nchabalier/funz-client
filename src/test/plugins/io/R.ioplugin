@@ -8,11 +8,14 @@ commentLineChar=#
 
 datasetFilter=contains("(.*)","cat")
 
-outputlist=cat
-outputfunctions=Numeric:cat
+outputlist=cat catstr
+outputfunctions=Numeric:cat Text:catstr
 
 output.cat.if=true
 output.cat.get=filecat("(.*)Rout") >> afterLast(" cat") >> before(">") >> split("=") >> get(0) >> trim() >> split(" ") >> asNumeric1DArray()
 output.cat.default=1.0
 
+output.catstr.if=true
+output.catstr.get=filecat("(.*)Rout") >> afterLast(" cat") >> before(">") >> split("=") >> get(0) >> trim() >> split(" ") >> toString()
+output.catstr.default='abc'
 

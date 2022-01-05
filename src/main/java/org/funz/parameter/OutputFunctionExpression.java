@@ -75,14 +75,14 @@ public abstract class OutputFunctionExpression {
             }
             if (params[0].getClass().isArray()) {
                 if (params[0] instanceof double[]) {
-                    assert ((double[]) params[0]).length == 2 : "Array size is " + ((double[]) params[0]).length + " instead of 2.";
+                    if (! (((double[]) params[0]).length == 2 )) Log.err(  "Array size is " + ((double[]) params[0]).length + " instead of 2." ,5);
                     return "N" + COORD_BEGIN + ((double[]) params[0])[0] + PARAM_SEPARATOR + ((double[]) params[0])[1] + COORD_END;
                 } else {
-                    assert ((Object[]) params[0]).length == 2 : "Array size is " + ((Object[]) params[0]).length + " instead of 2.";
+                    if (! (((Object[]) params[0]).length == 2 )) Log.err(  "Array size is " + ((Object[]) params[0]).length + " instead of 2." ,5);
                     return "N" + COORD_BEGIN + ((Object[]) params[0])[0] + PARAM_SEPARATOR + ((Object[]) params[0])[1] + COORD_END;
                 }
             } else {
-                assert params.length == 2 : "Array size is " + params.length + " instead of 2.";
+                if (! (params.length == 2 )) Log.err(  "Array size is " + params.length + " instead of 2." ,5);
                 return "N" + COORD_BEGIN + params[0] + PARAM_SEPARATOR + params[1] + COORD_END;
             }
         }
@@ -107,9 +107,9 @@ public abstract class OutputFunctionExpression {
         }
 
         public String[] fromNiceString(String s) {
-            assert s.startsWith("N" + COORD_BEGIN) && s.endsWith(COORD_END) : "Unrecognized as N(x,y) Gaussian density expression: " + s;
+            if (! (s.startsWith("N" + COORD_BEGIN) && s.endsWith(COORD_END))) Log.err(  "Unrecognized as N(x,y) Gaussian density expression" + s ,5);
             String[] res = s.substring(2, s.length() - 1).split(PARAM_SEPARATOR);
-            assert res != null && res.length == 2 : "Unrecognized as N(x,y) Gaussian density number of arguments: " + s;
+            if (! (res != null && res.length == 2))  Log.err("Unrecognized as N(x,y) Gaussian density number of arguments" + s ,5);
             return res;
         }
 
@@ -160,11 +160,11 @@ public abstract class OutputFunctionExpression {
         }
 
         public String[] fromNiceString(String s) {
-            assert !s.contains(PARAM_SEPARATOR) : "Unrecognized numeric expression: " + s;
-            assert !s.contains(ARRAY_BEGIN) : "Unrecognized numeric expression: " + s;
-            assert !s.contains(ARRAY_END) : "Unrecognized numeric expression: " + s;
-            assert !s.contains(COORD_BEGIN) : "Unrecognized numeric expression: " + s;
-            assert !s.contains(COORD_END) : "Unrecognized numeric expression: " + s;
+            if (! (!s.contains(PARAM_SEPARATOR)) ) Log.err( "Unrecognized numeric expression"  + s ,5);
+            if (! (!s.contains(ARRAY_BEGIN)) ) Log.err(  "Unrecognized numeric expression" + s ,5);
+            if (! (!s.contains(ARRAY_END)) ) Log.err(  "Unrecognized numeric expression" + s ,5);
+            if (! (!s.contains(COORD_BEGIN)) ) Log.err(  "Unrecognized numeric expression" + s ,5);
+            if (! (!s.contains(COORD_END)) ) Log.err(  "Unrecognized numeric expression" + s ,5);
             return new String[]{s};
         }
 
@@ -209,9 +209,9 @@ public abstract class OutputFunctionExpression {
         }
 
         public String[] fromNiceString(String s) {
-            assert s.startsWith(ARRAY_BEGIN) && s.endsWith(ARRAY_END) : "Unrecognized numeric array expression: " + s;
+            if (! (s.startsWith(ARRAY_BEGIN) && s.endsWith(ARRAY_END)) ) Log.err(  "Unrecognized numeric array expression" + s ,5);
             String[] res = s.substring(1, s.length() - 1).split(PARAM_SEPARATOR);
-            assert res != null && res.length >= 1 : "Unrecognized numeric array number of arguments: " + s;
+            if (! (res != null && res.length >= 1) ) Log.err(  "Unrecognized numeric array number of arguments" + s ,5);
 
             return res;
         }
@@ -265,11 +265,11 @@ public abstract class OutputFunctionExpression {
         }
 
         public String[] fromNiceString(String s) {
-            //assert !s.contains(PARAM_SEPARATOR) : "Unrecognized object expression: " + s;
-            //assert !s.contains(ARRAY_BEGIN) : "Unrecognized object expression: " + s;
-            //assert !s.contains(ARRAY_END) : "Unrecognized object expression: " + s;
-            //assert !s.contains(COORD_BEGIN) : "Unrecognized object expression: " + s;
-            //assert !s.contains(COORD_END) : "Unrecognized object expression: " + s;
+            //if (! (!s.contains(PARAM_SEPARATOR) : "Unrecognized object expression)) Log.err(  " + s ,5);
+            //if (! (!s.contains(ARRAY_BEGIN) : "Unrecognized object expression)) Log.err(  " + s ,5);
+            //if (! (!s.contains(ARRAY_END) : "Unrecognized object expression)) Log.err(  " + s ,5);
+            //if (! (!s.contains(COORD_BEGIN) : "Unrecognized object expression)) Log.err(  " + s ,5);
+            //if (! (!s.contains(COORD_END) : "Unrecognized object expression)) Log.err(  " + s ,5);
             return new String[]{s};
         }
 
@@ -316,7 +316,7 @@ public abstract class OutputFunctionExpression {
         }
 
         public String[] fromNiceString(String s) {
-            assert s.startsWith(COORD_BEGIN) && s.endsWith(COORD_END) : "Unrecognized coordinates expression: " + s;
+            if (! (s.startsWith(COORD_BEGIN) && s.endsWith(COORD_END)) ) Log.err( "Unrecognized coordinates expression" + s ,5);
             return splitArgs(s);
         }
 
@@ -361,9 +361,9 @@ public abstract class OutputFunctionExpression {
         }
 
         public String[] fromNiceString(String s) {
-            assert s.startsWith(SEQUENCE_BEGIN) && s.endsWith(SEQUENCE_END) : "Unrecognized sequence expression: " + s;
+            if (! (s.startsWith(SEQUENCE_BEGIN) && s.endsWith(SEQUENCE_END)) ) Log.err(  "Unrecognized sequence expression" + s ,5);
             String[] res = s.substring(1, s.length() - 1).split(PARAM_SEPARATOR);
-            assert res != null && res.length >= 1 : "Unrecognized numeric array number of arguments: " + s;
+            if (! (res != null && res.length >= 1 )) Log.err( "Unrecognized numeric array number of arguments" + s ,5);
             return res;
         }
 
@@ -429,14 +429,14 @@ public abstract class OutputFunctionExpression {
         public String toNiceString(Object[] params) {
             if (params[0].getClass().isArray()) {
                 if (params[0] instanceof double[]) {
-                    assert ((double[]) params[0]).length == 2 : "Array size is " + ((double[]) params[0]).length + " instead of 2.";
+                    if (! (((double[]) params[0]).length == 2 )) Log.err(  "Array size is " + ((double[]) params[0]).length + " instead of 2." ,5);
                     return COORD_BEGIN + ((double[]) params[0])[0] + PARAM_SEPARATOR + ((double[]) params[0])[1] + COORD_END;
                 } else {
-                    assert ((Object[]) params[0]).length == 2 : "Array size is " + ((Object[]) params[0]).length + " instead of 2.";
+                    if (! (((Object[]) params[0]).length == 2 )) Log.err(  "Array size is " + ((Object[]) params[0]).length + " instead of 2." ,5);
                     return COORD_BEGIN + ((Object[]) params[0])[0] + PARAM_SEPARATOR + ((Object[]) params[0])[1] + COORD_END;
                 }
             } else {
-                assert params.length == 2 : "Array size is " + params.length + " instead of 2.";
+                if (! (params.length == 2 )) Log.err(  "Array size is " + params.length + " instead of 2." ,5);
                 return COORD_BEGIN + params[0] + PARAM_SEPARATOR + params[1] + COORD_END;
             }
         }
@@ -446,9 +446,9 @@ public abstract class OutputFunctionExpression {
         }
 
         public String[] fromNiceString(String s) {
-            assert s.startsWith(COORD_BEGIN) && s.endsWith(COORD_END) : "Unrecognized 2D coordinates expression: " + s;
+            if (! (s.startsWith(COORD_BEGIN) && s.endsWith(COORD_END)) ) Log.err(  "Unrecognized 2D coordinates expression" + s ,5);
             String[] res = s.substring(1, s.length() - 1).split(PARAM_SEPARATOR);
-            assert res != null && res.length == 2 : "Unrecognized 2D coordinates number of arguments: " + s;
+            if (! (res != null && res.length == 2) ) Log.err(  "Unrecognized 2D coordinates number of arguments" + s ,5);
             return res;
         }
 
@@ -494,7 +494,7 @@ public abstract class OutputFunctionExpression {
         @Override
         public String toNiceNumericString(Object parametersValues) {
             Object[] parametersvalues = (Object[]) parametersValues;
-            assert parametersvalues.length == 2 : "Need 2 arrays instead of " + parametersvalues.length + " : " + asString(parametersValues);
+            if (! (parametersvalues.length == 2)) Log.err(  "Need 2 arrays instead of " + parametersvalues.length + asString(parametersValues) ,5);
             double[] x = (double[]) parametersvalues[0];
             double[] y = (double[]) parametersvalues[1];
             StringBuffer res = new StringBuffer();
@@ -517,9 +517,9 @@ public abstract class OutputFunctionExpression {
         }
 
         public String[] fromNiceString(String s) {
-            assert s.startsWith(ARRAY_BEGIN + COORD_BEGIN) && s.endsWith(COORD_END + ARRAY_END) : "Unrecognized 2D coordinates array expression: " + s;
+            if (! (s.startsWith(ARRAY_BEGIN + COORD_BEGIN) && s.endsWith(COORD_END + ARRAY_END)) ) Log.err(  "Unrecognized 2D coordinates array expression" + s ,5);
             String[] res = s.substring(1, s.length() - 1).replace("(", "").replace(")", "").replace(EOL, "").split(PARAM_SEPARATOR);
-            assert res != null && res.length >= 2 && res.length % 2 == 0 : "Unrecognized 2D coordinates array number of arguments: " + s;
+            if (! (res != null && res.length >= 2 && res.length % 2 == 0) ) Log.err(  "Unrecognized 2D coordinates array number of arguments" + s ,5);
             return res;
             /*double[][] dres = new double[res.length / 2][2];
              for (int i = 0; i < dres.length; i++) {
@@ -597,14 +597,14 @@ public abstract class OutputFunctionExpression {
         public String toNiceString(Object[] params) {
             if (params[0].getClass().isArray()) {
                 if (params[0] instanceof double[]) {
-                    assert ((double[]) params[0]).length == 3 : "Array size is " + ((double[]) params[0]).length + " instead of 3.";
+                    if (! (((double[]) params[0]).length == 3 )) Log.err(  "Array size is " + ((double[]) params[0]).length + " instead of 3." ,5);
                     return COORD_BEGIN + ((double[]) params[0])[0] + PARAM_SEPARATOR + ((double[]) params[0])[1] + PARAM_SEPARATOR + ((double[]) params[0])[2] + COORD_END;
                 } else {
-                    assert ((Object[]) params[0]).length == 3 : "Array size is " + ((Object[]) params[0]).length + " instead of 3.";
+                    if (! (((Object[]) params[0]).length == 3 )) Log.err(  "Array size is " + ((Object[]) params[0]).length + " instead of 3." ,5);
                     return COORD_BEGIN + ((Object[]) params[0])[0] + PARAM_SEPARATOR + ((Object[]) params[0])[1] + PARAM_SEPARATOR + ((Object[]) params[0])[2] + COORD_END;
                 }
             } else {
-                assert params.length == 3 : "Array size is " + params.length + " instead of 3.";
+                if (! (params.length == 3 )) Log.err(  "Array size is " + params.length + " instead of 3." ,5);
                 return COORD_BEGIN + params[0] + PARAM_SEPARATOR + params[1] + PARAM_SEPARATOR + params[2] + COORD_END;
             }
         }
@@ -619,9 +619,9 @@ public abstract class OutputFunctionExpression {
         }
 
         public String[] fromNiceString(String s) {
-            assert s.startsWith(COORD_BEGIN) && s.endsWith(COORD_END) : "Unrecognized 3D coordinates expression: " + s;
+            if (! (s.startsWith(COORD_BEGIN) && s.endsWith(COORD_END) )) Log.err(  "Unrecognized 3D coordinates expression" + s ,5);
             String[] res = s.substring(1, s.length() - 1).replace(COORD_BEGIN, "").replace(COORD_END, "").replace(EOL, "").split(PARAM_SEPARATOR);
-            assert res != null && res.length == 3 : "Unrecognized 3D coordinates number of arguments: " + s;
+            if (! (res != null && res.length == 3 )) Log.err(   "Unrecognized 3D coordinates number of arguments" + s ,5);
             return res;
         }
 
@@ -667,7 +667,7 @@ public abstract class OutputFunctionExpression {
         @Override
         public String toNiceNumericString(Object parametersValues) {
             Object[] parametersvalues = (Object[]) parametersValues;
-            assert parametersvalues.length == 3 : "Need 3 arrays instead of " + parametersvalues.length + " : " + asString(parametersValues);
+            if (! (parametersvalues.length == 3 )) Log.err(  "Need 3 arrays instead of " + parametersvalues.length + " " + asString(parametersValues) ,5);
             double[] x = (double[]) parametersvalues[0];
             double[] y = (double[]) parametersvalues[1];
             double[] z = (double[]) parametersvalues[2];
@@ -694,9 +694,9 @@ public abstract class OutputFunctionExpression {
         }
 
         public String[] fromNiceString(String s) {
-            assert s.startsWith(ARRAY_BEGIN + COORD_BEGIN) && s.endsWith(COORD_END + ARRAY_END) : "Unrecognized 3D coordinates array expression: " + s;
+            if (! (s.startsWith(ARRAY_BEGIN + COORD_BEGIN) && s.endsWith(COORD_END + ARRAY_END) )) Log.err(  "Unrecognized 3D coordinates array expression" + s ,5);
             String[] res = s.replace(ARRAY_BEGIN, "").replace(ARRAY_END, "").replace(COORD_BEGIN, "").replace(COORD_END, "").replace(EOL, "").split(PARAM_SEPARATOR);
-            assert res != null && res.length >= 3 && res.length % 3 == 0 : "Unrecognized 3D coordinates array number of arguments: " + s;
+            if (! (res != null && res.length >= 3 && res.length % 3 == 0 )) Log.err(   "Unrecognized 3D coordinates array number of arguments" + s ,5);
             return res;
             /*double[][] dres = new double[res.length / 3][3];
              for (int i = 0; i < dres.length; i++) {
@@ -838,8 +838,8 @@ public abstract class OutputFunctionExpression {
         }
 
         public String[] fromNiceString(String s) {
-            assert s.startsWith(TEXT_BEGIN) : "Unrecognized text expression: " + s;
-            assert s.endsWith(TEXT_END) : "Unrecognized text expression: " + s;
+            if (! s.startsWith(TEXT_BEGIN) ) Log.err("Unrecognized text expression: " + s,5);
+            if (! s.endsWith(TEXT_END) ) Log.err(  "Unrecognized text expression" + s ,5);
             return new String[]{s.substring(1, s.length() - 1)};
         }
 
@@ -1232,7 +1232,7 @@ public abstract class OutputFunctionExpression {
          String str = null;
          if (parametersExpression.length > 1) {
          Object[] parametersValuesArray = (Object[]) parametersValues;
-         assert parametersExpression.length == parametersValuesArray.length : "Array size not matching: parametersExpression=" + parametersExpression.length + " parametersValuesArray=" + parametersValuesArray.length;
+         if (! parametersExpression.length == parametersValuesArray.length : "Array size not matching) Log.err(  parametersExpression=" + parametersExpression.length + " parametersValuesArray=" + parametersValuesArray.length ,5);
          str = toNiceString(parametersValuesArray);
          } else {
         

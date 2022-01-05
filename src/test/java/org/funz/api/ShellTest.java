@@ -547,7 +547,41 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         assert results != null : "No results";
 
+<<<<<<< HEAD
         assert results.get("sample_cat") != null : "No sample_cat in results:" + results.keySet();
         assert results.get("sample_cat+1") != null : "No sample_cat in results:" + results.keySet();
+=======
+        assert results.get("cat[1].sample_1") != null : "No cat[1].sample_1 in results:" + results.keySet();
+        assert results.get("cat[1]+1.sample_2") != null : "No cat[1]+1.sample_2 in results:" + results.keySet();
+    }
+
+    @Test
+    public void testStringOutput() throws Exception {
+        System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testStringOutput");
+
+        File tmp_in = mult_in();
+
+        Shell_v1 sac = new Shell_v1(R, tmp_in, "catstr", null, null, null); // R should be dedected by plugin automatically.
+        sac.setArchiveDirectory(newTmpDir("testStringOutput"));
+        Funz.setVerbosity(verbose);
+
+        //sac.addCacheDirectory(new File(mult_in.getParentFile(), "mult.R.res"));
+        assert Arrays.asList(sac.getInputVariables()).contains("x1") : "Variable x1 not detected";
+        assert Arrays.asList(sac.getInputVariables()).contains("x2") : "Variable x2 not detected";
+
+        sac.setInputVariable("x1", new String[]{"-0.1"});
+        sac.setInputVariable("x2", new String[]{"0.1"});
+
+        sac.startComputationAndWait();
+        Map<String, String[]> results = sac.getResultsStringArrayMap();
+
+        sac.shutdown();
+        assert results.containsKey("catstr") : "No output catstr in "+ "\n" + ArrayMapToMDString(results);
+        assert results.get("catstr")!=null : "Null output catstr in "+ "\n" + ArrayMapToMDString(results);
+        assert results.get("catstr").length>0 : "Empty output catstr in "+ "\n" + ArrayMapToMDString(results);
+        assert results.get("catstr")[0]!=null && results.get("catstr")[0].equals("[-0.01]") : "Bad output:" + Arrays.toString(results.get("catstr")) + "\n" + ArrayMapToMDString(results);
+   
+        System.err.println(ArrayMapToMDString(results));
+>>>>>>> 40c1d883ca2dbdd9cabb287b207e7ecd44a88aee
     }
 }
