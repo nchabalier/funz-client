@@ -32,7 +32,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         super.setUp(ShellTest.class.getName());
     }
 
-    //@Test
+    @Test
     public void testCacheCase() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testCacheCase");
 
@@ -58,7 +58,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
     }
 
-    //@Test
+    @Test
     public void testDefaultCase() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testDefaultCase");
 
@@ -104,7 +104,7 @@ public class ShellTest extends org.funz.api.TestUtils {
 
     private static final String ALGORITHM = "GradientDescent";
 
-    //@Test
+    @Test
     public void test1Case1Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ test1Case1Design");
 
@@ -127,7 +127,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
     }
 
-    //@Test
+    @Test
     public void test1Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ test1Design");
 
@@ -155,7 +155,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results.get("min")[0].trim().equals("-0.4") : "Bad convergence to " + results.get("min")[0];
     }
 
-    //@Test
+    @Test
     public void test1DesignOutExpr() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ test1DesignOutExpr");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {
@@ -188,7 +188,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results.get("min")[0].trim().startsWith("0.") : "Bad convergence to " + results.get("min")[0];
     }
 
-    //@Test
+    @Test
     public void testNoDesignOutExpr() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testNoDesignOutExpr");
 
@@ -211,7 +211,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results.get("N(cat[1],1)")[0].contains("[305.9563,1") : "Bad eval for N(cat[1],1) : \n" + ArrayMapToMDString(results);
     }
 
-    //@Test
+    @Test
     public void testNDesign() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testNDesign");
 
@@ -237,7 +237,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert Double.parseDouble(results.get("min")[1].trim()) < 0 : "1: Bad convergence to " + results.get("min")[1];
     }
 
-    //@Test
+    @Test
     public void test1Case0Design() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ test1Case0Design");
 
@@ -262,7 +262,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results.get("cat")[0].equals("[-0.01]") : "Bad output:" + results.get("cat") + "\n" + ArrayMapToMDString(results);
     }
 
-    //@Test
+    @Test
     public void testNCasesNoDesign() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testNCasesNoDesign");
 
@@ -286,7 +286,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
     }
 
-    //@Test
+    @Test
     public void testMoveProject() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testMoveProject");
         Log.setCollector(new LogFile("testMoveProject.log"));
@@ -369,7 +369,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
     }
 
-    //@Test
+    @Test
     public void testConcurrency() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testConcurrency");
         boolean[] tests = new boolean[]{false, false, false, false};
@@ -457,7 +457,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         }
     }
 
-    //@Test
+    @Test
     public void testDuplicateCases() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testDuplicateCases");
 
@@ -490,7 +490,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         sac.shutdown();
     }
 
-    //@Test
+    @Test
     public void testVectorize() throws Exception {
         System.err.println("+++++++++++++++++++++++++++++++++++++++++++ testVectorize");
 
@@ -547,10 +547,6 @@ public class ShellTest extends org.funz.api.TestUtils {
 
         assert results != null : "No results";
 
-<<<<<<< HEAD
-        assert results.get("sample_cat") != null : "No sample_cat in results:" + results.keySet();
-        assert results.get("sample_cat+1") != null : "No sample_cat in results:" + results.keySet();
-=======
         assert results.get("cat[1].sample_1") != null : "No cat[1].sample_1 in results:" + results.keySet();
         assert results.get("cat[1]+1.sample_2") != null : "No cat[1]+1.sample_2 in results:" + results.keySet();
     }
@@ -582,6 +578,5 @@ public class ShellTest extends org.funz.api.TestUtils {
         assert results.get("catstr")[0]!=null && results.get("catstr")[0].equals("[-0.01]") : "Bad output:" + Arrays.toString(results.get("catstr")) + "\n" + ArrayMapToMDString(results);
    
         System.err.println(ArrayMapToMDString(results));
->>>>>>> 40c1d883ca2dbdd9cabb287b207e7ecd44a88aee
     }
 }
