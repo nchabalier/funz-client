@@ -30,7 +30,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         org.junit.runner.JUnitCore.main(DesignShellTest.class.getName());
     }
 
-    // @Test
+    // //@Test
     public void testDirect() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testDirect");
         Funz.setVerbosity(3);
@@ -47,7 +47,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         shell.shutdown();
     }
 
-    // @Test
+    // //@Test
     public void testIterative() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testIterative");
         Funz.setVerbosity(3);
@@ -65,7 +65,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         shell.shutdown();
     }
 
-    @Test
+    //@Test
     public void testRGradientDescent() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testRGradientDescent");
         Funz.setVerbosity(3);
@@ -95,6 +95,36 @@ public class DesignShellTest extends org.funz.api.TestUtils {
     }
 
     @Test
+    public void testManyOutput() throws Exception {
+        System.err.println("+++++++++++++++++++++++++ testManyOutput");
+        Funz.setVerbosity(3);
+
+        HashMap<String, String> variable_bounds = new HashMap<String, String>();
+        variable_bounds.put("x1", "["+mult_x1_min+","+mult_x1_max+"]");
+        variable_bounds.put("x2", "["+mult_x2_min+","+mult_x2_max+"]");
+        DesignShell_v1 shell = new DesignShell_v1(mult, "RandomUnif", variable_bounds, null);
+        shell.setArchiveDirectory(newTmpDir("testManyOutput"));
+        shell.setDesignOption("sample_size", "10");
+        shell.setOutputExpressions("("+DesignShell_v1.DEFAULT_FUNCTION_NAME+","+DesignShell_v1.DEFAULT_FUNCTION_NAME+"+1)");
+
+        shell.startComputationAndWait();
+
+        Map<String, Object[]> res = shell.getResultsArrayMap();
+
+        assert res.get("state") != null : "Status null:" + res;
+        assert res.get("state").length == 1 : "Status: '" + ASCII.cat(",", res.get("state")) + "'";
+        assert res.get("state")[0].toString().contains("Design over") : "Status: '" + res.get("state")[0] + "'";
+
+        assert ASCII.cat("\n", res.get("analysis")).contains("minimum is ") : "No convergence :" + ASCII.cat("\n", res.get("analysis"));
+        double min_found = Double.parseDouble(Parser.after(ASCII.cat("\n", res.get("analysis")),"minimum is ").trim().substring(0,4));
+        assert min_found >= mult_min: "Wrong convergence :" + ASCII.cat("\n", res.get("analysis"));
+        
+        System.err.println(ArrayMapToMDString(shell.getResultsStringArrayMap()));
+
+        shell.shutdown();
+    }
+
+    //@Test
     public void testOldRGradientDescent() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOldRGradientDescent");
         Funz.setVerbosity(3);
@@ -123,7 +153,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         shell.shutdown();
     }
 
-    @Test
+    //@Test
     public void testOldREGO() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testOldREGO");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {System.err.println("Not using Rserve, so skipping test"); return;} // Do not run if using Renjin or R2js...
@@ -155,7 +185,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         shell.shutdown();
     }
 
-    @Test
+    //@Test
     public void testREGO() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testREGO");
         if (!RMathExpression.GetEngineName().contains("Rserve")) {System.err.println("Not using Rserve, so skipping test"); return;} // Do not run if using Renjin or R2js...
@@ -189,7 +219,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         shell.shutdown();
     }
 
-    @Test
+    //@Test
     public void testMoveProject() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testMoveProject");
         Funz.setVerbosity(3);
@@ -240,7 +270,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
         shell.shutdown();
     }
 
-    // @Test
+    // //@Test
     /*public void testGradientDescentWithCache() throws Exception {
      Funz.setVerbosity(3);
 
@@ -299,7 +329,7 @@ public class DesignShellTest extends org.funz.api.TestUtils {
 //        System.err.println(Utils.ArrayMapToMDString(X) + "------>\n" + ASCII.cat("\n", Y));
 //        return Y;
 //    }
-    @Test
+    //@Test
     public void testError() throws Exception {
         System.err.println("+++++++++++++++++++++++++ testError");
         Funz.setVerbosity(3);
