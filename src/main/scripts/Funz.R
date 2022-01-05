@@ -90,6 +90,7 @@ options(OutDec= ".")
 #' @test .jmatch("(.*)min",c("x1","x2","min","argmin","z"))
 #' @test .jmatch("min",c("x1","x2","min","argmin","z"))
 .jmatch = function(pattern, x) {
+    if (nchar(pattern)==0) return(character(0))
     eq_ok = (x == pattern)
     g = gregexpr(pattern,x)
     start_ok = (g==1)
