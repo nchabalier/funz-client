@@ -93,7 +93,7 @@ options(OutDec= ".")
     if (nchar(pattern)==0) return(character(0))
     eq_ok = (x == pattern)
     g = gregexpr(pattern,x)
-    start_ok = (g==1)
+    start_ok = (unlist(g)==1)
     len_ok = (nchar(x) == unlist(lapply(g,function(...)attr(...,"match.length"))))
     return(x[eq_ok | (start_ok & len_ok)])
 }
