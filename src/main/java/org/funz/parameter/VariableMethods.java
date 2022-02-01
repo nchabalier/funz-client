@@ -37,6 +37,7 @@ public class VariableMethods {
         public int line = 0, column = 0;
         public String expression;
         public File file;
+        public String error;
 
         public ParseEvalException(File f, int line, int column, String expression, String error) {
             super("Error while evaluating " + expression + " @ line " + (line + 1) /*+ " column " + column*/ + " in " + f.getName()+": "+error);
@@ -44,6 +45,7 @@ public class VariableMethods {
             this.column = column;
             this.expression = expression;
             this.file = f;
+            this.error = error;
         }
 
         public final static int readColumn(EvalException ex) {
@@ -645,7 +647,7 @@ public class VariableMethods {
         return vars;
     }
 
-    private static String[] getFunctionalComments(BufferedReader in, String execCommentStart) {
+    private static String[] getFunctionalComments(BufferedReader in, String execCommentStart, String varChar) throws ParseEvalException {
         List<String> lines = new LinkedList<String>();
         String tmp;
 
@@ -653,6 +655,7 @@ public class VariableMethods {
             int openbraces = 0;
             StringBuilder toexec = new StringBuilder();
             while ((tmp = in.readLine()) != null) {
+                if (tmp.contains(varChar)) throw new ParseEvalException(null,0,0, tmp,"Function expression should be static (no dataset variable '"+varChar+"...')");
                 if (tmp.startsWith(execCommentStart)) {
                     //System.err.println(tmp);
                     String todo = tmp.substring(execCommentStart.length());
@@ -680,7 +683,7 @@ public class VariableMethods {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace(System.err);
+            if (Log.level>=10) e.printStackTrace();
         }
         String[] lines_string = new String[lines.size()];
         for (int i = 0; i < lines_string.length; i++) {
@@ -690,7 +693,7 @@ public class VariableMethods {
         return lines_string;
     }
 
-    public static String[] getFunctionalComments(File file, String start) {
+    public static String[] getFunctionalComments(File file, String start, String varChar) throws ParseEvalException {
         BufferedReader in = null;
         InputStreamReader isr = null;
         FileInputStream fis = null;
@@ -700,18 +703,20 @@ public class VariableMethods {
             isr = new InputStreamReader(fis, ASCII.CHARSET);
             in = new BufferedReader(isr);
             //in = new BufferedReader(new InputStreamReader(new FileInputStream(file), CHARSET));
-            ret = getFunctionalComments(in, start);
+            ret = getFunctionalComments(in, start, varChar);
+        } catch (ParseEvalException p) {
+            throw new ParseEvalException(file,p.line,p.column, p.expression,p.error);
         } catch (Exception e) {
-            e.printStackTrace(System.err);
+            if (Log.level>=10) e.printStackTrace();
+        
         } finally {
             try {
                 fis.close();
                 isr.close();
                 in.close();
             } catch (Exception ee) {
-                ee.printStackTrace(System.err);
+                if (Log.level>=10) ee.printStackTrace();
             }
-
         }
         return ret;
     }
@@ -719,7 +724,7 @@ public class VariableMethods {
     public static final String MATHENGINE_SET_MARKER = ":";
     public static final String MATHENGINE_TEST_MARKER = "?";    
     
-    public static void parseFileForms(String commentLine, SyntaxRules formSyntax, File file, File trg, LinkedList replaceables, MathExpression formulaEngine) //
+    public static void parseFileForms(String commentLine, SyntaxRules varSyntax, SyntaxRules formSyntax, File file, File trg, LinkedList replaceables, MathExpression formulaEngine) //
             throws UnsupportedEncodingException, FileNotFoundException, IOException, BadSyntaxException, ParseEvalException, MathExpression.MathException { //
 
         long tic = Calendar.getInstance().getTimeInMillis();
@@ -731,7 +736,7 @@ public class VariableMethods {
         if (formulaEngine != null) {
             //formulaEngine.reset();
             String execCommentStart = commentLine + frmStart + MATHENGINE_SET_MARKER;
-            String[] fcomments = getFunctionalComments(file, execCommentStart);
+            String[] fcomments = getFunctionalComments(file, execCommentStart, ""+varSyntax.getStartSymbol());
             for (String fc : fcomments) {
                 if (!formulaEngine.set(fc/*.split("\n")*/)) {
                     throw new MathExpression.MathException("Bad instruction: " + fc);
@@ -914,7 +919,7 @@ public class VariableMethods {
         File trg_vars = File.createTempFile("vars_", Double.toString(Math.random()), (trg == null ? new File(".") : trg.getParentFile()));
         //new File(System.getProperty("java.io.tmpdir"), "vars_" + (trg == null ? file.hashCode() : trg.getName()));
         HashSet vars = parseFileVars(varSyntax, file, trg_vars, values, replaceables, defaultmodels);
-        parseFileForms(commentLine, formSyntax, trg_vars, trg, replaceables, formulaEngine);
+        parseFileForms(commentLine, varSyntax, formSyntax, trg_vars, trg, replaceables, formulaEngine);
         trg_vars.delete();
         return vars;
     }
