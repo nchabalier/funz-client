@@ -114,7 +114,7 @@ public class VariableMethodsTest {
             ASCII.saveFile(fin, test.toString());
             HashMap<String, String> defval = parse(values);
         } catch (Exception e) {
-            if (e.getMessage().contains("b" + VariableMethods.DEFAULT_VALUE_STR)) {
+            if (e.getMessage()!=null && e.getMessage().contains("b" + VariableMethods.DEFAULT_VALUE_STR)) {
                 errorfound = true;
             } else {
                 System.err.println("Bad error detected:" + e.getMessage());
