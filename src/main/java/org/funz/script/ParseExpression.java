@@ -251,13 +251,13 @@ public class ParseExpression {
 //                System.err.println(">>> " + args_string_list);
                 continue;
             }
-            current_arg.append(c);
 //            System.err.println(current_arg);
             //System.err.println(StringUtils.repeat(" ",i)+c);
             if (c == '\\') {
                 escaped = true;
 //                System.err.println(StringUtils.repeat(" ", i + 1) + "escaped = T");
             } else {
+                current_arg.append(c);
                 if (escaped) {
                     escaped = false;
 //                    System.err.println(">" + StringUtils.repeat(" ", i) + "escaped = F");
