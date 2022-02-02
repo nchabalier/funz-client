@@ -175,7 +175,7 @@ public class ParseExpression {
                         if (!simpleQuoted) {
                             doubleQuoted = !doubleQuoted;
                         }
-                    } else if (!simpleQuoted && !doubleQuoted && !escaped) {
+                    } else if (!simpleQuoted && !doubleQuoted) {
                         if (c == '(') {
                             openBraces++;
                         } else if (c == ')') {
@@ -420,7 +420,7 @@ public class ParseExpression {
             out = exportObject(CallAlgebra(o, ie));
             Log.logMessage("ParseExpression", SeverityLevel.INFO, false, "  >> " + out);
         } catch (Exception e) {
-            Log.logException(false, new Exception("Failed to evaluate expression " + f + " on files " + rfiles + "\n" + e.getMessage()));
+            Log.logException(false, new Exception(e.getClass()+": Failed to evaluate expression " + f + " on files " + rfiles + "\n" + e.getMessage()));
             if (Log.level>=10) e.printStackTrace();
         }
         return out;
