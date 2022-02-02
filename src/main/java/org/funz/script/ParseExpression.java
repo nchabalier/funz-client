@@ -252,12 +252,12 @@ public class ParseExpression {
                 continue;
             }
 //            System.err.println(current_arg);
+            current_arg.append(c);
             //System.err.println(StringUtils.repeat(" ",i)+c);
             if (c == '\\') {
                 escaped = true;
 //                System.err.println(StringUtils.repeat(" ", i + 1) + "escaped = T");
             } else {
-                current_arg.append(c);
                 if (escaped) {
                     escaped = false;
 //                    System.err.println(">" + StringUtils.repeat(" ", i) + "escaped = F");
@@ -274,7 +274,7 @@ public class ParseExpression {
                             doubleQuoted = !doubleQuoted;
                         }
 //                        System.err.println(" -> " + doubleQuoted);
-                    } else if (!simpleQuoted && !doubleQuoted && !escaped) {
+                    } else if (!simpleQuoted && !doubleQuoted) {
                         if (c == '(') {
                             openBraces++;
 //                            System.err.println(">" + StringUtils.repeat(" ", i) + "openBraces = " + openBraces);
@@ -292,11 +292,11 @@ public class ParseExpression {
         for (int i = 0; i < args.length; i++) {
             String arg_string = args_string_array[i].trim();
             if (arg_string.startsWith("\"") && arg_string.endsWith("\"")) {
-                args[i] = arg_string.substring(1, arg_string.length() - 1);
+                args[i] = arg_string.substring(1, arg_string.length() - 1).replace("\\\"","\"");
                 continue;
             }
             if (arg_string.startsWith("'") && arg_string.endsWith("'") && arg_string.length() == 3) {
-                args[i] = arg_string.charAt(1);
+                args[i] = ""+arg_string.charAt(1);
                 continue;
             }
             try {

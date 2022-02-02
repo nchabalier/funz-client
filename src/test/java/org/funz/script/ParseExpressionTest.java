@@ -43,7 +43,10 @@ public class ParseExpressionTest {
         expressions.add("grep(\"(.*)Rmd\",\"mean\")>>get(0)");
         results.add("Mean speed: `r mean(cars$speed)`");
 
-        expressions.add("`grep(\"(.*)Rmd\",\":\\s`r\\s\")>>cut(\":\\s`r\\s\",1)>>get(0)>>split(\"\\s\")>>get(0)`");
+        expressions.add("grep(\"(.*)Rmd\",\": `r \")");
+        results.add("Mean speed: `r mean(cars$speed)`");   
+
+        expressions.add("`grep(\"(.*)Rmd\",\"\\: `r \")>>cut(\"\\: `r \",1)>>get(0)>>split(\" \")>>get(0)`");
         results.add("speed");        
         
         // now, space char is not a split arg, if following a " char
@@ -53,7 +56,7 @@ public class ParseExpressionTest {
         expressions.add("contains(\"(.*)vbs\",\"WriteLine\")");
         results.add("true");
 
-        expressions.add("`grep(\"(.*)vbs\",\"WScript\\.StdOut\\.WriteLine\\(\\\"(.*)=\")>>before(\"=\")>>after(\"\"\")`");
+        expressions.add("`grep(\"(.*)vbs\",\"WScript\\.StdOut\\.WriteLine\\(\\\"(.*)=\")>>before(\"=\")>>after(\"\\\"\")`");
         results.add("z");
 
         expressions.add("`grep(\"branin\\.R\",\"cat\\(\\'(.*)=\")>>before(\"=\")>>after(\"'\")>>trim()>>get(0)`");
@@ -101,7 +104,7 @@ public class ParseExpressionTest {
             System.err.println("time elapsed: " + ((toc - tic) / 1000.0));
 
             if (o == null) {
-                throw new Exception("Parsing returned null !");
+                throw new Exception("Parsing returned null !: "+ex);
             } else {
                 String ostr = o.toString();
                 if (o instanceof double[]) {
