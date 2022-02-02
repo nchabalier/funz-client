@@ -214,9 +214,9 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
 
         if (input.length > 1) {
             for (int i = 1; i < input.length; i++) {
-                if (input[i].exists()) {
+                if (!input[i].exists()) {
                     Log.err("Input file/dir " + input[i].getName() + " does not exist.", 2);
-                }
+                } else
                 try {
                     prj.importFileOrDir(input[i]);
                 } catch (Exception ex) {
