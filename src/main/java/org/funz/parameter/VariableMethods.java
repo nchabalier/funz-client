@@ -59,12 +59,14 @@ public class VariableMethods {
         public int line = 0;
         public File file;
         public String txt;
+        public String reason;
 
         public BadSyntaxException(File f, int line, String txt, String reason) {
-            super("Bad syntax in " + f.getName() + " @ line " + (line + 1) + ": " + reason);
+            super("Bad syntax in " + (f==null?"?":f.getName()) + " @ line " + (line + 1) + ": " + reason+"\n  "+txt);
             file = f;
             this.line = line;
             this.txt = txt;
+            this.reason=reason;
         }
     }
 
@@ -275,12 +277,12 @@ public class VariableMethods {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_' || c == '.';
     }
 
-    public static HashSet parseFile(String commentLine, SyntaxRules varSyntax, SyntaxRules formSyntax, File file, HashMap<String, String> default_value, MathExpression formulaEngine) throws Exception {
-        return parseFile(commentLine, varSyntax, formSyntax, file, null, null, null, null, null, null, null, default_value, formulaEngine);
+    public static HashSet parseFile(String commentLine, SyntaxRules varSyntax, SyntaxRules formSyntax, File file, HashMap<String, String> default_model, MathExpression formulaEngine) throws Exception {
+        return parseFile(commentLine, varSyntax, formSyntax, file, null, null, null, null, null, null, null, default_model, formulaEngine);
     }
-    public final static char DEFAULT_VALUE_CHAR = '~';
+    public final static char DEFAULT_MODEL_CHAR = '~';
     public final static String DEFAULT_MODEL_SEPARATOR = ";";
-    public final static String DEFAULT_VALUE_STR = "" + DEFAULT_VALUE_CHAR;
+    public final static String DEFAULT_MODEL_STR = "" + DEFAULT_MODEL_CHAR;
 
     /*public static void main(String[] args) {
      Configuration.readProperties(null);
@@ -362,8 +364,8 @@ public class VariableMethods {
                             throw new BadSyntaxException(file, lineNumber, var.toString(), "variable " + var.toString() + " not closed by " + varRLimit + " before EOL :\n" + line);
                         } else { // $(VARNAME)\n
                             String name = var.toString();
-                            if (name.contains(DEFAULT_VALUE_STR)) {
-                                name = name.substring(0, name.indexOf(DEFAULT_VALUE_STR));
+                            if (name.contains(DEFAULT_MODEL_STR)) {
+                                name = name.substring(0, name.indexOf(DEFAULT_MODEL_STR));
 
                                 if (defaultmodels != null) {
                                     String prev = defaultmodels.get(name);
@@ -441,15 +443,15 @@ public class VariableMethods {
 
                 if (inVariable) { // $(VARNAM
                     if (!inModel) {
-                        if (isWordChar(c)) {//(c == '-' && var.charAt(var.length() - 1) == 'E') || (c == '-' && var.charAt(var.length() - 1) == DEFAULT_VALUE_CHAR)) {
+                        if (isWordChar(c)) {//(c == '-' && var.charAt(var.length() - 1) == 'E') || (c == '-' && var.charAt(var.length() - 1) == DEFAULT_MODEL_CHAR)) {
                             var.append(c);
-                        } else if (c == DEFAULT_VALUE_CHAR) { //$(VAR~
+                        } else if (c == DEFAULT_MODEL_CHAR) { //$(VAR~
                             var.append(c);
                             inModel = true;
                         } else if (c == varRLimit) { // $(VARNAME)
                             String name = var.toString();
-                            if (name.contains(DEFAULT_VALUE_STR)) {
-                                name = name.substring(0, name.indexOf(DEFAULT_VALUE_STR));
+                            if (name.contains(DEFAULT_MODEL_STR)) {
+                                name = name.substring(0, name.indexOf(DEFAULT_MODEL_STR));
 
                                 if (defaultmodels != null) {
                                     String prev = defaultmodels.get(name);
@@ -486,8 +488,8 @@ public class VariableMethods {
                         if (c == varRLimit) {
                             if (openVarLimit == 0) {
                                 String name = var.toString();
-                                if (name.contains(DEFAULT_VALUE_STR)) {
-                                    name = name.substring(0, name.indexOf(DEFAULT_VALUE_STR));
+                                if (name.contains(DEFAULT_MODEL_STR)) {
+                                    name = name.substring(0, name.indexOf(DEFAULT_MODEL_STR));
 
                                     if (defaultmodels != null) {
                                         String prev = defaultmodels.get(name);
@@ -564,8 +566,8 @@ public class VariableMethods {
                         pos++;
                         if (pos == line.length() - 1) {
                             String name = var.toString();
-                            /*if (name.contains(DEFAULT_VALUE_STR)) {
-                             name = name.substring(0, name.indexOf(DEFAULT_VALUE_STR));
+                            /*if (name.contains(DEFAULT_MODEL_STR)) {
+                             name = name.substring(0, name.indexOf(DEFAULT_MODEL_STR));
                              if (defaultvalues != null) {
                              String prev = defaultvalues.get(name);
                              if (prev != null) {
@@ -647,15 +649,18 @@ public class VariableMethods {
         return vars;
     }
 
-    private static String[] getFunctionalComments(BufferedReader in, String execCommentStart, String varChar) throws ParseEvalException {
+    private static String[] getFunctionalComments(BufferedReader in, String execCommentStart, String varChar) throws BadSyntaxException {
         List<String> lines = new LinkedList<String>();
         String tmp;
 
         try {
             int openbraces = 0;
             StringBuilder toexec = new StringBuilder();
+            int l=0;
             while ((tmp = in.readLine()) != null) {
-                if (tmp.contains(varChar)) throw new ParseEvalException(null,0,0, tmp,"Function expression should be static (no dataset variable '"+varChar+"...')");
+                l++;
+                if (tmp.contains(varChar)) // no remaining $toto should be seen (because parseFile, which replace these, is assumed already called)
+                    throw new BadSyntaxException(null,l,tmp,"Function expression should be static (no dataset variable '"+varChar+"...')");
                 if (tmp.startsWith(execCommentStart)) {
                     //System.err.println(tmp);
                     String todo = tmp.substring(execCommentStart.length());
@@ -693,7 +698,7 @@ public class VariableMethods {
         return lines_string;
     }
 
-    public static String[] getFunctionalComments(File file, String start, String varChar) throws ParseEvalException {
+    public static String[] getFunctionalComments(File file, String start, String varChar) throws BadSyntaxException {
         BufferedReader in = null;
         InputStreamReader isr = null;
         FileInputStream fis = null;
@@ -704,11 +709,10 @@ public class VariableMethods {
             in = new BufferedReader(isr);
             //in = new BufferedReader(new InputStreamReader(new FileInputStream(file), CHARSET));
             ret = getFunctionalComments(in, start, varChar);
-        } catch (ParseEvalException p) {
-            throw new ParseEvalException(file,p.line,p.column, p.expression,p.error);
-        } catch (Exception e) {
+        } catch (BadSyntaxException p) {
+            throw new BadSyntaxException(file,p.line, p.txt,p.reason);
+        } catch (IOException e) {
             if (Log.level>=10) e.printStackTrace();
-        
         } finally {
             try {
                 fis.close();

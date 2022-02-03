@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
+
 import org.apache.commons.io.FileUtils;
 import org.funz.Project;
 import org.funz.api.TestUtils;
@@ -67,23 +69,23 @@ public class VariableMethodsTest {
         //test.append("#" + fs + ": ftoto <- function(x){\n#" + fs + ":if(x>0) {\n#" + fs + ": x\n#" + fs + ":} else {-x}\n#" + fs + ":}\n");
 
         test.append("ok_var " + vs + "a" + " \n");
-        test.append("no_var_1 " + vs + "a" + VariableMethods.DEFAULT_VALUE_STR + "0.123" + "\n");
-        test.append("no_var_2 " + vs + "a" + VariableMethods.DEFAULT_VALUE_STR + "0.123E-1" + "\n");
-        test.append("no_var_3 " + vs + "a" + VariableMethods.DEFAULT_VALUE_STR + "[0.123E-1,0.456E-1]" + "\n");
+        test.append("no_var_1 " + vs + "a" + VariableMethods.DEFAULT_MODEL_STR + "0.123" + "\n");
+        test.append("no_var_2 " + vs + "a" + VariableMethods.DEFAULT_MODEL_STR + "0.123E-1" + "\n");
+        test.append("no_var_3 " + vs + "a" + VariableMethods.DEFAULT_MODEL_STR + "[0.123E-1,0.456E-1]" + "\n");
 
-        test.append("ok_var_1 " + vs + vl + "a" + VariableMethods.DEFAULT_VALUE_STR + "0.123" + vr + "\n");
-        test.append("ok_var_2 " + vs + vl + "a" + VariableMethods.DEFAULT_VALUE_STR + "0.123E-1" + vr + "\n");
-        test.append("ok_var_3 " + vs + vl + "a" + VariableMethods.DEFAULT_VALUE_STR + "[0.123E-1,0.456E-1]" + vr + "\n");
+        test.append("ok_var_1 " + vs + vl + "a" + VariableMethods.DEFAULT_MODEL_STR + "0.123" + vr + "\n");
+        test.append("ok_var_2 " + vs + vl + "a" + VariableMethods.DEFAULT_MODEL_STR + "0.123E-1" + vr + "\n");
+        test.append("ok_var_3 " + vs + vl + "a" + VariableMethods.DEFAULT_MODEL_STR + "[0.123E-1,0.456E-1]" + vr + "\n");
 
         test.append("ok_form " + fs + fl + vs + "a" + fr + "\n");
         test.append("no_form " + fs + "anything " + fr + "\n");
         test.append("#" + fs + MATHENGINE_SET_MARKER + "c <- rnorm(10)" + "\n");
-        test.append("ok_form_1 " + fs + fl + vs + vl + "a" + VariableMethods.DEFAULT_VALUE_STR + "0.123" + vr + "*1.235" + fr + "\n");
-        test.append("ok_form_2 " + fs + fl + vs + vl + "a" + VariableMethods.DEFAULT_VALUE_STR + "0.123E-1" + vr + "*1.235" + fr + "\n");
-        test.append("ok_var_4 " + vs + "" + vl + "b" + VariableMethods.DEFAULT_VALUE_STR + "0.456" + vr + "\n");
-        test.append("ok_form_3 " + fs + fl + vs + "" + vl + "b" + VariableMethods.DEFAULT_VALUE_STR + "0.567" + vr + fr + "\n");
+        test.append("ok_form_1 " + fs + fl + vs + vl + "a" + VariableMethods.DEFAULT_MODEL_STR + "0.123" + vr + "*1.235" + fr + "\n");
+        test.append("ok_form_2 " + fs + fl + vs + vl + "a" + VariableMethods.DEFAULT_MODEL_STR + "0.123E-1" + vr + "*1.235" + fr + "\n");
+        test.append("ok_var_4 " + vs + "" + vl + "b" + VariableMethods.DEFAULT_MODEL_STR + "0.456" + vr + "\n");
+        test.append("ok_form_3 " + fs + fl + vs + "" + vl + "b" + VariableMethods.DEFAULT_MODEL_STR + "0.567" + vr + fr + "\n");
         test.append("ok_form_4 " + fs + fl + vs + "a" + "|00.000" + fr + "\n");
-        test.append("ok_form_5 " + fs + fl + vs + vl + "c" + VariableMethods.DEFAULT_VALUE_STR + "0.890" + vr + "|00.0000E0" + fr + "\n");
+        test.append("ok_form_5 " + fs + fl + vs + vl + "c" + VariableMethods.DEFAULT_MODEL_STR + "0.890" + vr + "|00.0000E0" + fr + "\n");
         test.append("ok_form_60 " + fs + fl + vs + "d" + "" + fr + "\n");
         test.append("ok_form_6 " + fs + fl + vs + "d" + "|0.00000000E0" + fr + "\n");
         test.append("ok_form_7 " + fs + fl + vs + "e" + "|0.0000E0" + fr + "\n");
@@ -115,7 +117,7 @@ public class VariableMethodsTest {
             HashMap<String, String> defval = parse(values);
         } catch (Exception e) {
             e.printStackTrace();
-            if (e.getMessage()!=null && e.getMessage().contains("b" + VariableMethods.DEFAULT_VALUE_STR)) {
+            if (e.getMessage()!=null && e.getMessage().contains("b" + VariableMethods.DEFAULT_MODEL_STR)) {
                 errorfound = true;
             } else {
                 System.err.println("Bad error detected:" + e.getMessage());
@@ -256,6 +258,8 @@ public class VariableMethodsTest {
 
     @Test
     public void testFunctionnalComment() throws VariableMethods.BadSyntaxException, UnsupportedEncodingException, FileNotFoundException, IOException, ParseEvalException, MathException {
+        ((RMathExpression) MathExpression.GetDefaultInstance()).R.debug=true;
+        
         String atest = "#" + fs + MATHENGINE_SET_MARKER + " a =" +  " 1";
         ASCII.saveFile(fin, atest);
         parse(new HashMap());
@@ -276,9 +280,17 @@ public class VariableMethodsTest {
         ASCII.saveFile(fin, old_gtest);
         parse(new HashMap());
         assert Arrays.asList(((RMathExpression) MathExpression.GetDefaultInstance()).R.ls()).contains("old_g") : "old_g not found";
+
+        String fwithvartest = "#" + fs + MATHENGINE_SET_MARKER + " fy <- function(x, y= "+vs+vl+"toto~42"+vr+" ) {x + y}";
+        ASCII.saveFile(fin, fwithvartest);
+        Map varval=new HashMap<>(); varval.put("toto", 456);
+        Map defval = parse(varval);
+        assert Arrays.asList(((RMathExpression) MathExpression.GetDefaultInstance()).R.ls()).contains("fy") : "fy not found: "+ Arrays.asList(((RMathExpression) MathExpression.GetDefaultInstance()).R.ls());
+        assert defval.containsKey("toto"): "var toto not found";
+
     }
 
-    public HashMap<String, String> parse(HashMap values) throws VariableMethods.BadSyntaxException, UnsupportedEncodingException, FileNotFoundException, IOException, ParseEvalException, MathException {
+    public HashMap<String, String> parse(Map values) throws VariableMethods.BadSyntaxException, UnsupportedEncodingException, FileNotFoundException, IOException, ParseEvalException, MathException {
         HashMap<String, String> defval = new HashMap<String, String>();
         HashSet h = VariableMethods.parseFile("#", varSyntax, formSyntax, fin, fout, values, null, null, null, null, null, defval, MathExpression.GetDefaultInstance());
         return defval;
