@@ -659,9 +659,9 @@ public class VariableMethods {
             int l=0;
             while ((tmp = in.readLine()) != null) {
                 l++;
-                if (tmp.contains(varChar)) // no remaining $toto should be seen (because parseFile, which replace these, is assumed already called)
-                    throw new BadSyntaxException(null,l,tmp,"Function expression should be static (no dataset variable '"+varChar+"...')");
                 if (tmp.startsWith(execCommentStart)) {
+                    if (tmp.contains(varChar)) // no remaining $toto should be seen (because parseFile, which replace these, is assumed already called)
+                        throw new BadSyntaxException(null,l-1,tmp,"Function expression should be static (no dataset variable '"+varChar+"...')");
                     //System.err.println(tmp);
                     String todo = tmp.substring(execCommentStart.length());
                     if (todo.endsWith("\\")) {
