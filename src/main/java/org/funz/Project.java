@@ -1160,7 +1160,10 @@ public class Project {
             //System.err.println("    Node " + n.name);
 
             if (!n.isGroup()) {// is not in a group
-                vars.put(n.getParamName(), getVariableByName(n.getParamName()).evaluate(n.getParamValue()));
+                if (getVariableByName(n.getParamName())==null)
+                    Log.logMessage(this, SeverityLevel.ERROR, true, "The variable " + n.getParamName() + " is not identified.");
+                else
+                    vars.put(n.getParamName(), getVariableByName(n.getParamName()).evaluate(n.getParamValue()));
             } else {// is in a group
                 VarGroup g = null;
                 for (VarGroup gtest : _groups) {
@@ -1179,7 +1182,10 @@ public class Project {
                 }
 
                 for (int j = 0; j < g.getVariables().size(); j++) {
-                    vars.put(n.getGroupVarName(j), getVariableByName(n.getGroupVarName(j)).evaluate(n.getGroupVarValue(j)));
+                    if (getVariableByName(n.getGroupVarName(j))==null)
+                        Log.logMessage(this, SeverityLevel.ERROR, true, "The variable " + n.getGroupVarName(j) + "(in group "+g+") is not identified.");
+                    else
+                        vars.put(n.getGroupVarName(j), getVariableByName(n.getGroupVarName(j)).evaluate(n.getGroupVarValue(j)));
                 }
             }
         }
