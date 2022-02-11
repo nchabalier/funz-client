@@ -2,7 +2,10 @@ package org.funz.doeplugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.funz.Project;
 import org.funz.log.Log;
 import org.funz.log.LogCollector.SeverityLevel;
@@ -69,7 +72,10 @@ public class DesignHelper {
                 o = ASCII.cat(";", experiment.getOutputValues());
             } else {
                 try {
-                    o = f.toNiceSymbolicString() + "=" + f.toNiceNumericString(f.eval(experiment.prj.getPlugin().getFormulaInterpreter(), experiment.getOutputValues(), experiment.getInputValues(), experiment.getIntermediateValues()));
+                    o = f.toNiceSymbolicString() + "=" + f.toNiceNumericString(f.eval(experiment.prj.getPlugin().getFormulaInterpreter(), merge(
+                        experiment.getOutputValues(),
+                        experiment.getInputValues(),
+                        experiment.getIntermediateValues())));
                 } catch (Exception ex) {
                     Log.logException(false, ex);
                     o = ex.toString();
@@ -81,6 +87,21 @@ public class DesignHelper {
         }
         tableresults.append("</table>");
         return tableresults.toString();
+    }
+
+    public static Map<String, Object> merge(Map<String, Object> base,Map<String, Object> toappend) {
+        Map<String, Object> all = new HashMap<>();
+        all.putAll(base);
+        all.putAll(toappend);
+        return all;
+    }   
+    
+    public static Map<String, Object> merge(Map<String, Object> base,Map<String, Object> toappend1,Map<String, Object> toappend2) {
+        Map<String, Object> all = new HashMap<>();
+        all.putAll(base);
+        all.putAll(toappend1);
+        all.putAll(toappend2);
+        return all;
     }
 
     /*public static String buildPNGPlot(File target, PlotPanel plot, int width, int height) {

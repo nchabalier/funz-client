@@ -18,6 +18,7 @@ import static org.funz.api.DesignShell_v1.DEFAULT_FUNCTION_NAME;
 import org.funz.conf.Configuration;
 import org.funz.doeplugin.Design;
 import org.funz.doeplugin.DesignConstants;
+import org.funz.doeplugin.DesignHelper;
 import org.funz.doeplugin.DesignPluginsLoader;
 import org.funz.doeplugin.DesignSession;
 import org.funz.doeplugin.Designer;
@@ -642,7 +643,7 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
                         Map<String, Object> outputValues = ProjectController.getCaseOutputs(prj, ca.getIndex(), false);
                         Map<String, Object> inputValues = ProjectController.getCaseInputs(prj, ca.getIndex());
                         Map<String, Object> interValues = ProjectController.getCaseIntermediates(prj, ca.getIndex());
-                        anythings.get(discCaseIdx).add(anything.getResultRendererData(prj.getPlugin().getFormulaInterpreter(), outputValues, inputValues, interValues));
+                        anythings.get(discCaseIdx).add(anything.getResultRendererData(prj.getPlugin().getFormulaInterpreter(), DesignHelper.merge(inputValues, interValues, outputValues)));
                     }
                     if (res == null) {
                         ds.setAnalysis(XML.merge(RendererHelper.ARRAY_SEP, anythings.get(discCaseIdx)));

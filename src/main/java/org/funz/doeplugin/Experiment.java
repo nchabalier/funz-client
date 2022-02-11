@@ -78,7 +78,7 @@ public abstract class Experiment {
         evaluatedFunctions.putAll(getOutputValues());
 
         if (!evaluatedFunctions.containsKey(f.toNiceSymbolicString())) {
-            Object result = f.eval(prj.getPlugin().getFormulaInterpreter(), getOutputValues(), getInputValues(), getIntermediateValues());
+            Object result = f.eval(prj.getPlugin().getFormulaInterpreter(), DesignHelper.merge(getOutputValues(), getInputValues(), getIntermediateValues()));
             if (result instanceof String) {
                 result = Data.asObject((String) result);
             }
