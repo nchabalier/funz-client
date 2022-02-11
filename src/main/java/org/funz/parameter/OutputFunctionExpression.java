@@ -11,6 +11,8 @@ import org.funz.script.MathExpression;
 import org.funz.script.MathExpression.MathException;
 import org.funz.util.ASCII;
 import org.funz.util.Data;
+import org.xml.sax.SAXException;
+
 import static org.funz.util.Data.asString;
 
 public abstract class OutputFunctionExpression {
@@ -1140,16 +1142,14 @@ public abstract class OutputFunctionExpression {
         args.add(b.toString());
         return args.toArray(new String[args.size()]);
     }
+    
     //TODO : HashMap<String, String> parameters ??
     public String[] parametersExpression;
     public String[] parametersNames;
-    boolean retryNextTime = true; // due to instability of groovy parser... To remove when groovy more stable
-    //or maybe control concurrency with synchronized in Groove*Expression classes ?
 
     public Object eval(MathExpression engine, Map<String, Object>... vars) throws Exception {
         Object[] parametersValues = new Object[parametersExpression.length];
         try {
-            retryNextTime = true;
             HashMap<String, Object> values = new HashMap<String, Object>();
             for (Map<String, Object> v : vars) {
                 if (v != null) {
@@ -1172,19 +1172,9 @@ public abstract class OutputFunctionExpression {
                 return parametersValues;
             }
         } catch (IllegalArgumentException e) {
-            if (retryNextTime) {
-                Log.logMessage(this, SeverityLevel.INFO, false, "Problem instanciating " + toNiceSymbolicString() + " with " + vars + ": retrying...");
-                retryNextTime = false;
-                return eval(engine, vars);
-            } else {
-                Log.logMessage(this, SeverityLevel.PANIC, false, "Problem instanciating " + toNiceSymbolicString() + " with " + vars + ": no more retry.");
-            }
+            Log.logMessage(this, SeverityLevel.PANIC, false, "Problem instanciating " + toNiceSymbolicString() + " with " + vars);
         }
-        /*catch (ScriptException e) {
-         Configuration.logMessage(this, SeverityLevel.PANIC, false, "Problem instanciating " + toNiceSymbolicString() + " with " + outputValues + ":\n  " + e.getMessage());
-         }*/
 
-        retryNextTime = true;
         return null;
     }
 
