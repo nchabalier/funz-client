@@ -116,7 +116,7 @@ public abstract class OutputFunctionExpression {
         }
 
         @Override
-        public String getResultRendererData(MathExpression engine, Map<String, Object>... values) {
+        public String getResultRendererData(MathExpression engine, Map<String, Object> values) {
             String val = null;
             try {
                 Object parametersvalues = eval(engine, values);
@@ -171,7 +171,7 @@ public abstract class OutputFunctionExpression {
         }
 
         @Override
-        public String getResultRendererData(MathExpression engine, Map<String, Object>... values) {
+        public String getResultRendererData(MathExpression engine, Map<String, Object> values) {
             String val = null;
             try {
                 Object parametersvalues = eval(engine, values);
@@ -219,7 +219,7 @@ public abstract class OutputFunctionExpression {
         }
 
         @Override
-        public String getResultRendererData(MathExpression engine, Map<String, Object>... values) {
+        public String getResultRendererData(MathExpression engine, Map<String, Object> values) {
             String val = null;
             try {
                 Object parametersvalues = eval(engine, values);
@@ -276,7 +276,7 @@ public abstract class OutputFunctionExpression {
         }
 
         @Override
-        public String getResultRendererData(MathExpression engine, Map<String, Object>... values) {
+        public String getResultRendererData(MathExpression engine, Map<String, Object> values) {
             String val = null;
             try {
                 Object parametersvalues = eval(engine, values);
@@ -323,7 +323,7 @@ public abstract class OutputFunctionExpression {
         }
 
         @Override
-        public String getResultRendererData(MathExpression engine, Map<String, Object>... values) {
+        public String getResultRendererData(MathExpression engine, Map<String, Object> values) {
             String val = null;
             try {
                 Object parametersvalues = eval(engine, values);
@@ -385,7 +385,7 @@ public abstract class OutputFunctionExpression {
         }
 
         @Override
-        public String getResultRendererData(MathExpression engine, Map<String, Object>... values) {
+        public String getResultRendererData(MathExpression engine, Map<String, Object> values) {
             String val = null;
             try {
                 Object parametersvalues = eval(engine, values);
@@ -455,7 +455,7 @@ public abstract class OutputFunctionExpression {
         }
 
         @Override
-        public String getResultRendererData(MathExpression engine, Map<String, Object>... values) {
+        public String getResultRendererData(MathExpression engine, Map<String, Object> values) {
             String val = null;
             try {
                 Object parametersvalues = eval(engine, values);
@@ -532,7 +532,7 @@ public abstract class OutputFunctionExpression {
         }
 
         @Override
-        public String getResultRendererData(MathExpression engine, Map<String, Object>... values) {
+        public String getResultRendererData(MathExpression engine, Map<String, Object> values) {
             String val = null;
             try {
                 Object parametersvalues = eval(engine, values);
@@ -628,7 +628,7 @@ public abstract class OutputFunctionExpression {
         }
 
         @Override
-        public String getResultRendererData(MathExpression engine, Map<String, Object>... values) {
+        public String getResultRendererData(MathExpression engine, Map<String, Object> values) {
             String val = null;
             try {
                 Object parametersvalues = eval(engine, values);
@@ -710,7 +710,7 @@ public abstract class OutputFunctionExpression {
         }
 
         @Override
-        public String getResultRendererData(MathExpression engine, Map<String, Object>... values) {
+        public String getResultRendererData(MathExpression engine, Map<String, Object> values) {
             String val = null;
             try {
                 Object parametersvalues = eval(engine, values);
@@ -850,7 +850,7 @@ public abstract class OutputFunctionExpression {
         }
 
         @Override
-        public String getResultRendererData(MathExpression engine, Map<String, Object>... values) {
+        public String getResultRendererData(MathExpression engine, Map<String, Object> values) {
             String val = null;
             try {
                 Object parametersvalues = eval(engine, values);
@@ -1142,19 +1142,17 @@ public abstract class OutputFunctionExpression {
         args.add(b.toString());
         return args.toArray(new String[args.size()]);
     }
-    
+
     //TODO : HashMap<String, String> parameters ??
     public String[] parametersExpression;
     public String[] parametersNames;
 
-    public Object eval(MathExpression engine, Map<String, Object>... vars) throws Exception {
+    public Object eval(MathExpression engine, Map<String, Object> vars) throws Exception {
         Object[] parametersValues = new Object[parametersExpression.length];
         try {
             HashMap<String, Object> values = new HashMap<String, Object>();
-            for (Map<String, Object> v : vars) {
-                if (v != null) {
-                    values.putAll(v);
-                }
+            if (vars != null) {
+                values.putAll(vars);
             }
 
             for (int i = 0; i < parametersExpression.length; i++) {
@@ -1280,7 +1278,7 @@ public abstract class OutputFunctionExpression {
     /**
      * Return xml compatible string for renderers
      */
-    public abstract String getResultRendererData(MathExpression engine, Map<String, Object>... values);
+    public abstract String getResultRendererData(MathExpression engine, Map<String, Object> values);
 
     @Override
     public String toString() {
