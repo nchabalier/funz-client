@@ -122,6 +122,7 @@ public abstract class OutputFunctionExpression {
                 Object parametersvalues = eval(engine, values);
                 val = toNiceNumericString(parametersvalues);
             } catch (Exception ex) {
+                if (Log.level >=10) ex.printStackTrace();
                 Log.logException(false, ex);
                 val = "?";
             }
@@ -177,6 +178,7 @@ public abstract class OutputFunctionExpression {
                 Object parametersvalues = eval(engine, values);
                 val = toNiceNumericString(parametersvalues);
             } catch (Exception ex) {
+                if (Log.level >=10) ex.printStackTrace();
                 Log.logException(false, ex);
                 val = "?";
             }
@@ -225,6 +227,7 @@ public abstract class OutputFunctionExpression {
                 Object parametersvalues = eval(engine, values);
                 val = toNiceNumericString(parametersvalues);
             } catch (Exception ex) {
+                if (Log.level >=10) ex.printStackTrace();
                 Log.logException(false, ex);
                 val = "?";
             }
@@ -282,6 +285,7 @@ public abstract class OutputFunctionExpression {
                 Object parametersvalues = eval(engine, values);
                 val = toNiceNumericString(parametersvalues);
             } catch (Exception ex) {
+                if (Log.level >=10) ex.printStackTrace();
                 Log.logException(false, ex);
                 val = "?";
             }
@@ -329,6 +333,7 @@ public abstract class OutputFunctionExpression {
                 Object parametersvalues = eval(engine, values);
                 val = toNiceString(parametersvalues);
             } catch (Exception ex) {
+                if (Log.level >=10) ex.printStackTrace();
                 Log.logException(false, ex);
                 val = "?";
             }
@@ -399,6 +404,7 @@ public abstract class OutputFunctionExpression {
                 Object parametersvalues = eval(engine, values);
                 val = toNiceNumericString(parametersvalues);
             } catch (Exception ex) {
+                if (Log.level >=10) ex.printStackTrace();
                 Log.logException(false, ex);
                 val = "?";
             }
@@ -476,6 +482,7 @@ public abstract class OutputFunctionExpression {
                 Object parametersvalues = eval(engine, values);
                 val = toNiceNumericString(parametersvalues);
             } catch (Exception ex) {
+                if (Log.level >=10) ex.printStackTrace();
                 Log.logException(false, ex);
                 val = "?";
             }
@@ -572,6 +579,7 @@ public abstract class OutputFunctionExpression {
                 Object parametersvalues = eval(engine, values);
                 val = toNiceNumericString(parametersvalues);
             } catch (Exception ex) {
+                if (Log.level >=10) ex.printStackTrace();
                 Log.logException(false, ex);
                 val = "?";
             }
@@ -654,6 +662,7 @@ public abstract class OutputFunctionExpression {
                 Object parametersvalues = eval(engine, values);
                 val = toNiceNumericString(parametersvalues);
             } catch (Exception ex) {
+                if (Log.level >=10) ex.printStackTrace();
                 Log.logException(false, ex);
                 val = "?";
             }
@@ -794,6 +803,7 @@ public abstract class OutputFunctionExpression {
                 Object parametersvalues = eval(engine, values);
                 val = toNiceNumericString(parametersvalues);
             } catch (Exception ex) {
+                if (Log.level >=10) ex.printStackTrace();
                 Log.logException(false, ex);
                 val = "?";
             }
@@ -963,16 +973,17 @@ public abstract class OutputFunctionExpression {
                     throw new IllegalArgumentException("Parameters of " + str + " not suitable for " + type.getSimpleName() + " constructor");
                 }
             } else if (instance.isNiceString(str)) {
-                String[] args = instance.fromNiceString(str);
-                Class[] argsclasses = new Class[args.length];
-                for (int i = 0; i < argsclasses.length; i++) {
-                    argsclasses[i] = String.class;
-                }
                 try {
+                    String[] args = instance.fromNiceString(str);
+                    Class[] argsclasses = new Class[args.length];
+                    for (int i = 0; i < argsclasses.length; i++) {
+                        argsclasses[i] = String.class;
+                    }
+                
                     return (OutputFunctionExpression) type.getConstructor(argsclasses).newInstance(args);
                 } catch (Exception e) {
-                    Log.logException(false, e);
-                    throw new IllegalArgumentException("Parameters of " + str + " not suitable for " + type.getSimpleName() + " constructor");
+                    // not blocking : will try another OutputFunctionExpression subclass 
+                    Log.logMessage(OutputFunctionExpression.class, SeverityLevel.WARNING, true, "Parameters of " + str + " not suitable for " + type.getSimpleName() + " constructor");
                 }
             }
         }

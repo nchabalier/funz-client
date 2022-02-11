@@ -1,6 +1,8 @@
 package org.funz.parameter;
 
 import java.util.Arrays;
+import java.util.Map;
+
 import org.funz.conf.Configuration;
 import org.funz.parameter.OutputFunctionExpression.Anything;
 import org.funz.parameter.OutputFunctionExpression.AnythingND;
@@ -9,11 +11,14 @@ import org.funz.parameter.OutputFunctionExpression.Numeric;
 import org.funz.parameter.OutputFunctionExpression.Numeric2D;
 import org.funz.parameter.OutputFunctionExpression.Numeric3D;
 import org.funz.parameter.OutputFunctionExpression.NumericArray;
-import org.funz.parameter.OutputFunctionExpression.Sequence;
 import org.funz.parameter.OutputFunctionExpression.Text;
+import org.funz.script.MathExpression;
+import org.funz.script.RMathExpression;
 import org.funz.util.ASCII;
+import org.funz.util.Data;
 import org.junit.Before;
 import org.junit.Test;
+import org.math.R.RenjinSession;
 
 public class OutputFunctionExpressionTest {
 
@@ -50,6 +55,7 @@ public class OutputFunctionExpressionTest {
      fv.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
      fv.setVisible(true);
      }*/
+
     @Test
     public void testCast() {
         /*String[] s = splitArgs("expand.grid(MeshTally_4_meshY,MeshTally_4_meshX)[,1],expand.grid(MeshTally_4_meshY,MeshTally_4_meshX)[,2],array(MeshTally_4_average)");
@@ -82,10 +88,6 @@ public class OutputFunctionExpressionTest {
         String na_str = na.toNiceNumericString(new double[]{1.0, 2.0});
         assert Arrays.equals(na.fromNiceNumericString(na_str), new double[]{1.0, 2.0}) : na_str + "!=" + na.toNiceNumericString(na.fromNiceNumericString(na_str));
 
-        Sequence s = new Sequence();
-        String s_str = s.toNiceNumericString(new double[]{1.0, 2.0, 3.0});
-        assert Arrays.equals(s.fromNiceNumericString(s_str), new double[]{1.0, 2.0, 3.0}) : s_str + "!=" + s.toNiceNumericString(s.fromNiceNumericString(s_str));
-
         Numeric2D n2 = new Numeric2D();
         String n2_str = n2.toNiceNumericString(new double[]{1.0, 2.0});
         assert Arrays.equals(n2.fromNiceNumericString(n2_str), new double[]{1.0, 2.0}) : n2_str + "!=" + n2.toNiceNumericString(n2.fromNiceNumericString(n2_str));
@@ -105,6 +107,19 @@ public class OutputFunctionExpressionTest {
         //Numeric3DArray n3a = new Numeric3DArray();
         //String n3a_str = n3a.toNiceNumericString(new double[][]{{1.0, 2.0}, {10.0, 20.0}, {100.0, 200.0}});
         //assert Arrays.deepEquals(Numeric3DArray.fromNiceNumericString(n3a_str), new double[][]{{1.0, 2.0}, {10.0, 20.0}, {100.0, 200.0}}) : n3a_str + "!=" + n3a.toNiceNumericString(Numeric3DArray.fromNiceNumericString(n3a_str));
+    }
+
+    @Test
+    public void testEval() {
+         MathExpression engine = new RMathExpression("MathExpressionTest");
+
+        Numeric n = new Numeric("a+1");
+        assert n.getResultRendererData(engine, Data.newMap("a",42)).equals("<Plot1D name='a+1'>43.0</Plot1D>");
+
+        NumericArray na = new NumericArray("m['a']");
+        Map m = Data.newMap("a",new double[]{1,2,3},"b",new double[]{4,5,6},"c",new double[]{7,8,9});
+        System.err.println(na.getResultRendererData(engine, Data.newMap("m",m)));
+        assert na.getResultRendererData(engine, Data.newMap("m",m)).equals("<Plot1D name='[m['a']]'>[1.0,2.0,3.0]</Plot1D>");
     }
 
     @Before

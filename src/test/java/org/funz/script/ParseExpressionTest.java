@@ -40,11 +40,14 @@ public class ParseExpressionTest {
         expressions = new LinkedList<String>();
         results = new LinkedList<Object>();
 
+        expressions.add("CSV(\"toto.csv\",\",\")>>asString()");
+        results.add("{a=[1.0,2.0,3.0],b=[4.0,5.0,6.0],c=[7.0,8.0,9.0]}");        
+        
         expressions.add("grep(\"(.*)Rmd\",\"mean\")>>get(0)");
         results.add("Mean speed: `r mean(cars$speed)`");
 
         expressions.add("grep(\"(.*)Rmd\",\": `r \")");
-        results.add("Mean speed: `r mean(cars$speed)`");   
+        results.add("Mean speed: `r mean(cars$speed)`");  
 
         expressions.add("`grep(\"(.*)Rmd\",\"\\: `r \")>>cut(\"\\: `r \",1)>>get(0)>>split(\" \")>>get(0)`");
         results.add("speed");        
