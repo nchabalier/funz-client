@@ -29,8 +29,8 @@ public abstract class OutputFunctionExpression {
     public static String ARRAY_END = "" + Data.ARRAY_END;//"]";
     public static String COORD_BEGIN = "(";
     public static String COORD_END = ")";
-    public static String SEQUENCE_BEGIN = "{";
-    public static String SEQUENCE_END = "}";
+    public static String MAP_BEGIN = "{";
+    public static String MAP_END = "}";
     public static String TEXT_BEGIN = "'";
     public static String TEXT_END = "'";
 
@@ -333,68 +333,6 @@ public abstract class OutputFunctionExpression {
                 val = "?";
             }
             return RendererHelper.formatXML("ParPlot", toNiceSymbolicString(), val);
-        }
-    }
-
-    public static class Sequence extends OutputFunctionExpression {
-
-        public Sequence() {
-            this("");
-        }
-
-        public Sequence(String value) {
-            setParametersExpression(value);
-            parametersNames = new String[]{"sequence"};
-
-        }
-
-        public String getSymbolicValue() {
-            return parametersExpression[0];
-        }
-
-        @Override
-        public String toNiceString(Object[] params) {
-            assert params.length == 1;
-            return SEQUENCE_BEGIN + params[0] + SEQUENCE_END;
-        }
-
-        public boolean isNiceString(String s) {
-            return s.startsWith(SEQUENCE_BEGIN) && s.endsWith(SEQUENCE_END);
-        }
-
-        public String[] fromNiceString(String s) {
-            if (! (s.startsWith(SEQUENCE_BEGIN) && s.endsWith(SEQUENCE_END)) ) Log.err(  "Unrecognized sequence expression" + s ,5);
-            String[] res = s.substring(1, s.length() - 1).split(PARAM_SEPARATOR);
-            if (! (res != null && res.length >= 1 )) Log.err( "Unrecognized numeric array number of arguments" + s ,5);
-            return res;
-        }
-
-        @Override
-        public String toNiceNumericString(Object parametersValues) {
-            return super.toNiceNumericString(parametersValues).replace(ARRAY_BEGIN, SEQUENCE_BEGIN).replace(ARRAY_END, SEQUENCE_END);
-            /*double[] s = (double[]) parametersValues;
-             StringBuffer res = new StringBuffer();
-             res.append("[");
-             for (int i = 0; i < s.length; i++) {
-             res.append(s[i]);
-             res.append(PARAM_SEPARATOR);
-             }
-             res.deleteCharAt(res.length() - 1);
-             res.append("]");
-             return res.toString();*/
-        }
-
-        @Override
-        public String getResultRendererData(MathExpression engine, Map<String, Object> values) {
-            String val = null;
-            try {
-                Object parametersvalues = eval(engine, values);
-                val = toNiceNumericString(parametersvalues);
-            } catch (Exception ex) {
-                Log.logException(false, ex);
-                val = "?";
-            }
-            return RendererHelper.formatXML("Plot2D", toNiceSymbolicString(), val);
         }
     }
 
@@ -958,10 +896,6 @@ public abstract class OutputFunctionExpression {
             OutputFunctionInstances.put(Numeric.class, new Numeric());
             OutputFunctionNames.put(Numeric.class, "Numeric");
 
-            OutputFunctions.add(Sequence.class);
-            OutputFunctionInstances.put(Sequence.class, new Sequence());
-            OutputFunctionNames.put(Sequence.class, "Sequence");
-
             OutputFunctions.add(Text.class);
             OutputFunctionInstances.put(Text.class, new Text());
             OutputFunctionNames.put(Text.class, "Text");
@@ -1042,7 +976,9 @@ public abstract class OutputFunctionExpression {
                 }
             }
         }
-        throw new IllegalArgumentException("Expression " + str + " is not suitable as an OutputFunctionExpression");
+        IllegalArgumentException e = new IllegalArgumentException("Expression " + str + " is not suitable as an OutputFunctionExpression");
+        Log.logException(true, e);
+        throw e;
     }
 
     static int matchingCloseBrace(String expr, int openBracePos) {
