@@ -1106,6 +1106,8 @@ public abstract class OutputFunctionExpression {
                 try {
                     parametersValues[i] = engine.eval(parametersExpression[i], values);
                 } catch (MathException ex) {
+                    if (Log.level>=10) ex.printStackTrace();
+                    Log.logMessage(engine,SeverityLevel.PANIC, true, engine.getLastMessage());
                     Log.logException(true, ex);
                     parametersValues[i] = null;
                 }
@@ -1118,9 +1120,8 @@ public abstract class OutputFunctionExpression {
             }
         } catch (IllegalArgumentException e) {
             Log.logMessage(this, SeverityLevel.PANIC, false, "Problem instanciating " + toNiceSymbolicString() + " with " + vars);
+            return null;
         }
-
-        return null;
     }
 
     public String[] getParametersExpression() {
