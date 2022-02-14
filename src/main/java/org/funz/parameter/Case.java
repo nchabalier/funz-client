@@ -322,7 +322,7 @@ public class Case extends Experiment {
     };
     public static final int STATE_INTACT = 0, STATE_FAILED = 1, STATE_ERROR = 2, STATE_PREPARING = 3, STATE_OVER = 5, STATE_RUNNING = 4;
     public static final String[] STATE_STRINGS = {"intact", "failed", "error", "preparing", "running", "done"};
-    public static final int[] STATE_ORDER = {0, 3, 4, 5, 1, 2};
+    public static final int[] STATE_ORDER = {0, 3, 4, 1, 2, 5};
     static NumberFormat f;
     static FieldPosition fp;
 

@@ -432,13 +432,13 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
     public String getRunDesignState(int i) {
         if (haveNoDesign()) {
             return StringUtils.rightPad(
-                    batchRuns[i] != null ? batchRuns[i].getState().trim().replace('\n', ',').replace("Running (i/p/r/d/f/e):\t", ""): "-",
+                    batchRuns[i] != null ? batchRuns[i].getState().trim().replace('\n', ',').replace("Running (i/p/r/e/f/d):\t", ""): "-",
                     STATE_PRINT_WIDTH);
         } else {
             return StringUtils.rightPad(
                 (loopDesigns[i] != null ? loopDesigns[i].getState().trim().replace('\n', ',') : "-") +
                 ": "+
-                (batchRuns[i] != null ? batchRuns[i].getState().trim().replace('\n', ',').replace("Running (i/p/r/d/f/e):\t", "") : "-"),
+                (batchRuns[i] != null ? batchRuns[i].getState().trim().replace('\n', ',').replace("Running (i/p/r/e/f/d):\t", "") : "-"),
                 STATE_PRINT_WIDTH);
         }
     }
