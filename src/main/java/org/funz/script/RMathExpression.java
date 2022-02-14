@@ -555,6 +555,7 @@ public class RMathExpression extends MathExpression {
              }*/
         } catch (Exception ex) {
             Log.err(ex, 2);
+            if (Log.level>=10) ex.printStackTrace();
             try {// add a test to check session is available. otherwise restart.
                 if (!((Double) (R.eval("1+41")) == 42)) {
                     restartR = true;
