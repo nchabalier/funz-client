@@ -551,7 +551,7 @@ public class RDesigner_V0 extends Designer {
                     } catch (Exception ex) {
                         Log.err(ex, 1);
                         R.note_text("Error: " + ex.getMessage());
-                        out = ex.getMessage() + "\nError, failed to analyseDesignTmp " + R.getLastLogEntry() + " ! " + R.getLastError() + "\n on \n" + experiments;
+                        out = ex.getMessage() + "\nError, failed to analyseDesignTmp " + R.getLastLogEntry() + " ! " + R.getLastError(); // + "\n on \n" + experiments;
                     }
 
                     String html = RendererHelper.tryHTMLize(out, getDesignOutputTitle());
@@ -614,7 +614,7 @@ public class RDesigner_V0 extends Designer {
             } catch (Exception ex) {
                 Log.err(ex, 1);
                 R.note_text("Error: " + ex.getMessage());
-                out = ex.getMessage() + "\nError, failed to analyseDesign " + R.getLastLogEntry() + " ! " + R.getLastError() + "\n on \n" + experiments + "\n " + ex.getMessage();
+                out = ex.getMessage() + "\nError, failed to analyseDesign " + R.getLastLogEntry() + " ! " + R.getLastError(); // + "\n on \n" + experiments + "\n " + ex.getMessage();
             }
 
             String html = RendererHelper.tryHTMLize(out, getDesignOutputTitle());
