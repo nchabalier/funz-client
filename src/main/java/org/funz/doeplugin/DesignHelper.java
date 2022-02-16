@@ -91,16 +91,16 @@ public class DesignHelper {
 
     public static Map<String, Object> merge(Map<String, Object> base,Map<String, Object> toappend) {
         Map<String, Object> all = new HashMap<>();
-        all.putAll(base);
-        all.putAll(toappend);
+        if (base!=null) all.putAll(base);
+        if (toappend!=null) all.putAll(toappend);
         return all;
     }   
     
     public static Map<String, Object> merge(Map<String, Object> base,Map<String, Object> toappend1,Map<String, Object> toappend2) {
         Map<String, Object> all = new HashMap<>();
-        all.putAll(base);
-        all.putAll(toappend1);
-        all.putAll(toappend2);
+        if (base!=null) all.putAll(base);
+        if (toappend1!=null) all.putAll(toappend1);
+        if (toappend2!=null) all.putAll(toappend2);
         return all;
     }
 
