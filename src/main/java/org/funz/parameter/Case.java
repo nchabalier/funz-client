@@ -316,13 +316,13 @@ public class Case extends Experiment {
     public static final int MODIFIED_CALC = 3, MODIFIED_STATE = 0, MODIFIED_TIME = 2, MODIFIED_INFO = 1;
     public static String[] MODIFIED_STRINGS = {"state", "info", "time", "calc"};
     public static final String PROP_PATH = "path", PROP_CODE = "code", PROP_START = "start", PROP_END = "end", PROP_DURATION = "duration", PROP_STATE = "state", PROP_CALC = "calc", PROP_VAR = "input", PROP_OUT = "output", PROP_INTER = "intermediate";
-    public static final String[] STATE_HTML_STRINGS = {"intact", "<font size=-1 color=red>failed</font>",
-        "<font size=-1 color=red>error</font>", "preparing", "<font size=-1 color=green>running</font>",
-        "<font size=-1 color=blue>done</font>"
+    public static final String[] STATE_HTML_STRINGS = {"intact", "<font size='-1' color='red'>failed</font>",
+        "<font size='-1' color='orange'>error</font>", "preparing", "<font size='-1' color='blue'>running</font>",
+        "<font size='-1' color='green'>done</font>"
     };
     public static final int STATE_INTACT = 0, STATE_FAILED = 1, STATE_ERROR = 2, STATE_PREPARING = 3, STATE_OVER = 5, STATE_RUNNING = 4;
     public static final String[] STATE_STRINGS = {"intact", "failed", "error", "preparing", "running", "done"};
-    public static final int[] STATE_ORDER = {0, 3, 4, 1, 2, 5};
+    public static final int[] STATE_ORDER = {0, 3, 4, 2, 1, 5};
     static NumberFormat f;
     static FieldPosition fp;
 
