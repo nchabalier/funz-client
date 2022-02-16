@@ -14,6 +14,8 @@ import org.funz.api.Funz_v1;
 import org.funz.api.LoopDesign_v1;
 import org.funz.api.Shell_v1;
 import org.funz.log.Log;
+import org.funz.parameter.Variable;
+
 import static org.funz.main.MainUtils.CLEAR_LINE;
 import static org.funz.main.MainUtils.init;
 import static org.funz.parameter.OutputFunctionExpression.OutputFunctions;
@@ -315,6 +317,12 @@ public class RunDesign extends MainUtils {
 
             if (_outputExpressions == null) {
                 System.err.println("[WARNING] Output expression not defined, using default one: " + shell.getOutputExpressions()[0]);
+            }
+
+            for (Variable v : shell.prj.getVariables()) {
+                if (!_variableModel.keySet().contains(v.getName())) {
+                    System.err.println("[WARNING] Variable "+v.getName()+" model not defined, using default one: " + v.getDefaultModel());
+                }
             }
 
             //tic("setArchiveDirectory");
