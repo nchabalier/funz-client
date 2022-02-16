@@ -2,10 +2,23 @@
 
 ## Improvements
 
+* support .csv output file reading as DataFrame/List/Dict/Map (using CSV('coldelim') in outputexpression)
+* support DataFrame/List/Dict/Map object in output expression interpreter
+* remove 'sequence' type in outputexpressions. Should be replaced by an array.
+* check input variables are well defined in Funz.sh/bat, otherwise warn that default model is used
+* add sensitivity analysis Morris algorithm: https://github.com/Funz/algorithm-Sensitivity
+* add simple uniform sampling (no need for more R package): https://github.com/Funz/algorithm-RandomSampling
+* up Rsession to support "list[['argname']]" syntax in R2js
+
 ## Fixes
 
 * add tests for multi-output algorithms
 * try force cast string[] output to double[], even when ioplugin returns string
+* fix escaping char in outputexpression ('\"' was considered as 2 chars)
+* change order of cases status : intact/preparing/running/error/failed/done
+* remove (heavy) display of all results when design error
+* remove some varargs that should block gc... may reduce heap usage
+* fix some failure reporting 
 
 
 # v1.14 - 04/12/2021
