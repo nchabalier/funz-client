@@ -314,6 +314,10 @@ public class Design extends MainUtils {
             System.exit(DESIGN_ERROR);
         }
 
+        if (_variableModel==null || _variableModel.keySet()==null ) {
+            System.err.println("[ERROR] Variable model not defined.\n" + help("--input_variables"));
+        }
+        
         //tic("setVerbosity");
         Funz_v1.setVerbosity(verb);
         //toc("setVerbosity");        //toc("setVerbosity");

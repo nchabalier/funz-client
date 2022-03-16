@@ -320,7 +320,7 @@ public class RunDesign extends MainUtils {
             }
 
             for (Variable v : shell.prj.getVariables()) {
-                if (!_variableModel.keySet().contains(v.getName())) {
+                if (_variableModel==null || _variableModel.keySet()==null || !_variableModel.keySet().contains(v.getName())) {
                     System.err.println("[WARNING] Variable "+v.getName()+" model not defined, using default one: " + v.getDefaultModel());
                 }
             }
