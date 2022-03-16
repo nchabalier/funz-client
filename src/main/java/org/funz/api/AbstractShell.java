@@ -214,22 +214,27 @@ public abstract class AbstractShell implements UnifiedShell, Case.Observer {
         plugin.setFormulaInterpreter(new RMathExpression(input[0].getName() + "_" + Configuration.timeDigest(), Configuration.isLog("R") ? new File(prj.getLogDir(), name + ".Rlog") : null));
 
         if (input.length > 1) {
+            List<File> inputs = new LinkedList<File>();
             for (int i = 1; i < input.length; i++) {
                 if (!input[i].exists()) {
                     Log.err("Input file/dir " + input[i].getName() + " does not exist.", 2);
-                } else
+                } else 
+                    inputs.add(input[i]);
+            }
+        
+            if (inputs.size()>0)
                 try {
-                    prj.importFileOrDir(input[i]);
+                    prj.importFilesOrDirs(inputs.toArray(new File[inputs.size()]));
                 } catch (Exception ex) {
                     Log.err(ex, 0);
                 }
-            }
-            prj.buildParameterList();
-            try {
-                prj.saveInSpool();
-            } catch (Exception ex) {
-                Log.err(ex, 0);
-            }
+        }
+
+        prj.buildParameterList();
+        try {
+            prj.saveInSpool();
+        } catch (Exception ex) {
+            Log.err(ex, 0);
         }
     }
 

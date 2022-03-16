@@ -1689,33 +1689,40 @@ public class Project {
         return false;
     }
 
+    public void importFileOrDir(File src, String... path) throws Exception {
+        importFilesOrDirs(new File[]{src}, path);
+    }
+
     /**
      * Imports a file and adds automatically all found variables.
      */
-    public void importFileOrDir(File src, String... path) throws Exception {
-        if (!ASCII.removeAccents(src.getName()).equals(src.getName())) {
-            Alert.showInformation("Warning, file name " + src.getName() + " may be incompatible with remote code execution!");
-        }
-
-        InputFile[] fis = _plugin.importFileOrDir(src);
-        for (InputFile fi : fis) {
-            if (fi.getParentPath() == null && path != null && path.length > 0) {
-                fi.setParentPath(path);
+    public void importFilesOrDirs(File[] srcs, String... path) throws Exception {
+        for (File src : srcs) {
+            if (!ASCII.removeAccents(src.getName()).equals(src.getName())) {
+                Alert.showInformation("Warning, file name " + src.getName() + " may be incompatible with remote code execution!");
             }
 
-            if (_inputfiles.contains(fi)) {
-                for (Iterator<InputFile> it = _inputfiles.iterator(); it.hasNext();) {
-                    InputFile tmp = it.next();
-                    if (tmp.equals(fi)) {
-                        fi = tmp;
-                        break;
-                    }
+            InputFile[] fis = _plugin.importFileOrDir(src);
+            for (InputFile fi : fis) {
+                if (fi.getParentPath() == null && path != null && path.length > 0) {
+                    fi.setParentPath(path);
                 }
 
-            } else {
-                _inputfiles.add(fi);
+                if (_inputfiles.contains(fi)) {
+                    for (Iterator<InputFile> it = _inputfiles.iterator(); it.hasNext();) {
+                        InputFile tmp = it.next();
+                        if (tmp.equals(fi)) {
+                            fi = tmp;
+                            break;
+                        }
+                    }
+
+                } else {
+                    _inputfiles.add(fi);
+                }
             }
         }
+
         try {
             _plugin.setInputFiles(getFilesAsArray());
         } catch (IllegalArgumentException i) {
