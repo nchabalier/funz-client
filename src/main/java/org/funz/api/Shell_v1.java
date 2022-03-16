@@ -483,6 +483,7 @@ public class Shell_v1 extends AbstractShell implements Design.Observer {
             buildDesign();
             //toc("buildDesign");
         } catch (Exception e) {
+            if (Log.level>=10) e.printStackTrace();
             Log.err("Error in buildDesign: " + e.getLocalizedMessage(), 0);
             Alert.showException(e);
             state = SHELL_EXCEPTION;
