@@ -266,6 +266,7 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
 
     // This is the test entry point. 1st arg is ioplugin path, next are test case directories.
     public static void main(String[] args) throws Exception {
+        Log.level = 10;
         //MathExpression.SetDefaultInstance(RMathExpression.NewInstance("BasicIOPlugin")); not required: will just output "No instance ..." messages
         String errors = "";
         System.out.println("{\n\"class\": \"BasicIOPlugin\",");
@@ -334,7 +335,7 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
                     File inputfile = new File(input[0], dir.getName());
                     System.out.println("  \"methods\": {");
                     System.out.println("    \"acceptsDataSet\": \"" + plugin.acceptsDataSet(inputfile) + "\",");
-                    plugin.setInputFiles(new File[]{inputfile});
+                    plugin.setInputFiles(input[0].listFiles());
                     System.out.println("    \"setInputFiles.output\": {");
                     for (String ok : plugin._output.keySet()) {
                         Object o = plugin._output.get(ok);
