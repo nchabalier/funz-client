@@ -1,38 +1,10 @@
 package org.funz;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.io.FileUtils;
-import static org.funz.Constants.*;
-import static org.funz.XMLConstants.*;
 import org.funz.api.AbstractShell;
 import org.funz.api.DesignShell_v1;
-import org.funz.api.Funz_v1;
 import org.funz.conf.Configuration;
-import org.funz.doeplugin.Design;
-import org.funz.doeplugin.DesignConstants;
-import org.funz.doeplugin.DesignPluginsLoader;
-import org.funz.doeplugin.DesignSession;
-import org.funz.doeplugin.Designer;
-import org.funz.doeplugin.Experiment;
+import org.funz.doeplugin.*;
 import org.funz.ioplugin.IOPluginInterface;
 import org.funz.ioplugin.IOPluginsLoader;
 import org.funz.log.Alert;
@@ -44,15 +16,21 @@ import org.funz.parameter.VariableMethods.ParseEvalException;
 import org.funz.script.MathExpression;
 import org.funz.util.ASCII;
 import org.funz.util.Disk;
-import org.funz.util.Format;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static org.funz.Constants.INPUT_DIR;
+import static org.funz.XMLConstants.*;
 import static org.funz.util.Format.fromHTML;
 import static org.funz.util.Format.toHTML;
 import static org.funz.util.ParserUtils.ASCIIFilesAreIdentical;
 import static org.funz.util.ParserUtils.getASCIIFileContent;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * Project is responsible for parameters control and save/load operations. It
@@ -2670,6 +2648,7 @@ public class Project {
     private void loadDesignSessions(File file) {
         Log.logMessage(this, SeverityLevel.INFO, false, "loading sessions " + file);
         try {
+            _designSessions.clear();
             Document d = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
             Element e = d.getDocumentElement();
             if (!e.getTagName().equals(ELEM_SESSIONS)) {
@@ -2679,7 +2658,9 @@ public class Project {
             for (int i = 0; i < ss.getLength(); i++) {
                 Element el = (Element) ss.item(i);
                 int discid = Integer.parseInt(el.getAttribute(ATTR_IDX));
-                _designSessions.add(discid, new DesignSession(el, discid));
+                DesignSession designSession = new DesignSession(el, discid);
+                designSession.setProject(this);
+                _designSessions.add(discid, designSession);
             }
         } catch (Exception e) {
             e.printStackTrace();

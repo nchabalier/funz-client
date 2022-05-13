@@ -1,17 +1,20 @@
 package org.funz.doeplugin;
 
-import java.io.*;
-import java.util.Map;
 import org.funz.Project;
-import static org.funz.XMLConstants.*;
 import org.funz.parameter.Case;
-import static org.funz.util.Format.XML.getText;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import java.io.PrintStream;
+import java.util.Map;
+
+import static org.funz.XMLConstants.*;
+import static org.funz.util.Format.XML.getText;
 
 public class DesignSession {
 
     int caseIdx;
+    private Project prj = null;
 
     public DesignSession(int caseIdx) {
         this.caseIdx = caseIdx;
@@ -20,6 +23,7 @@ public class DesignSession {
     static String ELEM_ANALYSIS_ENDTAG = "</" + ELEM_ANALYSIS + ">";
 
     public DesignSession(Element elem, int caseIdx) throws Exception {
+        this(caseIdx);
         Node node = elem.getElementsByTagName(ELEM_ANALYSIS).item(0);
         _res = getText(node); // return the content AND TAGS <analysis>...</analysis>
         assert _res.startsWith(ELEM_ANALYSIS_TAG) && _res.trim().endsWith(ELEM_ANALYSIS_ENDTAG) : "bad design session storage:" + _res;
@@ -59,9 +63,20 @@ public class DesignSession {
         return prj.getDiscreteCases().get(caseIdx);
     }
 
+    /**
+     * Need to call this to get input values after reloading a design
+     * @param project
+     */
+    public void setProject(Project project) {
+        this.prj = project;
+    }
+
     public Map<String, Object> getFixedParameters() {
         //List<Parameter> fixedparams=_design._designer.getProject().getDiscreteParameters();
         if (_design == null || _design._designer == null || _design._designer.getProject() == null) {
+            if(prj != null) {
+                return prj.getDiscreteCases().get(caseIdx).getInputValues();
+            }
             return null;
         }
         Project prj = _design._designer.getProject();
