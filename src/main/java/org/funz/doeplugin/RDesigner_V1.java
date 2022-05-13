@@ -663,7 +663,14 @@ public class RDesigner_V1 extends Designer {
             }
 
             String html = RendererHelper.tryHTMLize(out, getDesignOutputTitle());
-            R.note_text(html.replace(BASE, "."));
+            if(this._designer.isCompleteURI() == false) {
+                // Replace BASE by local path
+                html = html.replace(BASE, ".");
+            } else {
+                // Replace BASE by complete URI (useful to display images in javaFX Webviewer)
+                html = html.replace(BASE, _repository.toURI().toString());
+            }
+            R.note_text(html);
             return html;
         }
 
