@@ -1,38 +1,32 @@
 package org.funz.parameter;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.FieldPosition;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Properties;
 import org.apache.commons.exec.OS;
 import org.apache.commons.io.FileUtils;
 import org.funz.Project;
-import static org.funz.XMLConstants.*;
 import org.funz.conf.Configuration;
 import org.funz.doeplugin.DesignSession;
 import org.funz.doeplugin.Experiment;
 import org.funz.log.Alert;
 import org.funz.log.Log;
-import org.funz.log.LogTicToc;
 import org.funz.log.LogCollector.SeverityLevel;
+import org.funz.log.LogTicToc;
 import org.funz.util.ASCII;
-import static org.funz.util.Data.*;
 import org.funz.util.Disk;
 import org.funz.util.Format;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static org.funz.XMLConstants.*;
+import static org.funz.util.Data.asObject;
+import static org.funz.util.Data.asString;
 
 /**
  * Single calculation case coresponding to a unique parameter combination. Case
@@ -431,6 +425,7 @@ public class Case extends Experiment {
         }
         _inter = inter;
 
+        _output = new HashMap<>();
         NodeList nodeso = elem.getElementsByTagName(ELEM_CASE_OUT);
         Map<String, Object> _hinfo = new HashMap<String, Object>();
         for (int i = 0; i < nodeso.getLength(); i++) {
@@ -438,6 +433,7 @@ public class Case extends Experiment {
             Object o = asObject(Format.fromHTML(n.getTextContent()));
             //System.out.println(n.getNodeName()+":\n"+XMLConverter.fromHTML(n.getTextContent())+ "\n -> \n"+o);
             _hinfo.put(n.getAttribute(ATTR_NAME), o);
+            _output.put(n.getAttribute(ATTR_NAME), o);
         }
         _info = _hinfo.toString();
     }
