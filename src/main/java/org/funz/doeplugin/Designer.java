@@ -1,14 +1,11 @@
 package org.funz.doeplugin;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.funz.Project;
 import org.funz.conf.Configuration;
 import org.funz.parameter.OutputFunctionExpression;
 import org.funz.parameter.Parameter;
+
+import java.util.*;
 
 public abstract class Designer implements DesignerInterface {
 
@@ -16,6 +13,7 @@ public abstract class Designer implements DesignerInterface {
     private Project prj;
     protected Map<String, String> _opts = new HashMap<>();
     protected Map<String, String> _optsModel = new HashMap<>();
+    private boolean isCompleteURI = false; // True to replace DesignHelper.BASE in html by the complete URI of file.
 
     public Designer(/*Project prj*/) {//impossible because URLMethods dynamic loader does not accept args for contructor (use of newInstance() )
         //this.prj = prj;
@@ -53,7 +51,7 @@ public abstract class Designer implements DesignerInterface {
     public Map<String, String> getOptions() {
         return _opts;
     }
-    
+
     public String getOptionModel(String o) {
         return _optsModel.get(o);
     }
@@ -98,6 +96,7 @@ public abstract class Designer implements DesignerInterface {
     public OutputFunctionExpression getOutputFunctionExpression() {
         return _f;
     }
+
     protected Parameter[] _parameters;
     protected OutputFunctionExpression _f;
 
@@ -129,5 +128,13 @@ public abstract class Designer implements DesignerInterface {
      */
     public boolean skipDesign(ArrayList<Experiment> previousExperiments) {
         return !DesignHelper.IsOutputFull(previousExperiments);
+    }
+
+    public void setUseCompleteURI(boolean useCompleteURI) {
+        this.isCompleteURI = useCompleteURI;
+    }
+
+    public boolean isCompleteURI() {
+        return isCompleteURI;
     }
 }
