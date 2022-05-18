@@ -1026,7 +1026,7 @@ public class BatchRunTest extends org.funz.api.TestUtils {
         System.err.println(Format.ArrayMapToMDString(batchRun.getResultsArrayMap()));
 
         assert batchRun.getArchiveDirectory().exists() : "Did not created archive dir " + batchRun.getArchiveDirectory();
-        assert Arrays.deepToString(batchRun.getResultsArrayMap().get("cat")).contains("null") : "Did not stop case: "+Arrays.deepToString(batchRun.getResultsArrayMap().get("cat"));
+        assert Arrays.deepToString(batchRun.getResultsArrayMap().get("state")).contains("failed") : "Did not stop case: "+Arrays.deepToString(batchRun.getResultsArrayMap().get("state"));
 
         batchRun.shutdown();
     }
