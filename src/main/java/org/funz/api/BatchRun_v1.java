@@ -490,7 +490,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
                 rc.interrupt();
                 RunCase newrc = new RunCase(c);
                 runCases.set(j,newrc);
-                try { rc.join(); } catch (InterruptedException e) {} // need to be done before c.reset(), otherwise outputmay be not null, so not updated after restart
+                try { rc.join(); } catch (InterruptedException e) {} // need to be done before c.reset(), otherwise output may be not null, so not updated after restart
                 c.reset();
                 newrc.start();
                 return true;

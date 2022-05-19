@@ -322,7 +322,7 @@ public class TestUtils {
         String[] newz = new String[z.length];
         for (int i = 0; i < newz.length; i++) {
             boolean endbracket = false;
-            if (asString(z[i]).contains("]")) {
+            if (asString(z[i])!=null & asString(z[i]).contains("]")) {
                 endbracket = true;
             }
             if (z[i] == null) {

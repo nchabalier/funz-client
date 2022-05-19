@@ -738,28 +738,31 @@ public class VariableMethods {
 
         Object lock;
         if (formulaEngine != null) {
-            //formulaEngine.reset();
-            String execCommentStart = commentLine + frmStart + MATHENGINE_SET_MARKER;
-            String[] fcomments = getFunctionalComments(file, execCommentStart, ""+varSyntax.getStartSymbol());
-            for (String fc : fcomments) {
-                if (!formulaEngine.set(fc/*.split("\n")*/)) {
-                    throw new MathExpression.MathException("Bad instruction: " + fc);
-                }
-            }
-            String testCommentStart = commentLine + frmStart + MATHENGINE_TEST_MARKER;
-            String[] testLines = getAllLinesStarting(file, testCommentStart);
-            for (String test : testLines) {
-                Object t = formulaEngine.eval(test.substring(testCommentStart.length()), null);
-                if (t == null || !((Boolean) t)) {
-                    throw new MathExpression.MathException("Failed test: " + test);
-                }
-            }
             lock = formulaEngine;
         } else {
             lock = new Object();
         }
 
         synchronized (lock) {
+
+            if (formulaEngine != null) {
+                formulaEngine.reset(); // cleanup env to not hold remaining funs/vars from previous evals
+                String execCommentStart = commentLine + frmStart + MATHENGINE_SET_MARKER;
+                String[] fcomments = getFunctionalComments(file, execCommentStart, ""+varSyntax.getStartSymbol());
+                for (String fc : fcomments) {
+                    if (!formulaEngine.set(fc/*.split("\n")*/)) {
+                        throw new MathExpression.MathException("Bad instruction: " + fc);
+                    }
+                }
+                String testCommentStart = commentLine + frmStart + MATHENGINE_TEST_MARKER;
+                String[] testLines = getAllLinesStarting(file, testCommentStart);
+                for (String test : testLines) {
+                    Object t = formulaEngine.eval(test.substring(testCommentStart.length()), null);
+                    if (t == null || !((Boolean) t)) {
+                        throw new MathExpression.MathException("Failed test: " + test);
+                    }
+                }
+            }
 
             NumberFormat nf = NumberFormat.getIntegerInstance();
             nf.setGroupingUsed(false);

@@ -150,6 +150,7 @@ public class ShellTest extends org.funz.api.TestUtils {
         System.err.println(ArrayMapToMDString(results));
 
         assert results != null : "No results";
+        assert !results.containsKey("error") : "Errors detected:" + Arrays.asList(results.get("error"));
         assert results.get("min") != null : "No min in results:" + results.keySet();
         assert results.get("min").length > 0 : "No content min in results";
         assert results.get("min")[0].trim().equals("-0.4") : "Bad convergence to " + results.get("min")[0];
