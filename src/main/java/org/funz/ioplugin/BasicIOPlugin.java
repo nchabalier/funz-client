@@ -1,18 +1,5 @@
 package org.funz.ioplugin;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.funz.Constants;
 import org.funz.log.Log;
 import org.funz.log.LogCollector.SeverityLevel;
@@ -20,9 +7,16 @@ import org.funz.parameter.OutputFunctionExpression;
 import org.funz.parameter.SyntaxRules;
 import org.funz.script.MathExpression;
 import org.funz.script.ParseExpression;
-import org.funz.script.RMathExpression;
 import org.funz.util.Data;
-import org.math.io.parser.ArrayString;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Simplified IOPlugin implementation based on properties file. Following
@@ -194,6 +188,8 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
                 }
             }
         }
+
+        initializeDefaultDisplayedOutput();
 
         //_output.put("output_lines", new String[0]);
         //_output.put("out", "");
@@ -397,6 +393,19 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
         assert errors.length() == 0 : errors;
     }
     // ant compile dist; cd dist; zip -r ../../plugin-R/funz-client.zip *; cd ..
+
+
+    @Override
+    public void initializeDefaultDisplayedOutput() {
+        if (_properties.containsKey("defaultdisplayedoutputlist") && _properties.getProperty("defaultdisplayedoutputlist").length() > 0) {
+            Log.logMessage("BasicIOPlugin " + getID(), SeverityLevel.INFO, false, "  defaultdisplayedoutputlist=" + _properties.getProperty("defaultdisplayedoutputlist"));
+
+            List<String> outputlist = new LinkedList<String>();
+            Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(_properties.getProperty("defaultdisplayedoutputlist"));
+            while (m.find()) outputlist.add(m.group(1));
+            this._defaultDisplayedOutput=outputlist;
+        }
+    }
 
     @Override
     public void setCommentLine(String c) {
