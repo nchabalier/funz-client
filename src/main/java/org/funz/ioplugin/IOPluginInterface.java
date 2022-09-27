@@ -137,6 +137,10 @@ public interface IOPluginInterface {
 
     public List<String> getDefaultDisplayedOutput();
 
+    public void initializeOutputFormat();
+
+    public Map<String, String> getOutputFormat();
+
     /**
      * Get numerical rounding for this code
      *

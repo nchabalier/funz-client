@@ -29,6 +29,7 @@ public class ExtendedIOPlugin implements IOPluginInterface {
     protected File[] _inputfiles;
     protected HashMap<String, Object> _output = new HashMap<String, Object>();
     protected List<String> _defaultDisplayedOutput = new ArrayList<>();
+    protected Map<String, String> _outputFormat = new HashMap<>();
     protected String commentLine;
     public String[] doc_links = {};
     protected int formulaLimit = SyntaxRules.LIMIT_SYMBOL_BRACKETS;
@@ -176,12 +177,20 @@ public class ExtendedIOPlugin implements IOPluginInterface {
 
     @Override
     public void initializeDefaultDisplayedOutput() {
-
     }
 
     @Override
     public List<String> getDefaultDisplayedOutput() {
         return this._defaultDisplayedOutput;
+    }
+
+    @Override
+    public void initializeOutputFormat() {
+    }
+
+    @Override
+    public Map<String, String> getOutputFormat() {
+        return this._outputFormat;
     }
 
     @Override

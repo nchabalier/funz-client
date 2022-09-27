@@ -190,6 +190,7 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
         }
 
         initializeDefaultDisplayedOutput();
+        initializeOutputFormat();
 
         //_output.put("output_lines", new String[0]);
         //_output.put("out", "");
@@ -404,6 +405,30 @@ public class BasicIOPlugin extends ExtendedIOPlugin {
             Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(_properties.getProperty("defaultdisplayedoutputlist"));
             while (m.find()) outputlist.add(m.group(1));
             this._defaultDisplayedOutput=outputlist;
+        }
+    }
+
+    @Override
+    public void initializeOutputFormat() {
+        if (_properties.containsKey("outputformat") && _properties.getProperty("outputformat").length() > 0) {
+            Log.logMessage("BasicIOPlugin " + getID(), SeverityLevel.INFO, false, "  outputformat=" + _properties.getProperty("outputformat"));
+
+            List<String> outputFormatList = new LinkedList<String>();
+            Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(_properties.getProperty("outputformat"));
+            while (m.find()) outputFormatList.add(m.group(1));
+            for(String outputFormat : outputFormatList) {
+                boolean readSucess = false;
+                if(outputFormat.contains(":")) {
+                    String[] outputAndFormat = outputFormat.split(":");
+                    if(outputAndFormat.length==2) {
+                        this._outputFormat.put(outputAndFormat[0], outputAndFormat[1]);
+                        readSucess = true;
+                    }
+                }
+                if(!readSucess) {
+                    System.err.println("The following outputFormat is unreadable (please respect syntax 'output:format'): " + outputFormat);
+                }
+            }
         }
     }
 
