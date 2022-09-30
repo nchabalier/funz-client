@@ -9,6 +9,8 @@
 * add sensitivity analysis Morris algorithm: https://github.com/Funz/algorithm-Sensitivity
 * add simple uniform sampling (no need for more R package): https://github.com/Funz/algorithm-RandomSampling
 * up Rsession to support "list[['argname']]" syntax in R2js
+* define default columns to diplay in plugin
+* define output number format in plugin
 
 ## Fixes
 

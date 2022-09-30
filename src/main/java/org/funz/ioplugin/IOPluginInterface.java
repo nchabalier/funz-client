@@ -3,15 +3,14 @@
  */
 package org.funz.ioplugin;
 
-import org.funz.Project;
-import org.funz.parameter.InputFile;
-import org.funz.parameter.OutputFunctionExpression;
-import org.funz.script.MathExpression;
-
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.funz.Project;
+import org.funz.parameter.InputFile;
+import org.funz.parameter.OutputFunctionExpression;
+import org.funz.script.MathExpression;
 
 /**
  * Interace for code specific information and behaviour: documentation, links,
@@ -132,14 +131,6 @@ public interface IOPluginInterface {
      * @return LinkedList<OutputFunctionExpression> default output expressions
      */
     public LinkedList<OutputFunctionExpression> suggestOutputFunctions();
-
-    public void initializeDefaultDisplayedOutput();
-
-    public List<String> getDefaultDisplayedOutput();
-
-    public void initializeOutputFormat();
-
-    public Map<String, String> getOutputFormat();
 
     /**
      * Get numerical rounding for this code
