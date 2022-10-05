@@ -962,6 +962,7 @@ def Funz_CompileInput(model,input_files,input_values,output_dir=".") :
 # @param model name of the code wrapper to use. See _Funz.Models global var for a list of possible values.
 # @param input_files files given as input for the code.
 # @param output_dir directory where calculated files are.
+# @param out_filter what output(s) to retreive in returned object.
 # @return list of outputs & their value
 # @example Funz_ReadOutput("R", os.path.join(".","branin.R"), os.path.join("."))
 def Funz_ReadOutput(model, input_files, output_dir, output_filter=None) :
