@@ -957,7 +957,7 @@ Funz_CompileInput <- function(model,input.files,input.values,output.dir=".") {
 #' @param out.filter what output(s) to retreive in returned object.
 #' @return list of outputs & their value
 #' @example Funz_ReadOutput(model = "R", input.files = "branin.R",output.dir=".")
-Funz_ReadOutput <- function(model, input.files, output.dir, out.filter) {
+Funz_ReadOutput <- function(model, input.files, output.dir, out.filter=NULL) {
     if (exists(".Funz.Models"))
         if (!is.null(model) && (!is.element(el=model,set=.Funz.Models())))
             stop(paste("Model",model,"is not available in this Funz workbench (",paste0(.Funz.Models(),collapse=","),")"))
