@@ -28,6 +28,12 @@ function testRun9 {
     if (($ok > 9)); then rm testRun9.out; echo "OK"; return 0; else echo "FAILED:"; cat testRun9.out; return 1; fi
 }
 
+function testRun9all {
+    $FUNZ_HOME/Funz.sh Run -m $CODE -if $TMP_IN -iv x1=.5,.6,.7 x2=0.3,.4,.5 -v $VERBOSITY -ad tmp/testRun9all.sh -all > testRun9all.out 2>&1
+    ok=`grep "done" testRun9all.out | wc -l`
+    if (($ok > 9)); then rm testRun9all.out; echo "OK"; return 0; else echo "FAILED:"; cat testRun9all.out; return 1; fi
+}
+
 FUNZ_HOME="dist"
 
 source src/test/RunTest.prop
@@ -36,7 +42,7 @@ TMP_IN=tmp/branin.R
 mkdir tmp
 cp $SRC $TMP_IN
 
-for t in testRunParseError testRun1 testOutputExpression testRun9; do
+for t in testRunParseError testRun1 testOutputExpression testRun9 testRun9all; do
     res=`$t`
     if [ $? = "1" ]; then failed="1"; fi
     echo "Test "$t": "$res
