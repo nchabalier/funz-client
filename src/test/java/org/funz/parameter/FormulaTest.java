@@ -57,11 +57,11 @@ public class FormulaTest {
         assert s.equals("*") : "Bad print: " + s;
     }
 
-    @Test
-    public void testSource() throws Exception {
-        String s = Formula.Eval("source('https://raw.githubusercontent.com/IRSN/flood.R/main/pline.R'); 1+1", null);
-        assert s.equals("[1] 2") : "Bad print: " + s;
-    }
+    // @Test No, source is not supported in R2js
+    // public void testSource() throws Exception {
+    //     String s = Formula.Eval("source('https://raw.githubusercontent.com/IRSN/flood.R/main/pline.R'); 1+1", null);
+    //     assert s.equals("[1] 2") : "Bad print: " + s;
+    // }
 
     @Test
     public void testInsideXML() throws Exception {
