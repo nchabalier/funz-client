@@ -60,7 +60,7 @@ public class FormulaTest {
     @Test
     public void testSource() throws Exception {
         String s = Formula.Eval("source('https://raw.githubusercontent.com/IRSN/flood.R/main/pline.R'); 1+1", null);
-        assert s.equals("*") : "Bad print: " + s;
+        assert s.equals("[1] 2") : "Bad print: " + s;
     }
 
     @Test
