@@ -58,6 +58,12 @@ public class FormulaTest {
     }
 
     @Test
+    public void testSource() throws Exception {
+        String s = Formula.Eval("source('https://raw.githubusercontent.com/IRSN/flood.R/main/pline.R'); 1+1", null);
+        assert s.equals("*") : "Bad print: " + s;
+    }
+
+    @Test
     public void testInsideXML() throws Exception {
         SyntaxRules varSyntax = new SyntaxRules(SyntaxRules.START_SYMBOL_DOLLAR, SyntaxRules.LIMIT_SYMBOL_BRACKETS);
 
