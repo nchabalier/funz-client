@@ -100,6 +100,68 @@ public class VariableMethodsTest {
     }
 
     @Test
+    public void testIssue32() throws Exception {
+        String datatset = "C -------------------DECLARE PARAMETERS HERE----------------*"+"\n"+
+        "C $nb couche1: %(nb_couc1~7;[3.,11.])"+"\n"+
+        "C $nb couche2: %(nb_couc2~7;[3.,11.])"+"\n"+
+        "C $nb couche3: %(nb_couc3~7;[3.,11.])"+"\n"+
+        "C $epaisseur moderateur1 %(ep_mod1~0.5;[0.,1.])"+"\n"+
+        "C $epaisseur moderateur2 %(ep_mod2~0.5;[0.,1.])"+"\n"+
+        "C $epaisseur moderateur3 %(ep_mod3~0.5;[0.,1.])"+"\n"+
+        "C $epaisseur moderateur lateral %(ep_mod_lat~1.0;[0.,2.])"+"\n"+
+        "C $epaisseur spacer %(ep_spacer~1.0;[0.,2.])"+"\n"+
+        "c --------------------DECLARE CONSTANTS HERE----------------*"+"\n"+
+        "C @: nb_couche1 = floor(%nb_couc1)"+"\n"+
+        "C @: nb_couche2 = floor(%nb_couc2)"+"\n"+
+        "C @: nb_couche3 = floor(%nb_couc3)"+"\n"+
+        "C @: etage0 = -0.371475"+"\n"+
+        "C @: etage1 = (nb_couche1*(%ep_spacer +0.0889 +0.257175 +0.257175 +0.0889 +%ep_mod1)) + etage0"+"\n"+
+        "C @: etage2 = (nb_couche2*(%ep_spacer +0.0889 +0.257175 +0.257175 +0.0889 +%ep_mod2)) + etage1"+"\n"+
+        "C @: etage3 = (nb_couche3*(%ep_spacer +0.0889 +0.257175 +0.257175 +0.0889 +%ep_mod3)) + etage2"+"\n"+
+        "C "+"\n"+
+        "c @{nb_couche1}"+"\n"+
+        "c @{nb_couche2}"+"\n"+
+        "c @{nb_couche3}"+"\n"+
+        "c @{(%ep_spacer +0.0889 +0.257175 +0.257175 +0.0889 +%ep_mod1)}"+"\n"+
+        "c @{(%ep_spacer +0.0889 +0.257175 +0.257175 +0.0889 +%ep_mod2)}"+"\n"+
+        "c @{(%ep_spacer +0.0889 +0.257175 +0.257175 +0.0889 +%ep_mod3)}"+"\n"+
+        "c @{nb_couche1*(%ep_spacer +0.0889 +0.257175 +0.257175 +0.0889 +%ep_mod1)}"+"\n"+
+        "c @{nb_couche2*(%ep_spacer +0.0889 +0.257175 +0.257175 +0.0889 +%ep_mod2)}"+"\n"+
+        "c @{nb_couche3*(%ep_spacer +0.0889 +0.257175 +0.257175 +0.0889 +%ep_mod3)}"+"\n"+
+        "c @{nb_couche1*(%ep_spacer +0.0889 +0.257175 +0.257175 +0.0889 +%ep_mod1) + etage0}"+"\n"+
+        "c @{nb_couche2*(%ep_spacer +0.0889 +0.257175 +0.257175 +0.0889 +%ep_mod2) + etage1}"+"\n"+
+        "c @{nb_couche3*(%ep_spacer +0.0889 +0.257175 +0.257175 +0.0889 +%ep_mod3) + etage2}"+"\n"+
+        "c @{etage0}"+"\n"+
+        "c @{etage1}"+"\n"+
+        "c @{etage2}"+"\n"+
+        "c @{etage3}";
+        ASCII.saveFile(fin, datatset);
+
+        SyntaxRules I32_varSyntax = new SyntaxRules(8, 0);
+        SyntaxRules I32_formSyntax = new SyntaxRules(4, 1);
+        
+        HashMap<String, String> defval = new HashMap<String, String>();
+        HashMap<String, String> values = new HashMap<String, String>();
+        values.put("nb_couc1", "7");
+        values.put("nb_couc2", "7");
+        values.put("nb_couc3", "7");
+        values.put("ep_spacer", "1.0");
+        values.put("ep_mod1", "0.5");
+        values.put("ep_mod2", "0.5");
+        values.put("ep_mod3", "0.5");
+
+        HashSet h = VariableMethods.parseFile("C ", I32_varSyntax, I32_formSyntax, fin, fout, values, null, null, null, null, null, defval, MathExpression.GetDefaultInstance());
+
+        System.out.println("Default values: "+defval);
+        System.out.println("Values: "+values);
+        System.out.println("Parsed values: "+h);
+
+        String out = printFilesIO();
+        assert out.contains("c 45.663675") : "bad eval:"+out;
+    }
+
+
+    @Test
     public void testFail() throws Exception {
         boolean errorfound = false;
         try {
