@@ -24,7 +24,14 @@ public class Cache {
     }
 
     static File InfoFile(File in) {
-        return new File(in.getParentFile(), Case.FILE_INFO);
+        File infoFile = new File(in.getParentFile(), Case.FILE_INFO);
+        if(!infoFile.exists()) {
+            File oldInfoFile = new File(in.getParentFile(), Case.OLD_FILE_INFO);
+            if(oldInfoFile.exists()) {
+                infoFile = oldInfoFile;
+            }
+        }
+        return infoFile;
     }
 
     static boolean IsOutputDir(File odir) {
@@ -94,6 +101,15 @@ public class Cache {
                 }
             }
             return true;
+        }
+
+        public boolean hasCheckSum(byte[] wantedCheckSum) {
+            for (int i = 0; i < this.md5sums.length; i++) {
+                if (Digest.matches(md5sums[i], wantedCheckSum)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
@@ -266,26 +282,21 @@ public class Cache {
         return inputDirs;
     }
 
-//	 pour trouver les fichiers out potentiels: ceux dont le nom contient le nom de fichiers ayant le mm md5 que les fichiers input...
-	/*public File[] searchFilesinPool(File[] inputFiles, boolean withSameName) {
-    
-    InputFiles ifiles = new InputFiles(inputFiles);
-    File[] output_files = null;
-    for (int i = 0; i < resultsPool.size(); i++) {
-    LinkedList<File> match;
-    if (withSameName)
-    match = ifiles.contentsIn_SameName(resultsPool.get(i));
-    else
-    match = ifiles.contentsIn(resultsPool.get(i));
-    
-    if (match != null) {
-    output_files = ifiles.getOutputFiles(resultsPool.get(i), match);
-    Configuration.logMessage(this,SeverityLevel.INFO,false,Messages.get("identical_case_found_in:_") + resultsPool.get(i).getAbsolutePath());
-    }
-    }
-    return output_files;
-    }*/    // pour trouver les fichiers out potentiels: ceux contenus dans le repertoire "output" dont le repertoire 'input" contient les fichiers ayant le mm md5 que les fichiers input...
     public File getMatchingOutputDirinCache(File tmpinputDir, String code) {
+        return getMatchingOutputDirinCache(tmpinputDir, code);
+    }
+
+    /**
+     * Return matching output directory if the input dir is the same (same md5 for all files)
+     * If wantedCheckSum!=null, we only check if there is a file in "input" that has this md5. Other files can be differents
+     *
+     * @param tmpinputDir - the input directory to check
+     * @param code - the code to match
+     * @param wantedCheckSum - md5sum of a unique file we want to find in "input" directory
+     *
+     * @return the "output" directory if we found a match
+     */
+    public File getMatchingOutputDirinCache(File tmpinputDir, String code, byte[] wantedCheckSum) {
         assert tmpinputDir != null;
 
         while (!initialized) {
@@ -298,32 +309,46 @@ public class Cache {
         NewInputDir idir = new NewInputDir(tmpinputDir);
 
         synchronized (poolInputDirs) {
+            //byte[] wantedCheckSum = Digest.getSum(fileToMatch);
             for (int i = 0; i < poolInputDirs.size(); i++) {
-                if (!poolInputDirs.get(i).mayHaveFailed() && poolInputDirs.get(i).getCode() != null && poolInputDirs.get(i).getCode().equals(code) && poolInputDirs.get(i).contentEquals(idir)) {
-                    File possible = poolInputDirs.get(i).getOutputDir();
-                    File[] possible_content = possible.listFiles();
-                    if (possible_content.length > 0) {
-                        boolean out = false;
-                        boolean err = false;
-                        for (File file : possible_content) {
-                            if (file.getName().equals("out.txt")) {
-                                out = true;
+                CacheInputDir cacheInputDir = poolInputDirs.get(i);
+                if (!cacheInputDir.mayHaveFailed()
+                        && cacheInputDir.getCode() != null
+                        && cacheInputDir.getCode().equals(code)) {
+
+                    boolean foundDirMath = false;
+                    if(wantedCheckSum != null) {
+                        foundDirMath = cacheInputDir.hasCheckSum(wantedCheckSum);
+                    } else {
+                        foundDirMath = cacheInputDir.contentEquals(idir);
+                    }
+                    if(foundDirMath) {
+                        File possible = poolInputDirs.get(i).getOutputDir();
+                        File[] possible_content = possible.listFiles();
+                        if (possible_content.length > 0) {
+                            boolean out = false;
+                            boolean err = false;
+                            for (File file : possible_content) {
+                                if (file.getName().equals("out.txt")) {
+                                    out = true;
+                                }
+                                if (file.getName().equals("err.txt")) {
+                                    err = true;
+                                }
                             }
-                            if (file.getName().equals("err.txt")) {
-                                err = true;
+                            if (out && err) {
+                                assert possible != null : "The output dir of input pool " + poolInputDirs.get(i).dir.getAbsolutePath() + " is empty !";
+                                Log.logMessage(this, SeverityLevel.INFO, false, "Identical case found: " + poolInputDirs.get(i).dir.getAbsolutePath());
+                                //synchronized (poolInputDirs) {
+                                poolInputDirs.remove(i);
+                                //}
+                                return possible;
+                            } else {
+                                poolInputDirs.remove(i);
                             }
-                        }
-                        if (out && err) {
-                            assert possible != null : "The output dir of input pool " + poolInputDirs.get(i).dir.getAbsolutePath() + " is empty !";
-                            Log.logMessage(this, SeverityLevel.INFO, false, "Identical case found: " + poolInputDirs.get(i).dir.getAbsolutePath());
-                            //synchronized (poolInputDirs) {
-                            poolInputDirs.remove(i);
-                            //}
-                            return possible;
-                        } else {
-                            poolInputDirs.remove(i);
                         }
                     }
+
                 }
             }
         }

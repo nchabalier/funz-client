@@ -16,6 +16,7 @@ import org.funz.parameter.CaseList;
 import org.funz.parameter.OutputFunctionExpression;
 import org.funz.run.Client;
 import org.funz.run.Computer;
+import org.funz.util.Digest;
 import org.funz.util.Disk;
 import org.funz.util.Format;
 import org.funz.util.ZipTool;
@@ -542,7 +543,18 @@ public abstract class BatchRun_v1 implements CaseRunner {
             for (Cache _c : getCache()) {
                 addInfoHistory(c, "Searching in cache: " + getCache());
                 File dir = files[0].getParentFile().getParentFile();
-                File matching_output = _c.getMatchingOutputDirinCache(new File(dir + File.separator + Constants.INPUT_DIR), prj.getCode());
+                File inputDir = new File(dir + File.separator + Constants.INPUT_DIR);
+                String cacheFileNameToCheck = prj.getCacheFileNameToCheck();
+                byte[] checkSum = null;
+                if(cacheFileNameToCheck!=null && !cacheFileNameToCheck.isEmpty()) {
+                    File modelVars = new File(inputDir, cacheFileNameToCheck);
+                    if(modelVars!=null && modelVars.exists()) {
+                        checkSum = Digest.getSum(modelVars);
+                    }
+                }
+
+
+                File matching_output = _c.getMatchingOutputDirinCache(inputDir, prj.getCode(), checkSum);
                 if (matching_output != null) {
                     addInfoHistory(c, "Found in " + matching_output.getAbsolutePath());
 

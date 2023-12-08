@@ -299,6 +299,7 @@ public class Case extends Experiment {
         }
     }
     public static final String FILE_INFO = "info.txt";
+    public static final String OLD_FILE_INFO = "old.info.txt";
     /**
      * Modification type.
      */

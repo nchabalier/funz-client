@@ -42,6 +42,7 @@ import static org.funz.util.ParserUtils.getASCIIFileContent;
  */
 public class Project {
 
+
     @Override
     public String toString() {
         return getName();
@@ -71,6 +72,16 @@ public class Project {
     public boolean patchInputWhenFailed = DEFAULT_patchInputWhenFailed;
     public boolean deletePreviousArchive = DEFAULT_deletePreviousArchive;
     private AbstractShell shell;
+
+    /**
+     * Name of the file we wan't to check to get cache results.
+     * Keep it "null" or empty if we wan't to check all inputDir files m5.
+     */
+    private String cacheFileNameToCheck = null;
+
+    public void setCacheFileNameToCheck(String cacheFileNameToCheck) {
+        this.cacheFileNameToCheck = cacheFileNameToCheck;
+    }
 
     /**
      * @return the shell
@@ -134,6 +145,10 @@ public class Project {
 
     public long getBlacklistTimeout() {
         return blacklistTimeout;
+    }
+
+    public String getCacheFileNameToCheck() {
+        return this.cacheFileNameToCheck;
     }
 
     /* too much dangerous : InputFile are not updated nor checked, so when calling Project.cleanParameters, var will disappear...
