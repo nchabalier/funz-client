@@ -37,6 +37,7 @@ public class ExtendedIOPlugin implements IOPluginInterface {
     public String information = "Generic default plugin";
     protected int variableLimit = SyntaxRules.LIMIT_SYMBOL_SQ_BRACKETS;
     protected int variableStartSymbol = SyntaxRules.START_SYMBOL_DOLLAR;
+    private Boolean mathEngineLocker = true;
     MathExpression mathengine;
 
     @Override
@@ -59,15 +60,20 @@ public class ExtendedIOPlugin implements IOPluginInterface {
     @Override
     public MathExpression getFormulaInterpreter() {
         if (mathengine == null) {
-            String name = "NullProject";
-            if (getProject() != null) {
-                name = getProject().getName();
+            synchronized (mathEngineLocker) {
+                if(mathengine == null) {
+                    String name = "NullProject";
+                    if (getProject() != null) {
+                        name = getProject().getName();
+                    }
+                    File logdir = new File(System.getProperty("java.io.tmpdir"));
+                    if (getProject() != null) {
+                        logdir = getProject().getLogDir();
+                    }
+                    mathengine = new RMathExpression(name, Configuration.isLog("R") ? new File(logdir, name + ".Rlog") : null);
+                }
             }
-            File logdir = new File(System.getProperty("java.io.tmpdir"));
-            if (getProject() != null) {
-                logdir = getProject().getLogDir();
-            }
-            mathengine = new RMathExpression(name, Configuration.isLog("R") ? new File(logdir, name + ".Rlog") : null);
+
         }
         return mathengine;
     }
