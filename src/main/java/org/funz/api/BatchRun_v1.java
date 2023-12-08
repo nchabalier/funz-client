@@ -26,6 +26,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static java.lang.Thread.sleep;
 import static org.funz.Protocol.ARCHIVE_FILTER;
@@ -1340,7 +1342,8 @@ public abstract class BatchRun_v1 implements CaseRunner {
                 c.setObserver(observer);
                 boolean already_launched = false;
                 boolean cloned = false;
-                for (int j = 0; j < getFinishedCases().size(); j++) { //for old cases
+                // TODO NC: optimize and re-add this block
+/*                for (int j = 0; j < getFinishedCases().size(); j++) { //for old cases
                     final Case cprev = getFinishedCases().get(j);
                     //LogUtils.tic("synchronized (cprev) ");
                     synchronized (cprev) {
@@ -1353,7 +1356,9 @@ public abstract class BatchRun_v1 implements CaseRunner {
                         }
                     }
                     //LogUtils.toc("synchronized (cprev) ");
-                }
+                }*/
+                // TODO NC: optimize and re-add this block
+                /*
                 if (!already_launched && !cloned) {
                     for (int j = 0; j < i; j++) { // when same case is just asked before.
                         final Case cprev = getPendingCases().get(j);
@@ -1369,7 +1374,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
                         }
                         //LogUtils.toc("synchronized (cprev) ");
                     }
-                }
+                }*/
                 if (!already_launched && !cloned) {
                     //LogUtils.tic("new RunCase");
                     RunCase rc = new RunCase(c);
@@ -1404,15 +1409,19 @@ public abstract class BatchRun_v1 implements CaseRunner {
                 //LogUtils.toc("beforeRunCases");
 
                 setState(BATCH_RUNNING);
+                // TODO NC: configure nb threads
+                //ExecutorService executorService = Executors.newFixedThreadPool(8);
                 // let's start only some cases (to limit concurrent RunCase threads)
                 for (int i = 0; i < prj.getMaxCalcs(); i++) {
                     if (i < runCases.size()) {
                         out("Will start case " + runCases.get(i).c.getName(), 3);
                         //LogUtils.tic("runCases.get(i).start()");
+                        //executorService.submit(runCases.get(i));
                         runCases.get(i).start();
                         //LogUtils.toc("runCases.get(i).start()");
                     }
                 }
+                //executorService.shutdown();
 
                 int f = 0;
                 String state_value = "";
@@ -1428,28 +1437,34 @@ public abstract class BatchRun_v1 implements CaseRunner {
                 int[][] states = new int[getSelectedCases().size()][Case.STATE_STRINGS.length];
                 while (f < numToRun && !askToStop) {
                     //out_noln(" ? ", 5);
-                    int f_old = f;
+
                     //LogTicToc.tic("filled");
                     f = filled(torun);
                     //LogTicToc.toc("filled");
                     // let's start only some cases (to limit concurrent RunCase threads)
-                    for (int i = 0; i < /*f - f_old*/ Math.min(prj.getMaxCalcs(), numToRun - f); i++) {
-                        for (int j = 0; j < runCases.size(); j++) {
-                            //LogTicToc.tic("runCases.get(j)");
-                            RunCase rc = runCases.get(j);
-                            //LogTicToc.toc("runCases.get(j)");
-                            if (!rc.isAlive()) {
-                                if (rc.c != null && rc.c.getState() == Case.STATE_INTACT) {
-                                    out("Starting case " + rc.c.getName(), 3);
-                                    //LogTicToc.tic("rc.start()");
-                                    rc.start();
-                                    //LogTicToc.toc("rc.start()");
-                                    //System.err.println("+");
-                                    break;
-                                }//else System.err.println(rc.c.getStatusInformation());
-                            }
+                    int nbCaseAlive = 0;
+                    for (int j = 0; j < runCases.size(); j++) {
+                        //LogTicToc.tic("runCases.get(j)");
+                        RunCase rc = runCases.get(j);
+                        //LogTicToc.toc("runCases.get(j)");
+                        if(rc.isAlive()) {
+                            nbCaseAlive++;
+                        } else {
+                            if (rc.c != null && rc.c.getState() == Case.STATE_INTACT) {
+                                out("Starting case " + rc.c.getName(), 3);
+                                //LogTicToc.tic("rc.start()");
+                                rc.start();
+                                //LogTicToc.toc("rc.start()");
+                                //System.err.println("+");
+                                break;
+                            }//else System.err.println(rc.c.getStatusInformation());
+                        }
+                        // Only run "prj.getMaxCalcs()" number of RunCases in parallel
+                        if(nbCaseAlive >= prj.getMaxCalcs()) {
+                            break;
                         }
                     }
+
 
                     //out("Finished " + f + "/" + getCases().size() + " cases.", 2);
                     if (Funz.getVerbosity() > 3) {
@@ -1529,6 +1544,12 @@ public abstract class BatchRun_v1 implements CaseRunner {
             } catch (Exception e) {
                 err("Failed to merge results: " + torun, 0);
                 throw new Exception("Failed to merge results: " + torun + "\n" + e.getMessage());
+            }
+            try {
+                // Finalize RServe or other formula interpreter
+                prj.getPlugin().getFormulaInterpreter().finalize();
+            } catch (Throwable throwable) {
+                throw new Exception("Failed to close formula interpreter \n" + throwable.getMessage());
             }
         }
 
