@@ -1250,6 +1250,14 @@ public abstract class BatchRun_v1 implements CaseRunner {
         return theseCases;
     }
 
+    private static boolean hasDuplicate(List<Case> caseList) {
+        Set<String> set = new HashSet<>();
+        // Set#add returns false if the set does not change, which
+        // indicates that a duplicate element has been added.
+        for (Case aCase: caseList) if (!set.add(aCase.getName())) return true;
+        return false;
+    }
+
     public List<Case> getFinishedCases() {
         List<Case> theseCases = new LinkedList<>();
         for (Case t : getSelectedCases()) {
@@ -1275,6 +1283,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
     }
 
     public List<Case> torun;
+
 
     public boolean runBatch() throws Exception {
         //LogUtils.tic("runBatch");
@@ -1348,15 +1357,18 @@ public abstract class BatchRun_v1 implements CaseRunner {
             List<CloneCase> cloneCases = new ArrayList<CloneCase>();
             //LogUtils.toc("getPendingCases");
 
+            List<Case> finishedCaseList = getFinishedCases();
+            List<Case> pendingCaseList = getPendingCases();
+            boolean hasDuplicatedCases = hasDuplicate(getPendingCases());
             int numToRun = torun.size();
             for (int i = 0; i < numToRun; i++) {
                 final Case c = torun.get(i);
                 c.setObserver(observer);
                 boolean already_launched = false;
                 boolean cloned = false;
-                // TODO NC: optimize and re-add this block
-/*                for (int j = 0; j < getFinishedCases().size(); j++) { //for old cases
-                    final Case cprev = getFinishedCases().get(j);
+
+                for (int j = 0; j < finishedCaseList.size(); j++) { //for old cases
+                    final Case cprev = finishedCaseList.get(j);
                     //LogUtils.tic("synchronized (cprev) ");
                     synchronized (cprev) {
                         if (c.getName().equals(cprev.getName())) {
@@ -1368,25 +1380,28 @@ public abstract class BatchRun_v1 implements CaseRunner {
                         }
                     }
                     //LogUtils.toc("synchronized (cprev) ");
-                }*/
-                // TODO NC: optimize and re-add this block
-                /*
-                if (!already_launched && !cloned) {
-                    for (int j = 0; j < i; j++) { // when same case is just asked before.
-                        final Case cprev = getPendingCases().get(j);
-                        //LogUtils.tic("synchronized (cprev) ");
-                        synchronized (cprev) {
-                            if (c.getName().equals(cprev.getName())) {
-                                already_launched = true;
-                                out("Case " + c.getName() + " already launched...", 1);
-                                cloneCases.add(new CloneCase(c, cprev));
-                                cloned = true;
-                                break;
+                }
+
+                if(hasDuplicatedCases) {
+                    // If there is not duplicated cases, ignore the block bellow which is very inefficient
+                    if (!already_launched && !cloned) {
+                        for (int j = 0; j < i; j++) { // when same case is just asked before.
+                            final Case cprev = pendingCaseList.get(j);
+                            //LogUtils.tic("synchronized (cprev) ");
+                            synchronized (cprev) {
+                                if (c.getName().equals(cprev.getName())) {
+                                    already_launched = true;
+                                    out("Case " + c.getName() + " already launched...", 1);
+                                    cloneCases.add(new CloneCase(c, cprev));
+                                    cloned = true;
+                                    break;
+                                }
                             }
                         }
-                        //LogUtils.toc("synchronized (cprev) ");
                     }
-                }*/
+                }
+
+
                 if (!already_launched && !cloned) {
                     //LogUtils.tic("new RunCase");
                     RunCase rc = new RunCase(c);
@@ -1552,16 +1567,17 @@ public abstract class BatchRun_v1 implements CaseRunner {
             return false;
         } finally {
             try {
-                merged_results.putAll(merge(getSelectedCases()));//torun));
-            } catch (Exception e) {
-                err("Failed to merge results: " + torun, 0);
-                throw new Exception("Failed to merge results: " + torun + "\n" + e.getMessage());
-            }
-            try {
                 // Finalize RServe or other formula interpreter
                 prj.getPlugin().getFormulaInterpreter().finalize();
             } catch (Throwable throwable) {
                 throw new Exception("Failed to close formula interpreter \n" + throwable.getMessage());
+            }
+            try {
+                setState(MERGING_RESULTS);
+                merged_results.putAll(merge(getSelectedCases()));//torun));
+            } catch (Exception e) {
+                err("Failed to merge results: " + torun, 0);
+                throw new Exception("Failed to merge results: " + torun + "\n" + e.getMessage());
             }
         }
 
@@ -1594,6 +1610,7 @@ public abstract class BatchRun_v1 implements CaseRunner {
     public static final String BATCH_STARTING = "Starting...";
     public static final String BATCH_ERROR = "Batch failed";
     public static final String BATCH_EXCEPTION = "Batch exception";
+    private static final String MERGING_RESULTS = "Merging results";
 
     public String getState() {
         return state;
