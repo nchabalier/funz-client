@@ -1566,12 +1566,13 @@ public abstract class BatchRun_v1 implements CaseRunner {
             setState(BATCH_EXCEPTION);
             return false;
         } finally {
-            try {
-                // Finalize RServe or other formula interpreter
-                prj.getPlugin().getFormulaInterpreter().finalize();
-            } catch (Throwable throwable) {
-                throw new Exception("Failed to close formula interpreter \n" + throwable.getMessage());
-            }
+            // Don't finalize formula interpreter here because Shell_v1 needs it
+//            try {
+//                // Finalize RServe or other formula interpreter
+//                //prj.getPlugin().getFormulaInterpreter().finalize();
+//            } catch (Throwable throwable) {
+//                throw new Exception("Failed to close formula interpreter \n" + throwable.getMessage());
+//            }
             try {
                 setState(MERGING_RESULTS);
                 merged_results.putAll(merge(getSelectedCases()));//torun));
