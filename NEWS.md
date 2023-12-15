@@ -1,4 +1,11 @@
-# v1.15 - ??/??/2022
+# v1.16 - ??/??/2023
+
+## Fixes
+
+* support missing output/input in Python wrapper
+* update Rsession to 3.1.8 to support R>=4.3
+
+# v1.15 - 23/11/2022
 
 ## Improvements
 
