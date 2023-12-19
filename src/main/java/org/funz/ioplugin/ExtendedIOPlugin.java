@@ -3,19 +3,6 @@
  */
 package org.funz.ioplugin;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import org.funz.Project;
 import org.funz.conf.Configuration;
 import org.funz.log.Log;
@@ -29,9 +16,11 @@ import org.funz.script.ParseExpression;
 import org.funz.script.RMathExpression;
 import org.funz.util.ASCII;
 import org.funz.util.Data;
-import static org.funz.util.Data.asString;
 import org.funz.util.Disk;
-import org.math.io.parser.ArrayString;
+
+import java.io.*;
+import java.net.URL;
+import java.util.*;
 
 public class ExtendedIOPlugin implements IOPluginInterface {
 
@@ -39,6 +28,8 @@ public class ExtendedIOPlugin implements IOPluginInterface {
     protected String source = null;
     protected File[] _inputfiles;
     protected HashMap<String, Object> _output = new HashMap<String, Object>();
+    protected List<String> _defaultDisplayedOutput = new ArrayList<>();
+    protected Map<String, String> _outputFormat = new HashMap<>();
     protected String commentLine;
     public String[] doc_links = {};
     protected int formulaLimit = SyntaxRules.LIMIT_SYMBOL_BRACKETS;
@@ -46,6 +37,7 @@ public class ExtendedIOPlugin implements IOPluginInterface {
     public String information = "Generic default plugin";
     protected int variableLimit = SyntaxRules.LIMIT_SYMBOL_SQ_BRACKETS;
     protected int variableStartSymbol = SyntaxRules.START_SYMBOL_DOLLAR;
+    private Boolean mathEngineLocker = true;
     MathExpression mathengine;
 
     @Override
@@ -68,15 +60,20 @@ public class ExtendedIOPlugin implements IOPluginInterface {
     @Override
     public MathExpression getFormulaInterpreter() {
         if (mathengine == null) {
-            String name = "NullProject";
-            if (getProject() != null) {
-                name = getProject().getName();
+            synchronized (mathEngineLocker) {
+                if(mathengine == null) {
+                    String name = "NullProject";
+                    if (getProject() != null) {
+                        name = getProject().getName();
+                    }
+                    File logdir = new File(System.getProperty("java.io.tmpdir"));
+                    if (getProject() != null) {
+                        logdir = getProject().getLogDir();
+                    }
+                    mathengine = new RMathExpression(name, Configuration.isLog("R") ? new File(logdir, name + ".Rlog") : null);
+                }
             }
-            File logdir = new File(System.getProperty("java.io.tmpdir"));
-            if (getProject() != null) {
-                logdir = getProject().getLogDir();
-            }
-            mathengine = new RMathExpression(name, Configuration.isLog("R") ? new File(logdir, name + ".Rlog") : null);
+
         }
         return mathengine;
     }
@@ -182,6 +179,24 @@ public class ExtendedIOPlugin implements IOPluginInterface {
     public LinkedList<OutputFunctionExpression> suggestOutputFunctions() {
         LinkedList<OutputFunctionExpression> ofl = new LinkedList<OutputFunctionExpression>();
         return ofl;
+    }
+
+    @Override
+    public void initializeDefaultDisplayedOutput() {
+    }
+
+    @Override
+    public List<String> getDefaultDisplayedOutput() {
+        return this._defaultDisplayedOutput;
+    }
+
+    @Override
+    public void initializeOutputFormat() {
+    }
+
+    @Override
+    public Map<String, String> getOutputFormat() {
+        return this._outputFormat;
     }
 
     @Override
