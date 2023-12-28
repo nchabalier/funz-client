@@ -1,4 +1,16 @@
-# v1.15 - ??/??/2022
+# v1.16 - ??/??/2023
+
+## Improvements
+* add a field to define output numeric format to display in IOPlugins
+* add a field to define default columns to display in a table in IOPlugins
+
+## Fixes
+* fix old results that cannot be reloaded randomly
+* fix creation of concurent RMahtExpression when there are multi thread on the same Plugin (bug with Rserve session never killed)
+* support missing output/input in Python wrapper
+* update Rsession to 3.1.8 to support R>=4.3
+
+# v1.15 - 23/11/2022
 
 ## Improvements
 
