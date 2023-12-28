@@ -31,7 +31,11 @@ import org.funz.util.ASCII;
 import org.funz.util.Data;
 import static org.funz.util.Data.asString;
 import org.funz.util.Disk;
+import org.funz.util.Parser;
+import org.funz.util.ParserUtils;
+import org.math.array.DoubleArray;
 import org.math.io.parser.ArrayString;
+import org.netlib.util.doubleW;
 
 public class ExtendedIOPlugin implements IOPluginInterface {
 
@@ -169,11 +173,33 @@ public class ExtendedIOPlugin implements IOPluginInterface {
                     lout.put(o, null);
                     Log.logMessage("Extended IOPlugin " + getID(), SeverityLevel.WARNING, false, "Impossible to eval output: " + o + " with plugin " + _id);
                 }
+            } else {
+                lout.put(o, null);
+                File out  = new File(outdir, "out.txt");
+                if (out.exists()) {
+                    try {
+                        String[] lines = ParserUtils.getASCIIFileLines(out);
+                        for (String line : lines) {
+                            if (line.startsWith(o+"=")) {
+                                String[] kv = line.split("=");
+                                if (kv.length == 2) {
+                                    if (Character.isUpperCase(o.charAt(0))) {
+                                        lout.put(o, Data.asArrayObject(kv[1]));
+                                    } else {
+                                        lout.put(o, Data.asObject(kv[1]));
+                                    }
+                                } else {
+                                    Log.logMessage("Extended IOPlugin " + getID(), SeverityLevel.WARNING, false, "Impossible to read output: " + o + " from '"+line+"'");
+                                }
+                            }
+                        }
+                    } catch (Exception ex) {
+                        Log.logMessage("Extended IOPlugin " + getID(), SeverityLevel.WARNING, false, "Impossible to read output: " + o );
+                    }
+                } else {
+                    Log.logMessage("Extended IOPlugin " + getID(), SeverityLevel.ERROR, false, "Impossible to get output "+o+" from missing file out.txt");
+                }
             }
-            /*else {
-             lout.put(o, null);
-             Log.logMessage("Extended IOPlugin " + getID(), SeverityLevel.ERROR, false, "Impossible to get output: " + o + " , no 'output." + o + ".get' key defined in " + _id);
-             }*/
         }
 
         return lout;
@@ -207,6 +233,46 @@ public class ExtendedIOPlugin implements IOPluginInterface {
                 try {
                     _more_properties.load(new FileReader(io));//new FileReader(io));
                     Log.out("more_properties: " + _more_properties, 4);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (io.getName().equals("POST.sh") || io.getName().equals("POST.bat")) {
+                try {
+                    String[] lines = ParserUtils.getASCIIFileLines(io);
+                    for (String line : lines) {
+                        if (line.contains("=") && line.startsWith("echo ")) {
+                            String[] kv = line.substring("echo ".length()).split("=");
+                            if (kv.length == 2) {
+                                kv[0] = kv[0].replace('"', ' ').replace('\'', ' ').trim();
+                                if (Character.isUpperCase(kv[0].charAt(0))) {
+                                    _output.put(kv[0], new double[]{Double.NaN});
+                                } else {
+                                    _output.put(kv[0], Double.NaN);
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (io.getName().equals("POST.py")) {
+                try {
+                    String[] lines = ParserUtils.getASCIIFileLines(io);
+                    for (String line : lines) {
+                        if (line.contains("=") && line.startsWith("print")) {
+                            String[] kv = line.substring("print".length()).split("=");
+                            if (kv.length == 2) {
+                                kv[0] = kv[0].replace('(', ' ').replace('"', ' ').replace('\'', ' ').trim();
+                                if (Character.isUpperCase(kv[0].charAt(0))) {
+                                    _output.put(kv[0], new double[]{Double.NaN});
+                                } else {
+                                    _output.put(kv[0], Double.NaN);
+                                }
+                            }
+                        }
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
