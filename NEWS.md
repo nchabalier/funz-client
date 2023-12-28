@@ -3,6 +3,7 @@
 ## Improvements
 * add a field to define output numeric format to display in IOPlugins
 * add a field to define default columns to display in a table in IOPlugins
+* if POST.* (input) files displays a result with print("res=",.../echo "res="..., add 'res' as output (default behavior) 
 
 ## Fixes
 * fix old results that cannot be reloaded randomly
