@@ -170,30 +170,32 @@ public class ExtendedIOPlugin implements IOPluginInterface {
                     Log.logMessage("Extended IOPlugin " + getID(), SeverityLevel.WARNING, false, "Impossible to eval output: " + o + " with plugin " + _id);
                 }
             } else {
-                lout.put(o, null);
-                File out  = new File(outdir, "out.txt");
-                if (out.exists()) {
-                    try {
-                        String[] lines = ParserUtils.getASCIIFileLines(out);
-                        for (String line : lines) {
-                            if (line.startsWith(o+"=")) {
-                                String[] kv = line.split("=");
-                                if (kv.length == 2) {
-                                    if (Character.isUpperCase(o.charAt(0))) {
-                                        lout.put(o, Data.asArrayObject(kv[1]));
+                if (_post_out != null && _post_out.contains(o)) {
+                    lout.put(o, null);
+                    File out  = new File(outdir, "out.txt");
+                    if (out.exists()) {
+                        try {
+                            String[] lines = ParserUtils.getASCIIFileLines(out);
+                            for (String line : lines) {
+                                if (line.startsWith(o+"=")) {
+                                    String[] kv = line.split("=");
+                                    if (kv.length == 2) {
+                                        if (Character.isUpperCase(o.charAt(0))) {
+                                            lout.put(o, Data.asArrayObject(kv[1]));
+                                        } else {
+                                            lout.put(o, Data.asObject(kv[1]));
+                                        }
                                     } else {
-                                        lout.put(o, Data.asObject(kv[1]));
+                                        Log.logMessage("Extended IOPlugin " + getID(), SeverityLevel.WARNING, false, "Impossible to read output: " + o + " from '"+line+"'");
                                     }
-                                } else {
-                                    Log.logMessage("Extended IOPlugin " + getID(), SeverityLevel.WARNING, false, "Impossible to read output: " + o + " from '"+line+"'");
                                 }
                             }
+                        } catch (Exception ex) {
+                            Log.logMessage("Extended IOPlugin " + getID(), SeverityLevel.WARNING, false, "Impossible to read output: " + o );
                         }
-                    } catch (Exception ex) {
-                        Log.logMessage("Extended IOPlugin " + getID(), SeverityLevel.WARNING, false, "Impossible to read output: " + o );
+                    } else {
+                        Log.logMessage("Extended IOPlugin " + getID(), SeverityLevel.ERROR, false, "Impossible to get output "+o+" from missing file out.txt");
                     }
-                } else {
-                    Log.logMessage("Extended IOPlugin " + getID(), SeverityLevel.ERROR, false, "Impossible to get output "+o+" from missing file out.txt");
                 }
             }
         }
@@ -235,7 +237,8 @@ public class ExtendedIOPlugin implements IOPluginInterface {
     }
 
     Properties _more_properties = new Properties();
-
+    List<String> _post_out = new LinkedList<>();
+    
     @Override
     public void setInputFiles(File... inputfiles) {
         _inputfiles = inputfiles;
@@ -259,6 +262,7 @@ public class ExtendedIOPlugin implements IOPluginInterface {
                             String[] kv = line.substring("echo ".length()).split("=");
                             if (kv.length == 2) {
                                 kv[0] = kv[0].replace('"', ' ').replace('\'', ' ').trim();
+                                _post_out.add(kv[0]);
                                 if (Character.isUpperCase(kv[0].charAt(0))) {
                                     _output.put(kv[0], new double[]{Double.NaN});
                                 } else {
@@ -279,6 +283,7 @@ public class ExtendedIOPlugin implements IOPluginInterface {
                             String[] kv = line.substring("print".length()).split("=");
                             if (kv.length == 2) {
                                 kv[0] = kv[0].replace('(', ' ').replace('"', ' ').replace('\'', ' ').trim();
+                                _post_out.add(kv[0]);
                                 if (Character.isUpperCase(kv[0].charAt(0))) {
                                     _output.put(kv[0], new double[]{Double.NaN});
                                 } else {
