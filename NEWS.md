@@ -1,4 +1,4 @@
-# v1.16 - ??/??/2023
+# v1.16 - 28/12/2023
 
 ## Improvements
 * add a field to define output numeric format to display in IOPlugins
