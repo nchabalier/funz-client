@@ -225,7 +225,7 @@ public class ParseExpression {
         String head = "";
         if (method.length() > 0) {
             int h = method.length() - 1;
-            while (h > 0 && (Character.isLetterOrDigit(method.charAt(h)) || method.charAt(h) == '.')) {
+            while (h > 0 && (Character.isLetterOrDigit(method.charAt(h)) || method.charAt(h) == '.' || method.charAt(h) == '_')) {
                 h--;
             }
             head = h > 0 ? method.substring(0, h + 1) : "";
