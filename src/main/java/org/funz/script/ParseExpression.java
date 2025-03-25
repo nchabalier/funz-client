@@ -17,7 +17,7 @@ public class ParseExpression {
     public final static String PIPE = ">>";
     public final static String FILES = "files";
 
-    static void initEngine() {
+     static void initEngine() {
         Method[] methods = Parser.class.getMethods();
         for (Method method : methods) {
             if (!StaticMethods.contains(method.getName())) {
@@ -157,6 +157,22 @@ public class ParseExpression {
                         return (Double) CallAlgebra(o, left) / (Double) CallAlgebra(o, right);
                     } else {
                         throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...) in expression: "+expr);
+                    }
+                } else if (c == '>') {
+                    String left = current_arg.toString();
+                    String right = expr.substring(i + 1);
+                    if (isBraced(left) && isBraced(right)) {
+                        return (Double) CallAlgebra(o, left) > (Double) CallAlgebra(o, right);
+                    } else {
+                        //throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...) in expression: "+expr);
+                    }
+                } else if (c == '<') {
+                    String left = current_arg.toString();
+                    String right = expr.substring(i + 1);
+                    if (isBraced(left) && isBraced(right)) {
+                        return (Double) CallAlgebra(o, left) < (Double) CallAlgebra(o, right);
+                    } else {
+                        //throw new Exception("Bracketing algebra operations is required: (..)" + c + "(...) in expression: "+expr);
                     }
                 }
             }
