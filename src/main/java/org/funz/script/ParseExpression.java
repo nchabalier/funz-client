@@ -424,7 +424,7 @@ public class ParseExpression {
         if (go instanceof List<?>) {
             List<?> golist = (List<?>) go;
             if (golist.size() == 1) {
-                return exportObject(golist.getFirst());
+                return exportObject(golist.get(0));
             } else {
                 return golist;
             }
