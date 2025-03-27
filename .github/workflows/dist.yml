@@ -28,7 +28,7 @@ jobs:
     - run: |
         ant clean dist
         cd dist; zip -r ../funz-client.zip ./*; cd ..
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         path: dist
     - uses: softprops/action-gh-release@v1
