@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<calculation>
+    <keff system="initial" min_nb_of_initial_cycles_suppressed="0" max_nb_of_initial_cycles_suppressed="732">
+        <esti name="SOURCE-COLLISION">
+            <mean>.99580215 .99584567 .99587032 .99586262 </mean>
+            <std>.66892243E-03 .66841771E-03 .66887750E-03 </std>
+        </esti>
+        <esti name="SOURCE-TRACK-LENGTH">
+            <mean>.19580215 .99584567 .99587032 .99586262 </mean>
+            <std>.56892243E-03 .66841771E-03 .66887750E-03 </std>
+        </esti>
+    </keff>
+</calculation>
