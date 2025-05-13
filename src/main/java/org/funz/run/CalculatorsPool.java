@@ -10,10 +10,8 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+
 import org.funz.api.Funz_v1;
 import static org.funz.Protocol.PING_PERIOD;
 import org.funz.conf.Configuration;
@@ -23,7 +21,6 @@ import org.funz.log.LogCollector.SeverityLevel;
 import org.funz.run.Computer.ComputerGuard;
 import org.funz.run.Computer.ComputerStatusListener;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.Collections;
 
 /**
  *
@@ -350,7 +347,7 @@ public class CalculatorsPool implements ComputerGuard, ComputerStatusListener {
                 s.receive(p); // blocking as long as a packet not received / or SoTimeout exceeded
             } catch (SocketTimeoutException t) {
                 force_close(s);
-                if (!shutdown) s = getSocket(_port); // Do not rebuild socket if shutdown
+                if (!shutdown) UDP_socket = getSocket(_port); // Do not rebuild socket if shutdown
                 return;
             } catch (Exception t) {
                 Log.err(t,2); 
